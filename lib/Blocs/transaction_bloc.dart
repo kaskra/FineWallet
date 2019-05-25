@@ -41,22 +41,22 @@ class TransactionGroupedBloc {
     _transactionController.close();
   }
 
-  getClients() async{
+  getTransactions() async{
     _transactionController.sink.add(await DBProvider.db.getExpensesGroupedByDay());
   }
 
   TransactionGroupedBloc (){
-    getClients();
+    getTransactions();
   }
 
   add(TransactionModel tx){
     DBProvider.db.newTransaction(tx);
-    getClients();
+    getTransactions();
   }
 
   delete(int id){
     DBProvider.db.deleteTransaction(id);
-    getClients();
+    getTransactions();
   }
 
 }
