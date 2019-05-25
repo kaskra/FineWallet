@@ -110,9 +110,9 @@ class _AddPageState extends State<AddPage> {
             decoration: InputDecoration(
               labelText: "Enter your ${widget.isExpense==0?"income":"expense"}", 
               contentPadding: EdgeInsets.all(4), 
-              labelStyle: TextStyle(fontSize: 15, color: Colors.black54),
+              labelStyle: TextStyle(fontSize: 15, color: Colors.black),
               focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black)
+                borderSide: BorderSide(color: Colors.black26)
               ), 
               hintText: "0.00"
             ),
