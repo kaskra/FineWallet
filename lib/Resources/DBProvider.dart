@@ -67,9 +67,10 @@ class DBProvider{
     return raw;
   }
 
-  Future<List<TransactionModel>> getAllTransactions() async{
+  Future<List<TransactionModel>> getAllTransactions() async {
     final db = await database;
-    var res = await db.query("transactions");
+    var res = await db.rawQuery("SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id");
+    print(res);
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
     return list;
   }
@@ -134,14 +135,14 @@ class DBProvider{
 
   Future<List<CategoryModel>> getExpenseCategories() async {
     final db = await database;
-    var res = await db.query("categories", where: "id != ?", whereArgs: [10]);
+    var res = await db.query("categories", where: "name != ?", whereArgs: ["Income"]);
     List<CategoryModel> list = res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
     return list;
   }
 
   Future<List<CategoryModel>> getIncomeCategory() async {
     final db = await database;
-    var res = await db.query("categories", where: "id = ?", whereArgs: [10]);
+    var res = await db.query("categories", where: "name = ?", whereArgs: ["Income"]);
     List<CategoryModel> list = res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
     return list;
   }

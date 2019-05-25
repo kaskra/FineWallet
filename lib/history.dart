@@ -1,5 +1,6 @@
 import 'package:finewallet/Blocs/transaction_bloc.dart';
 import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/Resources/internal_data.dart';
 import 'package:flutter/material.dart';
 
 
@@ -29,12 +30,19 @@ class _HistoryPageState extends State<HistoryPage> {
         stream: _txBloc.transactions,
         builder: (BuildContext context, AsyncSnapshot<List<TransactionModel>> snapshot){
           if(snapshot.hasData){
+            
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index){
                 TransactionModel item = snapshot.data[index];
+                print(item.category);
+                print(icons.length);
                 return ListTile(
-                  title: Text(item.amount.toString()),
+                  title: Column(children: <Widget>[
+                    Text(item.amount.toString()),
+                    Text(item.subcategoryName),
+                    Icon(icons[item.category-1])
+                  ],),
                   leading: Text(item.id.toString()),
                   trailing: InkWell(
                     child: Icon(Icons.delete_outline),
@@ -52,7 +60,7 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          TransactionModel tx = new TransactionModel(subcategory: 0, amount: 3.23, date: DateTime.now().millisecondsSinceEpoch, isExpense: 1);
+          TransactionModel tx = new TransactionModel(subcategory: 30, amount: 3.23, date: DateTime.now().millisecondsSinceEpoch, isExpense: 1);
           _txBloc.add(tx);
         },
         child: Icon(Icons.add),

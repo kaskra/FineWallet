@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+// Income icon always has to be the last one
 List<IconData> icons = [Icons.blur_on, 
                           Icons.person,
                           Icons.restaurant,
@@ -8,6 +10,5 @@ List<IconData> icons = [Icons.blur_on,
                           Icons.time_to_leave,
                           Icons.healing, 
                           Icons.local_mall, 
-                          Icons.cake];
-
-List<IconData> incomeIcon = [Icons.attach_money];
+                          Icons.cake,
+                          Icons.attach_money];

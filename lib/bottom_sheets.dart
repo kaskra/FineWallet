@@ -36,16 +36,13 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
 
   void initState() { 
     super.initState();
-    if (widget.isExpense == 0) {
-      icons = incomeIcon;
-    }
     _scrollController = new ScrollController(keepScrollOffset: false);
     _categoryScrollController = new ScrollController(keepScrollOffset: false);
     if (widget.prevSubcategory != null){
       _selectedCategory = widget.prevSubcategory.selectedCategory;
       _subcategory = widget.prevSubcategory; 
       _scrollController = new ScrollController(initialScrollOffset: _subcategory.index.toDouble() * subcategoryCardHeight, keepScrollOffset: false); 
-      _categoryScrollController = new ScrollController(initialScrollOffset: _subcategory.selectedCategory.toDouble() * categoryCardWidth, keepScrollOffset: false);
+      _categoryScrollController = new ScrollController(initialScrollOffset: (_subcategory.selectedCategory.toDouble()) * categoryCardWidth, keepScrollOffset: false);
     }
   }
       
@@ -129,14 +126,16 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 child: FutureBuilder(
                   future: widget.isExpense==1?DBProvider.db.getExpenseCategories():DBProvider.db.getIncomeCategory(),
                   builder: (ctxt, snapshot){
+
                     if(snapshot.hasData){
                       return ListView.builder(
                         controller: _categoryScrollController,
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index){
+                          int iconIndex = widget.isExpense==1?index:icons.length-1;
                           CategoryModel item = snapshot.data[index];
-                          return _categoryCard(icons[index], item.name, index);
+                          return _categoryCard(icons[iconIndex], item.name, index);
                         },
                       );
                     }else{
@@ -149,7 +148,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
               Container(
                 height: bottomSheetHeight - categoryListHeight - topBorderHeight - dividerHeight,
                 child: FutureBuilder(
-                  future: DBProvider.db.getSubcategoriesOfCategory(widget.isExpense==1?_selectedCategory:9),
+                  future: DBProvider.db.getSubcategoriesOfCategory(widget.isExpense==1?_selectedCategory+1:icons.length),
                   builder: (ctxt, snapshot){
                     if(snapshot.hasData){
                       return ListView.builder(
@@ -158,7 +157,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index){
                           SubcategoryModel item = snapshot.data[index];
-                          return _subcategoryTile(index, item.name);
+                          return _subcategoryTile(item.id, item.name);
                         },
                       );
                     }else{

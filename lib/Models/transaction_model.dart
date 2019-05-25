@@ -18,14 +18,19 @@ class TransactionModel{
   int date;
   int isExpense;
 
-  TransactionModel({this.id, this.subcategory, this.amount, this.date, this.isExpense});
+  String subcategoryName;
+  int category;
+
+  TransactionModel({this.id, this.subcategory, this.amount, this.date, this.isExpense, this.subcategoryName, this.category});
 
   factory TransactionModel.fromMap(Map<String, dynamic> json) => new TransactionModel(
     id: json["id"],
     subcategory: json["subcategory"],
     amount: json["amount"],
     date: json["date"],
-    isExpense: json["isExpense"]
+    isExpense: json["isExpense"],
+    subcategoryName: json["name"],
+    category: json["category"]
   );
 
   Map<String, dynamic> toMap() => {
@@ -33,7 +38,7 @@ class TransactionModel{
     "subcategory": subcategory,
     "amount": amount,
     "date": date,
-    "isExpense": isExpense
+    "isExpense": isExpense,
   };
 
 
