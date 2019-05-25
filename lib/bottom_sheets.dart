@@ -154,7 +154,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                   },
                 ),
               ),
-              Divider(height: dividerHeight,),
+              Divider(height: dividerHeight, color: Colors.black,),
               Container(
                 height: bottomSheetHeight - categoryListHeight - topBorderHeight - dividerHeight,
                 child: FutureBuilder(
