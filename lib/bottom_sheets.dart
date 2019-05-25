@@ -1,6 +1,7 @@
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
+import 'package:finewallet/Resources/internal_data.dart';
 import 'package:finewallet/category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,16 +25,6 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   Category _subcategory;
   ScrollController _scrollController;
   ScrollController _categoryScrollController;
-
-  List<IconData> icons = [Icons.blur_on, 
-                          Icons.person,
-                          Icons.restaurant,
-                          Icons.home, 
-                          Icons.rowing, 
-                          Icons.time_to_leave,
-                          Icons.healing, 
-                          Icons.local_mall, 
-                          Icons.cake] ;
           
   final double categoryCardWidth = 80;
   final double subcategoryCardHeight = 40;
@@ -46,7 +37,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   void initState() { 
     super.initState();
     if (widget.isExpense == 0) {
-      icons = [Icons.attach_money];
+      icons = incomeIcon;
     }
     _scrollController = new ScrollController(keepScrollOffset: false);
     _categoryScrollController = new ScrollController(keepScrollOffset: false);
@@ -195,8 +186,8 @@ Widget buildBottomPicker(Widget picker, double bottomSheetHeight, double topBord
   padding: const EdgeInsets.only(top: 6.0),
   child: DefaultTextStyle(
     style: const TextStyle(
-      color: CupertinoColors.black,
-      fontSize: 22.0,
+        color: CupertinoColors.black,
+        fontSize: 22.0,
     ),
     child: GestureDetector(
       // Blocks taps from propagating to the modal sheet and popping.
@@ -207,4 +198,4 @@ Widget buildBottomPicker(Widget picker, double bottomSheetHeight, double topBord
       ),
     ),
   ),
-  );
+);

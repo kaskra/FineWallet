@@ -30,23 +30,12 @@ class _AddPageState extends State<AddPage> {
   DateTime _date;
   double _keyboardHeight;
 
-  List<IconData> icons = [Icons.blur_on, 
-                          Icons.person,
-                          Icons.restaurant,
-                          Icons.home, 
-                          Icons.rowing, 
-                          Icons.time_to_leave,
-                          Icons.healing, 
-                          Icons.local_mall, 
-                          Icons.cake];
-
   @override
   void initState() { 
     super.initState();
     setState(() {
       _date = DateTime.now();
     });
-
   }
 
   Widget _expenseCards(IconData icon, String label, int value, Function whathappensontap){    
