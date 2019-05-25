@@ -19,6 +19,7 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final double bottomSheetHeight = 265;
   final double topBorderHeight = 5;
@@ -178,9 +179,17 @@ class _AddPageState extends State<AddPage> {
     );
   }
   
+  void _showSnackbar(BuildContext context){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Please fill out every panel!"),
+    ));
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
@@ -193,6 +202,8 @@ class _AddPageState extends State<AddPage> {
                   TransactionModel tx = new TransactionModel(amount: _expense, isExpense: widget.isExpense, date: dayInMillis(_date), subcategory: _subcategory.index);
                   DBProvider.db.newTransaction(tx);
                   Navigator.pop(context);
+                }else{
+                  return _showSnackbar(context);
                 }
               },
               child: Icon(Icons.save),
