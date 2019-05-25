@@ -97,6 +97,34 @@ class DBProvider{
     return list;
   }
 
+  Future<List<TransactionModel>> getTransactionsOfMonth(int midOfMonth) async {
+    final db = await database;
+    
+    int year = DateTime.fromMillisecondsSinceEpoch(midOfMonth).year;
+    int month = DateTime.fromMillisecondsSinceEpoch(midOfMonth).month;
+
+    int lastDay = (month < 12) ? new DateTime(year, month + 1, 0).day : new DateTime(year + 1, 1, 0).day;
+    DateTime firstOfMonth = DateTime.utc(year, month, 1);
+    DateTime lastOfMonth = DateTime.utc(year, month, lastDay);
+
+    var res = await db.query("transactions", where: "date >= ? and date <= ?", whereArgs: [firstOfMonth.millisecondsSinceEpoch, lastOfMonth.millisecondsSinceEpoch]);
+    List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
+    return list;
+  }
+
+  Future<CategoryModel> getCategoryOfSubcategory(int subcategoryId) async{   
+    final db = await database;
+
+    var c = await db.query("subcategories", columns: ["category"] ,where: "id=?", whereArgs: [subcategoryId]);
+    if (c.isEmpty) return null;
+    var category = c.first["category"];
+
+    var res = await db.query("categories", where: "id=?", whereArgs: [category]);
+    CategoryModel categoryModel = res.isNotEmpty ? CategoryModel.fromMap(res.first) : null;
+    return categoryModel;
+
+  }
+
   Future<List<CategoryModel>> getAllCategories() async {
     final db = await database;
     var res = await db.query("categories");
