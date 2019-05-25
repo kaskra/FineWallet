@@ -105,7 +105,7 @@ class DBProvider{
 
     int lastDay = (month < 12) ? new DateTime(year, month + 1, 0).day : new DateTime(year + 1, 1, 0).day;
     DateTime firstOfMonth = DateTime.utc(year, month, 1);
-    DateTime lastOfMonth = DateTime.utc(year, month, lastDay);
+    DateTime lastOfMonth = DateTime.utc(year, month, lastDay, 23, 59, 59);
 
     var res = await db.query("transactions", where: "date >= ? and date <= ?", whereArgs: [firstOfMonth.millisecondsSinceEpoch, lastOfMonth.millisecondsSinceEpoch]);
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
