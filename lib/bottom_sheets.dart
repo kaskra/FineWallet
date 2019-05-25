@@ -69,7 +69,10 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
               });
             },
             child: Container(
-              color: _selectedCategory == index? Colors.orange : Colors.grey,
+              decoration: BoxDecoration(
+                color: _selectedCategory == index? Colors.orange : Colors.grey,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
               margin: EdgeInsets.all(6),
               // padding: EdgeInsets.all(2),
               child: Column(
