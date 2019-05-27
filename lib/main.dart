@@ -70,8 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                "€$amount",
-                style: TextStyle(color: Colors.white),
+                "${amount.toStringAsFixed(2)}€",
               ),
             ],
           )),
@@ -91,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
               alignment: Alignment.centerRight,
               child: Text(
-                "$budget€",
+                "${budget.toStringAsFixed(2)}€",
                 style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ))
