@@ -102,12 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _days() {
-    List<DateTime> days = List();
-    for (var i = 0; i < 7; i++) {
-      DateTime lastDay = DateTime.now().add(Duration(days: -i));
-      days.add(lastDay);
-    }
-
+    List<DateTime> days = getLastWeekAsDates();
     return FutureBuilder<List<SumOfTransactionModel>>(
       future: DBProvider.db.getExpensesGroupedByDay(),
       initialData: List(),
@@ -122,7 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
               listItems.add(_day(date.weekday, 0));
             }
           }
-          
           return ListView(
             shrinkWrap: true,
             scrollDirection: Axis.vertical,

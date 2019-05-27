@@ -34,3 +34,12 @@ String getDayName(int day) {
     }
   return dayName;
 }
+
+List<DateTime> getLastWeekAsDates() {
+    List<DateTime> days = List();
+    for (var i = 0; i < 7; i++) {
+      DateTime lastDay = DateTime.now().add(Duration(days: -i));
+      days.add(lastDay);
+    }
+    return days;
+  }
