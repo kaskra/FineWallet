@@ -71,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(
                 "${amount.toStringAsFixed(2)}€",
+                style: TextStyle(color: amount < 0 ? Colors.red : Colors.white, fontWeight: FontWeight.bold),
               ),
             ],
           )),
