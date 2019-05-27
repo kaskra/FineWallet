@@ -1,4 +1,8 @@
+import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/Resources/DBProvider.dart';
+import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
+import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -98,16 +102,36 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _days() {
-    List<Widget> days = List();
+    List<DateTime> days = List();
     for (var i = 0; i < 7; i++) {
-      DateTime futureDay = DateTime.now().add(Duration(days: -i));
-      days.add(_day(futureDay.weekday, 32));
+      DateTime lastDay = DateTime.now().add(Duration(days: -i));
+      days.add(lastDay);
     }
 
-    return ListView(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      children: days,
+    return FutureBuilder<List<SumOfTransactionModel>>(
+      future: DBProvider.db.getExpensesGroupedByDay(),
+      initialData: List(),
+      builder: (BuildContext context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
+        if (snapshot.hasData){
+          List<Widget> listItems = List();
+          for (DateTime date in days) {
+            if (snapshot.data.indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date))) >= 0){
+              int index = snapshot.data.indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date)));
+              listItems.add(_day(date.weekday, snapshot.data[index].amount));
+            }else{
+              listItems.add(_day(date.weekday, 0));
+            }
+          }
+          
+          return ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            children: listItems,
+          );
+        }else{
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 
