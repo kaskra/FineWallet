@@ -110,8 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
         if (snapshot.hasData){
           List<Widget> listItems = List();
           for (DateTime date in days) {
-            if (snapshot.data.indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date))) >= 0){
-              int index = snapshot.data.indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date)));
+            int index = snapshot.data.indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date)));
+            if (index >= 0){
               listItems.add(_day(date.weekday, snapshot.data[index].amount));
             }else{
               listItems.add(_day(date.weekday, 0));
