@@ -164,7 +164,70 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
   }
+
+  Widget _buildBody(){
+    return Center(
+      child: Container(
+        constraints: BoxConstraints.expand(),
+        padding: EdgeInsets.all(5.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(bottom: 5),
+              child: FutureBuilder<List<TransactionModel>>(
+                future: DBProvider.db.getTransactionsOfMonth(DateTime.now().millisecondsSinceEpoch),
+                initialData: List(),
+                builder: (BuildContext context, AsyncSnapshot<List<TransactionModel>> snapshot) {
+                  if (snapshot.hasData){
+                    List<TransactionModel> expenses = snapshot.data.where((t) => t.isExpense == 1).toList();
+                    List<TransactionModel> incomes = snapshot.data.where((t) => t.isExpense == 0).toList();
+                    double monthlyExpenses = expenses.fold(0, (prev, element) => prev + element.amount);
+                    double monthlyIncomes = incomes.fold(0, (prev, element) => prev + element.amount);
+                    double monthlySpareBudget = monthlyIncomes - monthlyExpenses;
+
+                    int dayOfMonth = DateTime.now().day;
+                    int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
+                    int remainingDaysInMonth = lastDayOfMonth - dayOfMonth + 1;
+                    double budgetPerDay = monthlySpareBudget / remainingDaysInMonth; // TODO should todays spare budget be NEG. or ZERO if neg. 
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _overviewBox("TODAY", budgetPerDay, false),
+                        _overviewBox("MAY", monthlySpareBudget, true),
+                      ],
+                    );
+                  }else{
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                       CircularProgressIndicator(),
+                       CircularProgressIndicator(),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ),
+            Container(child: _days())
+          ],
+        )
+      )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xffd8e7ff),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
+      body: _buildBody(),
+      floatingActionButton: _buildFABs(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
