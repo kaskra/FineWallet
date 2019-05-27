@@ -31,32 +31,3 @@ class TransactionBloc {
   }
 
 }
-
-class TransactionGroupedBloc {
-  final _transactionController = StreamController<List<TransactionModel>>.broadcast();
-
-  get transactions => _transactionController.stream;
-
-  void dispose() { 
-    _transactionController.close();
-  }
-
-  getTransactions() async{
-    _transactionController.sink.add(await DBProvider.db.getExpensesGroupedByDay());
-  }
-
-  TransactionGroupedBloc (){
-    getTransactions();
-  }
-
-  add(TransactionModel tx){
-    DBProvider.db.newTransaction(tx);
-    getTransactions();
-  }
-
-  delete(int id){
-    DBProvider.db.deleteTransaction(id);
-    getTransactions();
-  }
-
-}
