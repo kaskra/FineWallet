@@ -128,37 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xffd8e7ff),
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Center(
-          child: Container(
-              constraints: BoxConstraints.expand(),
-              padding: EdgeInsets.all(5.0),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _overviewBox("TODAY", 103.0, false),
-                        _overviewBox("MAY", 1293.0, true),
-                      ],
-                    ),
-                  ),
-                  Container(child: _days())
-                ],
-              ))),
-      floatingActionButton: Row(
+  Widget _buildFABs(){
+    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Spacer(
@@ -191,6 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
             flex: 4,
           ),
         ],
+      );
+  }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
