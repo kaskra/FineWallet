@@ -46,9 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _overviewBox(String title, double amount, bool last) {
     return Expanded(
       child: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Colors.orange), // TODO rounded border
           padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
           margin: EdgeInsets.only(right: last ? 0 : 2.5, left: last ? 2.5 : 0),
-          color: Colors.orange,
+          // color: Colors.orange,
           child: Column(
             children: <Widget>[
               Container(
