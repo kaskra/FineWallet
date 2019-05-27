@@ -1,20 +1,25 @@
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
+import 'package:finewallet/Resources/db_initilization.dart';
+import 'package:finewallet/add_page.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:finewallet/Resources/db_initilization.dart';
 
-import 'add_page.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
