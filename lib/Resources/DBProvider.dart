@@ -70,7 +70,7 @@ class DBProvider{
   Future<List<TransactionModel>> getAllTransactions() async {
     final db = await database;
     var res = await db.rawQuery("SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id");
-    print(res);
+    // print(res);
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
     return list;
   }
@@ -91,10 +91,10 @@ class DBProvider{
     return list;
   }
 
-  Future<List<TransactionModel>> getExpensesGroupedByDay() async {
+  Future<List<SumOfTransactionModel>> getExpensesGroupedByDay() async {
     final db = await database;
-    var res = await db.rawQuery("SELECT date, SUM(amount) FROM transactions WHERE isExpense=1 GROUP BY date ORDER BY date");
-    List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
+    var res = await db.rawQuery("SELECT date, SUM(amount) as amount FROM transactions WHERE isExpense=1 GROUP BY date ORDER BY date");
+    List<SumOfTransactionModel> list = res.isNotEmpty ? res.map((t) => SumOfTransactionModel.fromMap(t)).toList(): [];
     return list;
   }
 
