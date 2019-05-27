@@ -194,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         _overviewBox("TODAY", budgetPerDay, false),
-                        _overviewBox("MAY", monthlySpareBudget, true),
+                        _overviewBox(getMonthName(DateTime.now().month).toUpperCase(), monthlySpareBudget, true),
                       ],
                     );
                   }else{
