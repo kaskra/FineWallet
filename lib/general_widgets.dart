@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
   
-Widget generalCard(Widget child, BoxDecoration decoration){
+Widget generalCard(Widget child, [BoxDecoration decoration]){
   return Container(
     child: Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
