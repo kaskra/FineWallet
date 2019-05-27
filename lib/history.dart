@@ -60,7 +60,7 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          TransactionModel tx = new TransactionModel(subcategory: 30, amount: 3.23, date: DateTime.now().millisecondsSinceEpoch, isExpense: 1);
+          TransactionModel tx = new TransactionModel(subcategory: 30, amount: 3.23, date: dayInMillis(DateTime.now()), isExpense: 1);
           _txBloc.add(tx);
         },
         child: Icon(Icons.add),
