@@ -71,7 +71,6 @@ class DBProvider{
   Future<List<TransactionModel>> getAllTransactions() async {
     final db = await database;
     var res = await db.rawQuery("SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id");
-    // print(res);
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
     return list;
   }
@@ -111,6 +110,17 @@ class DBProvider{
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
     return list;
   }
+
+  Future<int> getIndexInCategory(int subcategoryId) async{
+    final db = await database;
+    var c = await db.query("subcategories", columns: ["category"] ,where: "id=?", whereArgs: [subcategoryId]);
+    if (c.isEmpty) return null;
+    var category = c.first["category"];
+
+    var res = await db.rawQuery("SELECT COUNT(*) as count FROM subcategories WHERE category < $category");
+    return res.first["count"];
+  }
+
 
   Future<CategoryModel> getCategoryOfSubcategory(int subcategoryId) async{   
     final db = await database;

@@ -22,7 +22,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   int _selectedCategory = 0;
 
   Category _subcategory;
-  ScrollController _scrollController;
+  ScrollController _subcategoryScrollController;
   ScrollController _categoryScrollController;
 
   final double categoryCardWidth = 80;
@@ -31,23 +31,37 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   final double categoryListHeight = 60;
   final double dividerHeight = 2;
   final double topBorderHeight = 5;
+  final double midOfCategories = 1.75;
+  final double midOfsubcategories = 3;
 
   void initState() {
     super.initState();
-    _scrollController = new ScrollController(keepScrollOffset: false);
-    _categoryScrollController = new ScrollController(keepScrollOffset: false);
+    _subcategoryScrollController = new ScrollController();
+    _categoryScrollController = new ScrollController();
     if (widget.prevSubcategory != null) {
-      _selectedCategory = widget.prevSubcategory.selectedCategory;
+      _selectedCategory =
+          widget.isExpense == 1 ? widget.prevSubcategory.selectedCategory : 0;
       _subcategory = widget.prevSubcategory;
-      _scrollController = new ScrollController(
-          initialScrollOffset:
-              _subcategory.index.toDouble() * subcategoryCardHeight,
-          keepScrollOffset: false);
-      _categoryScrollController = new ScrollController(
-          initialScrollOffset:
-              (_subcategory.selectedCategory.toDouble()) * categoryCardWidth,
-          keepScrollOffset: false);
+      setScrollController();
     }
+  }
+
+  void setScrollController() async {
+    await DBProvider.db
+        .getIndexInCategory(widget.prevSubcategory.index)
+        .then((idx) {
+      _subcategoryScrollController = new ScrollController(
+        initialScrollOffset:
+            (_subcategory.index.toDouble() - (idx + midOfsubcategories)) *
+                subcategoryCardHeight,
+      );
+      _categoryScrollController = new ScrollController(
+        initialScrollOffset:
+            (_subcategory.selectedCategory.toDouble() - midOfCategories) *
+                categoryCardWidth,
+      );
+      // _categoryScrollController.addListener(_listen);
+    });
   }
 
   Widget _categoryCard(IconData iconData, String label, int index) {
@@ -58,6 +72,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
             onTap: () {
               setState(() {
                 _selectedCategory = index;
+                _subcategoryScrollController.jumpTo(0);
               });
             },
             child: Container(
@@ -66,7 +81,6 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
               margin: EdgeInsets.all(6),
-              // padding: EdgeInsets.all(2),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -122,7 +136,6 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
             border: Border(
                 top: BorderSide(color: Colors.orange, width: topBorderHeight))),
         height: bottomSheetHeight,
-        // color: Colors.white,
         child: GestureDetector(
             // Blocks taps from propagating to the modal sheet and popping.
             onTap: () {},
@@ -175,7 +188,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                         builder: (ctxt, snapshot) {
                           if (snapshot.hasData) {
                             return ListView.builder(
-                              controller: _scrollController,
+                              controller: _subcategoryScrollController,
                               scrollDirection: Axis.vertical,
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
