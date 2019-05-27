@@ -40,7 +40,26 @@ class TransactionModel{
     "date": date,
     "isExpense": isExpense,
   };
-
-
 }
 
+class SumOfTransactionModel{
+  int date;
+  num amount;
+
+  SumOfTransactionModel({this.amount, this.date});
+
+  factory SumOfTransactionModel.fromMap(Map<String, dynamic> json) => new SumOfTransactionModel(
+    amount: json["amount"],
+    date: json["date"],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "amount": amount,
+    "date" : date,
+  };
+
+  bool hasSameValue(dynamic v){
+    return date == v || amount == v;
+  }
+
+}
