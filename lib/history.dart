@@ -35,8 +35,8 @@ class _HistoryPageState extends State<HistoryPage> {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index){
                 TransactionModel item = snapshot.data[index];
-                print(item.category);
-                print(icons.length);
+                // print(item.category);
+                // print(icons.length);
                 return ListTile(
                   title: Column(children: <Widget>[
                     Text(item.amount.toString()),
