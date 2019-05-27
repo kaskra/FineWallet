@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
               alignment: Alignment.centerRight,
               child: Text(
-                "$budget €",
+                "$budget€",
                 style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ))
