@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:finewallet/utils.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -98,15 +99,13 @@ class DBProvider{
     return list;
   }
 
-  Future<List<TransactionModel>> getTransactionsOfMonth(int midOfMonth) async {
+  Future<List<TransactionModel>> getTransactionsOfMonth(int dateInMonth) async {
     final db = await database;
-    
-    int year = DateTime.fromMillisecondsSinceEpoch(midOfMonth).year;
-    int month = DateTime.fromMillisecondsSinceEpoch(midOfMonth).month;
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateInMonth);
 
-    int lastDay = (month < 12) ? new DateTime(year, month + 1, 0).day : new DateTime(year + 1, 1, 0).day;
-    DateTime firstOfMonth = DateTime.utc(year, month, 1);
-    DateTime lastOfMonth = DateTime.utc(year, month, lastDay, 23, 59, 59);
+    int lastDay = getLastDayOfMonth(date);
+    DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
+    DateTime lastOfMonth = DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
 
     var res = await db.query("transactions", where: "date >= ? and date <= ?", whereArgs: [firstOfMonth.millisecondsSinceEpoch, lastOfMonth.millisecondsSinceEpoch]);
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];

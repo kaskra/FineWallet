@@ -5,6 +5,11 @@ int dayInMillis(DateTime time) {
   return newDay.millisecondsSinceEpoch;
 }
 
+int getLastDayOfMonth(DateTime date) {
+  int day = (date.month < 12) ? new DateTime(date.year, date.month + 1, 0).day : new DateTime(date.year + 1, 1, 0).day;
+  return day;
+} 
+
 String getDayName(int day) {
   String dayName = "";
   switch (day) {
@@ -49,4 +54,4 @@ List<DateTime> getLastWeekAsDates() {
       days.add(lastDay);
     }
     return days;
-  }
+}
