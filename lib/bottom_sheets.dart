@@ -104,8 +104,10 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                   alignment: Alignment.center,
                   child: Text(name)),
               onTap: () {
-                _subcategory = new Category(
-                    icons[_selectedCategory], name, index,
+                int iconIndex = widget.isExpense == 1
+                    ? _selectedCategory
+                    : icons.length - 1;
+                _subcategory = new Category(icons[iconIndex], name, index,
                     selectedCategory: _selectedCategory);
                 Navigator.pop(context, _subcategory);
               },
