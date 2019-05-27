@@ -14,11 +14,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        textSelectionColor: Colors.black26,
-        primarySwatch: Colors.orange,
-        appBarTheme: AppBarTheme(actionsIconTheme: IconThemeData(color: Colors.white))
-        
-      ),
+          textSelectionColor: Colors.black26,
+          primarySwatch: Colors.orange,
+          appBarTheme: AppBarTheme(
+              actionsIconTheme: IconThemeData(color: Colors.white))),
       home: MyHomePage(title: 'FineWallet'),
     );
   }
@@ -34,9 +33,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  
   @override
-  void initState(){ 
+  void initState() {
     super.initState();
     initDB();
   }
@@ -145,7 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Spacer(flex: 4,),
+          Spacer(
+            flex: 4,
+          ),
           FloatingActionButton(
             heroTag: null,
             onPressed: () => Navigator.push(context,
@@ -169,7 +170,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 MaterialPageRoute(builder: (context) => AddPage("Expense", 1))),
             child: Icon(Icons.remove, color: Colors.white),
           ),
-          Spacer(flex: 4,),
+          Spacer(
+            flex: 4,
+          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
