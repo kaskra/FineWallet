@@ -76,66 +76,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _day(int day, double budget) {
-    String dayName = "";
-    BoxDecoration border;
-    switch (day) {
-      case DateTime.monday:
-        dayName = "Monday";
-        break;
-      case DateTime.tuesday:
-        dayName = "Tuesday";
-        break;
-      case DateTime.wednesday:
-        dayName = "Wednesday";
-        break;
-      case DateTime.thursday:
-        dayName = "Thursday";
-        break;
-      case DateTime.friday:
-        dayName = "Friday";
-        break;
-      case DateTime.saturday:
-        dayName = "Saturday";
-        break;
-      case DateTime.sunday:
-        dayName = "Sunday";
-        break;
-      default:
-        dayName = "Today";
-    }
+    bool isToday = (day == DateTime.now().weekday);
 
-    if (day == DateTime.now().weekday) {
-      dayName = "Today";
-      border =
-          BoxDecoration(border: Border.all(width: 2, color: Colors.orange));
-    }
-
-    return Container(
-      child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          color: Colors.white,
-          child: Container(
-            decoration: border,
-            padding: EdgeInsets.all(13),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  dayName,
-                  style: TextStyle(color: Colors.black54),
-                ),
-                Expanded(
-                    child: Container(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "$budget €",
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                ))
-              ],
-            ),
-          )),
-    );
+    return generalCard(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            isToday? Text("Today", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold))
+            : Text( getDayName(day), style: TextStyle(color: Colors.black54)),
+            Expanded(
+                child: Container(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "$budget €",
+                style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ))
+          ],
+        ),
+        isToday? BoxDecoration(border: Border.all(width: 2, color: Colors.orange)) 
+        : null);
   }
 
   Widget _days() {
