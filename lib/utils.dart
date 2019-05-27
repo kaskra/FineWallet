@@ -35,6 +35,13 @@ String getDayName(int day) {
   return dayName;
 }
 
+String getMonthName(int month, [bool abbrev]){
+  List<String> months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  int index = month <= 0? 1 : month - 1;
+  month > 12? index = 12 : index = month;
+  return abbrev?months[index].substring(0,4) : months[index]; 
+}
+
 List<DateTime> getLastWeekAsDates() {
     List<DateTime> days = List();
     for (var i = 0; i < 7; i++) {
