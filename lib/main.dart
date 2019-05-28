@@ -10,16 +10,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -52,7 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _overviewBox(String title, double amount, bool last) {
     return Expanded(
       child: Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Colors.orange), // TODO rounded border
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Colors.orange), // TODO rounded border
           padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
           margin: EdgeInsets.only(right: last ? 0 : 2.5, left: last ? 2.5 : 0),
           // color: Colors.orange,
@@ -78,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 "${amount.toStringAsFixed(2)}€",
                 style: TextStyle(
-                    color: amount < 0 ? Colors.red : Colors.white,
+                    color: amount <= 0 ? Colors.red : Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ],
@@ -200,25 +199,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     builder: (BuildContext context,
                         AsyncSnapshot<List<TransactionModel>> snapshot) {
                       if (snapshot.hasData) {
-                        List<TransactionModel> expenses = snapshot.data
-                            .where((t) => t.isExpense == 1)
-                            .toList();
+                        int dayOfMonth = DateTime.now().day;
+                        int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
                         List<TransactionModel> incomes = snapshot.data
                             .where((t) => t.isExpense == 0)
                             .toList();
-                        double monthlyExpenses = expenses.fold(
-                            0, (prev, element) => prev + element.amount);
+                        List<TransactionModel> todayExpenses = snapshot.data
+                            .where((t) => t.isExpense == 1)
+                            .where((t) => t.date == dayInMillis(DateTime.now()))
+                            .toList();
+                        List<TransactionModel> notTodayExpenses = snapshot.data
+                            .where((t) => t.isExpense == 1)
+                            .where((t) => t.date != dayInMillis(DateTime.now()))
+                            .toList();
                         double monthlyIncomes = incomes.fold(
                             0, (prev, element) => prev + element.amount);
-                        double monthlySpareBudget =
-                            monthlyIncomes - monthlyExpenses;
+                        double monthlyExpenses = notTodayExpenses.fold(
+                            0, (prev, element) => prev + element.amount);
+                        double todaysExpenses = todayExpenses.fold(
+                            0, (prev, element) => prev + element.amount);
 
-                        int dayOfMonth = DateTime.now().day;
-                        int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
                         int remainingDaysInMonth =
                             lastDayOfMonth - dayOfMonth + 1;
-                        double budgetPerDay = monthlySpareBudget /
-                            remainingDaysInMonth; // TODO should todays spare budget be NEG. or ZERO if neg.
+                        double monthlySpareBudget =
+                            monthlyIncomes - monthlyExpenses;
+                        double budgetPerDay =
+                            (monthlySpareBudget / remainingDaysInMonth) -
+                                todaysExpenses;
+                        double displayedMonthlySpareBudget = monthlySpareBudget - todaysExpenses;
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -226,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _overviewBox(
                                 getMonthName(DateTime.now().month)
                                     .toUpperCase(),
-                                monthlySpareBudget,
+                                displayedMonthlySpareBudget,
                                 true),
                           ],
                         );
