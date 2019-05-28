@@ -8,6 +8,7 @@ import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:sticky_headers/sticky_headers.dart';
 
 class HistoryPage extends StatefulWidget {
   HistoryPage(this.title, {Key key}) : super(key: key);
@@ -187,30 +188,50 @@ class _HistoryPageState extends State<HistoryPage> {
         builder: (BuildContext context,
             AsyncSnapshot<List<TransactionModel>> snapshot) {
           if (snapshot.hasData) {
-            int prevDate = -1;
+            List<List<Widget>> listofLists = _buildLists(snapshot);
             return ListView.builder(
-              itemCount: snapshot.data.length,
+              itemCount: listofLists.length,
               itemBuilder: (context, index) {
-                if (snapshot.data[index].date != prevDate) {
-                  prevDate = snapshot.data[index].date;
-                  intl.DateFormat d = intl.DateFormat.MMMEd();
-                  String dateString =
-                      d.format(DateTime.fromMillisecondsSinceEpoch(prevDate));
-                  bool isToday = prevDate == dayInMillis(DateTime.now());
-                  return Column(
-                    children: <Widget>[
-                      _seperator(isToday, dateString),
-                      _historyItem(snapshot.data[index])
-                    ],
+                if (listofLists[index].length > 0) {
+                  return StickyHeader(
+                    header: listofLists[index][0],
+                    content: Column(
+                      children: listofLists[index]
+                          .getRange(1, listofLists[index].length)
+                          .toList(),
+                    ),
                   );
+                } else {
+                  return Container();
                 }
-                return _historyItem(snapshot.data[index]);
               },
             );
           } else {
             return Container();
           }
         });
+  }
+
+  List<List<Widget>> _buildLists(
+      AsyncSnapshot<List<TransactionModel>> snapshot) {
+    List<List<Widget>> listofLists = List();
+    List<Widget> l = List();
+    int prevDate = -1;
+    for (var i = 0; i < snapshot.data.length; i++) {
+      if (snapshot.data[i].date != prevDate) {
+        prevDate = snapshot.data[i].date;
+        listofLists.add(l);
+        intl.DateFormat d = intl.DateFormat.MMMEd();
+        String dateString =
+            d.format(DateTime.fromMillisecondsSinceEpoch(prevDate));
+        bool isToday = prevDate == dayInMillis(DateTime.now());
+        l = List();
+        l.add(_seperator(isToday, dateString));
+      }
+      l.add(_historyItem(snapshot.data[i]));
+    }
+    listofLists.add(l);
+    return listofLists;
   }
 
   @override
@@ -239,6 +260,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   DateTime.now().add(Duration(days: -Random().nextInt(3)))),
               isExpense: 1);
           _txBloc.add(tx);
+          setState(() {});
         },
         child: Icon(Icons.add),
       ),
