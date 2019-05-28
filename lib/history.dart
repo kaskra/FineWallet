@@ -5,6 +5,7 @@ import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/internal_data.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -20,33 +21,96 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   final _txBloc = TransactionBloc();
 
-  Widget _transactionContent(TransactionModel item) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+  Widget _upperCardPart(int iconIndex, String subcategoryName) {
+    return Stack(
       children: <Widget>[
-        Expanded(
-          child: Icon(icons[item.category - 1]),
+        Flex(
+          direction: Axis.vertical,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  topLeft: Radius.circular(15),
+                ),
+                color: Colors.black12,
+              ),
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(4, 4, 4, 8),
+              child: Text(""),
+            ),
+          ],
         ),
-        Expanded(
-          flex: 4,
-          child: Text(item.subcategoryName),
+        Flex(
+          direction: Axis.vertical,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border: BorderDirectional(
+                  bottom: BorderSide(color: Colors.black54),
+                ),
+              ),
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(4, 4, 4, 8),
+              margin: EdgeInsets.only(left: 15),
+              child: Text(""),
+            )
+          ],
         ),
-        Expanded(
-            flex: 3,
-            child: Text(
-              "${item.amount.toStringAsFixed(2)}€",
-              style: TextStyle(
-                  color: item.isExpense == 1 ? Colors.red : Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13),
-              textDirection: TextDirection.rtl,
-            )),
-        InkWell(
-          child: Icon(Icons.delete_outline),
-          onTap: () {
-            _txBloc.delete(item.id);
-          },
-        )
+        Row(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 15,
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.orange,
+              child: Icon(icons[iconIndex]),
+            ),
+            Expanded(
+              child: Column(children: <Widget>[
+                Container(
+                  child: Center(
+                    child: Text(
+                      subcategoryName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  padding: EdgeInsets.only(top: 4, bottom: 4),
+                  margin: EdgeInsets.only(left: 4, right: 4),
+                ),
+              ]),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _lowerCardPart(double amount, bool isExpense) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.only(right: 15, left: 15),
+      child: Text(
+        "${amount.toStringAsFixed(2)}€",
+        maxLines: 1,
+        overflow: TextOverflow.fade,
+        style: TextStyle(
+            color: isExpense ? Colors.red : Colors.green,
+            fontWeight: FontWeight.bold,
+            fontSize: 14),
+        textDirection: isExpense ? TextDirection.rtl : TextDirection.ltr,
+      ),
+      alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
+    );
+  }
+
+  Widget _transactionCard(TransactionModel item) {
+    return Column(
+      children: <Widget>[
+        _upperCardPart(item.category - 1, item.subcategoryName),
+        _lowerCardPart(item.amount, item.isExpense == 1)
       ],
     );
   }
@@ -80,7 +144,7 @@ class _HistoryPageState extends State<HistoryPage> {
             : Container(),
         Expanded(
           flex: 3,
-          child: generalCard(_transactionContent(item)),
+          child: generalCard(_transactionCard(item), null, 3),
         ),
         (item.isExpense == 0)
             ? Spacer(
