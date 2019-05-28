@@ -50,10 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return Expanded(
       child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Colors.orange), // TODO rounded border
+              borderRadius: BorderRadius.circular(0), color: Colors.orange),
           padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
-          margin: EdgeInsets.only(right: last ? 0 : 2.5, left: last ? 2.5 : 0),
+          margin: EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
           // color: Colors.orange,
           child: Column(
             children: <Widget>[
@@ -166,7 +165,8 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HistoryPage("Transaction History",day: dayInMillis(DateTime.now())))),
+                  builder: (context) => HistoryPage("Transaction History",
+                      day: dayInMillis(DateTime.now())))),
           child: Icon(Icons.list, color: Colors.white),
         ),
         Spacer(),
@@ -226,7 +226,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         double budgetPerDay =
                             (monthlySpareBudget / remainingDaysInMonth) -
                                 todaysExpenses;
-                        double displayedMonthlySpareBudget = monthlySpareBudget - todaysExpenses;
+                        double displayedMonthlySpareBudget =
+                            monthlySpareBudget - todaysExpenses;
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
