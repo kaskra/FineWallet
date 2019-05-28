@@ -68,9 +68,11 @@ class DBProvider{
     return raw;
   }
 
-  Future<List<TransactionModel>> getAllTransactions() async {
+  Future<List<TransactionModel>> getAllTransactions([int untilDay]) async {
     final db = await database;
-    var res = await db.rawQuery("SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id ORDER BY transactions.date DESC, transactions.id DESC");
+    String whereDay = "";
+    if (untilDay != null) whereDay = " WHERE transactions.date <= $untilDay"; 
+    var res = await db.rawQuery("SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id $whereDay ORDER BY transactions.date DESC, transactions.id DESC");
     List<TransactionModel> list = res.isNotEmpty ? res.map((t) => TransactionModel.fromMap(t)).toList(): [];
     return list;
   }

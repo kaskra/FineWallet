@@ -11,17 +11,27 @@ import 'package:intl/intl.dart' as intl;
 import 'package:sticky_headers/sticky_headers.dart';
 
 class HistoryPage extends StatefulWidget {
-  HistoryPage(this.title, {Key key}) : super(key: key);
+  HistoryPage(this.title, {Key key, this.day}) : super(key: key);
 
   final String title;
+  final int day;
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  final _txBloc = TransactionBloc();
+  TransactionBloc _txBloc = TransactionBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget?.day != null){
+      _txBloc = TransactionBloc(widget.day);
+
+    }
+  }
 
   void _showSnackbar(BuildContext context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(

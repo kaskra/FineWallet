@@ -6,6 +6,9 @@ import 'package:finewallet/Resources/DBProvider.dart';
 class TransactionBloc {
   final _transactionController = StreamController<List<TransactionModel>>.broadcast();
 
+  int _untilDay;
+
+
   get transactions => _transactionController.stream;
 
   void dispose() { 
@@ -13,10 +16,11 @@ class TransactionBloc {
   }
 
   getTransactions() async{
-    _transactionController.sink.add(await DBProvider.db.getAllTransactions());
+    _transactionController.sink.add(await DBProvider.db.getAllTransactions(_untilDay));
   }
 
-  TransactionBloc (){
+  TransactionBloc ([int untilDay]){
+    _untilDay = untilDay;
     getTransactions();
   }
 

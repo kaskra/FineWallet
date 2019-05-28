@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HistoryPage("Transaction History"))),
+                  builder: (context) => HistoryPage("Transaction History",day: dayInMillis(DateTime.now())))),
           child: Icon(Icons.list, color: Colors.white),
         ),
         Spacer(),
