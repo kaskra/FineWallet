@@ -144,18 +144,19 @@ class _HistoryPageState extends State<HistoryPage> {
     return Center(
         child: Container(
             padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
-            foregroundDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0x22000000),
-            ),
+            // foregroundDecoration: BoxDecoration(
+            //   // color: Color(0x44000000),
+            // ),
             decoration: BoxDecoration(
-              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.black38,
             ),
             child: Text(
-              isToday ? "TODAY" : dateString,
+              isToday ? "TODAY" : dateString.toUpperCase(),
               style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal),
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: isToday ? FontWeight.bold : FontWeight.normal),
             )));
   }
 
