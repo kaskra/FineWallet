@@ -26,6 +26,7 @@ class _HistoryPageState extends State<HistoryPage> {
   void _showSnackbar(BuildContext context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("Deleted transaction"),
+      duration: Duration(milliseconds: 500),
     ));
   }
 
@@ -122,7 +123,8 @@ class _HistoryPageState extends State<HistoryPage> {
     return Column(
       children: <Widget>[
         _upperCardPart(
-            item.category - 1, item.subcategoryName, item.isExpense == 0),
+            item.category - 1, item.subcategoryName, false),
+        // TODO revisit when recurring transactions are implemented: false => isRecurring
         _lowerCardPart(item.amount, item.isExpense == 1)
       ],
     );
@@ -251,6 +253,7 @@ class _HistoryPageState extends State<HistoryPage> {
         padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
         child: _buildBody(),
       ),
+      // TODO remove FAB when done
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           TransactionModel tx = new TransactionModel(
