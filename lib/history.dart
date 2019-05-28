@@ -22,14 +22,14 @@ class _HistoryPageState extends State<HistoryPage> {
   final _txBloc = TransactionBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _showSnackbar(BuildContext context){
+  void _showSnackbar(BuildContext context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("Deleted transaction"),
     ));
   }
 
-
-  Widget _upperCardPart(int iconIndex, String subcategoryName) {
+  Widget _upperCardPart(
+      int iconIndex, String subcategoryName, bool isRecurring) {
     return Stack(
       children: <Widget>[
         Flex(
@@ -75,21 +75,24 @@ class _HistoryPageState extends State<HistoryPage> {
               child: Icon(icons[iconIndex]),
             ),
             Expanded(
-              child: Column(children: <Widget>[
-                Container(
-                  child: Center(
-                    child: Text(
-                      subcategoryName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                  padding: EdgeInsets.only(top: 4, bottom: 4),
-                  margin: EdgeInsets.only(left: 4, right: 4),
+                child: Container(
+              child: Center(
+                child: Text(
+                  subcategoryName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontStyle: FontStyle.italic),
                 ),
-              ]),
-            )
+              ),
+              padding: EdgeInsets.only(top: 4, bottom: 4),
+              margin: EdgeInsets.only(left: 4, right: 4),
+            )),
+            isRecurring
+                ? Icon(
+                    Icons.replay,
+                    color: Colors.red,
+                  )
+                : Container()
           ],
         ),
       ],
@@ -117,7 +120,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _transactionCard(TransactionModel item) {
     return Column(
       children: <Widget>[
-        _upperCardPart(item.category - 1, item.subcategoryName),
+        _upperCardPart(
+            item.category - 1, item.subcategoryName, item.isExpense == 0),
         _lowerCardPart(item.amount, item.isExpense == 1)
       ],
     );
@@ -152,14 +156,14 @@ class _HistoryPageState extends State<HistoryPage> {
             : Container(),
         Expanded(
           flex: 3,
-          child: Dismissible( 
+          child: Dismissible(
             direction: DismissDirection.endToStart,
-            key: Key("Trans_"+ item.id.toString()),
+            key: Key("Trans_" + item.id.toString()),
             background: Container(
               padding: EdgeInsets.only(right: 25),
               alignment: Alignment.centerRight,
-              child:Icon(Icons.delete_outline, color: Colors.white),
-              color: Colors.red
+              child: Icon(Icons.delete_outline, color: Colors.white),
+              color: Color(0x88FF0000),
             ),
             onDismissed: (DismissDirection direction) {
               _txBloc.delete(item.id);
