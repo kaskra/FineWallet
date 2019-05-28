@@ -20,6 +20,14 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   final _txBloc = TransactionBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _showSnackbar(BuildContext context){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Deleted transaction"),
+    ));
+  }
+
 
   Widget _upperCardPart(int iconIndex, String subcategoryName) {
     return Stack(
@@ -144,7 +152,21 @@ class _HistoryPageState extends State<HistoryPage> {
             : Container(),
         Expanded(
           flex: 3,
-          child: generalCard(_transactionCard(item), null, 3),
+          child: Dismissible( 
+            direction: DismissDirection.endToStart,
+            key: Key("Trans_"+ item.id.toString()),
+            background: Container(
+              padding: EdgeInsets.only(right: 25),
+              alignment: Alignment.centerRight,
+              child:Icon(Icons.delete_outline, color: Colors.white),
+              color: Colors.red
+            ),
+            onDismissed: (DismissDirection direction) {
+              _txBloc.delete(item.id);
+              _showSnackbar(context);
+            },
+            child: generalCard(_transactionCard(item), null, 3),
+          ),
         ),
         (item.isExpense == 0)
             ? Spacer(
@@ -190,6 +212,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
