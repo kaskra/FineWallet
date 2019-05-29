@@ -178,6 +178,41 @@ class _AddPageState extends State<AddPage> {
     ));
   }
 
+  Widget _buildRecurringCard() {
+    return Container(
+        margin: EdgeInsets.only(left: 5, right: 5),
+        child: Card(
+          color: Colors.white,
+          child: CornerTriangle(
+              size: Size(25, 25),
+              icon: Icon(
+                Icons.replay,
+                color: Colors.white,
+                size: 13,
+              ),
+              color: Colors.orange,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      "Repeat",
+                      style: TextStyle(fontSize: 15, color: Colors.black54),
+                    ),
+                    margin: EdgeInsets.only(left: 10),
+                  ),
+                  Switch(
+                    onChanged: (v) {
+                      print(v);
+                    },
+                    value: false,
+                  )
+                ],
+              )),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,39 +268,7 @@ class _AddPageState extends State<AddPage> {
                 ],
               ),
             ),
-            Container(
-                margin: EdgeInsets.only(left: 5, right: 5),
-                child: Card(
-                  color: Colors.white,
-                  child: CornerTriangle(
-                      size: Size(25, 25),
-                      icon: Icon(
-                        Icons.replay,
-                        color: Colors.white,
-                        size: 13,
-                      ),
-                      color: Colors.orange,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              "Repeat",
-                              style: TextStyle(
-                                  fontSize: 15, color: Colors.black54),
-                            ),
-                            margin: EdgeInsets.only(left: 10),
-                          ),
-                          Switch(
-                            onChanged: (v) {
-                              print(v);
-                            },
-                            value: false,
-                          )
-                        ],
-                      )),
-                )),
+            _buildRecurringCard()
           ],
         ));
   }
