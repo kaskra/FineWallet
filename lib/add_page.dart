@@ -1,3 +1,4 @@
+import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/bottom_sheets.dart';
 import 'package:finewallet/corner_triangle.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:finewallet/category.dart';
 import 'package:finewallet/utils.dart';
 
 import 'Resources/DBProvider.dart';
@@ -26,6 +26,7 @@ class _AddPageState extends State<AddPage> {
   final double topBorderHeight = 5;
   final TextEditingController _textEditingController = TextEditingController();
 
+  // transactions
   double _expense;
   Category _subcategory;
   DateTime _date;
