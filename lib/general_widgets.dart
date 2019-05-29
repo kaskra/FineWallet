@@ -11,3 +11,14 @@ Widget generalCard(Widget child,
               padding: EdgeInsets.all(padding),
               child: child)));
 }
+
+Widget growAnimation(
+    Widget first, Widget second, bool isExpanded, Duration duration) {
+  return AnimatedCrossFade(
+    firstChild: first,
+    secondChild: second,
+    duration: duration,
+    crossFadeState:
+        isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+  );
+}
