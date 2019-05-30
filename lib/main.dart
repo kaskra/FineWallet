@@ -4,6 +4,7 @@ import 'package:finewallet/Resources/db_initilization.dart';
 import 'package:finewallet/add_page.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
+import 'package:finewallet/monthly_overview.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -190,7 +191,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onMonthTap() {
-    
+    Navigator.push(context, 
+      MaterialPageRoute(
+        builder: (context) => MonthlyOverview(initialMonth: DateTime.now(),)
+      )
+    );
   }
 
   void _onDayTap() {
