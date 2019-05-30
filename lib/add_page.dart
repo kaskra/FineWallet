@@ -1,7 +1,9 @@
 import 'package:finewallet/Datatypes/category.dart';
+import 'package:finewallet/Datatypes/repeat_type.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/bottom_sheets.dart';
 import 'package:finewallet/corner_triangle.dart';
+import 'package:finewallet/general_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +33,11 @@ class _AddPageState extends State<AddPage> {
   Category _subcategory;
   DateTime _date;
   double _keyboardHeight;
+
+  // additional transaction parameters
+  bool _isExpanded = false;
+  DateTime _repeatUntil;
+  int _typeIndex = 2;
 
   @override
   void initState() {
@@ -173,6 +180,26 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
+  void setRepeatingDate() {
+    showCupertinoModalPopup<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return buildBottomPicker(
+            CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              initialDateTime: _date ?? DateTime.now(),
+              onDateTimeChanged: (DateTime newDateTime) {
+                setState(() {
+                  _repeatUntil = newDateTime;
+                });
+              },
+            ),
+            bottomSheetHeight,
+            topBorderHeight);
+      },
+    );
+  }
+
   void _showSnackbar(BuildContext context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("Please fill out every panel!"),
@@ -192,26 +219,132 @@ class _AddPageState extends State<AddPage> {
                 size: 13,
               ),
               color: Colors.orange,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: <Widget>[
-                  Container(
-                    child: Text(
-                      "Repeat",
-                      style: TextStyle(fontSize: 15, color: Colors.black54),
-                    ),
-                    margin: EdgeInsets.only(left: 10),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          "Repeat transaction",
+                          style: TextStyle(fontSize: 16, color: Colors.black54),
+                        ),
+                        margin: EdgeInsets.only(left: 10),
+                      ),
+                      Switch(
+                        value: _isExpanded,
+                        onChanged: (v) {
+                          setState(() {
+                            _isExpanded = v;
+                          });
+                        },
+                      )
+                    ],
                   ),
-                  Switch(
-                    onChanged: (v) {
-                      print(v);
-                    },
-                    value: false,
-                  )
+                  growAnimation(
+                      Container(
+                        margin:
+                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Container(
+                              child: Divider(
+                                height: 1,
+                              ),
+                              margin: EdgeInsets.only(bottom: 4),
+                            ),
+                            _repeatTypeChoice(),
+                            // Divider(color: Colors.white,),
+                           Padding(
+                             padding: EdgeInsets.only(top: 6),
+                             child:  _repeatUntilDate(),
+                           )
+                          ],
+                        ),
+                      ),
+                      Container(),
+                      _isExpanded,
+                      Duration(milliseconds: 300))
                 ],
               )),
         ));
+  }
+
+  Widget _repeatTypeChoice() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          "Every",
+          style: TextStyle(color: Colors.black54, fontSize: 16),
+        ),
+        Container(
+          width: 100,
+          height: 35,
+          alignment: Alignment.center,
+          child: DropdownButton(
+            isDense: true,
+            isExpanded: true,
+            style: TextStyle(color: Colors.black54, fontSize: 14),
+            value: _typeIndex,
+            items: [
+              DropdownMenuItem(
+                value: 0,
+                child: Text(RepeatType.daily),
+              ),
+              DropdownMenuItem(
+                value: 1,
+                child: Text(RepeatType.weekly),
+              ),
+              DropdownMenuItem(
+                value: 2,
+                child: Text(RepeatType.monthly),
+              ),
+              DropdownMenuItem(value: 3, child: Text(RepeatType.yearly)),
+            ],
+            onChanged: (v) {
+              setState(() {
+                if (v != null) {
+                  _typeIndex = v;
+                }
+              });
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _repeatUntilDate() {
+    var formatter = new DateFormat('dd.MM.yy');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Text(
+          "Until",
+          style: TextStyle(color: Colors.black54, fontSize: 16),
+        ),
+        Container(
+          width: 100,
+          height: 35,
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+          child: MaterialButton(
+            onPressed: () {
+              setRepeatingDate();
+            },
+            child: Text(
+              _repeatUntil!=null?formatter.format(_repeatUntil):"",
+              style: TextStyle(color: Colors.black54, fontSize: 16, fontWeight: FontWeight.normal) ,
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   @override
@@ -226,6 +359,7 @@ class _AddPageState extends State<AddPage> {
               width: 50,
               child: InkWell(
                 onTap: () {
+                  // TODO expand if by additional tx parameters (until date > date, and every parameter != null)
                   if (_expense != null &&
                       _date != null &&
                       _subcategory != null) {
