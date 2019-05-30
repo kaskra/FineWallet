@@ -47,42 +47,47 @@ class _MyHomePageState extends State<MyHomePage> {
     initDB();
   }
 
-  Widget _overviewBox(String title, double amount, bool last) {
+  Widget _overviewBox(String title, double amount, bool last, Function onTap) {
     return Expanded(
-      child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(0), color: Colors.orange),
-          padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
-          margin: EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
-          // color: Colors.orange,
-          child: Column(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Text(
-                "Spare budget",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                ),
-              ),
-              Text(
-                "${amount.toStringAsFixed(2)}€",
-                style: TextStyle(
-                    color: amount <= 0 ? Colors.red : Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          )),
-    );
+        child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(0), color: Colors.orange),
+            margin:
+                EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
+            child: Material(
+                color: Colors.orange,
+                child: InkWell(
+                  onTap: () => onTap(),
+                  child: Container(
+                      padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Text(
+                            "Spare budget",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                          ),
+                          Text(
+                            "${amount.toStringAsFixed(2)}€",
+                            style: TextStyle(
+                                color: amount <= 0 ? Colors.red : Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      )),
+                ))));
   }
 
   Widget _day(int day, double budget) {
@@ -184,6 +189,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _onMonthTap() {
+    
+  }
+
+  void _onDayTap() {
+    
+  }
+
   Widget _buildBody() {
     return Center(
         child: Container(
@@ -232,12 +245,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            _overviewBox("TODAY", budgetPerDay, false),
+                            _overviewBox(
+                                "TODAY", budgetPerDay, false, _onDayTap),
                             _overviewBox(
                                 getMonthName(DateTime.now().month)
                                     .toUpperCase(),
                                 displayedMonthlySpareBudget,
-                                true),
+                                true,
+                                _onMonthTap),
                           ],
                         );
                       } else {
