@@ -6,7 +6,6 @@ import 'package:finewallet/monthly_chart.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 class MonthlyOverview extends StatefulWidget {
   MonthlyOverview({@required this.initialMonth});
@@ -44,7 +43,10 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                   height: 50,
                 ),
                 onTap: () {
-                  print("Backward!");
+                  DateTime nextMonth = _date.add(Duration(days: -30));
+                  setState(() {
+                    _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
+                  });
                 },
               )),
           Container(
@@ -62,7 +64,10 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                 height: 50,
               ),
               onTap: () {
-                print("Forward");
+                DateTime nextMonth = _date.add(Duration(days: 30));
+                setState(() {
+                  _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
+                });
               },
             ),
           ),
@@ -84,7 +89,7 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
         children: <Widget>[
           _navigationRow(),
           MonthCard(
-            month: DateTime.now(),
+            month: _date,
           )
         ],
       ),
@@ -122,7 +127,7 @@ class _MonthCardState extends State<MonthCard> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
-        border: Border.all(color: Colors.orange, width: 1),
+        // border: Border.all(color: Colors.orange, width: 1),
       ),
       padding: EdgeInsets.only(left: 45, right: 45, top: 15, bottom: 15),
       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
