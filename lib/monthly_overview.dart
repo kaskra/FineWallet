@@ -165,6 +165,7 @@ class _MonthCardState extends State<MonthCard> {
 
                 return Column(
                   children: <Widget>[
+                    // TODO backwards only works at 2nd click
                     LineChart(
                       data: data,
                       lineColor: Colors.blue,

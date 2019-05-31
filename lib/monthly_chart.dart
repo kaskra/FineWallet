@@ -21,12 +21,11 @@ class _LineChartState extends State<LineChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.black12,
       decoration:
           BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
       child: CustomPaint(
         painter: LineChartPainter(
-            data: widget.data ?? List(),
+            data: widget.data ?? List.generate(31, (_) => 0.0),
             color: widget.lineColor ?? Colors.black),
         child: Container(
           height: 120,
@@ -45,7 +44,7 @@ class LineChartPainter extends CustomPainter {
   final int upperSpace = 20;
 
   LineChartPainter({this.data, this.color}) {
-    indices = List.generate(data.length, (int index) => index.toDouble());
+    indices = List.generate(data.length, (int index) => index.toDouble() + 1);
   }
 
   @override
@@ -63,17 +62,15 @@ class LineChartPainter extends CustomPainter {
 
     final maxDataValue =
         data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
-    final xMargin = width ~/ data.length;
+    final xMargin = width / data.length;
     final yMargin = height / maxDataValue;
 
-    data = data.map((d) => (d - maxDataValue).abs()).toList();
-
     double y = data[0] * yMargin;
-    path.moveTo(indices[0], y);
+    path.moveTo(indices[0], height - y);
 
     for (var i = 0; i < data.length; i++) {
       y = data[i];
-      path.lineTo(indices[i] * xMargin, y * yMargin);
+      path.lineTo(indices[i] * xMargin, height - y * yMargin);
     }
 
     canvas.drawPath(path, paint);
@@ -105,12 +102,11 @@ class _BarChartState extends State<BarChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.black12,
       decoration:
           BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
       child: CustomPaint(
         painter: BarChartPainter(
-            data: widget.data ?? List(),
+            data: widget.data ?? List.generate(31, (_) => 0.0),
             color: widget.barColor ?? Colors.black),
         child: Container(
           height: 120,
@@ -129,7 +125,7 @@ class BarChartPainter extends CustomPainter {
   final int upperSpace = 20;
 
   BarChartPainter({this.data, this.color}) {
-    indices = List.generate(data.length, (int index) => index.toDouble());
+    indices = List.generate(data.length, (int index) => index.toDouble() + 1);
   }
 
   @override
@@ -146,10 +142,8 @@ class BarChartPainter extends CustomPainter {
 
     final maxDataValue =
         data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
-    final xMargin = width ~/ data.length;
+    final xMargin = width / data.length;
     final yMargin = height / maxDataValue;
-
-    // data = data.map((d) => (d - maxDataValue).abs()).toList();
 
     for (var i = 0; i < data.length; i++) {
       Path path = Path();
