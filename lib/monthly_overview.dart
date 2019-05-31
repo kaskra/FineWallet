@@ -120,7 +120,6 @@ class _MonthCardState extends State<MonthCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // constraints: BoxConstraints.expand(),
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(color: Colors.orange, width: 1),
@@ -158,10 +157,19 @@ class _MonthCardState extends State<MonthCard> {
                         .amount
                         .toDouble())
                     .toList();
-                    
-                return LineChart(
-                  data: data,
-                  lineColor: Colors.black,
+
+                return Column(
+                  children: <Widget>[
+                    LineChart(
+                      data: data,
+                      lineColor: Colors.blue,
+                    ),
+                    Divider(),
+                    BarChart(
+                      data: data,
+                      barColor: Colors.blue,
+                    ),
+                  ],
                 );
               } else {
                 return Center(
