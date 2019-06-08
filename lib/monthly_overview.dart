@@ -146,9 +146,9 @@ class _MonthCardState extends State<MonthCard> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           FutureBuilder(
-            future: DBProvider.db.getExpensesGroupedByDay(),
-            builder:
-                (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
+            future: DBProvider.db
+                .getTransactionsOfMonth(widget.month.millisecondsSinceEpoch),
+            builder: (context, AsyncSnapshot<List<TransactionModel>> snapshot) {
               if (snapshot.hasData) {
                 DateTime date = widget.month ?? DateTime.now();
 
@@ -167,12 +167,14 @@ class _MonthCardState extends State<MonthCard> {
 
                 data = data
                     .map((date) => snapshot.data
-                        .firstWhere((item) => item.date == date,
-                            orElse: () =>
-                                SumOfTransactionModel(amount: 0, date: 0))
-                        .amount
-                        .toDouble())
+                        .where((item) => item.date == date)
+                        .where((item) => item.isExpense == 1)
+                        .fold(
+                            0.0,
+                            (double prev, curr) =>
+                                (prev + curr.amount.toDouble())))
                     .toList();
+                print(data);
 
                 return Column(
                   children: <Widget>[

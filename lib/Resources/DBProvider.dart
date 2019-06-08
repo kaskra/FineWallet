@@ -92,7 +92,6 @@ class DBProvider {
     List<TransactionModel> list = res.isNotEmpty
         ? res.map((t) => TransactionModel.fromMap(t)).toList()
         : [];
-    print(res);
     list.addAll(getRecurringTransactions(list, untilDay));
     list.sort((TransactionModel a, TransactionModel b) =>
         -sortTransactionsByDateName(a, b));
@@ -102,12 +101,9 @@ class DBProvider {
 
   Future<List<TransactionModel>> getTransactionsOfDay(int dayInMillis) async {
     final db = await database;
-    var res = await db
-        .query("transactions", where: "date = ?", whereArgs: [dayInMillis]);
-    List<TransactionModel> list = res.isNotEmpty
-        ? res.map((t) => TransactionModel.fromMap(t)).toList()
-        : [];
-    return list;
+    var res = await getAllTransactions(dayInMillis);
+    res.where((TransactionModel tx) => tx.date == dayInMillis);
+    return res;
   }
 
   Future<List<TransactionModel>> getTransactionsByCategory(
