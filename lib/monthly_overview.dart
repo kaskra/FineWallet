@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:42.
+ * Developed by Lukas Krauch 08.06.19 11:44.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -34,40 +34,72 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
   }
 
   Widget _navigationRow() {
-    return Container(margin: EdgeInsets.only(top: 5, left: 5, right: 5),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Padding(padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-              child: InkWell(child: Container(
-                child: Icon(Icons.keyboard_arrow_left), width: 40, height: 50,),
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+              child: InkWell(
+                child: Container(
+                  child: Icon(Icons.keyboard_arrow_left),
+                  width: 40,
+                  height: 50,
+                ),
                 onTap: () {
                   DateTime nextMonth = _date.add(Duration(days: -30));
                   setState(() {
                     _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
                   });
-                },)),
-          Container(child: Text("${getMonthName(_date.month)} ${_date.year}",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
-          Padding(padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: InkWell(child: Container(
-              child: Icon(Icons.keyboard_arrow_right), width: 40, height: 50,),
+                },
+              )),
+          Container(
+            child: Text(
+              "${getMonthName(_date.month)} ${_date.year}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            child: InkWell(
+              child: Container(
+                child: Icon(Icons.keyboard_arrow_right),
+                width: 40,
+                height: 50,
+              ),
               onTap: () {
                 DateTime nextMonth = _date.add(Duration(days: 30));
                 setState(() {
                   _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
                 });
-              },),),
-        ],),);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Color(0xffd8e7ff),
-      appBar: AppBar(title: Text("Monthly"),),
-      body: Column(mainAxisSize: MainAxisSize.max,
+    return Scaffold(
+      backgroundColor: Color(0xffd8e7ff),
+      appBar: AppBar(
+        title: Text("Monthly"),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[_navigationRow(), MonthCard(month: _date,)],),);
+        children: <Widget>[
+          _navigationRow(),
+          MonthCard(
+            month: _date,
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -98,49 +130,68 @@ class _MonthCardState extends State<MonthCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(decoration: BoxDecoration(color: Colors.transparent,
-      // border: Border.all(color: Colors.orange, width: 1),
-    ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        // border: Border.all(color: Colors.orange, width: 1),
+      ),
       padding: EdgeInsets.only(left: 45, right: 45, top: 15, bottom: 15),
       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      child: Column(mainAxisSize: MainAxisSize.max,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          FutureBuilder(future: DBProvider.db.getExpensesGroupedByDay(),
-            builder: (context,
-                      AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
+          FutureBuilder(
+            future: DBProvider.db.getExpensesGroupedByDay(),
+            builder:
+                (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
               if (snapshot.hasData) {
                 DateTime date = widget.month ?? DateTime.now();
 
                 int lastDay = getLastDayOfMonth(date);
                 DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
-                DateTime lastOfMonth = DateTime.utc(
-                    date.year, date.month, lastDay, 23, 59, 59);
+                DateTime lastOfMonth =
+                    DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
 
                 List<double> data = List();
-                for (var i = firstOfMonth.millisecondsSinceEpoch; i <
-                    lastOfMonth.millisecondsSinceEpoch;
-                i = i + Duration(days: 1).inMilliseconds) {
+                for (var i = firstOfMonth.millisecondsSinceEpoch;
+                    i < lastOfMonth.millisecondsSinceEpoch;
+                    i = i + Duration(days: 1).inMilliseconds) {
                   int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
                   data.add(day.toDouble());
                 }
 
-                data = data.map((date) =>
-                    snapshot.data
+                data = data
+                    .map((date) => snapshot.data
                         .firstWhere((item) => item.date == date,
-                        orElse: () => SumOfTransactionModel(amount: 0, date: 0))
+                            orElse: () =>
+                                SumOfTransactionModel(amount: 0, date: 0))
                         .amount
-                        .toDouble()).toList();
+                        .toDouble())
+                    .toList();
 
-                return Column(children: <Widget>[
-                  // TODO backwards only works at 2nd click
-                  LineChart(data: data, lineColor: Colors.blue,),
-                  Divider(),
-                  BarChart(data: data, barColor: Colors.blue,),
-                ],);
+                return Column(
+                  children: <Widget>[
+                    // TODO backwards only works at 2nd click
+                    LineChart(
+                      data: data,
+                      lineColor: Colors.blue,
+                    ),
+                    Divider(),
+                    BarChart(
+                      data: data,
+                      barColor: Colors.blue,
+                    ),
+                  ],
+                );
               } else {
-                return Center(child: CircularProgressIndicator(),);
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               }
-            },)
-        ],),);
+            },
+          )
+        ],
+      ),
+    );
   }
 }

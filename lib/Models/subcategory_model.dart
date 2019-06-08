@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:44.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -25,11 +25,14 @@ class SubcategoryModel {
 
   factory SubcategoryModel.fromMap(Map<String, dynamic> json) =>
       new SubcategoryModel(
-        id: json["id"], name: json["name"], category: json["category"],);
+        id: json["id"],
+        name: json["name"],
+        category: json["category"],
+      );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "name": name,
-    "category": category,
-  };
+        "id": id,
+        "name": name,
+        "category": category,
+      };
 }

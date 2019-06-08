@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:44.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -27,10 +27,17 @@ class TransactionModel {
   int category;
 
   TransactionModel(
-      {this.id, this.subcategory, this.amount, this.date, this.isExpense, this.subcategoryName, this.category});
+      {this.id,
+      this.subcategory,
+      this.amount,
+      this.date,
+      this.isExpense,
+      this.subcategoryName,
+      this.category});
 
   factory TransactionModel.fromMap(Map<String, dynamic> json) =>
-      new TransactionModel(id: json["id"],
+      new TransactionModel(
+          id: json["id"],
           subcategory: json["subcategory"],
           amount: json["amount"],
           date: json["date"],
@@ -39,12 +46,12 @@ class TransactionModel {
           category: json["category"]);
 
   Map<String, dynamic> toMap() => {
-    "id": id != null ? id : null,
-    "subcategory": subcategory,
-    "amount": amount,
-    "date": date,
-    "isExpense": isExpense,
-  };
+        "id": id != null ? id : null,
+        "subcategory": subcategory,
+        "amount": amount,
+        "date": date,
+        "isExpense": isExpense,
+      };
 }
 
 class SumOfTransactionModel {
@@ -54,9 +61,15 @@ class SumOfTransactionModel {
   SumOfTransactionModel({this.amount, this.date});
 
   factory SumOfTransactionModel.fromMap(Map<String, dynamic> json) =>
-      new SumOfTransactionModel(amount: json["amount"], date: json["date"],);
+      new SumOfTransactionModel(
+        amount: json["amount"],
+        date: json["date"],
+      );
 
-  Map<String, dynamic> toMap() => {"amount": amount, "date": date,};
+  Map<String, dynamic> toMap() => {
+        "amount": amount,
+        "date": date,
+      };
 
   bool hasSameValue(dynamic v) {
     return date == v || amount == v;

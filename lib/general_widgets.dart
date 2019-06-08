@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:42.
+ * Developed by Lukas Krauch 08.06.19 11:44.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -7,20 +7,24 @@
 import 'package:flutter/material.dart';
 
 Widget generalCard(Widget child,
-                   [BoxDecoration decoration, double padding = 10]) {
-  return Container(child: Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-      color: Colors.white,
-      child: Container(decoration: decoration,
-          padding: EdgeInsets.all(padding),
-          child: child)));
+    [BoxDecoration decoration, double padding = 10]) {
+  return Container(
+      child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          color: Colors.white,
+          child: Container(
+              decoration: decoration,
+              padding: EdgeInsets.all(padding),
+              child: child)));
 }
 
-Widget growAnimation(Widget first, Widget second, bool isExpanded,
-                     Duration duration) {
-  return AnimatedCrossFade(firstChild: first,
+Widget growAnimation(
+    Widget first, Widget second, bool isExpanded, Duration duration) {
+  return AnimatedCrossFade(
+    firstChild: first,
     secondChild: second,
     duration: duration,
-    crossFadeState: isExpanded ? CrossFadeState.showFirst : CrossFadeState
-        .showSecond,);
+    crossFadeState:
+        isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+  );
 }

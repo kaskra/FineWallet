@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:42.
+ * Developed by Lukas Krauch 08.06.19 11:44.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -33,23 +33,23 @@ class DBProvider {
     String path = join(documentDirectory.path, "Transactions.db");
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-          await db.execute("CREATE TABLE transactions ("
-              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-              "subcategory INTEGER,"
-              "amount REAL,"
-              "date INTEGER,"
-              "isExpense INTEGER"
-              ")");
-          await db.execute("CREATE TABLE categories("
-              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-              "name TEXT"
-              ")");
-          await db.execute("CREATE TABLE subcategories ("
-              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-              "name TEXT,"
-              "category INTEGER"
-              ")");
-        });
+      await db.execute("CREATE TABLE transactions ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "subcategory INTEGER,"
+          "amount REAL,"
+          "date INTEGER,"
+          "isExpense INTEGER"
+          ")");
+      await db.execute("CREATE TABLE categories("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "name TEXT"
+          ")");
+      await db.execute("CREATE TABLE subcategories ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "name TEXT,"
+          "category INTEGER"
+          ")");
+    });
   }
 
   newTransaction(TransactionModel newTransaction) async {
@@ -80,31 +80,33 @@ class DBProvider {
     if (untilDay != null) whereDay = " WHERE transactions.date <= $untilDay";
     var res = await db.rawQuery(
         "SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id $whereDay ORDER BY transactions.date DESC, transactions.id DESC");
-    List<TransactionModel> list = res.isNotEmpty ? res.map((t) =>
-        TransactionModel.fromMap(t)).toList() : [];
+    List<TransactionModel> list = res.isNotEmpty
+        ? res.map((t) => TransactionModel.fromMap(t)).toList()
+        : [];
     return list;
   }
 
   Future<List<TransactionModel>> getTransactionsOfDay(int dayInMillis) async {
     final db = await database;
-    var res = await db.query(
-        "transactions", where: "date = ?", whereArgs: [dayInMillis]);
-    List<TransactionModel> list = res.isNotEmpty ? res.map((t) =>
-        TransactionModel.fromMap(t)).toList() : [];
+    var res = await db
+        .query("transactions", where: "date = ?", whereArgs: [dayInMillis]);
+    List<TransactionModel> list = res.isNotEmpty
+        ? res.map((t) => TransactionModel.fromMap(t)).toList()
+        : [];
     return list;
   }
 
   Future<List<TransactionModel>> getTransactionsByCategory(
       String categoryName) async {
     final db = await database;
-    var table = await db.query("category", columns: ["id"],
-        where: "name = ?",
-        whereArgs: [categoryName]);
+    var table = await db.query("category",
+        columns: ["id"], where: "name = ?", whereArgs: [categoryName]);
     int id = table.first["id"];
-    var res = await db.query(
-        "transactions", where: "category = ?", whereArgs: [id]);
-    List<TransactionModel> list = res.isNotEmpty ? res.map((t) =>
-        TransactionModel.fromMap(t)).toList() : [];
+    var res =
+        await db.query("transactions", where: "category = ?", whereArgs: [id]);
+    List<TransactionModel> list = res.isNotEmpty
+        ? res.map((t) => TransactionModel.fromMap(t)).toList()
+        : [];
     return list;
   }
 
@@ -112,8 +114,9 @@ class DBProvider {
     final db = await database;
     var res = await db.rawQuery(
         "SELECT date, SUM(amount) as amount FROM transactions WHERE isExpense=1 GROUP BY date ORDER BY date");
-    List<SumOfTransactionModel> list = res.isNotEmpty ? res.map((t) =>
-        SumOfTransactionModel.fromMap(t)).toList() : [];
+    List<SumOfTransactionModel> list = res.isNotEmpty
+        ? res.map((t) => SumOfTransactionModel.fromMap(t)).toList()
+        : [];
     return list;
   }
 
@@ -123,24 +126,25 @@ class DBProvider {
 
     int lastDay = getLastDayOfMonth(date);
     DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
-    DateTime lastOfMonth = DateTime.utc(
-        date.year, date.month, lastDay, 23, 59, 59);
+    DateTime lastOfMonth =
+        DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
 
-    var res = await db.query("transactions", where: "date >= ? and date <= ?",
+    var res = await db.query("transactions",
+        where: "date >= ? and date <= ?",
         whereArgs: [
           firstOfMonth.millisecondsSinceEpoch,
           lastOfMonth.millisecondsSinceEpoch
         ]);
-    List<TransactionModel> list = res.isNotEmpty ? res.map((t) =>
-        TransactionModel.fromMap(t)).toList() : [];
+    List<TransactionModel> list = res.isNotEmpty
+        ? res.map((t) => TransactionModel.fromMap(t)).toList()
+        : [];
     return list;
   }
 
   Future<int> getIndexInCategory(int subcategoryId) async {
     final db = await database;
-    var c = await db.query("subcategories", columns: ["category"],
-        where: "id=?",
-        whereArgs: [subcategoryId]);
+    var c = await db.query("subcategories",
+        columns: ["category"], where: "id=?", whereArgs: [subcategoryId]);
     if (c.isEmpty) return null;
     var category = c.first["category"];
 
@@ -152,59 +156,60 @@ class DBProvider {
   Future<CategoryModel> getCategoryOfSubcategory(int subcategoryId) async {
     final db = await database;
 
-    var c = await db.query("subcategories", columns: ["category"],
-        where: "id=?",
-        whereArgs: [subcategoryId]);
+    var c = await db.query("subcategories",
+        columns: ["category"], where: "id=?", whereArgs: [subcategoryId]);
     if (c.isEmpty) return null;
     var category = c.first["category"];
 
-    var res = await db.query(
-        "categories", where: "id=?", whereArgs: [category]);
-    CategoryModel categoryModel = res.isNotEmpty ? CategoryModel.fromMap(
-        res.first) : null;
+    var res =
+        await db.query("categories", where: "id=?", whereArgs: [category]);
+    CategoryModel categoryModel =
+        res.isNotEmpty ? CategoryModel.fromMap(res.first) : null;
     return categoryModel;
   }
 
   Future<List<CategoryModel>> getAllCategories() async {
     final db = await database;
     var res = await db.query("categories");
-    List<CategoryModel> list = res.isNotEmpty ? res.map((c) =>
-        CategoryModel.fromMap(c)).toList() : [];
+    List<CategoryModel> list =
+        res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
     return list;
   }
 
   Future<List<CategoryModel>> getExpenseCategories() async {
     final db = await database;
-    var res = await db.query(
-        "categories", where: "name != ?", whereArgs: ["Income"]);
-    List<CategoryModel> list = res.isNotEmpty ? res.map((c) =>
-        CategoryModel.fromMap(c)).toList() : [];
+    var res =
+        await db.query("categories", where: "name != ?", whereArgs: ["Income"]);
+    List<CategoryModel> list =
+        res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
     return list;
   }
 
   Future<List<CategoryModel>> getIncomeCategory() async {
     final db = await database;
-    var res = await db.query(
-        "categories", where: "name = ?", whereArgs: ["Income"]);
-    List<CategoryModel> list = res.isNotEmpty ? res.map((c) =>
-        CategoryModel.fromMap(c)).toList() : [];
+    var res =
+        await db.query("categories", where: "name = ?", whereArgs: ["Income"]);
+    List<CategoryModel> list =
+        res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
     return list;
   }
 
   Future<List<SubcategoryModel>> getAllSubcategories() async {
     final db = await database;
     var res = await db.query("subcategories");
-    List<SubcategoryModel> list = res.isNotEmpty ? res.map((c) =>
-        SubcategoryModel.fromMap(c)).toList() : [];
+    List<SubcategoryModel> list = res.isNotEmpty
+        ? res.map((c) => SubcategoryModel.fromMap(c)).toList()
+        : [];
     return list;
   }
 
   Future<List<SubcategoryModel>> getSubcategoriesOfCategory(int id) async {
     final db = await database;
-    var res = await db.query(
-        "subcategories", where: "category = ?", whereArgs: [id]);
-    List<SubcategoryModel> list = res.isNotEmpty ? res.map((c) =>
-        SubcategoryModel.fromMap(c)).toList() : [];
+    var res =
+        await db.query("subcategories", where: "category = ?", whereArgs: [id]);
+    List<SubcategoryModel> list = res.isNotEmpty
+        ? res.map((c) => SubcategoryModel.fromMap(c)).toList()
+        : [];
     return list;
   }
 
