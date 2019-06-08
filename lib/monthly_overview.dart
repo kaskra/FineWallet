@@ -49,9 +49,12 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                   height: 50,
                 ),
                 onTap: () {
-                  DateTime nextMonth = _date.add(Duration(days: -30));
+                  DateTime firstOfCurrentMonth =
+                      DateTime.utc(_date.year, _date.month, 1);
+                  DateTime prevMonth =
+                      firstOfCurrentMonth.add(Duration(days: -1));
                   setState(() {
-                    _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
+                    _date = DateTime.utc(prevMonth.year, prevMonth.month, 15);
                   });
                 },
               )),
@@ -70,7 +73,9 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                 height: 50,
               ),
               onTap: () {
-                DateTime nextMonth = _date.add(Duration(days: 30));
+                DateTime lastOfCurrentMonth = DateTime.utc(
+                    _date.year, _date.month, getLastDayOfMonth(_date));
+                DateTime nextMonth = lastOfCurrentMonth.add(Duration(days: 1));
                 setState(() {
                   _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
                 });
@@ -171,7 +176,6 @@ class _MonthCardState extends State<MonthCard> {
 
                 return Column(
                   children: <Widget>[
-                    // TODO backwards only works at 2nd click
                     LineChart(
                       data: data,
                       lineColor: Colors.blue,
