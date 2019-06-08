@@ -56,3 +56,50 @@ List<DateTime> getLastWeekAsDates() {
   }
   return days;
 }
+
+int replayTypeToMillis(int replayType, int transactionDate) {
+  switch (replayType) {
+    case 0:
+      return Duration.millisecondsPerDay;
+      break;
+    case 1:
+      return Duration.millisecondsPerDay * 7;
+      break;
+    case 2:
+      DateTime currentDate =
+          DateTime.fromMillisecondsSinceEpoch(transactionDate);
+      DateTime nextMonth = DateTime.utc(currentDate.year, currentDate.month, 1)
+          .add(Duration(days: 35));
+      int lastOfNextMonth = getLastDayOfMonth(nextMonth);
+      int lastOfNextMonthInMillis = dayInMillis(
+          DateTime.utc(nextMonth.year, nextMonth.month, lastOfNextMonth));
+      DateTime sameDayNextMonth =
+          DateTime.utc(nextMonth.year, nextMonth.month, currentDate.day);
+      if (sameDayNextMonth.millisecondsSinceEpoch > lastOfNextMonthInMillis)
+        return lastOfNextMonthInMillis - currentDate.millisecondsSinceEpoch;
+      return sameDayNextMonth.millisecondsSinceEpoch -
+          currentDate.millisecondsSinceEpoch;
+      break;
+    case 3:
+      DateTime currentDate =
+          DateTime.fromMillisecondsSinceEpoch(transactionDate);
+      DateTime nextYear = DateTime.utc(
+          currentDate.year + 1, currentDate.month, currentDate.day);
+      int nextYearInt = dayInMillis(nextYear);
+      return nextYearInt - transactionDate;
+  }
+  return -1;
+}
+
+int isRecurrencePossible(
+    int transactionDate, int replayUntilDate, int replayType) {
+  int interval = replayTypeToMillis(replayType, transactionDate);
+
+  if (replayUntilDate == null) return interval;
+
+  if (interval == -1) return -1;
+
+  if (interval <= replayUntilDate - transactionDate) return interval;
+
+  return -1;
+}

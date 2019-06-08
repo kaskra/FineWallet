@@ -204,9 +204,9 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  void _showSnackBar(BuildContext context) {
+  void _showSnackBar(BuildContext context, [String text]) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Please fill out every panel!"),
+      content: Text(text ?? "Please fill out every panel!"),
     ));
   }
 
@@ -370,12 +370,30 @@ class _AddPageState extends State<AddPage> {
                   // TODO expand if by additional tx parameters (until date > date, and every parameter != null)
                   if (_expense != null &&
                       _date != null &&
-                      _subcategory != null) {
+                      _subcategory != null &&
+                      _typeIndex != null) {
+                    if (_repeatUntil != null) {
+                      if (_repeatUntil.isBefore(_date))
+                        return _showSnackBar(context,
+                            "Please choose a date that is after the current date.");
+
+                      if (isRecurrencePossible(dayInMillis(_date),
+                              dayInMillis(_repeatUntil), _typeIndex) ==
+                          -1)
+                        return _showSnackBar(context,
+                            "Your recurrence type does not fit inside the time frame.");
+                    }
+
                     TransactionModel tx = new TransactionModel(
                         amount: _expense,
                         isExpense: widget.isExpense,
                         date: dayInMillis(_date),
-                        subcategory: _subcategory.index);
+                        subcategory: _subcategory.index,
+                        isRecurring: _isExpanded ? 1 : 0,
+                        replayType: _typeIndex,
+                        replayUntil: _repeatUntil != null
+                            ? dayInMillis(_repeatUntil)
+                            : null);
                     DBProvider.db.newTransaction(tx);
                     Navigator.pop(context);
                   } else {

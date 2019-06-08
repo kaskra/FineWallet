@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/Resources/db_helper.dart';
 import 'package:finewallet/utils.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,7 +39,10 @@ class DBProvider {
           "subcategory INTEGER,"
           "amount REAL,"
           "date INTEGER,"
-          "isExpense INTEGER"
+          "isExpense INTEGER,"
+          "isRecurring INTEGER,"
+          "replayType INTEGER,"
+          "replayUntil INTEGER"
           ")");
       await db.execute("CREATE TABLE categories("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -74,15 +78,25 @@ class DBProvider {
     return raw;
   }
 
-  Future<List<TransactionModel>> getAllTransactions([int untilDay]) async {
+  Future<List<TransactionModel>> getAllTransactions(int untilDay) async {
     final db = await database;
     String whereDay = "";
     if (untilDay != null) whereDay = " WHERE transactions.date <= $untilDay";
     var res = await db.rawQuery(
-        "SELECT transactions.id, transactions.subcategory, transactions.amount, transactions.date, transactions.isExpense, subcategories.name, subcategories.category FROM transactions LEFT JOIN subcategories ON transactions.subcategory = subcategories.id $whereDay ORDER BY transactions.date DESC, transactions.id DESC");
+        "SELECT transactions.* , subcategories.name, subcategories.category "
+        "FROM transactions "
+        "LEFT JOIN subcategories "
+        "ON transactions.subcategory = subcategories.id "
+        "$whereDay "
+        "ORDER BY transactions.date DESC, transactions.id DESC");
     List<TransactionModel> list = res.isNotEmpty
         ? res.map((t) => TransactionModel.fromMap(t)).toList()
         : [];
+    print(res);
+    list.addAll(getRecurringTransactions(list, untilDay));
+    list.sort((TransactionModel a, TransactionModel b) =>
+        -sortTransactionsByDateName(a, b));
+    list.removeWhere((tx) => tx.date > untilDay);
     return list;
   }
 

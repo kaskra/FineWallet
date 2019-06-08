@@ -17,7 +17,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:sticky_headers/sticky_headers.dart';
 
 class HistoryPage extends StatefulWidget {
-  HistoryPage(this.title, {Key key, this.day}) : super(key: key);
+  HistoryPage(this.title, {Key key, @required this.day}) : super(key: key);
 
   final String title;
   final int day;
@@ -27,7 +27,7 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  TransactionBloc _txBloc = TransactionBloc();
+  TransactionBloc _txBloc = TransactionBloc(dayInMillis(DateTime.now()));
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -137,7 +137,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _transactionCard(TransactionModel item) {
     return Column(
       children: <Widget>[
-        _upperCardPart(item.category - 1, item.subcategoryName, false),
+        _upperCardPart(
+            item.category - 1, item.subcategoryName, item.isRecurring.isOdd),
         // TODO revisit when recurring transactions are implemented: false => isRecurring
         _lowerCardPart(item.amount, item.isExpense == 1)
       ],
@@ -272,11 +273,17 @@ class _HistoryPageState extends State<HistoryPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           TransactionModel tx = new TransactionModel(
-              subcategory: Random.secure().nextInt(60) + 1,
-              amount: Random().nextDouble() * 100,
-              date: dayInMillis(
-                  DateTime.now().add(Duration(days: -Random().nextInt(10)))),
-              isExpense: 1);
+            subcategory: Random.secure().nextInt(60) + 1,
+            amount: Random().nextDouble() * 100,
+            date: dayInMillis(
+                DateTime.now().add(Duration(days: -Random().nextInt(10)))),
+            isExpense: 1,
+            isRecurring: 0,
+            replayType: 1,
+            replayUntil: null,
+            subcategoryName: "Sweets",
+            category: 3,
+          );
           _txBloc.add(tx);
           setState(() {});
         },

@@ -22,6 +22,9 @@ class TransactionModel {
   num amount;
   int date;
   int isExpense;
+  int isRecurring;
+  int replayType;
+  int replayUntil;
 
   String subcategoryName;
   int category;
@@ -33,7 +36,10 @@ class TransactionModel {
       this.date,
       this.isExpense,
       this.subcategoryName,
-      this.category});
+      this.category,
+      this.isRecurring,
+      this.replayType,
+      this.replayUntil});
 
   factory TransactionModel.fromMap(Map<String, dynamic> json) =>
       new TransactionModel(
@@ -43,7 +49,10 @@ class TransactionModel {
           date: json["date"],
           isExpense: json["isExpense"],
           subcategoryName: json["name"],
-          category: json["category"]);
+          category: json["category"],
+          isRecurring: json["isRecurring"],
+          replayType: json["replayType"],
+          replayUntil: json["replayUntil"]);
 
   Map<String, dynamic> toMap() => {
         "id": id != null ? id : null,
@@ -51,6 +60,9 @@ class TransactionModel {
         "amount": amount,
         "date": date,
         "isExpense": isExpense,
+        "isRecurring": isRecurring,
+        "replayType": replayType,
+        "replayUntil": replayUntil,
       };
 }
 

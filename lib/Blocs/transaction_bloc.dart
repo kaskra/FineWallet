@@ -26,7 +26,7 @@ class TransactionBloc {
         .add(await DBProvider.db.getAllTransactions(_untilDay));
   }
 
-  TransactionBloc([int untilDay]) {
+  TransactionBloc(int untilDay) {
     _untilDay = untilDay;
     getTransactions();
   }
