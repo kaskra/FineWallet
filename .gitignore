@@ -28,6 +28,7 @@
 /build/
 
 # Android related
+.gradle
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
 **/android/captures/
