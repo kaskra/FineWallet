@@ -218,8 +218,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Container(
                   margin: EdgeInsets.only(bottom: 5),
                   child: FutureBuilder<List<TransactionModel>>(
-                    future: DBProvider.db.getTransactionsOfMonth(
-                        DateTime.now().millisecondsSinceEpoch),
+                    future: DBProvider.db
+                        .getTransactionsOfMonth(dayInMillis(DateTime.now())),
                     initialData: List(),
                     builder: (BuildContext context,
                         AsyncSnapshot<List<TransactionModel>> snapshot) {

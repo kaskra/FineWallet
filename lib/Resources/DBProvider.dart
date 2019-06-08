@@ -102,17 +102,15 @@ class DBProvider {
   }
 
   Future<List<TransactionModel>> getTransactionsByCategory(
-      String categoryName) async {
+      String categoryName, int untilDay) async {
     final db = await database;
     var table = await db.query("category",
         columns: ["id"], where: "name = ?", whereArgs: [categoryName]);
     int id = table.first["id"];
-    var res =
-        await db.query("transactions", where: "category = ?", whereArgs: [id]);
-    List<TransactionModel> list = res.isNotEmpty
-        ? res.map((t) => TransactionModel.fromMap(t)).toList()
-        : [];
-    return list;
+    var res = await getAllTransactions(untilDay);
+    res = res.where((TransactionModel tx) => tx.category == id).toList();
+
+    return res;
   }
 
   Future<List<SumOfTransactionModel>> getExpensesGroupedByDay(
@@ -144,16 +142,11 @@ class DBProvider {
     DateTime lastOfMonth =
         DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
 
-    var res = await db.query("transactions",
-        where: "date >= ? and date <= ?",
-        whereArgs: [
-          firstOfMonth.millisecondsSinceEpoch,
-          lastOfMonth.millisecondsSinceEpoch
-        ]);
-    List<TransactionModel> list = res.isNotEmpty
-        ? res.map((t) => TransactionModel.fromMap(t)).toList()
-        : [];
-    return list;
+    var res = await getAllTransactions(dayInMillis(lastOfMonth));
+    res = res
+        .where((tx) => tx.date >= firstOfMonth.millisecondsSinceEpoch)
+        .toList();
+    return res;
   }
 
   Future<int> getIndexInCategory(int subcategoryId) async {
