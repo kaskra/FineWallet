@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:42.
+ * Developed by Lukas Krauch 08.06.19 11:44.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -107,7 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           }
           return ListView(shrinkWrap: true,
-            scrollDirection: Axis.vertical, children: listItems,);
+            scrollDirection: Axis.vertical,
+            children: listItems,);
         } else {
           return CircularProgressIndicator();
         }
@@ -116,26 +117,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildFABs() {
     return Row(mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Spacer(flex: 4,),
-        FloatingActionButton(heroTag: null,
+      children: <Widget>[Spacer(flex: 4,), FloatingActionButton(heroTag: null,
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
-          child: Icon(Icons.add, color: Colors.white),),
-        Spacer(),
-        FloatingActionButton(mini: true,
+        child: Icon(Icons.add, color: Colors.white),),
+        Spacer(), FloatingActionButton(mini: true,
           heroTag: null,
           onPressed: () =>
               Navigator.push(context, MaterialPageRoute(builder: (context) =>
                   HistoryPage("Transaction History",
                       day: dayInMillis(DateTime.now())))),
           child: Icon(Icons.list, color: Colors.white),),
-        Spacer(),
-        FloatingActionButton(heroTag: null,
+        Spacer(), FloatingActionButton(heroTag: null,
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddPage("Expense", 1))),
-          child: Icon(Icons.remove, color: Colors.white),),
-        Spacer(flex: 4,),
+          child: Icon(Icons.remove, color: Colors.white),), Spacer(flex: 4,),
       ],);
   }
 
