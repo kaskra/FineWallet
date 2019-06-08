@@ -1,3 +1,9 @@
+/*
+ * Developed by Lukas Krauch 08.06.19 11:35.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -20,19 +26,11 @@ class _LineChartState extends State<LineChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
-      child: CustomPaint(
-        painter: LineChartPainter(
-            data: widget.data ?? List.generate(31, (_) => 0.0),
-            color: widget.lineColor ?? Colors.black),
+    return Container(decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
+      child: CustomPaint(painter: LineChartPainter(
+          data: widget.data ?? List.generate(31, (_) => 0.0), color: widget.lineColor ?? Colors.black),
         child: Container(
-          height: 120,
-          width: MediaQuery.of(context).size.width,
-        ),
-      ),
-    );
+          height: 120, width: MediaQuery.of(context).size.width,),),);
   }
 }
 
@@ -60,8 +58,7 @@ class LineChartPainter extends CustomPainter {
     final width = size.width;
     Path path = Path();
 
-    final maxDataValue =
-        data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
+    final maxDataValue = data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
     final xMargin = width / data.length;
     final yMargin = height / maxDataValue;
 
@@ -101,19 +98,11 @@ class _BarChartState extends State<BarChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
-      child: CustomPaint(
-        painter: BarChartPainter(
-            data: widget.data ?? List.generate(31, (_) => 0.0),
-            color: widget.barColor ?? Colors.black),
+    return Container(decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
+      child: CustomPaint(painter: BarChartPainter(
+          data: widget.data ?? List.generate(31, (_) => 0.0), color: widget.barColor ?? Colors.black),
         child: Container(
-          height: 120,
-          width: MediaQuery.of(context).size.width,
-        ),
-      ),
-    );
+          height: 120, width: MediaQuery.of(context).size.width,),),);
   }
 }
 
@@ -140,8 +129,7 @@ class BarChartPainter extends CustomPainter {
     final height = size.height;
     final width = size.width;
 
-    final maxDataValue =
-        data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
+    final maxDataValue = data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
     final xMargin = width / data.length;
     final yMargin = height / maxDataValue;
 

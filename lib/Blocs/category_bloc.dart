@@ -1,3 +1,9 @@
+/*
+ * Developed by Lukas Krauch 08.06.19 11:30.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 import 'dart:async';
 
 import 'package:finewallet/Models/category_model.dart';
@@ -8,18 +14,18 @@ class CategoryBloc {
 
   get categories => _categoryController.stream;
 
-  void dispose() { 
+  void dispose() {
     _categoryController.close();
   }
 
-  getCategories() async{
+  getCategories() async {
     List<CategoryModel> list = await DBProvider.db.getAllCategories();
     print(list);
     _categoryController.sink.add(list);
     print(_categoryController.stream.length);
   }
 
-  CategoryBloc (){
+  CategoryBloc() {
     getCategories();
   }
 }
@@ -29,15 +35,15 @@ class CategoryIncomeBloc {
 
   get categories => _categoryController.stream;
 
-  void dispose() { 
+  void dispose() {
     _categoryController.close();
   }
 
-  getCategories() async{
+  getCategories() async {
     _categoryController.sink.add(await DBProvider.db.getIncomeCategory());
   }
 
-  CategoryIncomeBloc (){
+  CategoryIncomeBloc() {
     getCategories();
   }
 }

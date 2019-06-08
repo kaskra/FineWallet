@@ -1,3 +1,9 @@
+/*
+ * Developed by Lukas Krauch 08.06.19 11:35.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Datatypes/repeat_type.dart';
 import 'package:finewallet/Models/transaction_model.dart';
@@ -72,7 +78,7 @@ class _AddPageState extends State<AddPage> {
     return Expanded(
       child: Card(
         child: InkWell(
-          onTap: () => whathappensontap(),
+          onTap: () => onTap(),
           child: Container(
             padding: EdgeInsets.all(5),
             child: LayoutBuilder(
@@ -151,7 +157,7 @@ class _AddPageState extends State<AddPage> {
   void setCategory() async {
     showModalBottomSheet(
         context: context,
-        builder: (ctxt) {
+        builder: (context) {
           return CategoryBottomSheet(widget.isExpense, _subcategory);
         }).then((chosenCategory) {
       setState(() {
@@ -200,7 +206,7 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  void _showSnackbar(BuildContext context) {
+  void _showSnackBar(BuildContext context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("Please fill out every panel!"),
     ));
@@ -258,10 +264,10 @@ class _AddPageState extends State<AddPage> {
                             ),
                             _repeatTypeChoice(),
                             // Divider(color: Colors.white,),
-                           Padding(
-                             padding: EdgeInsets.only(top: 6),
-                             child:  _repeatUntilDate(),
-                           )
+                            Padding(
+                              padding: EdgeInsets.only(top: 6),
+                              child: _repeatUntilDate(),
+                            )
                           ],
                         ),
                       ),
@@ -332,14 +338,18 @@ class _AddPageState extends State<AddPage> {
         Container(
           width: 100,
           height: 35,
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+          decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Colors.black12))),
           child: MaterialButton(
             onPressed: () {
               setRepeatingDate();
             },
             child: Text(
-              _repeatUntil!=null?formatter.format(_repeatUntil):"",
-              style: TextStyle(color: Colors.black54, fontSize: 16, fontWeight: FontWeight.normal) ,
+              _repeatUntil != null ? formatter.format(_repeatUntil) : "",
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal),
             ),
           ),
         )
@@ -371,7 +381,7 @@ class _AddPageState extends State<AddPage> {
                     DBProvider.db.newTransaction(tx);
                     Navigator.pop(context);
                   } else {
-                    return _showSnackbar(context);
+                    return _showSnackBar(context);
                   }
                 },
                 child: Icon(Icons.save),

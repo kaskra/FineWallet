@@ -1,12 +1,14 @@
+/*
+ * Developed by Lukas Krauch 08.06.19 11:35.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 import 'package:flutter/material.dart';
 
 class CornerTriangle extends StatelessWidget {
   const CornerTriangle(
-      {Key key,
-      @required this.child,
-      @required this.size,
-      this.icon,
-      this.color})
+      {Key key, @required this.child, @required this.size, this.icon, this.color})
       : super(key: key);
 
   final Size size;
@@ -16,19 +18,13 @@ class CornerTriangle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        CustomPaint(
-          painter: CornerTrianglePainter(triangleSize: size, color: color),
-          child: child,
-        ),
-        Container(
-          padding: EdgeInsets.all(1),
-          alignment: Alignment(-1, -1),
-          child: icon,
-        )
-      ],
-    );
+    return Stack(children: <Widget>[
+      CustomPaint(
+        painter: CornerTrianglePainter(triangleSize: size, color: color),
+        child: child,),
+      Container(
+        padding: EdgeInsets.all(1), alignment: Alignment(-1, -1), child: icon,)
+    ],);
   }
 }
 

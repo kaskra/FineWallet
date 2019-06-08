@@ -1,17 +1,22 @@
+/*
+ * Developed by Lukas Krauch 08.06.19 11:35.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 import 'dart:convert';
 
-TransactionModel transactionFromJson(String str){
+TransactionModel transactionFromJson(String str) {
   final jsonData = json.decode(str);
   return TransactionModel.fromMap(jsonData);
 }
 
-String transactionToJson(TransactionModel data){
+String transactionToJson(TransactionModel data) {
   final dyn = data.toMap();
   return json.encode(dyn);
 }
 
-
-class TransactionModel{
+class TransactionModel {
   int id;
   int subcategory;
   num amount;
@@ -21,20 +26,20 @@ class TransactionModel{
   String subcategoryName;
   int category;
 
-  TransactionModel({this.id, this.subcategory, this.amount, this.date, this.isExpense, this.subcategoryName, this.category});
+  TransactionModel(
+      {this.id, this.subcategory, this.amount, this.date, this.isExpense, this.subcategoryName, this.category});
 
-  factory TransactionModel.fromMap(Map<String, dynamic> json) => new TransactionModel(
-    id: json["id"],
-    subcategory: json["subcategory"],
-    amount: json["amount"],
-    date: json["date"],
-    isExpense: json["isExpense"],
-    subcategoryName: json["name"],
-    category: json["category"]
-  );
+  factory TransactionModel.fromMap(Map<String, dynamic> json) =>
+      new TransactionModel(id: json["id"],
+          subcategory: json["subcategory"],
+          amount: json["amount"],
+          date: json["date"],
+          isExpense: json["isExpense"],
+          subcategoryName: json["name"],
+          category: json["category"]);
 
   Map<String, dynamic> toMap() => {
-    "id": id != null? id : null,
+    "id": id != null ? id : null,
     "subcategory": subcategory,
     "amount": amount,
     "date": date,
@@ -42,24 +47,18 @@ class TransactionModel{
   };
 }
 
-class SumOfTransactionModel{
+class SumOfTransactionModel {
   int date;
   num amount;
 
   SumOfTransactionModel({this.amount, this.date});
 
-  factory SumOfTransactionModel.fromMap(Map<String, dynamic> json) => new SumOfTransactionModel(
-    amount: json["amount"],
-    date: json["date"],
-  );
+  factory SumOfTransactionModel.fromMap(Map<String, dynamic> json) =>
+      new SumOfTransactionModel(amount: json["amount"], date: json["date"],);
 
-  Map<String, dynamic> toMap() => {
-    "amount": amount,
-    "date" : date,
-  };
+  Map<String, dynamic> toMap() => {"amount": amount, "date": date,};
 
-  bool hasSameValue(dynamic v){
+  bool hasSameValue(dynamic v) {
     return date == v || amount == v;
   }
-
 }

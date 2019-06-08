@@ -1,3 +1,9 @@
+/*
+ * Developed by Lukas Krauch 08.06.19 11:35.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 import 'dart:math';
 
 import 'package:finewallet/Blocs/transaction_bloc.dart';
@@ -33,7 +39,7 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  void _showSnackbar(BuildContext context) {
+  void _showSnackBar(BuildContext context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("Deleted transaction"),
       duration: Duration(milliseconds: 500),
@@ -132,15 +138,14 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _transactionCard(TransactionModel item) {
     return Column(
       children: <Widget>[
-        _upperCardPart(
-            item.category - 1, item.subcategoryName, false),
+        _upperCardPart(item.category - 1, item.subcategoryName, false),
         // TODO revisit when recurring transactions are implemented: false => isRecurring
         _lowerCardPart(item.amount, item.isExpense == 1)
       ],
     );
   }
 
-  Widget _seperator(bool isToday, String dateString) {
+  Widget _separator(bool isToday, String dateString) {
     return Center(
         child: Container(
             padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
@@ -154,9 +159,9 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Text(
               isToday ? "TODAY" : dateString.toUpperCase(),
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: isToday ? FontWeight.bold : FontWeight.normal),
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal),
             )));
   }
 
@@ -181,7 +186,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
             onDismissed: (DismissDirection direction) {
               _txBloc.delete(item.id);
-              _showSnackbar(context);
+              _showSnackBar(context);
             },
             child: generalCard(_transactionCard(item), null, 3),
           ),
@@ -201,16 +206,16 @@ class _HistoryPageState extends State<HistoryPage> {
         builder: (BuildContext context,
             AsyncSnapshot<List<TransactionModel>> snapshot) {
           if (snapshot.hasData) {
-            List<List<Widget>> listofLists = _buildLists(snapshot);
+            List<List<Widget>> listOfLists = _buildLists(snapshot);
             return ListView.builder(
-              itemCount: listofLists.length,
+              itemCount: listOfLists.length,
               itemBuilder: (context, index) {
-                if (listofLists[index].length > 0) {
+                if (listOfLists[index].length > 0) {
                   return StickyHeader(
-                    header: listofLists[index][0],
+                    header: listOfLists[index][0],
                     content: Column(
-                      children: listofLists[index]
-                          .getRange(1, listofLists[index].length)
+                      children: listOfLists[index]
+                          .getRange(1, listOfLists[index].length)
                           .toList(),
                     ),
                   );
@@ -227,24 +232,24 @@ class _HistoryPageState extends State<HistoryPage> {
 
   List<List<Widget>> _buildLists(
       AsyncSnapshot<List<TransactionModel>> snapshot) {
-    List<List<Widget>> listofLists = List();
+    List<List<Widget>> listOfLists = List();
     List<Widget> l = List();
     int prevDate = -1;
     for (var i = 0; i < snapshot.data.length; i++) {
       if (snapshot.data[i].date != prevDate) {
         prevDate = snapshot.data[i].date;
-        listofLists.add(l);
+        listOfLists.add(l);
         intl.DateFormat d = intl.DateFormat.MMMEd();
         String dateString =
             d.format(DateTime.fromMillisecondsSinceEpoch(prevDate));
         bool isToday = prevDate == dayInMillis(DateTime.now());
         l = List();
-        l.add(_seperator(isToday, dateString));
+        l.add(_separator(isToday, dateString));
       }
       l.add(_historyItem(snapshot.data[i]));
     }
-    listofLists.add(l);
-    return listofLists;
+    listOfLists.add(l);
+    return listOfLists;
   }
 
   @override
@@ -271,7 +276,7 @@ class _HistoryPageState extends State<HistoryPage> {
               subcategory: Random.secure().nextInt(60) + 1,
               amount: Random().nextDouble() * 100,
               date: dayInMillis(
-                  DateTime.now().add(Duration(days: -Random().nextInt(3)))),
+                  DateTime.now().add(Duration(days: -Random().nextInt(10)))),
               isExpense: 1);
           _txBloc.add(tx);
           setState(() {});
