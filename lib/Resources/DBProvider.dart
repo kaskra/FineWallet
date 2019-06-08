@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:42.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -31,8 +31,7 @@ class DBProvider {
   initDB() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, "Transactions.db");
-    return await openDatabase(path, version: 1,
-        onOpen: (db) {},
+    return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
           await db.execute("CREATE TABLE transactions ("
               "id INTEGER PRIMARY KEY AUTOINCREMENT,"

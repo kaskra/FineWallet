@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:42.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -89,7 +89,8 @@ class _MonthCardState extends State<MonthCard> {
   void initState() {
     super.initState();
     // some random test data
-    _values = List.generate(31, (int index) => Random().nextDouble() * Random().nextInt(100));
+    _values = List.generate(
+        31, (int index) => Random().nextDouble() * Random().nextInt(100));
     _incomeSum = 1750;
     _expenseSum = _values.fold(0, (prev, next) => prev + next);
     _avg = _expenseSum / _values.length;
@@ -105,26 +106,30 @@ class _MonthCardState extends State<MonthCard> {
       child: Column(mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           FutureBuilder(future: DBProvider.db.getExpensesGroupedByDay(),
-            builder: (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
+            builder: (context,
+                      AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
               if (snapshot.hasData) {
                 DateTime date = widget.month ?? DateTime.now();
 
                 int lastDay = getLastDayOfMonth(date);
                 DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
-                DateTime lastOfMonth = DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
+                DateTime lastOfMonth = DateTime.utc(
+                    date.year, date.month, lastDay, 23, 59, 59);
 
                 List<double> data = List();
-                for (var i = firstOfMonth.millisecondsSinceEpoch; i < lastOfMonth.millisecondsSinceEpoch;
+                for (var i = firstOfMonth.millisecondsSinceEpoch; i <
+                    lastOfMonth.millisecondsSinceEpoch;
                 i = i + Duration(days: 1).inMilliseconds) {
                   int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
                   data.add(day.toDouble());
                 }
 
-                data = data.map((date) => snapshot.data
-                    .firstWhere((item) => item.date == date,
-                    orElse: () => SumOfTransactionModel(amount: 0, date: 0))
-                    .amount
-                    .toDouble()).toList();
+                data = data.map((date) =>
+                    snapshot.data
+                        .firstWhere((item) => item.date == date,
+                        orElse: () => SumOfTransactionModel(amount: 0, date: 0))
+                        .amount
+                        .toDouble()).toList();
 
                 return Column(children: <Widget>[
                   // TODO backwards only works at 2nd click

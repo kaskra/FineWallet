@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:38.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -33,9 +33,8 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    if (widget?.day != null){
+    if (widget?.day != null) {
       _txBloc = TransactionBloc(widget.day);
-
     }
   }
 

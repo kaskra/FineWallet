@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:38.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -10,11 +10,10 @@ import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/bottom_sheets.dart';
 import 'package:finewallet/corner_triangle.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:finewallet/utils.dart';
 
 import 'Resources/DBProvider.dart';
 
@@ -53,8 +52,7 @@ class _AddPageState extends State<AddPage> {
     });
   }
 
-  Widget _expenseCards(
-      IconData icon, String label, int value, Function whathappensontap) {
+  Widget _expenseCards(IconData icon, String label, int value, Function onTap) {
     String valueString = "";
     IconData iconData = icon;
     switch (value) {

@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:35.
+ * Developed by Lukas Krauch 08.06.19 11:42.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(textSelectionColor: Colors.black26,
           primarySwatch: Colors.orange,
-          appBarTheme: AppBarTheme(actionsIconTheme: IconThemeData(color: Colors.white))),
+          appBarTheme: AppBarTheme(
+              actionsIconTheme: IconThemeData(color: Colors.white))),
       home: MyHomePage(title: 'FineWallet'),);
   }
 }
@@ -64,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           fontWeight: FontWeight.bold),),),
                     Text("Spare budget",
                       style: TextStyle(color: Colors.white, fontSize: 10,),),
-                    Text("${amount.toStringAsFixed(2)}€", style: TextStyle(color: amount <= 0 ? Colors.red : Colors.white,
+                    Text("${amount.toStringAsFixed(2)}€", style: TextStyle(
+                        color: amount <= 0 ? Colors.red : Colors.white,
                         fontWeight: FontWeight.bold),),
                   ],)),))));
   }
@@ -74,29 +76,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return generalCard(Row(mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        isToday
-            ? Text("Today",
-            style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold))
-            : Text(getDayName(day), style: TextStyle(color: Colors.black54)),
+        isToday ? Text("Today", style: TextStyle(
+            color: Colors.black54, fontWeight: FontWeight.bold)) : Text(
+            getDayName(day), style: TextStyle(color: Colors.black54)),
         Expanded(child: Container(alignment: Alignment.centerRight,
-          child: Text("${budget.toStringAsFixed(2)}€", style: TextStyle(color: Colors.black54,
+          child: Text("${budget.toStringAsFixed(2)}€", style: TextStyle(
+              color: Colors.black54,
               fontWeight: FontWeight.bold,
               fontSize: 16),),))
-      ],), isToday
-        ? BoxDecoration(border: Border.all(width: 2, color: Colors.orange))
-        : null);
+      ],), isToday ? BoxDecoration(
+        border: Border.all(width: 2, color: Colors.orange)) : null);
   }
 
   Widget _days() {
     List<DateTime> days = getLastWeekAsDates();
-    return FutureBuilder<List<SumOfTransactionModel>>(future: DBProvider.db.getExpensesGroupedByDay(),
+    return FutureBuilder<List<SumOfTransactionModel>>(
+      future: DBProvider.db.getExpensesGroupedByDay(),
       initialData: List(),
       builder: (BuildContext context,
                 AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
         if (snapshot.hasData) {
           List<Widget> listItems = List();
           for (DateTime date in days) {
-            int index = snapshot.data.indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date)));
+            int index = snapshot.data.indexWhere((sotm) =>
+                sotm.hasSameValue(dayInMillis(date)));
             if (index >= 0) {
               listItems.add(_day(date.weekday, snapshot.data[index].amount));
             } else {
@@ -104,8 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           }
           return ListView(shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: listItems,);
+            scrollDirection: Axis.vertical, children: listItems,);
         } else {
           return CircularProgressIndicator();
         }
@@ -117,14 +119,16 @@ class _MyHomePageState extends State<MyHomePage> {
       children: <Widget>[
         Spacer(flex: 4,),
         FloatingActionButton(heroTag: null,
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
+          onPressed: () => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
           child: Icon(Icons.add, color: Colors.white),),
         Spacer(),
         FloatingActionButton(mini: true,
           heroTag: null,
-          onPressed: () => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => HistoryPage("Transaction History",
-                  day: dayInMillis(DateTime.now())))),
+          onPressed: () =>
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                  HistoryPage("Transaction History",
+                      day: dayInMillis(DateTime.now())))),
           child: Icon(Icons.list, color: Colors.white),),
         Spacer(),
         FloatingActionButton(heroTag: null,
@@ -148,33 +152,45 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(children: <Widget>[
           Container(margin: EdgeInsets.only(bottom: 5),
             child: FutureBuilder<List<TransactionModel>>(
-              future: DBProvider.db.getTransactionsOfMonth(DateTime.now().millisecondsSinceEpoch),
+              future: DBProvider.db.getTransactionsOfMonth(DateTime
+                  .now()
+                  .millisecondsSinceEpoch),
               initialData: List(),
               builder: (BuildContext context,
                         AsyncSnapshot<List<TransactionModel>> snapshot) {
                 if (snapshot.hasData) {
-                  int dayOfMonth = DateTime.now().day;
+                  int dayOfMonth = DateTime
+                      .now()
+                      .day;
                   int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
-                  List<TransactionModel> incomes = snapshot.data.where((t) => t.isExpense == 0)
-                      .toList();
-                  List<TransactionModel> todayExpenses = snapshot.data.where((t) => t.isExpense == 1)
-                      .where((t) => t.date == dayInMillis(DateTime.now())).toList();
-                  List<TransactionModel> notTodayExpenses = snapshot.data.where((t) => t.isExpense == 1)
-                      .where((t) => t.date != dayInMillis(DateTime.now())).toList();
-                  double monthlyIncomes = incomes.fold(0, (prev, element) => prev + element.amount);
-                  double monthlyExpenses = notTodayExpenses.fold(0, (prev, element) => prev + element.amount);
-                  double todaysExpenses = todayExpenses.fold(0, (prev, element) => prev + element.amount);
+                  List<TransactionModel> incomes = snapshot.data.where((t) =>
+                  t.isExpense == 0).toList();
+                  List<TransactionModel> todayExpenses = snapshot.data.where((
+                      t) => t.isExpense == 1).where((t) =>
+                  t.date == dayInMillis(DateTime.now())).toList();
+                  List<TransactionModel> notTodayExpenses = snapshot.data
+                      .where((t) => t.isExpense == 1).where((t) =>
+                  t.date != dayInMillis(DateTime.now())).toList();
+                  double monthlyIncomes = incomes.fold(
+                      0, (prev, element) => prev + element.amount);
+                  double monthlyExpenses = notTodayExpenses.fold(
+                      0, (prev, element) => prev + element.amount);
+                  double todaysExpenses = todayExpenses.fold(
+                      0, (prev, element) => prev + element.amount);
 
                   int remainingDaysInMonth = lastDayOfMonth - dayOfMonth + 1;
                   double monthlySpareBudget = monthlyIncomes - monthlyExpenses;
-                  double budgetPerDay = (monthlySpareBudget / remainingDaysInMonth) -
+                  double budgetPerDay = (monthlySpareBudget /
+                      remainingDaysInMonth) - todaysExpenses;
+                  double displayedMonthlySpareBudget = monthlySpareBudget -
                       todaysExpenses;
-                  double displayedMonthlySpareBudget = monthlySpareBudget - todaysExpenses;
                   return Row(crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       _overviewBox("TODAY", budgetPerDay, false, _onDayTap),
-                      _overviewBox(getMonthName(DateTime.now().month).toUpperCase(),
-                          displayedMonthlySpareBudget, true, _onMonthTap),
+                      _overviewBox(getMonthName(DateTime
+                          .now()
+                          .month).toUpperCase(), displayedMonthlySpareBudget,
+                          true, _onMonthTap),
                     ],);
                 } else {
                   return Row(crossAxisAlignment: CrossAxisAlignment.start,
