@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 08.06.19 11:27.
+ * Developed by Lukas Krauch 8.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
