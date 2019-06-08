@@ -367,7 +367,6 @@ class _AddPageState extends State<AddPage> {
               width: 50,
               child: InkWell(
                 onTap: () {
-                  // TODO expand if by additional tx parameters (until date > date, and every parameter != null)
                   if (_expense != null &&
                       _date != null &&
                       _subcategory != null &&
