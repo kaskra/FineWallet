@@ -70,10 +70,6 @@ class DBProvider {
 
   newSubcategory(SubcategoryModel newSubcategory) async {
     final db = await database;
-
-    // var nameUsed = await db.rawQuery("SELECT name FROM subcategories WHERE name = ${newSubcategory.name}");
-    // if (nameUsed.isNotEmpty) throw Exception("Please ");
-
     var raw = await db.insert("subcategories", newSubcategory.toMap());
     return raw;
   }
@@ -100,7 +96,6 @@ class DBProvider {
   }
 
   Future<List<TransactionModel>> getTransactionsOfDay(int dayInMillis) async {
-    final db = await database;
     var res = await getAllTransactions(dayInMillis);
     res.where((TransactionModel tx) => tx.date == dayInMillis);
     return res;
@@ -120,14 +115,24 @@ class DBProvider {
     return list;
   }
 
-  Future<List<SumOfTransactionModel>> getExpensesGroupedByDay() async {
-    final db = await database;
-    var res = await db.rawQuery(
-        "SELECT date, SUM(amount) as amount FROM transactions WHERE isExpense=1 GROUP BY date ORDER BY date");
-    List<SumOfTransactionModel> list = res.isNotEmpty
-        ? res.map((t) => SumOfTransactionModel.fromMap(t)).toList()
-        : [];
-    return list;
+  Future<List<SumOfTransactionModel>> getExpensesGroupedByDay(
+      int untilDay) async {
+    var res2 = await getAllTransactions(untilDay);
+    var res = res2.where((TransactionModel tx) => tx.isExpense == 1);
+
+    List<SumOfTransactionModel> result = List();
+    res.forEach((TransactionModel tx) {
+      if (!result.contains(tx.date)) {
+        result.add(SumOfTransactionModel(date: tx.date, amount: 0));
+      }
+    });
+
+    result
+        .map((sOM) => sOM.amount = res
+            .where((tx) => tx.date == sOM.date)
+            .fold(0.0, (prev, curr) => prev + curr.amount.toDouble()))
+        .toList();
+    return result;
   }
 
   Future<List<TransactionModel>> getTransactionsOfMonth(int dateInMonth) async {

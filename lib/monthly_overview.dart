@@ -174,7 +174,6 @@ class _MonthCardState extends State<MonthCard> {
                             (double prev, curr) =>
                                 (prev + curr.amount.toDouble())))
                     .toList();
-                print(data);
 
                 return Column(
                   children: <Widget>[

@@ -131,7 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _days() {
     List<DateTime> days = getLastWeekAsDates();
     return FutureBuilder<List<SumOfTransactionModel>>(
-      future: DBProvider.db.getExpensesGroupedByDay(),
+      future:
+          DBProvider.db.getExpensesGroupedByDay(dayInMillis(DateTime.now())),
       initialData: List(),
       builder: (BuildContext context,
           AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
