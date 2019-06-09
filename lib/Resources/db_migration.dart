@@ -5,12 +5,13 @@
  */
 
 class Migration {
-  static Map<int, String> migrationScripts = {
+  static Map<int, List<String>> migrationScripts = {
     1: _migration_1_2,
   };
 
-  static String _migration_1_2 =
-      "ALTER TABLE transactions ADD COLUMN isRecurring INTEGER DEFAULT 0; "
-      "ALTER TABLE transactions ADD COLUMN replayType INTEGER DEFAULT 0; "
-      "ALTER TABLE transactions ADD COLUMN replayUntil INTEGER DEFAULT null;";
+  static List<String> _migration_1_2 = [
+    "ALTER TABLE transactions ADD COLUMN isRecurring INTEGER DEFAULT 0;",
+    "ALTER TABLE transactions ADD COLUMN replayType INTEGER DEFAULT 0;",
+    "ALTER TABLE transactions ADD COLUMN replayUntil INTEGER DEFAULT null;"
+  ];
 }

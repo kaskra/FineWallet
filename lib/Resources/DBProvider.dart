@@ -20,6 +20,7 @@ class DBProvider {
   DBProvider._();
 
   static final DBProvider db = DBProvider._();
+  static const int VERSION = 2;
 
   Database _database;
 
@@ -33,7 +34,7 @@ class DBProvider {
   initDB() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, "Transactions.db");
-    return await openDatabase(path, version: 2, onOpen: (db) {},
+    return await openDatabase(path, version: VERSION, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE transactions ("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -56,7 +57,9 @@ class DBProvider {
 
       for (int oVersion in Migration.migrationScripts.keys) {
         if (oVersion >= oldVersion) {
-          await db.execute(Migration.migrationScripts[oVersion]);
+          for (String query in Migration.migrationScripts[oVersion]) {
+            await db.execute(query);
+          }
         }
       }
     });
