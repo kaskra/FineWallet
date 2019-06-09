@@ -3,8 +3,11 @@
  * Copyright (c) 2019. All rights reserved.
  *
  */
+import 'dart:math';
+
 import 'package:finewallet/Statistics/chartstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 class DoublePainter extends CustomPainter {
   List<List<double>> additionalData;
@@ -61,6 +64,9 @@ class DoublePainter extends CustomPainter {
     if (data.length <= 0) return;
 
     if (indices.length <= 0) update();
+    canvas.transform(Matrix4.compose(Vector3(0, size.height, 0),
+            Quaternion.euler(pi, 0, pi), Vector3.all(1))
+        .storage);
 
     List<Color> usedColors = [color];
     paintDataPoints(data, color, canvas, size);

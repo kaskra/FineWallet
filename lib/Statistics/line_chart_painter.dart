@@ -25,12 +25,12 @@ class LineChartPainter extends DoublePainter {
     final xMargin = width / data.length;
     final yMargin = height / maxDataValue;
 
-    double y = data[0] * yMargin;
-    path.moveTo(indices[0], height - y);
+    path.moveTo(indices[0], data[0] * yMargin);
 
     for (var i = 0; i < data.length; i++) {
-      y = data[i];
-      path.lineTo(indices[i] * xMargin, height - y * yMargin);
+      double x = indices[i] * xMargin;
+      double y = data[i] * yMargin;
+      path.lineTo(x, y);
     }
     canvas.drawPath(path, paint);
   }

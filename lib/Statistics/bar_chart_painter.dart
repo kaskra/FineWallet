@@ -22,13 +22,15 @@ class BarChartPainter extends DoublePainter {
 
     final maxDataValue =
         data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
-    final xMargin = width / data.length;
+    final xMargin = width / (data.length * additionalData.length);
     final yMargin = height / maxDataValue;
 
     for (var i = 0; i < data.length; i++) {
       Path path = Path();
-      path.moveTo(indices[i] * xMargin, height);
-      path.lineTo(indices[i] * xMargin, height - data[i] * yMargin);
+      double x = indices[i] * xMargin;
+      double y = data[i] * yMargin;
+      path.moveTo(x, 0);
+      path.lineTo(x, y);
       canvas.drawPath(path, paint);
     }
   }
