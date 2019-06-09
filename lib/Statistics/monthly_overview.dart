@@ -123,6 +123,7 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
     return Scaffold(
       backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
         title: Text(
           "Monthly",
