@@ -8,7 +8,8 @@ import 'dart:math';
 
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
-import 'package:finewallet/monthly_chart.dart';
+import 'package:finewallet/Statistics/chartstyle.dart';
+import 'package:finewallet/Statistics/monthly_chart.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
