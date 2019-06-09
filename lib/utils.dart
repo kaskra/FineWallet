@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 9.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -75,10 +75,9 @@ int replayTypeToMillis(int replayType, int transactionDate) {
           DateTime.utc(nextMonth.year, nextMonth.month, lastOfNextMonth));
       DateTime sameDayNextMonth =
           DateTime.utc(nextMonth.year, nextMonth.month, currentDate.day);
-      if (sameDayNextMonth.millisecondsSinceEpoch > lastOfNextMonthInMillis)
-        return lastOfNextMonthInMillis - currentDate.millisecondsSinceEpoch;
-      return sameDayNextMonth.millisecondsSinceEpoch -
-          currentDate.millisecondsSinceEpoch;
+      if (dayInMillis(sameDayNextMonth) > lastOfNextMonthInMillis)
+        return lastOfNextMonthInMillis - dayInMillis(currentDate);
+      return dayInMillis(sameDayNextMonth) - dayInMillis(currentDate);
       break;
     case 3:
       DateTime currentDate =

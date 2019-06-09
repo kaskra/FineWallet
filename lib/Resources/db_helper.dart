@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 9.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -13,13 +13,13 @@ List<TransactionModel> getRecurringTransactions(
   res = res.where((element) => element.isRecurring == 1).toList();
   res.forEach((tx) {
     int until = tx.replayUntil == null ? generateUntilDay : tx.replayUntil;
-    int interval = isRecurrencePossible(tx.date, until, tx.replayType);
-    if (interval != -1) {
+    int firstInterval = isRecurrencePossible(tx.date, until, tx.replayType);
+    if (firstInterval != -1) {
       txs.addAll(generateEveryRecurringTransaction(
           tx,
           tx.date,
           tx.replayUntil == null ? generateUntilDay : tx.replayUntil,
-          interval));
+          firstInterval));
     }
   });
   return txs;
@@ -41,6 +41,7 @@ List<TransactionModel> generateEveryRecurringTransaction(
         replayType: tx.replayType,
         replayUntil: tx.replayUntil);
     txs.add(generatedTx);
+    interval = replayTypeToMillis(tx.replayType, i);
   }
   return txs;
 }
