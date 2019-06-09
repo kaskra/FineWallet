@@ -190,8 +190,12 @@ class _MonthCardState extends State<MonthCard> {
                     MonthlyChart(
                       data: expense,
                       type: MonthlyChartType.LINE,
-                      lineColor: Colors.blue,
+                      //lineColor: Colors.blue,
                       additionalData: [income],
+                      style: ChartStyle(
+                          border: Border.all(color: Colors.black12, width: 1),
+                          backgroundColor: Colors.transparent,
+                          strokeWidth: 1.5),
                     ),
                     Divider(),
                     MonthlyChart(
@@ -199,6 +203,10 @@ class _MonthCardState extends State<MonthCard> {
                       type: MonthlyChartType.BAR,
                       lineColor: Colors.blue,
                       additionalData: [income],
+                      style: ChartStyle(
+                          border: Border.all(color: Colors.black12, width: 1),
+                          backgroundColor: Colors.transparent,
+                          strokeWidth: 4),
                     ),
                   ],
                 );

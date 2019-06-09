@@ -26,7 +26,6 @@ class ChartStyle {
   static const defaultLineColors = [
     Colors.red,
     Colors.green,
-    Colors.yellow,
     Colors.blue,
     Colors.orange,
     Colors.black,
@@ -38,11 +37,13 @@ class MonthlyChart extends StatelessWidget {
   MonthlyChart(
       {@required this.data,
       @required this.type,
+      this.style,
       this.lineColor,
       this.additionalData});
 
   final List<double> data;
   final MonthlyChartType type;
+  final ChartStyle style;
   final Color lineColor;
   final List<List<double>> additionalData;
 
@@ -62,14 +63,14 @@ class MonthlyChart extends StatelessWidget {
   Widget build(BuildContext context) {
     DoublePainter doublePainter = getPainterFromType(type);
     doublePainter.data = data ?? List.generate(31, (_) => 0.0);
-    doublePainter.color = lineColor ?? Colors.black;
+    doublePainter.color = lineColor;
     doublePainter.additionalData = additionalData;
+    doublePainter.style = style;
     doublePainter.update();
 
     return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.black12, width: 1),
-          color: Colors.transparent),
+      decoration:
+          BoxDecoration(border: style.border, color: style.backgroundColor),
       child: CustomPaint(
         painter: doublePainter,
         child: Container(
@@ -85,16 +86,20 @@ class DoublePainter extends CustomPainter {
   List<List<double>> additionalData;
   List<double> data;
   Color color;
+  ChartStyle style;
 
   final int upperSpace = 20;
+  final List<Color> defaultColors = ChartStyle.defaultLineColors;
+
   List<double> indices;
+  double strokeWidth = 1;
+  PaintingStyle paintingStyle = PaintingStyle.stroke;
 
   DoublePainter(
       {List<double> data, Color color, List<List<double>> additionalData}) {
     this.data = data;
-
     this.additionalData = additionalData;
-    this.color = color;
+    this.color = color ?? defaultColors.first;
     if (data != null) {
       indices = List.generate(data.length, (int index) => index.toDouble() + 1);
     }
@@ -104,12 +109,43 @@ class DoublePainter extends CustomPainter {
     if (data != null) {
       indices = List.generate(data.length, (int index) => index.toDouble() + 1);
     }
+    if (style != null) {
+      strokeWidth = style.strokeWidth;
+      paintingStyle = style.paintingStyle;
+    }
+    if (color == null) {
+      color = defaultColors.first;
+    }
+    if (additionalData != null) {
+      if (additionalData.length >
+          (defaultColors.where((color) => color != this.color)).length) {
+        additionalData = additionalData.sublist(
+            0, defaultColors.where((color) => color != this.color).length);
+      }
+    }
+  }
+
+  void paintDataPoints(
+      List<double> data, Color color, Canvas canvas, Size size) {
+    throw Exception(
+        "Not implemented on parent class. Try creating an instance of a subtype.");
   }
 
   @override
   void paint(Canvas canvas, Size size) {
-    throw Exception(
-        "Not implemented on parent class. Try creating an instance of a subtype.");
+    // TODO paint ticks etc.
+    if (data.length <= 0) return;
+
+    if (indices.length <= 0) update();
+
+    List<Color> usedColors = [color];
+    paintDataPoints(data, color, canvas, size);
+    for (List<double> data in additionalData ?? []) {
+      Color color =
+          defaultColors.where((color) => !usedColors.contains(color)).first;
+      paintDataPoints(data, color, canvas, size);
+      usedColors.add(color);
+    }
   }
 
   @override
@@ -121,19 +157,16 @@ class DoublePainter extends CustomPainter {
 
 class LineChartPainter extends DoublePainter {
   @override
-  void paint(Canvas canvas, Size size) {
-    // super.paint(canvas, size);
-    if (data.length <= 0) return;
-
+  void paintDataPoints(
+      List<double> data, Color color, Canvas canvas, Size size) {
+    Path path = Path();
     final paint = Paint()
       ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..style = paintingStyle
+      ..strokeWidth = strokeWidth;
 
     final height = size.height;
     final width = size.width;
-    Path path = Path();
-
     final maxDataValue =
         data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
     final xMargin = width / data.length;
@@ -146,22 +179,18 @@ class LineChartPainter extends DoublePainter {
       y = data[i];
       path.lineTo(indices[i] * xMargin, height - y * yMargin);
     }
-
     canvas.drawPath(path, paint);
   }
 }
 
 class BarChartPainter extends DoublePainter {
   @override
-  void paint(Canvas canvas, Size size) {
-    if (data.length <= 0) return;
-
-    // TODO more checks
-
+  void paintDataPoints(
+      List<double> data, Color color, Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+      ..style = paintingStyle
+      ..strokeWidth = strokeWidth;
 
     final height = size.height;
     final width = size.width;
