@@ -92,7 +92,11 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
     return Scaffold(
       backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
-        title: Text("Monthly"),
+        centerTitle: true,
+        title: Text(
+          "Monthly",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
