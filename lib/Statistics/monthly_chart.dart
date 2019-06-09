@@ -14,6 +14,30 @@ import 'package:flutter/material.dart';
 
 enum MonthlyChartType { LINE, BAR }
 
+MonthlyChartType fromIntToMonthlyChartType(int value) {
+  switch (value) {
+    case 1:
+      return MonthlyChartType.LINE;
+      break;
+    case 2:
+      return MonthlyChartType.BAR;
+      break;
+  }
+  return MonthlyChartType.LINE;
+}
+
+int fromMonthlyChartTypeToInt(MonthlyChartType type) {
+  switch (type) {
+    case MonthlyChartType.LINE:
+      return 1;
+      break;
+    case MonthlyChartType.BAR:
+      return 2;
+      break;
+  }
+  return 1;
+}
+
 CustomPainter getPainterFromType(MonthlyChartType type) {
   switch (type) {
     case MonthlyChartType.LINE:

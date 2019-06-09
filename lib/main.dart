@@ -17,7 +17,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // set mock values for testing/emulator
+  const MethodChannel('plugins.flutter.io/shared_preferences')
+      .setMockMethodCallHandler((MethodCall methodCall) async {
+    if (methodCall.method == 'getAll') {
+      return <String, dynamic>{}; // set initial values here if desired
+    }
+    return null;
+  });
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

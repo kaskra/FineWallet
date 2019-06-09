@@ -4,8 +4,6 @@
  *
  */
 
-import 'dart:math';
-
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
 import 'package:finewallet/Statistics/chartstyle.dart';
@@ -13,6 +11,7 @@ import 'package:finewallet/Statistics/monthly_chart.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MonthlyOverview extends StatefulWidget {
   MonthlyOverview({@required this.initialMonth});
@@ -118,20 +117,22 @@ class MonthCard extends StatefulWidget {
 }
 
 class _MonthCardState extends State<MonthCard> {
-  List<double> _values;
-  double _avg;
-  double _incomeSum;
-  double _expenseSum;
+  MonthlyChartType _type = MonthlyChartType.LINE;
 
   @override
   void initState() {
     super.initState();
-    // some random test data
-    _values = List.generate(
-        31, (int index) => Random().nextDouble() * Random().nextInt(100));
-    _incomeSum = 1750;
-    _expenseSum = _values.fold(0, (prev, next) => prev + next);
-    _avg = _expenseSum / _values.length;
+    _loadPrefs();
+  }
+
+  _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    _type = fromIntToMonthlyChartType(prefs.getInt("chart_type"));
+  }
+
+  _savePrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt("chart_type", fromMonthlyChartTypeToInt(_type));
   }
 
   @override
@@ -190,24 +191,24 @@ class _MonthCardState extends State<MonthCard> {
                   children: <Widget>[
                     MonthlyChart(
                       data: expense,
-                      type: MonthlyChartType.LINE,
-                      //lineColor: Colors.blue,
-                      additionalData: [income],
-                      style: ChartStyle(
-                          border: Border.all(color: Colors.black12, width: 1),
-                          backgroundColor: Colors.transparent,
-                          strokeWidth: 1.5),
-                    ),
-                    Divider(),
-                    MonthlyChart(
-                      data: expense,
-                      type: MonthlyChartType.BAR,
+                      type: _type,
                       lineColor: Colors.blue,
                       additionalData: [income],
                       style: ChartStyle(
                           border: Border.all(color: Colors.black12, width: 1),
                           backgroundColor: Colors.transparent,
-                          strokeWidth: 4),
+                          strokeWidth: 2.5),
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        setState(() {
+                          _type = _type == MonthlyChartType.LINE
+                              ? MonthlyChartType.BAR
+                              : MonthlyChartType.LINE;
+                        });
+                        _savePrefs();
+                      },
+                      child: Text("Switch"),
                     ),
                   ],
                 );
