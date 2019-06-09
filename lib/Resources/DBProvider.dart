@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 9.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -32,17 +32,14 @@ class DBProvider {
   initDB() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, "Transactions.db");
-    return await openDatabase(path, version: 1, onOpen: (db) {},
+    return await openDatabase(path, version: 2, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE transactions ("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "subcategory INTEGER,"
           "amount REAL,"
           "date INTEGER,"
-          "isExpense INTEGER,"
-          "isRecurring INTEGER,"
-          "replayType INTEGER,"
-          "replayUntil INTEGER"
+          "isExpense INTEGER"
           ")");
       await db.execute("CREATE TABLE categories("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -53,6 +50,14 @@ class DBProvider {
           "name TEXT,"
           "category INTEGER"
           ")");
+    }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
+      if (oldVersion > newVersion) return;
+      await db.execute(
+          "ALTER TABLE transitions ADD COLUMN isRecurring INTEGER DEFAULT 0");
+      await db.execute(
+          "ALTER TABLE transitions ADD COLUMN replayType INTEGER DEFAULT 0");
+      await db.execute(
+          "ALTER TABLE transitions ADD COLUMN replayUnitl INTEGER DEFAULT null");
     });
   }
 
