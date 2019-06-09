@@ -3,8 +3,6 @@
  * Copyright (c) 2019. All rights reserved.
  *
  */
-import 'dart:math';
-
 import 'package:finewallet/Statistics/double_painter.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +18,6 @@ class LineChartPainter extends DoublePainter {
 
     final height = size.height;
     final width = size.width;
-    final maxDataValue =
-        data.fold(0.0, (prev, next) => max<double>(prev, next)) + upperSpace;
     final xMargin = width / data.length;
     final yMargin = height / maxDataValue;
 

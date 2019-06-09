@@ -192,12 +192,12 @@ class _MonthCardState extends State<MonthCard> {
                     MonthlyChart(
                       data: expense,
                       type: _type,
-                      lineColor: Colors.blue,
+                      lineColor: Colors.red,
                       additionalData: [income],
                       style: ChartStyle(
                           border: Border.all(color: Colors.black12, width: 1),
                           backgroundColor: Colors.transparent,
-                          strokeWidth: 2.5),
+                          strokeWidth: 3),
                     ),
                     RaisedButton(
                       onPressed: () {

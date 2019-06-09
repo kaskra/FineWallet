@@ -4,6 +4,7 @@
  *
  */
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:finewallet/Statistics/chartstyle.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class DoublePainter extends CustomPainter {
   List<double> indices;
   double strokeWidth = 1;
   PaintingStyle paintingStyle = PaintingStyle.stroke;
+  List<List<double>> allData = [];
+  double maxDataValue = double.maxFinite;
 
   DoublePainter(
       {List<double> data, Color color, List<List<double>> additionalData}) {
@@ -34,6 +37,7 @@ class DoublePainter extends CustomPainter {
 
   void update() {
     if (data != null) {
+      allData.add(data);
       indices = List.generate(data.length, (int index) => index.toDouble() + 1);
     }
     if (style != null) {
@@ -49,7 +53,13 @@ class DoublePainter extends CustomPainter {
         additionalData = additionalData.sublist(
             0, defaultColors.where((color) => color != this.color).length);
       }
+      allData.addAll(additionalData);
     }
+
+    maxDataValue = allData
+        .map((list) => list.fold(0.0, (prev, next) => max<double>(prev, next)))
+        .fold(0.0, (prev, next) => max<double>(prev, next));
+    maxDataValue += maxDataValue / 5;
   }
 
   void paintDataPoints(
@@ -69,6 +79,7 @@ class DoublePainter extends CustomPainter {
         .storage);
 
     List<Color> usedColors = [color];
+
     paintDataPoints(data, color, canvas, size);
     for (List<double> data in additionalData ?? []) {
       Color color =
