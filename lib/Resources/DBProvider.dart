@@ -57,7 +57,7 @@ class DBProvider {
       await db.execute(
           "ALTER TABLE transactions ADD COLUMN replayType INTEGER DEFAULT 0");
       await db.execute(
-          "ALTER TABLE transactions ADD COLUMN replayUnitl INTEGER DEFAULT null");
+          "ALTER TABLE transactions ADD COLUMN replayUntil INTEGER DEFAULT null");
     });
   }
 
