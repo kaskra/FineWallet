@@ -1,10 +1,11 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 9.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -12,27 +13,36 @@ class LineChart extends StatefulWidget {
   LineChart({@required this.data, @required this.lineColor});
 
   final List<double> data;
+  final MonthlyChartType type;
   final Color lineColor;
+  final List<List<double>> additionalData;
 
-  @override
-  _LineChartState createState() => _LineChartState();
-}
-
-class _LineChartState extends State<LineChart> {
-  @override
-  void initState() {
-    super.initState();
+  static CustomPainter getPainterFromType(MonthlyChartType type) {
+    switch (type) {
+      case MonthlyChartType.LINE:
+        return LineChartPainter();
+        break;
+      case MonthlyChartType.BAR:
+        return BarChartPainter();
+        break;
+    }
+    return LineChartPainter();
   }
 
   @override
   Widget build(BuildContext context) {
+    DoublePainter doublePainter = getPainterFromType(type);
+    doublePainter.data = data ?? List.generate(31, (_) => 0.0);
+    doublePainter.color = lineColor ?? Colors.black;
+    doublePainter.additionalData = additionalData;
+    doublePainter.update();
+
     return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black12, width: 1),
+          color: Colors.transparent),
       child: CustomPaint(
-        painter: LineChartPainter(
-            data: widget.data ?? List.generate(31, (_) => 0.0),
-            color: widget.lineColor ?? Colors.black),
+        painter: doublePainter,
         child: Container(
           height: 120,
           width: MediaQuery.of(context).size.width,
@@ -42,19 +52,48 @@ class _LineChartState extends State<LineChart> {
   }
 }
 
-class LineChartPainter extends CustomPainter {
-  List<double> indices;
+class DoublePainter extends CustomPainter {
+  List<List<double>> additionalData;
   List<double> data;
-  final Color color;
+  Color color;
 
   final int upperSpace = 20;
+  List<double> indices;
 
-  LineChartPainter({this.data, this.color}) {
-    indices = List.generate(data.length, (int index) => index.toDouble() + 1);
+  DoublePainter(
+      {List<double> data, Color color, List<List<double>> additionalData}) {
+    this.data = data;
+
+    this.additionalData = additionalData;
+    this.color = color;
+    if (data != null) {
+      indices = List.generate(data.length, (int index) => index.toDouble() + 1);
+    }
+  }
+
+  void update() {
+    if (data != null) {
+      indices = List.generate(data.length, (int index) => index.toDouble() + 1);
+    }
   }
 
   @override
   void paint(Canvas canvas, Size size) {
+    throw Exception(
+        "Not implemented on parent class. Try creating an instance of a subtype.");
+  }
+
+  @override
+  bool shouldRepaint(DoublePainter oldDelegate) => false;
+
+  @override
+  bool shouldRebuildSemantics(DoublePainter oldDelegate) => false;
+}
+
+class LineChartPainter extends DoublePainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // super.paint(canvas, size);
     if (data.length <= 0) return;
 
     final paint = Paint()
@@ -81,62 +120,14 @@ class LineChartPainter extends CustomPainter {
 
     canvas.drawPath(path, paint);
   }
-
-  @override
-  bool shouldRepaint(LineChartPainter oldDelegate) => false;
-
-  @override
-  bool shouldRebuildSemantics(LineChartPainter oldDelegate) => false;
 }
 
-class BarChart extends StatefulWidget {
-  BarChart({@required this.data, @required this.barColor});
-
-  final List<double> data;
-  final Color barColor;
-
-  @override
-  _BarChartState createState() => _BarChartState();
-}
-
-class _BarChartState extends State<BarChart> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
-      child: CustomPaint(
-        painter: BarChartPainter(
-            data: widget.data ?? List.generate(31, (_) => 0.0),
-            color: widget.barColor ?? Colors.black),
-        child: Container(
-          height: 120,
-          width: MediaQuery.of(context).size.width,
-        ),
-      ),
-    );
-  }
-}
-
-class BarChartPainter extends CustomPainter {
-  List<double> indices;
-  List<double> data;
-  final Color color;
-
-  final int upperSpace = 20;
-
-  BarChartPainter({this.data, this.color}) {
-    indices = List.generate(data.length, (int index) => index.toDouble() + 1);
-  }
-
+class BarChartPainter extends DoublePainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (data.length <= 0) return;
+
+    // TODO more checks
 
     final paint = Paint()
       ..color = color
@@ -158,10 +149,4 @@ class BarChartPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
   }
-
-  @override
-  bool shouldRepaint(BarChartPainter oldDelegate) => false;
-
-  @override
-  bool shouldRebuildSemantics(BarChartPainter oldDelegate) => false;
 }
