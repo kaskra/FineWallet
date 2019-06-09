@@ -53,11 +53,11 @@ class DBProvider {
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
       await db.execute(
-          "ALTER TABLE transitions ADD COLUMN isRecurring INTEGER DEFAULT 0");
+          "ALTER TABLE transactions ADD COLUMN isRecurring INTEGER DEFAULT 0");
       await db.execute(
-          "ALTER TABLE transitions ADD COLUMN replayType INTEGER DEFAULT 0");
+          "ALTER TABLE transactions ADD COLUMN replayType INTEGER DEFAULT 0");
       await db.execute(
-          "ALTER TABLE transitions ADD COLUMN replayUnitl INTEGER DEFAULT null");
+          "ALTER TABLE transactions ADD COLUMN replayUnitl INTEGER DEFAULT null");
     });
   }
 
