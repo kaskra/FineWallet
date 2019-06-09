@@ -57,6 +57,7 @@ class DBProvider {
 
       for (int oVersion in Migration.migrationScripts.keys) {
         if (oVersion >= oldVersion) {
+          print("Migrating database to version $oVersion");
           for (String query in Migration.migrationScripts[oVersion]) {
             await db.execute(query);
           }
