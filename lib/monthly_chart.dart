@@ -9,8 +9,37 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class LineChart extends StatefulWidget {
-  LineChart({@required this.data, @required this.lineColor});
+enum MonthlyChartType { LINE, BAR }
+
+class ChartStyle {
+  ChartStyle(
+      {this.strokeWidth = 1,
+      this.paintingStyle = PaintingStyle.stroke,
+      this.backgroundColor = Colors.white,
+      this.border});
+
+  final double strokeWidth;
+  final PaintingStyle paintingStyle;
+  final Color backgroundColor;
+  final Border border;
+
+  static const defaultLineColors = [
+    Colors.red,
+    Colors.green,
+    Colors.yellow,
+    Colors.blue,
+    Colors.orange,
+    Colors.black,
+    Colors.cyan
+  ];
+}
+
+class MonthlyChart extends StatelessWidget {
+  MonthlyChart(
+      {@required this.data,
+      @required this.type,
+      this.lineColor,
+      this.additionalData});
 
   final List<double> data;
   final MonthlyChartType type;

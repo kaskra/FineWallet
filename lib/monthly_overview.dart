@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 9.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -165,7 +165,7 @@ class _MonthCardState extends State<MonthCard> {
                   data.add(day.toDouble());
                 }
 
-                data = data
+                List<double> expense = data
                     .map((date) => snapshot.data
                         .where((item) => item.date == date)
                         .where((item) => item.isExpense == 1)
@@ -175,16 +175,30 @@ class _MonthCardState extends State<MonthCard> {
                                 (prev + curr.amount.toDouble())))
                     .toList();
 
+                List<double> income = data
+                    .map((date) => snapshot.data
+                        .where((item) => item.date == date)
+                        .where((item) => item.isExpense == 0)
+                        .fold(
+                            0.0,
+                            (double prev, curr) =>
+                                (prev + curr.amount.toDouble())))
+                    .toList();
+
                 return Column(
                   children: <Widget>[
-                    LineChart(
-                      data: data,
+                    MonthlyChart(
+                      data: expense,
+                      type: MonthlyChartType.LINE,
                       lineColor: Colors.blue,
+                      additionalData: [income],
                     ),
                     Divider(),
-                    BarChart(
-                      data: data,
-                      barColor: Colors.blue,
+                    MonthlyChart(
+                      data: expense,
+                      type: MonthlyChartType.BAR,
+                      lineColor: Colors.blue,
+                      additionalData: [income],
                     ),
                   ],
                 );
