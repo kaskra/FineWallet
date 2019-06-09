@@ -41,7 +41,10 @@ class DBProvider {
           "subcategory INTEGER,"
           "amount REAL,"
           "date INTEGER,"
-          "isExpense INTEGER"
+          "isExpense INTEGER,"
+          "isRecurring INTEGER,"
+          "replayType INTEGER,"
+          "replayUntil INTEGER"
           ")");
       await db.execute("CREATE TABLE categories("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
