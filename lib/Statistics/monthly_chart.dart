@@ -14,6 +14,18 @@ import 'package:flutter/material.dart';
 
 enum MonthlyChartType { LINE, BAR }
 
+CustomPainter getPainterFromType(MonthlyChartType type) {
+  switch (type) {
+    case MonthlyChartType.LINE:
+      return LineChartPainter();
+      break;
+    case MonthlyChartType.BAR:
+      return BarChartPainter();
+      break;
+  }
+  return LineChartPainter();
+}
+
 class MonthlyChart extends StatelessWidget {
   MonthlyChart(
       {@required this.data,
@@ -27,18 +39,6 @@ class MonthlyChart extends StatelessWidget {
   final ChartStyle style;
   final Color lineColor;
   final List<List<double>> additionalData;
-
-  static CustomPainter getPainterFromType(MonthlyChartType type) {
-    switch (type) {
-      case MonthlyChartType.LINE:
-        return LineChartPainter();
-        break;
-      case MonthlyChartType.BAR:
-        return BarChartPainter();
-        break;
-    }
-    return LineChartPainter();
-  }
 
   @override
   Widget build(BuildContext context) {
