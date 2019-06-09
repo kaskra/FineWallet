@@ -23,8 +23,6 @@ class MonthlyOverview extends StatefulWidget {
 }
 
 class _MonthlyOverviewState extends State<MonthlyOverview> {
-  final PageController _controller = PageController(viewportFraction: 0.8);
-
   DateTime _date;
 
   @override
@@ -34,6 +32,12 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
   }
 
   Widget _navigationRow() {
+    DateTime firstOfCurrentMonth = DateTime.utc(_date.year, _date.month, 1);
+    DateTime prevMonth = firstOfCurrentMonth.add(Duration(days: -1));
+    DateTime lastOfCurrentMonth =
+        DateTime.utc(_date.year, _date.month, getLastDayOfMonth(_date));
+    DateTime nextMonth = lastOfCurrentMonth.add(Duration(days: 1));
+
     return Container(
       margin: EdgeInsets.only(top: 5, left: 5, right: 5),
       child: Row(
@@ -49,19 +53,49 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                   height: 50,
                 ),
                 onTap: () {
-                  DateTime firstOfCurrentMonth =
-                      DateTime.utc(_date.year, _date.month, 1);
-                  DateTime prevMonth =
-                      firstOfCurrentMonth.add(Duration(days: -1));
                   setState(() {
                     _date = DateTime.utc(prevMonth.year, prevMonth.month, 15);
                   });
                 },
               )),
-          Container(
-            child: Text(
-              "${getMonthName(_date.month)} ${_date.year}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Expanded(
+            child: Transform(
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.005)
+                  ..rotateY(0.8),
+                child: Container(
+                  child: Text(
+                    "${getMonthName(prevMonth.month, abbrev: true)}",
+                    style: TextStyle(fontSize: 17),
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
+                )),
+          ),
+          Expanded(
+              flex: 5,
+              child: Center(
+                child: Container(
+                  child: Text(
+                    "${getMonthName(_date.month)} ${_date.year}",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )),
+          Expanded(
+            child: Transform(
+              transform: Matrix4.identity()
+                ..setEntry(1, 2, 0.03)
+                ..rotateY(0.8),
+              child: Container(
+                  child: Text(
+                "${getMonthName(nextMonth.month, abbrev: true)}",
+                style: TextStyle(fontSize: 17),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+              )),
             ),
           ),
           Padding(
@@ -73,9 +107,6 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                 height: 50,
               ),
               onTap: () {
-                DateTime lastOfCurrentMonth = DateTime.utc(
-                    _date.year, _date.month, getLastDayOfMonth(_date));
-                DateTime nextMonth = lastOfCurrentMonth.add(Duration(days: 1));
                 setState(() {
                   _date = DateTime.utc(nextMonth.year, nextMonth.month, 15);
                 });
