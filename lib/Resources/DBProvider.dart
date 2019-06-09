@@ -10,6 +10,7 @@ import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/db_helper.dart';
+import 'package:finewallet/Resources/db_migration.dart';
 import 'package:finewallet/utils.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -52,12 +53,12 @@ class DBProvider {
           ")");
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
-      await db.execute(
-          "ALTER TABLE transactions ADD COLUMN isRecurring INTEGER DEFAULT 0");
-      await db.execute(
-          "ALTER TABLE transactions ADD COLUMN replayType INTEGER DEFAULT 0");
-      await db.execute(
-          "ALTER TABLE transactions ADD COLUMN replayUntil INTEGER DEFAULT null");
+
+      for (int oVersion in Migration.migrationScripts.keys) {
+        if (oVersion >= oldVersion) {
+          await db.execute(Migration.migrationScripts[oVersion]);
+        }
+      }
     });
   }
 
