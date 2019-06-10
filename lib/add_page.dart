@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 10.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -191,7 +191,8 @@ class _AddPageState extends State<AddPage> {
         return buildBottomPicker(
             CupertinoDatePicker(
               mode: CupertinoDatePickerMode.date,
-              initialDateTime: _date ?? DateTime.now(),
+              initialDateTime:
+                  _repeatUntil ?? DateTime.now().add(Duration(days: 1)),
               onDateTimeChanged: (DateTime newDateTime) {
                 setState(() {
                   _repeatUntil = newDateTime;
@@ -340,6 +341,10 @@ class _AddPageState extends State<AddPage> {
               border: Border(bottom: BorderSide(color: Colors.black12))),
           child: MaterialButton(
             onPressed: () {
+              setState(() {
+                _repeatUntil =
+                    _repeatUntil ?? DateTime.now().add(Duration(days: 1));
+              });
               setRepeatingDate();
             },
             child: Text(
