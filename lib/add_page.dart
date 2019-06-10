@@ -217,12 +217,9 @@ class _AddPageState extends State<AddPage> {
         child: Card(
           color: Colors.white,
           child: CornerTriangle(
+              corner: Corner.TOP_LEFT,
               size: Size(25, 25),
-              icon: Icon(
-                Icons.replay,
-                color: Colors.white,
-                size: 13,
-              ),
+              icon: CornerIcon(Icons.replay, color: Colors.white),
               color: Colors.orange,
               child: Column(
                 children: <Widget>[
