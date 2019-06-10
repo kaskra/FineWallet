@@ -1,12 +1,12 @@
 /*
- * Developed by Lukas Krauch 9.6.2019.
+ * Developed by Lukas Krauch 10.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
-import 'package:finewallet/Statistics/chartstyle.dart';
 import 'package:finewallet/Statistics/monthly_chart.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -45,7 +45,7 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Padding(
-              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+              padding: EdgeInsets.fromLTRB(0, 5, 12, 5),
               child: InkWell(
                 child: Container(
                   child: Icon(Icons.keyboard_arrow_left),
@@ -171,92 +171,130 @@ class _MonthCardState extends State<MonthCard> {
     prefs.setInt("chart_type", fromMonthlyChartTypeToInt(_type));
   }
 
+  List<charts.Series<DataPoint, int>> buildSeries(List<DataPoint> points) {
+    var expenses = new charts.Series<DataPoint, int>(
+        id: 'Expense',
+        data: points,
+        domainFn: (DataPoint p, _) => p.timeStamp,
+        measureFn: (DataPoint p, _) => p.expense);
+    var income = new charts.Series(
+        id: 'Income',
+        data: points,
+        domainFn: (DataPoint p, _) => p.timeStamp,
+        measureFn: (DataPoint p, _) => p.income);
+    return [expenses, income];
+  }
+
+  Widget _buildChart() {
+    return FutureBuilder(
+      future: DBProvider.db
+          .getTransactionsOfMonth(widget.month.millisecondsSinceEpoch),
+      builder: (context, AsyncSnapshot<List<TransactionModel>> snapshot) {
+        if (snapshot.hasData) {
+          List<DataPoint> dataPoints = generateDataPoints(snapshot);
+          return Column(
+            children: <Widget>[
+              SizedBox(
+                child: IntegerOnlyMeasureAxis(buildSeries(dataPoints)),
+                height: 300,
+              ),
+              RaisedButton(
+                onPressed: () {
+                  setState(() {
+                    _type = _type == MonthlyChartType.LINE
+                        ? MonthlyChartType.BAR
+                        : MonthlyChartType.LINE;
+                  });
+                  _savePrefs();
+                },
+                child: Text("Switch"),
+              ),
+            ],
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  List<DataPoint> generateDataPoints(
+      AsyncSnapshot<List<TransactionModel>> snapshot) {
+    DateTime date = widget.month ?? DateTime.now();
+
+    int lastDay = getLastDayOfMonth(date);
+    DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
+    DateTime lastOfMonth =
+        DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
+
+    List<double> data = List();
+    for (var i = firstOfMonth.millisecondsSinceEpoch;
+        i < lastOfMonth.millisecondsSinceEpoch;
+        i = i + Duration(days: 1).inMilliseconds) {
+      int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
+      data.add(day.toDouble());
+    }
+
+    List<double> expense = data
+        .map((date) => snapshot.data
+            .where((item) => item.date == date)
+            .where((item) => item.isExpense == 1)
+            .fold(0.0, (double prev, curr) => (prev + curr.amount.toDouble())))
+        .toList();
+
+    List<double> income = data
+        .map((date) => snapshot.data
+            .where((item) => item.date == date)
+            .where((item) => item.isExpense == 0)
+            .fold(0.0, (double prev, curr) => (prev + curr.amount.toDouble())))
+        .toList();
+    List<int> days = data
+        .map((d) => DateTime.fromMillisecondsSinceEpoch(d.toInt()).day)
+        .toList();
+
+    List<DataPoint> dataPoints = [];
+    for (int i = 0; i < days.length; i++) {
+      dataPoints.add(DataPoint(days[i], expense[i], income[i]));
+    }
+    return dataPoints;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
-        // border: Border.all(color: Colors.orange, width: 1),
+//        border: Border.all(color: Colors.orange, width: 1),
       ),
-      padding: EdgeInsets.only(left: 45, right: 45, top: 15, bottom: 15),
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          FutureBuilder(
-            future: DBProvider.db
-                .getTransactionsOfMonth(widget.month.millisecondsSinceEpoch),
-            builder: (context, AsyncSnapshot<List<TransactionModel>> snapshot) {
-              if (snapshot.hasData) {
-                DateTime date = widget.month ?? DateTime.now();
-
-                int lastDay = getLastDayOfMonth(date);
-                DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
-                DateTime lastOfMonth =
-                    DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
-
-                List<double> data = List();
-                for (var i = firstOfMonth.millisecondsSinceEpoch;
-                    i < lastOfMonth.millisecondsSinceEpoch;
-                    i = i + Duration(days: 1).inMilliseconds) {
-                  int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
-                  data.add(day.toDouble());
-                }
-
-                List<double> expense = data
-                    .map((date) => snapshot.data
-                        .where((item) => item.date == date)
-                        .where((item) => item.isExpense == 1)
-                        .fold(
-                            0.0,
-                            (double prev, curr) =>
-                                (prev + curr.amount.toDouble())))
-                    .toList();
-
-                List<double> income = data
-                    .map((date) => snapshot.data
-                        .where((item) => item.date == date)
-                        .where((item) => item.isExpense == 0)
-                        .fold(
-                            0.0,
-                            (double prev, curr) =>
-                                (prev + curr.amount.toDouble())))
-                    .toList();
-
-                return Column(
-                  children: <Widget>[
-                    MonthlyChart(
-                      data: expense,
-                      type: _type,
-                      lineColor: Colors.red,
-                      additionalData: [income],
-                      style: ChartStyle(
-                          border: Border.all(color: Colors.black12, width: 1),
-                          backgroundColor: Colors.transparent,
-                          strokeWidth: 3),
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        setState(() {
-                          _type = _type == MonthlyChartType.LINE
-                              ? MonthlyChartType.BAR
-                              : MonthlyChartType.LINE;
-                        });
-                        _savePrefs();
-                      },
-                      child: Text("Switch"),
-                    ),
-                  ],
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          )
-        ],
-      ),
+      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+//      margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
+      child: _buildChart(),
     );
   }
+}
+
+class IntegerOnlyMeasureAxis extends StatelessWidget {
+  final List<charts.Series<DataPoint, int>> seriesList;
+  final bool animate;
+
+  IntegerOnlyMeasureAxis(this.seriesList, {this.animate});
+
+  @override
+  Widget build(BuildContext context) {
+    return new charts.LineChart(
+      seriesList,
+      animate: true,
+      defaultRenderer:
+          charts.LineRendererConfig(roundEndCaps: true, strokeWidthPx: 2),
+    );
+  }
+}
+
+class DataPoint {
+  final int timeStamp;
+  final double expense;
+  final double income;
+  DataPoint(this.timeStamp, this.expense, this.income);
 }
