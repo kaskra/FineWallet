@@ -268,7 +268,7 @@ class _MonthCardState extends State<MonthCard> {
         color: Colors.transparent,
 //        border: Border.all(color: Colors.orange, width: 1),
       ),
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      padding: EdgeInsets.only(left: 15, right: 10, top: 10),
 //      margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
       child: _buildChart(),
     );
@@ -283,12 +283,42 @@ class IntegerOnlyMeasureAxis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.LineChart(
-      seriesList,
-      animate: true,
-      defaultRenderer:
-          charts.LineRendererConfig(roundEndCaps: true, strokeWidthPx: 2),
-    );
+    return new charts.LineChart(seriesList,
+        animate: true,
+        animationDuration: Duration(milliseconds: 150),
+        defaultRenderer: charts.LineRendererConfig(
+          roundEndCaps: true,
+          strokeWidthPx: 2,
+          includeArea: true,
+        ),
+        behaviors: [
+          charts.ChartTitle("Days",
+              behaviorPosition: charts.BehaviorPosition.bottom,
+              titleOutsideJustification: charts.OutsideJustification.end,
+              innerPadding: 0,
+              titleStyleSpec: charts.TextStyleSpec(fontSize: 12)),
+          charts.ChartTitle("€",
+              behaviorPosition: charts.BehaviorPosition.start,
+              titleOutsideJustification:
+                  charts.OutsideJustification.endDrawArea,
+              titleDirection: charts.ChartTitleDirection.horizontal,
+              titleStyleSpec: charts.TextStyleSpec(fontSize: 12),
+              outerPadding: 0,
+              innerPadding: 0),
+        ],
+        domainAxis: charts.NumericAxisSpec(
+            tickProviderSpec:
+                charts.StaticNumericTickProviderSpec(<charts.TickSpec<int>>[
+          charts.TickSpec<int>(1),
+          charts.TickSpec<int>(6),
+          charts.TickSpec<int>(12),
+          charts.TickSpec<int>(18),
+          charts.TickSpec<int>(24),
+          charts.TickSpec<int>(31),
+        ])),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+            tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                dataIsInWholeNumbers: true, desiredTickCount: 5)));
   }
 }
 
