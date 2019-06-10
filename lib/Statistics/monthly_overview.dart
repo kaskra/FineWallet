@@ -7,6 +7,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
+import 'package:finewallet/Statistics/chart_data_point.dart';
 import 'package:finewallet/Statistics/chart_type.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -382,11 +383,4 @@ class ExpenseIncomeChart extends StatelessWidget {
       child: CircularProgressIndicator(),
     );
   }
-}
-
-class DataPoint {
-  final int timeStamp;
-  final double expense;
-  final double income;
-  DataPoint(this.timeStamp, this.expense, this.income);
 }
