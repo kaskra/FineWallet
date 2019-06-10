@@ -7,7 +7,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/DBProvider.dart';
-import 'package:finewallet/Statistics/monthly_chart.dart';
+import 'package:finewallet/Statistics/chart_type.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -153,7 +153,7 @@ class MonthCard extends StatefulWidget {
 }
 
 class _MonthCardState extends State<MonthCard> {
-  MonthlyChartType _type = MonthlyChartType.LINE;
+  ChartType _type = ChartType.LINE;
 
   @override
   void initState() {
@@ -163,12 +163,12 @@ class _MonthCardState extends State<MonthCard> {
 
   _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    _type = fromIntToMonthlyChartType(prefs.getInt("chart_type"));
+    _type = fromIntToChartType(prefs.getInt("chart_type"));
   }
 
   _savePrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt("chart_type", fromMonthlyChartTypeToInt(_type));
+    prefs.setInt("chart_type", fromChartTypeToInt(_type));
   }
 
   List<charts.Series<DataPoint, int>> buildSeries(List<DataPoint> points) {
@@ -195,15 +195,15 @@ class _MonthCardState extends State<MonthCard> {
           return Column(
             children: <Widget>[
               SizedBox(
-                child: IntegerOnlyMeasureAxis(buildSeries(dataPoints)),
+                child: ExpenseIncomeChart(buildSeries(dataPoints), _type),
                 height: 300,
               ),
               RaisedButton(
                 onPressed: () {
                   setState(() {
-                    _type = _type == MonthlyChartType.LINE
-                        ? MonthlyChartType.BAR
-                        : MonthlyChartType.LINE;
+                    _type = _type == ChartType.LINE
+                        ? ChartType.BAR
+                        : ChartType.LINE;
                   });
                   _savePrefs();
                 },
@@ -275,14 +275,14 @@ class _MonthCardState extends State<MonthCard> {
   }
 }
 
-class IntegerOnlyMeasureAxis extends StatelessWidget {
+class ExpenseIncomeChart extends StatelessWidget {
   final List<charts.Series<DataPoint, int>> seriesList;
   final bool animate;
+  final ChartType type;
 
-  IntegerOnlyMeasureAxis(this.seriesList, {this.animate});
+  ExpenseIncomeChart(this.seriesList, this.type, {this.animate});
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildLineChart() {
     return new charts.LineChart(seriesList,
         animate: true,
         animationDuration: Duration(milliseconds: 150),
@@ -314,11 +314,73 @@ class IntegerOnlyMeasureAxis extends StatelessWidget {
           charts.TickSpec<int>(12),
           charts.TickSpec<int>(18),
           charts.TickSpec<int>(24),
-          charts.TickSpec<int>(31),
+          charts.TickSpec<int>(30),
         ])),
         primaryMeasureAxis: charts.NumericAxisSpec(
+            renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0),
             tickProviderSpec: charts.BasicNumericTickProviderSpec(
                 dataIsInWholeNumbers: true, desiredTickCount: 5)));
+  }
+
+  Widget _buildBarChart() {
+    List<charts.Series<DataPoint, String>> series = seriesList
+        .map((list) => new charts.Series<DataPoint, String>(
+            id: list.id,
+            data: list.data,
+            domainFn: (DataPoint p, _) => p.timeStamp.toString(),
+            measureFn: (DataPoint p, _) =>
+                list.id == 'Expense' ? p.expense : p.income))
+        .toList();
+
+    return new charts.BarChart(series,
+        animate: true,
+        animationDuration: Duration(milliseconds: 150),
+        defaultRenderer: charts.BarRendererConfig(
+          groupingType: charts.BarGroupingType.grouped,
+          strokeWidthPx: 2,
+        ),
+        behaviors: [
+          charts.ChartTitle("Days",
+              behaviorPosition: charts.BehaviorPosition.bottom,
+              titleOutsideJustification: charts.OutsideJustification.end,
+              innerPadding: 0,
+              titleStyleSpec: charts.TextStyleSpec(fontSize: 12)),
+          charts.ChartTitle("€",
+              behaviorPosition: charts.BehaviorPosition.start,
+              titleOutsideJustification:
+                  charts.OutsideJustification.endDrawArea,
+              titleDirection: charts.ChartTitleDirection.horizontal,
+              titleStyleSpec: charts.TextStyleSpec(fontSize: 12),
+              outerPadding: 0,
+              innerPadding: 0),
+        ],
+        domainAxis: charts.OrdinalAxisSpec(
+            renderSpec: charts.SmallTickRendererSpec(labelOffsetFromAxisPx: 4),
+            tickProviderSpec:
+                charts.StaticOrdinalTickProviderSpec(<charts.TickSpec<String>>[
+              charts.TickSpec<String>('1'),
+              charts.TickSpec<String>('6'),
+              charts.TickSpec<String>('12'),
+              charts.TickSpec<String>('18'),
+              charts.TickSpec<String>('24'),
+              charts.TickSpec<String>('30'),
+            ])),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+            renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0),
+            tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                dataIsInWholeNumbers: true, desiredTickCount: 5)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (type == ChartType.LINE) {
+      return _buildLineChart();
+    } else if (type == ChartType.BAR) {
+      return _buildBarChart();
+    }
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 }
 
