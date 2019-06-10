@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 10.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -22,18 +22,21 @@ class CornerTriangle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        CustomPaint(
-          painter: CornerTrianglePainter(triangleSize: size, color: color),
-          child: child,
-        ),
-        Container(
-          padding: EdgeInsets.all(1),
-          alignment: Alignment(-1, -1),
-          child: icon,
-        )
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(4)),
+      child: Stack(
+        children: <Widget>[
+          CustomPaint(
+            painter: CornerTrianglePainter(triangleSize: size, color: color),
+            child: child,
+          ),
+          Container(
+            padding: EdgeInsets.all(1),
+            alignment: Alignment(-1, -1),
+            child: icon,
+          )
+        ],
+      ),
     );
   }
 }
