@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 10.6.2019.
+ * Developed by Lukas Krauch 14.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -177,12 +177,18 @@ class _MonthCardState extends State<MonthCard> {
         id: 'Expense',
         data: points,
         domainFn: (DataPoint p, _) => p.timeStamp,
-        measureFn: (DataPoint p, _) => p.expense);
+        measureFn: (DataPoint p, _) => p.expense,
+        colorFn: (DataPoint p, _) => charts.MaterialPalette.red.shadeDefault,
+        fillColorFn: (DataPoint p, _) =>
+            charts.MaterialPalette.red.shadeDefault);
     var income = new charts.Series(
         id: 'Income',
         data: points,
         domainFn: (DataPoint p, _) => p.timeStamp,
-        measureFn: (DataPoint p, _) => p.income);
+        measureFn: (DataPoint p, _) => p.income,
+        colorFn: (DataPoint p, _) => charts.MaterialPalette.green.shadeDefault,
+        fillColorFn: (DataPoint p, _) =>
+            charts.MaterialPalette.green.shadeDefault);
     return [expenses, income];
   }
 
@@ -288,10 +294,10 @@ class ExpenseIncomeChart extends StatelessWidget {
         animate: true,
         animationDuration: Duration(milliseconds: 150),
         defaultRenderer: charts.LineRendererConfig(
-          roundEndCaps: true,
-          strokeWidthPx: 2,
-          includeArea: true,
-        ),
+            roundEndCaps: true,
+            strokeWidthPx: 2,
+            includeArea: true,
+            areaOpacity: 0.5),
         behaviors: [
           charts.ChartTitle("Days",
               behaviorPosition: charts.BehaviorPosition.bottom,
@@ -330,7 +336,13 @@ class ExpenseIncomeChart extends StatelessWidget {
             data: list.data,
             domainFn: (DataPoint p, _) => p.timeStamp.toString(),
             measureFn: (DataPoint p, _) =>
-                list.id == 'Expense' ? p.expense : p.income))
+                list.id == 'Expense' ? p.expense : p.income,
+            colorFn: (DataPoint p, _) => list.id == 'Expense'
+                ? charts.MaterialPalette.red.shadeDefault
+                : charts.MaterialPalette.green.shadeDefault,
+            fillColorFn: (DataPoint p, _) => list.id == 'Expense'
+                ? charts.MaterialPalette.red.shadeDefault
+                : charts.MaterialPalette.green.shadeDefault))
         .toList();
 
     return new charts.BarChart(series,
