@@ -122,26 +122,34 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffd8e7ff),
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        centerTitle: true,
-        title: Text(
-          "Monthly",
-          style: TextStyle(color: Colors.white),
+        backgroundColor: Color(0xffd8e7ff),
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.white),
+          centerTitle: true,
+          title: Text(
+            "Monthly",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          _navigationRow(),
-          MonthCard(
-            month: _date,
-          )
-        ],
-      ),
-    );
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: _navigationRow(),
+              flex: 1,
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            Expanded(
+              flex: 10,
+              child: MonthCard(
+                month: _date,
+              ),
+            )
+          ],
+        ));
   }
 }
 
@@ -203,6 +211,7 @@ class _MonthCardState extends State<MonthCard> {
             children: <Widget>[
               SizedBox(
                 child: ExpenseIncomeChart(buildSeries(dataPoints), _type),
+                width: MediaQuery.of(context).size.width - 40,
                 height: 300,
               ),
               RaisedButton(
@@ -273,7 +282,6 @@ class _MonthCardState extends State<MonthCard> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
-//        border: Border.all(color: Colors.orange, width: 1),
       ),
       padding: EdgeInsets.only(left: 15, right: 10, top: 10),
 //      margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
@@ -324,7 +332,7 @@ class ExpenseIncomeChart extends StatelessWidget {
           charts.TickSpec<int>(30),
         ])),
         primaryMeasureAxis: charts.NumericAxisSpec(
-          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 50),
+          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0),
           tickProviderSpec: charts.BasicNumericTickProviderSpec(
               dataIsInWholeNumbers: true,
               desiredTickCount: 10,
