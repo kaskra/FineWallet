@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 14.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -162,6 +162,33 @@ class _HistoryPageState extends State<HistoryPage> {
             )));
   }
 
+  Future<bool> _showDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Delete transaction?"),
+            content: Text("This will delete the transaction."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text("Confirm"),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              )
+            ],
+          );
+        }).then((v) {
+      return v;
+    });
+  }
+
   Widget _historyItem(TransactionModel item) {
     return Row(
       children: <Widget>[
@@ -185,6 +212,7 @@ class _HistoryPageState extends State<HistoryPage> {
               _txBloc.delete(item.id);
               _showSnackBar(context);
             },
+            confirmDismiss: (DismissDirection direction) => _showDialog(),
             child: generalCard(_transactionCard(item), null, 3),
           ),
         ),
