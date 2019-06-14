@@ -324,9 +324,12 @@ class ExpenseIncomeChart extends StatelessWidget {
           charts.TickSpec<int>(30),
         ])),
         primaryMeasureAxis: charts.NumericAxisSpec(
-            renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0),
-            tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                dataIsInWholeNumbers: true, desiredTickCount: 5)));
+          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 50),
+          tickProviderSpec: charts.BasicNumericTickProviderSpec(
+              dataIsInWholeNumbers: true,
+              desiredTickCount: 10,
+              desiredMaxTickCount: 10),
+        ));
   }
 
   Widget _buildBarChart() {
@@ -381,7 +384,9 @@ class ExpenseIncomeChart extends StatelessWidget {
         primaryMeasureAxis: charts.NumericAxisSpec(
             renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0),
             tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                dataIsInWholeNumbers: true, desiredTickCount: 5)));
+                dataIsInWholeNumbers: true,
+                desiredTickCount: 10,
+                desiredMaxTickCount: 10)));
   }
 
   @override
