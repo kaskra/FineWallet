@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 9.6.2019.
+ * Developed by Lukas Krauch 16.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -9,8 +9,11 @@ import 'package:finewallet/Resources/DBProvider.dart';
 import 'package:finewallet/Resources/db_initilization.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
+import 'package:finewallet/bottom_bar_app_item.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
+import 'package:finewallet/profile.dart';
+import 'package:finewallet/sliding_fab_menu.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -58,6 +61,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 4;
+  bool _showBottomBar = true;
+
   @override
   void initState() {
     super.initState();
@@ -171,18 +177,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildFABs() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Spacer(
-          flex: 4,
-        ),
+//        Spacer(
+//          flex: 4,
+//        ),
         FloatingActionButton(
           heroTag: null,
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
           child: Icon(Icons.add, color: Colors.white),
         ),
-        Spacer(),
+//        Spacer(),
         FloatingActionButton(
           mini: true,
           heroTag: null,
@@ -193,16 +199,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       day: dayInMillis(DateTime.now())))),
           child: Icon(Icons.list, color: Colors.white),
         ),
-        Spacer(),
+//        Spacer(),
         FloatingActionButton(
           heroTag: null,
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddPage("Expense", 1))),
           child: Icon(Icons.remove, color: Colors.white),
         ),
-        Spacer(
-          flex: 4,
-        ),
+//        Spacer(
+//          flex: 4,
+//        ),
       ],
     );
   }
@@ -293,8 +299,66 @@ class _MyHomePageState extends State<MyHomePage> {
             )));
   }
 
+  Widget _buildBottomBar() {
+    return FABBottomAppBar(
+      color: Colors.black54,
+      selectedColor: Colors.orange,
+      items: [
+        FABBottomAppBarItem(iconData: Icons.person, text: "Me"),
+        FABBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
+        FABBottomAppBarItem(disabled: true),
+        FABBottomAppBarItem(
+          iconData: Icons.list,
+          text: "History",
+        ),
+        FABBottomAppBarItem(iconData: Icons.home, text: "Home"),
+      ],
+      onTabSelected: (int index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      selectedIndex: _currentIndex,
+      isVisible: _showBottomBar,
+    );
+  }
+
+  void _addTransaction(int leftRight) {
+    if (leftRight == -1) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AddPage("Income", 0)));
+    } else if (leftRight == 1) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AddPage("Expense", 1)));
+    }
+    return;
+  }
+
+  void _navCallback(bool showNavBar) {
+    setState(() {
+      _showBottomBar = showNavBar;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var children = [
+      ProfilePage(
+        showAppBar: false,
+      ),
+      MonthlyOverview(
+        initialMonth: DateTime.now(),
+        showAppBar: false,
+      ),
+      Container(),
+      HistoryPage(
+        "Transaction History",
+        day: dayInMillis(DateTime.now()),
+        showAppBar: false,
+      ),
+      _buildBody(),
+    ];
+
     return Scaffold(
       backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
@@ -304,9 +368,13 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: _buildBody(),
-      floatingActionButton: _buildFABs(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      bottomNavigationBar: _buildBottomBar(),
+      body: children[_currentIndex],
+      floatingActionButton: SlidingFABMenu(
+        onMenuFunction: _addTransaction,
+        tapCallback: _navCallback,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
