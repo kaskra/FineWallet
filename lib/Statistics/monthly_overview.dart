@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 14.6.2019.
+ * Developed by Lukas Krauch 16.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -15,9 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MonthlyOverview extends StatefulWidget {
-  MonthlyOverview({@required this.initialMonth});
+  MonthlyOverview({@required this.initialMonth, this.showAppBar: true});
 
   final DateTime initialMonth;
+  final bool showAppBar;
 
   @override
   _MonthlyOverviewState createState() => _MonthlyOverviewState();
@@ -123,14 +124,16 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xffd8e7ff),
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          centerTitle: true,
-          title: Text(
-            "Monthly",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+        appBar: widget.showAppBar
+            ? AppBar(
+                iconTheme: IconThemeData(color: Colors.white),
+                centerTitle: true,
+                title: Text(
+                  "Monthly",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            : null,
         body: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,

@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 14.6.2019.
+ * Developed by Lukas Krauch 16.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -15,10 +15,12 @@ import 'package:intl/intl.dart' as intl;
 import 'package:sticky_headers/sticky_headers.dart';
 
 class HistoryPage extends StatefulWidget {
-  HistoryPage(this.title, {Key key, @required this.day}) : super(key: key);
+  HistoryPage(this.title, {Key key, @required this.day, this.showAppBar: true})
+      : super(key: key);
 
   final String title;
   final int day;
+  final bool showAppBar;
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -146,9 +148,6 @@ class _HistoryPageState extends State<HistoryPage> {
     return Center(
         child: Container(
             padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
-            // foregroundDecoration: BoxDecoration(
-            //   // color: Color(0x44000000),
-            // ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.black38,
@@ -282,14 +281,16 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xffd8e7ff),
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        centerTitle: true,
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      appBar: widget.showAppBar
+          ? AppBar(
+              iconTheme: IconThemeData(color: Colors.white),
+              centerTitle: true,
+              title: Text(
+                widget.title,
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : null,
       body: Container(
         padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
         child: _buildBody(),
