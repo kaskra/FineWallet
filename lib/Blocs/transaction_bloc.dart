@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 16.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -16,6 +16,10 @@ class TransactionBloc {
   int _untilDay;
 
   get transactions => _transactionController.stream;
+
+  void update() {
+    getTransactions();
+  }
 
   void dispose() {
     _transactionController.close();

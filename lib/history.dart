@@ -278,6 +278,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    _txBloc.update();
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xffd8e7ff),
