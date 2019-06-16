@@ -318,6 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _currentIndex = index;
         });
       },
+      selectedIndex: _currentIndex,
       isVisible: _showBottomBar,
     );
   }
