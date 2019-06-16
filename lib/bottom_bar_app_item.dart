@@ -18,16 +18,20 @@ class FABBottomAppBar extends StatefulWidget {
   FABBottomAppBar(
       {@required this.items,
       @required this.onTabSelected,
+      this.selectedIndex,
       this.selectedColor,
       this.color,
       this.height: 50,
-      this.iconSize: 24});
+      this.iconSize: 24,
+      this.isVisible});
   final List<FABBottomAppBarItem> items;
   final ValueChanged<int> onTabSelected;
+  final int selectedIndex;
   final Color selectedColor;
   final Color color;
   final double height;
   final double iconSize;
+  final bool isVisible;
 
   @override
   _FABBottomAppBarState createState() => _FABBottomAppBarState();
@@ -35,6 +39,14 @@ class FABBottomAppBar extends StatefulWidget {
 
 class _FABBottomAppBarState extends State<FABBottomAppBar> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _selectedIndex = widget.selectedIndex ?? 0;
+    });
+  }
 
   _updateIndex(int index) {
     widget.onTabSelected(index);
@@ -89,10 +101,21 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
       );
     });
 
+    if (widget.isVisible != null) {
+      if (widget.isVisible) {
+        return BottomAppBar(
+          elevation: 20,
+          shape: CircularNotchedRectangle(),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items,
+          ),
+        );
+      }
+    }
     return BottomAppBar(
       elevation: 20,
-      clipBehavior: Clip.antiAlias,
-      shape: CircularNotchedRectangle(),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,

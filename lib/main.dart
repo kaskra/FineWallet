@@ -60,7 +60,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+  int _currentIndex = 4;
   bool _showBottomBar = true;
 
   @override
@@ -317,6 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _currentIndex = index;
         });
       },
+      isVisible: _showBottomBar,
     );
   }
 
@@ -333,7 +334,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _navCallback(bool showNavBar) {
     setState(() {
-      print(showNavBar);
       _showBottomBar = showNavBar;
     });
   }
@@ -341,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var children = [
-      Container(),
+      _buildBody(),
       MonthlyOverview(
         initialMonth: DateTime.now(),
         showAppBar: false,
@@ -364,11 +364,7 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      bottomNavigationBar: _showBottomBar
-          ? _buildBottomBar()
-          : SizedBox(
-              height: 50,
-            ),
+      bottomNavigationBar: _buildBottomBar(),
       body: children[_currentIndex],
       floatingActionButton: SlidingFABMenu(
         onMenuFunction: _addTransaction,

@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 class SlidingFABMenu extends StatefulWidget {
   SlidingFABMenu({@required this.onMenuFunction, this.tapCallback});
 
-  ValueChanged<int> onMenuFunction;
-  Function(bool) tapCallback;
+  final ValueChanged<int> onMenuFunction;
+  final Function(bool) tapCallback;
 
   @override
   _SlidingFABMenuState createState() => _SlidingFABMenuState();
@@ -58,7 +58,6 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
   void _onPanStart(DragStartDetails details) {
     setState(() {
       _pressed = true;
-//      _width = 280;
     });
     _controller.stop();
     _controller.value = offsetFromGlobalPos(details.globalPosition);
@@ -77,7 +76,6 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
     if (details.globalPosition.dx < 90 || details.globalPosition.dx > 290)
       return;
     _controller.value = offsetFromGlobalPos(details.globalPosition);
-    print(details.globalPosition);
   }
 
   void _onPanEnd(DragEndDetails details) {
