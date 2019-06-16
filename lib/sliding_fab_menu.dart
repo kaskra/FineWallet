@@ -7,9 +7,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class SlidingFABMenu extends StatefulWidget {
-  SlidingFABMenu({@required this.onMenuFunction});
+  SlidingFABMenu({@required this.onMenuFunction, this.tapCallback});
 
   ValueChanged<int> onMenuFunction;
+  Function(bool) tapCallback;
 
   @override
   _SlidingFABMenuState createState() => _SlidingFABMenuState();
@@ -67,6 +68,9 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
     setState(() {
       _width = 280;
     });
+    if (widget.tapCallback != null) {
+      widget.tapCallback(false);
+    }
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -94,6 +98,9 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
       _pressed = false;
       _width = 60;
     });
+    if (widget.tapCallback != null) {
+      widget.tapCallback(true);
+    }
   }
 
   Widget _test() {

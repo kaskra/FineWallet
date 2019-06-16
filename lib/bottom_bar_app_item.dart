@@ -8,9 +8,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FABBottomAppBarItem {
-  FABBottomAppBarItem({this.iconData, this.text});
+  FABBottomAppBarItem({this.iconData, this.text: "", this.disabled: false});
   final IconData iconData;
   final String text;
+  final bool disabled;
 }
 
 class FABBottomAppBar extends StatefulWidget {
@@ -46,6 +47,7 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
     FABBottomAppBarItem item,
     int index,
     ValueChanged<int> onPressed,
+    bool isDisabled,
   }) {
     Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
     return Expanded(
@@ -53,22 +55,24 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
         height: widget.height,
         child: Material(
           type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () => onPressed(index),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(item.iconData, color: color, size: widget.iconSize),
-                _selectedIndex == index
-                    ? Text(
-                        item.text,
-                        style: TextStyle(color: color),
-                      )
-                    : Container()
-              ],
-            ),
-          ),
+          child: !isDisabled
+              ? InkWell(
+                  onTap: () => onPressed(index),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(item.iconData, color: color, size: widget.iconSize),
+                      _selectedIndex == index
+                          ? Text(
+                              item.text,
+                              style: TextStyle(color: color),
+                            )
+                          : Container()
+                    ],
+                  ),
+                )
+              : Container(),
         ),
       ),
     );
@@ -78,11 +82,16 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
   Widget build(BuildContext context) {
     List<Widget> items = List.generate(widget.items.length, (int index) {
       return _buildTabItem(
-          index: index, item: widget.items[index], onPressed: _updateIndex);
+        index: index,
+        item: widget.items[index],
+        onPressed: _updateIndex,
+        isDisabled: widget.items[index].disabled,
+      );
     });
 
     return BottomAppBar(
       elevation: 20,
+      clipBehavior: Clip.antiAlias,
       shape: CircularNotchedRectangle(),
       child: Row(
         mainAxisSize: MainAxisSize.max,

@@ -61,6 +61,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
+  bool _showBottomBar = true;
 
   @override
   void initState() {
@@ -304,6 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
       items: [
         FABBottomAppBarItem(iconData: Icons.person, text: "Me"),
         FABBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
+        FABBottomAppBarItem(disabled: true),
         FABBottomAppBarItem(
           iconData: Icons.list,
           text: "History",
@@ -329,14 +331,22 @@ class _MyHomePageState extends State<MyHomePage> {
     return;
   }
 
+  void _navCallback(bool showNavBar) {
+    setState(() {
+      print(showNavBar);
+      _showBottomBar = showNavBar;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var children = [
-      _buildBody(),
+      Container(),
       MonthlyOverview(
         initialMonth: DateTime.now(),
         showAppBar: false,
       ),
+      Container(),
       HistoryPage(
         "Transaction History",
         day: dayInMillis(DateTime.now()),
@@ -354,12 +364,17 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      bottomNavigationBar: _buildBottomBar(),
+      bottomNavigationBar: _showBottomBar
+          ? _buildBottomBar()
+          : SizedBox(
+              height: 50,
+            ),
       body: children[_currentIndex],
       floatingActionButton: SlidingFABMenu(
         onMenuFunction: _addTransaction,
+        tapCallback: _navCallback,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
