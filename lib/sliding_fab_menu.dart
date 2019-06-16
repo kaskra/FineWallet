@@ -72,6 +72,15 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
     }
   }
 
+  void _onPanCancel() {
+    setState(() {
+      _width = 60;
+    });
+    if (widget.tapCallback != null) {
+      widget.tapCallback(true);
+    }
+  }
+
   void _onPanUpdate(DragUpdateDetails details) {
     if (details.globalPosition.dx < 90 || details.globalPosition.dx > 290)
       return;
@@ -137,6 +146,7 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
               onHorizontalDragUpdate: _onPanUpdate,
               onHorizontalDragEnd: _onPanEnd,
               onHorizontalDragDown: _onPanDown,
+              onHorizontalDragCancel: _onPanCancel,
               dragStartBehavior: DragStartBehavior.down,
               child: SlideTransition(
                 position: _animation,
