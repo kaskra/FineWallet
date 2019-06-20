@@ -1,3 +1,9 @@
+/*
+ * Developed by Lukas Krauch 20.6.2019.
+ * Copyright (c) 2019. All rights reserved.
+ *
+ */
+
 // This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
@@ -5,26 +11,60 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:finewallet/main.dart';
+import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:finewallet/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Overview boxes', (WidgetTester tester) async {
     await tester.pumpWidget(MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final overviewBoxFinder = find.widgetWithText(Row, "0.00€");
+    expect(overviewBoxFinder, findsNWidgets(9));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final todayCard = find.widgetWithText(Row, "TODAY");
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(todayCard, findsOneWidget);
+  });
+
+  test('Get month name', () {
+    List<String> months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    for (int i = 1; i < 13; i++) {
+      var name = getMonthName(i);
+      expect(months[i - 1], name);
+    }
+  });
+
+  testWidgets('Open statistics', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+
+    var name = getMonthName(DateTime.now().month).toUpperCase();
+    var statisticsBox = find.widgetWithText(InkWell, name);
+
+    expect(statisticsBox, findsOneWidget);
+
+//    await tester.tap(statisticsBox);
+//    await tester.pump();
+//
+//    print(tester.allElements);
+//
+//    var charts = find.byType(MonthlyOverview);
+//
+//    expect(charts, findsOneWidget);
   });
 }
