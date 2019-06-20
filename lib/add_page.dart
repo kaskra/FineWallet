@@ -91,7 +91,7 @@ class _AddPageState extends State<AddPage> {
                       Icon(
                         iconData,
                         size: constraint.biggest.width / 3,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                       FittedBox(
                         child: Text(valueString,

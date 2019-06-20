@@ -31,7 +31,7 @@ final ThemeData normalTheme2 = ThemeData(
   accentColor: _secondary,
   buttonColor: _secondary,
   textTheme: TextTheme(
-    body1: TextStyle(color: _onBackground),
+    body1: TextStyle(color: _onBackground.withOpacity(0.87)),
     button: TextStyle(color: _onMainColor),
   ),
   iconTheme: IconThemeData(color: _onMainColor),
