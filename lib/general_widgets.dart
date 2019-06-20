@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -11,7 +11,6 @@ Widget generalCard(Widget child,
   return Container(
       child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          color: Colors.white,
           child: Container(
               decoration: decoration,
               padding: EdgeInsets.all(padding),

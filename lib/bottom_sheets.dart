@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 8.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -38,7 +38,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   final double dividerHeight = 2;
   final double topBorderHeight = 5;
   final double midOfCategories = 1.75;
-  final double midOfsubcategories = 3;
+  final double midOfSubcategories = 3;
 
   void initState() {
     super.initState();
@@ -58,7 +58,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
         .then((idx) {
       _subcategoryScrollController = new ScrollController(
         initialScrollOffset:
-            (_subcategory.index.toDouble() - (idx + midOfsubcategories)) *
+            (_subcategory.index.toDouble() - (idx + midOfSubcategories)) *
                 subcategoryCardHeight,
       );
       _categoryScrollController = new ScrollController(
@@ -83,7 +83,9 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
             },
             child: Container(
               decoration: BoxDecoration(
-                color: _selectedCategory == index ? Colors.orange : Colors.grey,
+                color: _selectedCategory == index
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
               margin: EdgeInsets.all(6),
@@ -92,11 +94,13 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 children: <Widget>[
                   Icon(
                     iconData,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                   Text(
                     label,
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: Theme.of(context).colorScheme.onSecondary),
                   )
                 ],
               ),
@@ -115,8 +119,8 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                   decoration: BoxDecoration(
                       color: _subcategory?.index == index &&
                               _selectedCategory == _subcategory.selectedCategory
-                          ? Colors.orange
-                          : Colors.white,
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).colorScheme.background,
                       border: Border.all(
                         color: Colors.black26,
                         width: 1,
@@ -138,9 +142,11 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.background,
             border: Border(
-                top: BorderSide(color: Colors.orange, width: topBorderHeight))),
+                top: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: topBorderHeight))),
         height: bottomSheetHeight,
         child: GestureDetector(
             // Blocks taps from propagating to the modal sheet and popping.
@@ -191,7 +197,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                             widget.isExpense == 1
                                 ? _selectedCategory + 1
                                 : icons.length),
-                        builder: (ctxt, snapshot) {
+                        builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return ListView.builder(
                               controller: _subcategoryScrollController,
@@ -213,13 +219,15 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   }
 }
 
-Widget buildBottomPicker(
-        Widget picker, double bottomSheetHeight, double topBorderHeight) =>
+Widget buildBottomPicker(Widget picker, double bottomSheetHeight,
+        double topBorderHeight, BuildContext context) =>
     Container(
       decoration: BoxDecoration(
           color: CupertinoColors.white,
           border: Border(
-              top: BorderSide(color: Colors.orange, width: topBorderHeight))),
+              top: BorderSide(
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: topBorderHeight))),
       height: bottomSheetHeight,
       padding: const EdgeInsets.only(top: 6.0),
       child: DefaultTextStyle(

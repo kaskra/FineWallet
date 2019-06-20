@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 10.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -85,15 +85,22 @@ class _AddPageState extends State<AddPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(label,
-                          style:
-                              TextStyle(fontSize: 10, color: Colors.black54)),
-                      Icon(iconData, size: constraint.biggest.width / 3),
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: Theme.of(context).colorScheme.onSurface)),
+                      Icon(
+                        iconData,
+                        size: constraint.biggest.width / 3,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       FittedBox(
                         child: Text(valueString,
                             maxLines: 2,
                             softWrap: false,
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black54)),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color:
+                                    Theme.of(context).colorScheme.onSurface)),
                       ),
                     ]);
               },
@@ -107,13 +114,14 @@ class _AddPageState extends State<AddPage> {
   void setExpense() {
     showModalBottomSheet(
         context: context,
-        builder: (ctxt) {
+        builder: (context) {
           _keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
           return Container(
             decoration: BoxDecoration(
                 border: Border(
                     top: BorderSide(
-                        color: Colors.orange, width: topBorderHeight))),
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: topBorderHeight))),
             padding: EdgeInsets.only(left: 10, right: 10),
             height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
             child: TextField(
@@ -121,9 +129,12 @@ class _AddPageState extends State<AddPage> {
                   labelText:
                       "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
                   contentPadding: EdgeInsets.all(4),
-                  labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+                  labelStyle: TextStyle(
+                      fontSize: 15,
+                      color: Theme.of(context).textTheme.body1.color),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black26)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface)),
                   hintText: "0.00"),
               autofocus: true,
               onSubmitted: (s) {
@@ -179,7 +190,8 @@ class _AddPageState extends State<AddPage> {
               },
             ),
             bottomSheetHeight,
-            topBorderHeight);
+            topBorderHeight,
+            context);
       },
     );
   }
@@ -200,7 +212,8 @@ class _AddPageState extends State<AddPage> {
               },
             ),
             bottomSheetHeight,
-            topBorderHeight);
+            topBorderHeight,
+            context);
       },
     );
   }
@@ -215,12 +228,12 @@ class _AddPageState extends State<AddPage> {
     return Container(
         margin: EdgeInsets.only(left: 5, right: 5),
         child: Card(
-          color: Colors.white,
           child: CornerTriangle(
               corner: Corner.TOP_LEFT,
               size: Size(25, 25),
-              icon: CornerIcon(Icons.replay, color: Colors.white),
-              color: Colors.orange,
+              icon: CornerIcon(Icons.replay,
+                  color: Theme.of(context).colorScheme.onSecondary),
+              color: Theme.of(context).colorScheme.secondary,
               child: Column(
                 children: <Widget>[
                   Row(
@@ -230,7 +243,9 @@ class _AddPageState extends State<AddPage> {
                       Container(
                         child: Text(
                           "Repeat transaction",
-                          style: TextStyle(fontSize: 16, color: Colors.black54),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.onSurface),
                         ),
                         margin: EdgeInsets.only(left: 10),
                       ),
@@ -259,7 +274,6 @@ class _AddPageState extends State<AddPage> {
                               margin: EdgeInsets.only(bottom: 4),
                             ),
                             _repeatTypeChoice(),
-                            // Divider(color: Colors.white,),
                             Padding(
                               padding: EdgeInsets.only(top: 6),
                               child: _repeatUntilDate(),
@@ -282,7 +296,8 @@ class _AddPageState extends State<AddPage> {
       children: <Widget>[
         Text(
           "Every",
-          style: TextStyle(color: Colors.black54, fontSize: 16),
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
         ),
         Container(
           width: 100,
@@ -291,7 +306,8 @@ class _AddPageState extends State<AddPage> {
           child: DropdownButton(
             isDense: true,
             isExpanded: true,
-            style: TextStyle(color: Colors.black54, fontSize: 14),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
             value: _typeIndex,
             items: [
               DropdownMenuItem(
@@ -329,7 +345,8 @@ class _AddPageState extends State<AddPage> {
       children: <Widget>[
         Text(
           "Until",
-          style: TextStyle(color: Colors.black54, fontSize: 16),
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
         ),
         Container(
           width: 100,
@@ -347,7 +364,7 @@ class _AddPageState extends State<AddPage> {
             child: Text(
               _repeatUntil != null ? formatter.format(_repeatUntil) : "",
               style: TextStyle(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 16,
                   fontWeight: FontWeight.normal),
             ),
@@ -363,7 +380,7 @@ class _AddPageState extends State<AddPage> {
         key: _scaffoldKey,
         backgroundColor: Color(0xffd8e7ff),
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: Theme.of(context).iconTheme,
           actions: <Widget>[
             Container(
               width: 50,
@@ -408,7 +425,7 @@ class _AddPageState extends State<AddPage> {
           centerTitle: true,
           title: Text(
             widget.title,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
         ),
         body: Column(

@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 16.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -87,8 +87,8 @@ class _HistoryPageState extends State<HistoryPage> {
           children: <Widget>[
             CircleAvatar(
               radius: 15,
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.orange,
+              foregroundColor: Theme.of(context).colorScheme.onSecondary,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               child: Icon(icons[iconIndex]),
             ),
             Expanded(
@@ -155,7 +155,7 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Text(
               isToday ? "TODAY" : dateString.toUpperCase(),
               style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.button.color,
                   fontSize: 11,
                   fontWeight: isToday ? FontWeight.bold : FontWeight.normal),
             )));
@@ -204,7 +204,8 @@ class _HistoryPageState extends State<HistoryPage> {
             background: Container(
               padding: EdgeInsets.only(right: 25),
               alignment: Alignment.centerRight,
-              child: Icon(Icons.delete_outline, color: Colors.white),
+              child: Icon(Icons.delete_outline,
+                  color: Theme.of(context).iconTheme.color),
               color: Color(0x88FF0000),
             ),
             onDismissed: (DismissDirection direction) {
@@ -284,11 +285,12 @@ class _HistoryPageState extends State<HistoryPage> {
       backgroundColor: Color(0xffd8e7ff),
       appBar: widget.showAppBar
           ? AppBar(
-              iconTheme: IconThemeData(color: Colors.white),
+              iconTheme: Theme.of(context).iconTheme,
               centerTitle: true,
               title: Text(
                 widget.title,
-                style: TextStyle(color: Colors.white),
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onPrimary),
               ),
             )
           : null,

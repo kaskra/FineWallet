@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 16.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -127,7 +127,8 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
                 ? Positioned(
                     left: 10,
                     bottom: null,
-                    child: Icon(Icons.add, size: 26, color: Colors.white),
+                    child: Icon(Icons.add,
+                        size: 26, color: Theme.of(context).iconTheme.color),
                   )
                 : Container(),
             _pressed
@@ -137,7 +138,7 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
                     child: Icon(
                       Icons.remove,
                       size: 26,
-                      color: Colors.white,
+                      color: Theme.of(context).iconTheme.color,
                     ),
                   )
                 : Container(),
@@ -159,7 +160,7 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
                     onPressed: () {},
                     child: Icon(
                       Icons.swap_horiz,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSecondary,
                     ),
                   )),
                 ),

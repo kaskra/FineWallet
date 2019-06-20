@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 16.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -36,11 +36,11 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Color(0xffd8e7ff),
       appBar: widget.showAppBar
           ? AppBar(
-              iconTheme: IconThemeData(color: Colors.white),
+              iconTheme: Theme.of(context).iconTheme,
               centerTitle: true,
               title: Text(
                 "Profile",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).accentColor),
               ),
             )
           : null,

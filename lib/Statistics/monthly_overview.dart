@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 16.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -50,7 +50,10 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
               padding: EdgeInsets.fromLTRB(0, 5, 12, 5),
               child: InkWell(
                 child: Container(
-                  child: Icon(Icons.keyboard_arrow_left),
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                    color: Theme.of(context).textTheme.body1.color,
+                  ),
                   width: 40,
                   height: 50,
                 ),
@@ -68,7 +71,10 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                 child: Container(
                   child: Text(
                     "${getMonthName(prevMonth.month, abbrev: true)}",
-                    style: TextStyle(fontSize: 17),
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Theme.of(context).textTheme.body1.color,
+                    ),
                     overflow: TextOverflow.fade,
                     maxLines: 1,
                     softWrap: false,
@@ -81,7 +87,11 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
                 child: Container(
                   child: Text(
                     "${getMonthName(_date.month)} ${_date.year}",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.body1.color,
+                    ),
                   ),
                 ),
               )),
@@ -93,7 +103,10 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
               child: Container(
                   child: Text(
                 "${getMonthName(nextMonth.month, abbrev: true)}",
-                style: TextStyle(fontSize: 17),
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Theme.of(context).textTheme.body1.color,
+                ),
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,
@@ -104,7 +117,10 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
             child: InkWell(
               child: Container(
-                child: Icon(Icons.keyboard_arrow_right),
+                child: Icon(
+                  Icons.keyboard_arrow_right,
+                  color: Theme.of(context).textTheme.body1.color,
+                ),
                 width: 40,
                 height: 50,
               ),
@@ -126,11 +142,13 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
         backgroundColor: Color(0xffd8e7ff),
         appBar: widget.showAppBar
             ? AppBar(
-                iconTheme: IconThemeData(color: Colors.white),
+                iconTheme:
+                    IconThemeData(color: Theme.of(context).iconTheme.color),
                 centerTitle: true,
                 title: Text(
                   "Monthly",
-                  style: TextStyle(color: Colors.white),
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                 ),
               )
             : null,
@@ -226,7 +244,11 @@ class _MonthCardState extends State<MonthCard> {
                   });
                   _savePrefs();
                 },
-                child: Text("Switch"),
+                child: Text(
+                  "Switch",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary),
+                ),
               ),
             ],
           );

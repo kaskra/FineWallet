@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 16.6.2019.
+ * Developed by Lukas Krauch 20.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -10,6 +10,7 @@ import 'package:finewallet/Resources/db_initilization.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
 import 'package:finewallet/bottom_bar_app_item.dart';
+import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
 import 'package:finewallet/profile.dart';
@@ -41,11 +42,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-          textSelectionColor: Colors.black26,
-          primarySwatch: Colors.orange,
-          appBarTheme: AppBarTheme(
-              actionsIconTheme: IconThemeData(color: Colors.white))),
+      theme: normalTheme2,
       home: MyHomePage(title: 'FineWallet'),
     );
   }
@@ -74,11 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Expanded(
         child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0), color: Colors.orange),
+                borderRadius: BorderRadius.circular(0),
+                color: Theme.of(context).primaryColor),
             margin:
                 EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
             child: Material(
-                color: Colors.orange,
+                color: Theme.of(context).colorScheme.primary,
                 child: InkWell(
                   onTap: () => onTap(),
                   child: Container(
@@ -90,7 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Text(
                               title,
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -98,14 +97,19 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text(
                             "Spare budget",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 10,
                             ),
                           ),
                           Text(
                             "${amount.toStringAsFixed(2)}€",
                             style: TextStyle(
-                                color: amount <= 0 ? Colors.red : Colors.white,
+                                color: amount <= 0
+                                    ? Theme.of(context)
+                                        .accentTextTheme
+                                        .body1
+                                        .color
+                                    : Theme.of(context).colorScheme.onPrimary,
                                 fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -123,16 +127,18 @@ class _MyHomePageState extends State<MyHomePage> {
             isToday
                 ? Text("Today",
                     style: TextStyle(
-                        color: Colors.black54, fontWeight: FontWeight.bold))
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.bold))
                 : Text(getDayName(day),
-                    style: TextStyle(color: Colors.black54)),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface)),
             Expanded(
                 child: Container(
               alignment: Alignment.centerRight,
               child: Text(
                 "${budget.toStringAsFixed(2)}€",
                 style: TextStyle(
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                     fontSize: 16),
               ),
@@ -140,7 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         isToday
-            ? BoxDecoration(border: Border.all(width: 2, color: Colors.orange))
+            ? BoxDecoration(
+                border: Border.all(
+                    width: 2, color: Theme.of(context).colorScheme.secondary))
             : null);
   }
 
@@ -186,7 +194,8 @@ class _MyHomePageState extends State<MyHomePage> {
           heroTag: null,
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
-          child: Icon(Icons.add, color: Colors.white),
+          child:
+              Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
         ),
 //        Spacer(),
         FloatingActionButton(
@@ -197,14 +206,16 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialPageRoute(
                   builder: (context) => HistoryPage("Transaction History",
                       day: dayInMillis(DateTime.now())))),
-          child: Icon(Icons.list, color: Colors.white),
+          child: Icon(Icons.list,
+              color: Theme.of(context).colorScheme.onSecondary),
         ),
 //        Spacer(),
         FloatingActionButton(
           heroTag: null,
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddPage("Expense", 1))),
-          child: Icon(Icons.remove, color: Colors.white),
+          child: Icon(Icons.remove,
+              color: Theme.of(context).colorScheme.onSecondary),
         ),
 //        Spacer(
 //          flex: 4,
@@ -301,8 +312,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomBar() {
     return FABBottomAppBar(
-      color: Colors.black54,
-      selectedColor: Colors.orange,
+      color: Theme.of(context).colorScheme.onSurface,
+      selectedColor: Theme.of(context).colorScheme.secondary,
       items: [
         FABBottomAppBarItem(iconData: Icons.person, text: "Me"),
         FABBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
@@ -360,12 +371,11 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     return Scaffold(
-      backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
         centerTitle: true,
         title: Text(
           widget.title,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         ),
       ),
       bottomNavigationBar: _buildBottomBar(),
