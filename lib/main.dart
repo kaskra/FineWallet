@@ -185,47 +185,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildFABs() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-//        Spacer(
-//          flex: 4,
-//        ),
-        FloatingActionButton(
-          heroTag: null,
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
-          child:
-              Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-        ),
-//        Spacer(),
-        FloatingActionButton(
-          mini: true,
-          heroTag: null,
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HistoryPage("Transaction History",
-                      day: dayInMillis(DateTime.now())))),
-          child: Icon(Icons.list,
-              color: Theme.of(context).colorScheme.onSecondary),
-        ),
-//        Spacer(),
-        FloatingActionButton(
-          heroTag: null,
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPage("Expense", 1))),
-          child: Icon(Icons.remove,
-              color: Theme.of(context).colorScheme.onSecondary),
-        ),
-//        Spacer(
-//          flex: 4,
-//        ),
-      ],
-    );
-  }
-
   void _onMonthTap() {
     Navigator.push(
         context,

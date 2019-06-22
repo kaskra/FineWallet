@@ -4,9 +4,10 @@
  *
  */
 
-import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/DBProvider.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/resources/transaction_list.dart';
+import 'package:finewallet/resources/transaction_provider.dart';
+import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -40,13 +41,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _syncDatabase() async {
-    List<TransactionModel> monthlyTransactions = await DBProvider.db
-        .getTransactionsOfMonth(DateTime.now().millisecondsSinceEpoch);
-    double tmpAmount = monthlyTransactions
-        .where((TransactionModel txn) => txn.isExpense == 0)
-        .fold(0.0, (prev, next) => prev + next.amount);
+    TransactionList monthlyTransactions = await TransactionsProvider.db
+        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
+
     setState(() {
-      _overallMaxBudget = tmpAmount;
+      _overallMaxBudget = monthlyTransactions.sumIncomes();
     });
   }
 

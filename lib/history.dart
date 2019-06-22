@@ -214,7 +214,7 @@ class _HistoryPageState extends State<HistoryPage> {
               _showSnackBar(context);
             },
             confirmDismiss: (DismissDirection direction) => _showDialog(),
-            child: generalCard(_transactionCard(item), null, 3),
+            child: generalCard(_transactionCard(item), padding: 3),
           ),
         ),
         (item.isExpense == 0)
