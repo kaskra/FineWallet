@@ -4,9 +4,9 @@
  *
  */
 
-import 'package:finewallet/Blocs/transaction_bloc.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/internal_data.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/utils.dart';
