@@ -34,13 +34,13 @@ class TransactionsProvider {
         "ON transactions.subcategory = subcategories.id "
         "$whereDay "
         "ORDER BY transactions.date DESC, transactions.id DESC");
-    TransactionList list = res.isNotEmpty
-        ? toTransactionList(
-            res.map((t) => TransactionModel.fromMap(t)).toList())
-        : new TransactionList();
-    list.addRecurringTransactions(untilDay);
-    list.sortByDateNameDESC();
-    list.removeWhere((tx) => tx.date > untilDay);
+    if (res.isEmpty) return new TransactionList();
+
+    TransactionList list =
+        toTransactionList(res.map((t) => TransactionModel.fromMap(t)).toList())
+            .addRecurringTransactions(untilDay)
+            .sortByDateNameDESC()
+            .removeWhere((tx) => tx.date > untilDay);
     return list;
   }
 

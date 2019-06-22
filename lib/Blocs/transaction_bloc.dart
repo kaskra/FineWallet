@@ -1,17 +1,18 @@
 /*
- * Developed by Lukas Krauch 16.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'dart:async';
 
+import 'package:finewallet/DB_Access/db_provider.dart';
+import 'package:finewallet/DB_Access/transaction_list.dart';
+import 'package:finewallet/DB_Access/transaction_provider.dart';
 import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/DBProvider.dart';
 
 class TransactionBloc {
-  final _transactionController =
-      StreamController<List<TransactionModel>>.broadcast();
+  final _transactionController = StreamController<TransactionList>.broadcast();
 
   int _untilDay;
 
@@ -27,7 +28,7 @@ class TransactionBloc {
 
   getTransactions() async {
     _transactionController.sink
-        .add(await DBProvider.db.getAllTransactions(_untilDay));
+        .add(await TransactionsProvider.db.getAllTrans(_untilDay));
   }
 
   TransactionBloc(int untilDay) {
@@ -36,12 +37,12 @@ class TransactionBloc {
   }
 
   add(TransactionModel tx) {
-    DBProvider.db.newTransaction(tx);
+    Provider.db.newTransaction(tx);
     getTransactions();
   }
 
   delete(int id) {
-    DBProvider.db.deleteTransaction(id);
+    Provider.db.deleteTransaction(id);
     getTransactions();
   }
 }

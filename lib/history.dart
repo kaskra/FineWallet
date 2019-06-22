@@ -1,10 +1,11 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'package:finewallet/Blocs/transaction_bloc.dart';
+import 'package:finewallet/DB_Access/transaction_list.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Resources/internal_data.dart';
 import 'package:finewallet/general_widgets.dart';
@@ -226,10 +227,10 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildBody() {
-    return StreamBuilder<List<TransactionModel>>(
+    return StreamBuilder<TransactionList>(
         stream: _txBloc.transactions,
-        builder: (BuildContext context,
-            AsyncSnapshot<List<TransactionModel>> snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
           if (snapshot.hasData) {
             List<List<Widget>> listOfLists = _buildLists(snapshot);
             return ListView.builder(
@@ -255,8 +256,7 @@ class _HistoryPageState extends State<HistoryPage> {
         });
   }
 
-  List<List<Widget>> _buildLists(
-      AsyncSnapshot<List<TransactionModel>> snapshot) {
+  List<List<Widget>> _buildLists(AsyncSnapshot<TransactionList> snapshot) {
     List<List<Widget>> listOfLists = List();
     List<Widget> l = List();
     int prevDate = -1;

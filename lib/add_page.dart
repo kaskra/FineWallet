@@ -1,9 +1,10 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
+import 'package:finewallet/DB_Access/db_provider.dart';
 import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Datatypes/repeat_type.dart';
 import 'package:finewallet/Models/transaction_model.dart';
@@ -14,8 +15,6 @@ import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'Resources/DBProvider.dart';
 
 class AddPage extends StatefulWidget {
   AddPage(this.title, this.isExpense, {Key key}) : super(key: key);
@@ -412,7 +411,7 @@ class _AddPageState extends State<AddPage> {
                         replayUntil: _repeatUntil != null
                             ? dayInMillis(_repeatUntil)
                             : null);
-                    DBProvider.db.newTransaction(tx);
+                    Provider.db.newTransaction(tx);
                     Navigator.pop(context);
                   } else {
                     return _showSnackBar(context);
