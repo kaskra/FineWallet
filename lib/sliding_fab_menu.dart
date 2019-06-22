@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -91,14 +91,9 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
     _controller.stop();
     if (_controller.value <= -0.20) {
       widget.onMenuFunction(-1);
-//      print("Ended left");
     } else if (_controller.value >= 0.20) {
       widget.onMenuFunction(1);
-//      print("Ended right");
     }
-
-//    _controller.animateTo(0.0,
-//        curve: Curves.bounceOut, duration: Duration(milliseconds: 500));
 
     _controller.value = 0;
     setState(() {

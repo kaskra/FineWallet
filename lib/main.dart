@@ -5,8 +5,6 @@
  */
 
 import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/DBProvider.dart';
-import 'package:finewallet/Resources/db_initilization.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
 import 'package:finewallet/bottom_bar_app_item.dart';
@@ -14,6 +12,9 @@ import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
 import 'package:finewallet/profile.dart';
+import 'package:finewallet/resources/db_initilization.dart';
+import 'package:finewallet/resources/transaction_list.dart';
+import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/sliding_fab_menu.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -156,8 +157,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _days() {
     List<DateTime> days = getLastWeekAsDates();
     return FutureBuilder<List<SumOfTransactionModel>>(
-      future:
-          DBProvider.db.getExpensesGroupedByDay(dayInMillis(DateTime.now())),
+      future: TransactionsProvider.db
+          .getExpensesGroupedByDay(dayInMillis(DateTime.now())),
       initialData: List(),
       builder: (BuildContext context,
           AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
@@ -165,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
           List<Widget> listItems = List();
           for (DateTime date in days) {
             int index = snapshot.data
-                .indexWhere((sotm) => sotm.hasSameValue(dayInMillis(date)));
+                .indexWhere((s) => s.hasSameValue(dayInMillis(date)));
             if (index >= 0) {
               listItems.add(_day(date.weekday, snapshot.data[index].amount));
             } else {
@@ -245,32 +246,24 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.only(bottom: 5),
-                  child: FutureBuilder<List<TransactionModel>>(
-                    future: DBProvider.db
+                  child: FutureBuilder<TransactionList>(
+                    future: TransactionsProvider.db
                         .getTransactionsOfMonth(dayInMillis(DateTime.now())),
-                    initialData: List(),
+                    initialData: TransactionList(),
                     builder: (BuildContext context,
-                        AsyncSnapshot<List<TransactionModel>> snapshot) {
+                        AsyncSnapshot<TransactionList> snapshot) {
                       if (snapshot.hasData) {
                         int dayOfMonth = DateTime.now().day;
                         int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
-                        List<TransactionModel> incomes = snapshot.data
-                            .where((t) => t.isExpense == 0)
-                            .toList();
-                        List<TransactionModel> todayExpenses = snapshot.data
-                            .where((t) => t.isExpense == 1)
-                            .where((t) => t.date == dayInMillis(DateTime.now()))
-                            .toList();
-                        List<TransactionModel> notTodayExpenses = snapshot.data
-                            .where((t) => t.isExpense == 1)
-                            .where((t) => t.date != dayInMillis(DateTime.now()))
-                            .toList();
-                        double monthlyIncomes = incomes.fold(
-                            0, (prev, element) => prev + element.amount);
-                        double monthlyExpenses = notTodayExpenses.fold(
-                            0, (prev, element) => prev + element.amount);
-                        double todaysExpenses = todayExpenses.fold(
-                            0, (prev, element) => prev + element.amount);
+
+                        double monthlyExpenses = snapshot.data
+                            .where((TransactionModel txn) =>
+                                txn.date != dayInMillis(DateTime.now()))
+                            .sumExpenses();
+                        double monthlyIncomes = snapshot.data.sumIncomes();
+                        double expensesToday = snapshot.data
+                            .byDayInMillis(dayInMillis(DateTime.now()))
+                            .sumExpenses();
 
                         int remainingDaysInMonth =
                             lastDayOfMonth - dayOfMonth + 1;
@@ -278,9 +271,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             monthlyIncomes - monthlyExpenses;
                         double budgetPerDay =
                             (monthlySpareBudget / remainingDaysInMonth) -
-                                todaysExpenses;
+                                expensesToday;
                         double displayedMonthlySpareBudget =
-                            monthlySpareBudget - todaysExpenses;
+                            monthlySpareBudget - expensesToday;
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
