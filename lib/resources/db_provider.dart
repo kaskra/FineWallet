@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -7,6 +7,7 @@
 import 'dart:io';
 
 import 'package:finewallet/Models/category_model.dart';
+import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/resources/db_migration.dart';
@@ -18,7 +19,7 @@ class Provider {
   Provider._();
 
   static final Provider db = Provider._();
-  static const int VERSION = 2;
+  static const int VERSION = 3;
 
   Database _database;
 
@@ -53,6 +54,12 @@ class Provider {
           "name TEXT,"
           "category INTEGER"
           ")");
+      await db.execute("CREATE TABLE months ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "savings REAL,"
+          "currentMaxBudget REAL,"
+          "firstOfMonth INTEGER"
+          ")");
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
 
@@ -82,6 +89,12 @@ class Provider {
   newSubcategory(SubcategoryModel newSubcategory) async {
     final db = await database;
     var raw = await db.insert("subcategories", newSubcategory.toMap());
+    return raw;
+  }
+
+  newMonth(MonthModel newMonth) async {
+    final db = await database;
+    var raw = await db.insert("month", newMonth.toMap());
     return raw;
   }
 
