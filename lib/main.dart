@@ -12,9 +12,9 @@ import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
 import 'package:finewallet/bottom_bar_app_item.dart';
 import 'package:finewallet/color_themes.dart';
-import 'package:finewallet/db_test.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
+import 'package:finewallet/profile.dart';
 import 'package:finewallet/sliding_fab_menu.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
@@ -347,7 +347,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var children = [
-      DBTest(),
+      ProfilePage(
+        showAppBar: false,
+      ),
       MonthlyOverview(
         initialMonth: DateTime.now(),
         showAppBar: false,

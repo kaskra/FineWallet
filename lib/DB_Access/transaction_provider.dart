@@ -8,20 +8,11 @@ import 'package:finewallet/DB_Access/db_provider.dart';
 import 'package:finewallet/DB_Access/transaction_list.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/utils.dart';
-import 'package:sqflite/sqflite.dart';
 
 class TransactionsProvider {
   TransactionsProvider._();
 
   static final TransactionsProvider db = TransactionsProvider._();
-  Database _database;
-
-  Future<Database> get database async {
-    if (_database != null) return _database;
-
-    _database = await Provider.db.database;
-    return _database;
-  }
 
   Future<TransactionList> getAllTrans(int untilDay) async {
     final db = await Provider.db.database;

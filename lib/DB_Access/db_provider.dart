@@ -85,78 +85,6 @@ class Provider {
     return raw;
   }
 
-  Future<int> getIndexInCategory(int subcategoryId) async {
-    final db = await database;
-    var c = await db.query("subcategories",
-        columns: ["category"], where: "id=?", whereArgs: [subcategoryId]);
-    if (c.isEmpty) return null;
-    var category = c.first["category"];
-
-    var res = await db.rawQuery(
-        "SELECT COUNT(*) as count FROM subcategories WHERE category < $category");
-    return res.first["count"];
-  }
-
-  Future<CategoryModel> getCategoryOfSubcategory(int subcategoryId) async {
-    final db = await database;
-
-    var c = await db.query("subcategories",
-        columns: ["category"], where: "id=?", whereArgs: [subcategoryId]);
-    if (c.isEmpty) return null;
-    var category = c.first["category"];
-
-    var res =
-        await db.query("categories", where: "id=?", whereArgs: [category]);
-    CategoryModel categoryModel =
-        res.isNotEmpty ? CategoryModel.fromMap(res.first) : null;
-    return categoryModel;
-  }
-
-  Future<List<CategoryModel>> getAllCategories() async {
-    final db = await database;
-    var res = await db.query("categories");
-    List<CategoryModel> list =
-        res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
-    return list;
-  }
-
-  Future<List<CategoryModel>> getExpenseCategories() async {
-    final db = await database;
-    var res =
-        await db.query("categories", where: "name != ?", whereArgs: ["Income"]);
-    List<CategoryModel> list =
-        res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
-    return list;
-  }
-
-  Future<List<CategoryModel>> getIncomeCategory() async {
-    final db = await database;
-    var res =
-        await db.query("categories", where: "name = ?", whereArgs: ["Income"]);
-    List<CategoryModel> list =
-        res.isNotEmpty ? res.map((c) => CategoryModel.fromMap(c)).toList() : [];
-    return list;
-  }
-
-  Future<List<SubcategoryModel>> getAllSubcategories() async {
-    final db = await database;
-    var res = await db.query("subcategories");
-    List<SubcategoryModel> list = res.isNotEmpty
-        ? res.map((c) => SubcategoryModel.fromMap(c)).toList()
-        : [];
-    return list;
-  }
-
-  Future<List<SubcategoryModel>> getSubcategoriesOfCategory(int id) async {
-    final db = await database;
-    var res =
-        await db.query("subcategories", where: "category = ?", whereArgs: [id]);
-    List<SubcategoryModel> list = res.isNotEmpty
-        ? res.map((c) => SubcategoryModel.fromMap(c)).toList()
-        : [];
-    return list;
-  }
-
   deleteTransaction(int id) async {
     final db = await database;
     return db.delete("transactions", where: "id = ?", whereArgs: [id]);
@@ -164,7 +92,7 @@ class Provider {
 
   deleteCategory(int id) async {
     final db = await database;
-    await deleteAllSubcategoriesOfCategory(id);
+    await _deleteAllSubcategoriesOfCategory(id);
     return db.delete("categories", where: "id = ?", whereArgs: [id]);
   }
 
@@ -173,7 +101,7 @@ class Provider {
     return db.delete("subcategories", where: "id = ?", whereArgs: [id]);
   }
 
-  deleteAllSubcategoriesOfCategory(int id) async {
+  _deleteAllSubcategoriesOfCategory(int id) async {
     final db = await database;
     return db.delete("subcategories", where: "category = ?", whereArgs: [id]);
   }

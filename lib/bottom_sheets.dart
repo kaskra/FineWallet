@@ -1,13 +1,13 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
+import 'package:finewallet/DB_Access/category_provider.dart';
 import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
-import 'package:finewallet/Resources/DBProvider.dart';
 import 'package:finewallet/Resources/internal_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,14 +48,12 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
       _selectedCategory =
           widget.isExpense == 1 ? widget.prevSubcategory.selectedCategory : 0;
       _subcategory = widget.prevSubcategory;
-      setScrollController();
+      initScrollController();
     }
   }
 
-  void setScrollController() async {
-    await DBProvider.db
-        .getIndexInCategory(widget.prevSubcategory.index)
-        .then((idx) {
+  void initScrollController() async {
+    await CategoryProvider.db.indexOf(widget.prevSubcategory.index).then((idx) {
       _subcategoryScrollController = new ScrollController(
         initialScrollOffset:
             (_subcategory.index.toDouble() - (idx + midOfSubcategories)) *
@@ -66,7 +64,6 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
             (_subcategory.selectedCategory.toDouble() - midOfCategories) *
                 categoryCardWidth,
       );
-      // _categoryScrollController.addListener(_listen);
     });
   }
 
@@ -159,10 +156,9 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                       height: categoryListHeight,
                       width: MediaQuery.of(context).size.width,
                       child: FutureBuilder(
-                        future: widget.isExpense == 1
-                            ? DBProvider.db.getExpenseCategories()
-                            : DBProvider.db.getIncomeCategory(),
-                        builder: (ctxt, snapshot) {
+                        future: CategoryProvider.db
+                            .getAllCategories(isExpense: widget.isExpense == 1),
+                        builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return ListView.builder(
                               controller: _categoryScrollController,
@@ -193,7 +189,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                           topBorderHeight -
                           dividerHeight,
                       child: FutureBuilder(
-                        future: DBProvider.db.getSubcategoriesOfCategory(
+                        future: CategoryProvider.db.getSubcategories(
                             widget.isExpense == 1
                                 ? _selectedCategory + 1
                                 : icons.length),
