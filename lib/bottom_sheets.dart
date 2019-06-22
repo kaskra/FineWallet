@@ -4,11 +4,11 @@
  *
  */
 
-import 'package:finewallet/DB_Access/category_provider.dart';
 import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
-import 'package:finewallet/Resources/internal_data.dart';
+import 'package:finewallet/resources/category_provider.dart';
+import 'package:finewallet/resources/internal_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

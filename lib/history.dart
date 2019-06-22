@@ -5,10 +5,10 @@
  */
 
 import 'package:finewallet/Blocs/transaction_bloc.dart';
-import 'package:finewallet/DB_Access/transaction_list.dart';
 import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/internal_data.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/resources/internal_data.dart';
+import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

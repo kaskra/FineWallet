@@ -4,11 +4,11 @@
  *
  */
 
-import 'package:finewallet/DB_Access/category_list.dart';
-import 'package:finewallet/DB_Access/db_provider.dart';
-import 'package:finewallet/DB_Access/subcategory_list.dart';
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
+import 'package:finewallet/resources/category_list.dart';
+import 'package:finewallet/resources/db_provider.dart';
+import 'package:finewallet/resources/subcategory_list.dart';
 
 class CategoryProvider {
   CategoryProvider._();

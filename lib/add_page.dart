@@ -4,13 +4,13 @@
  *
  */
 
-import 'package:finewallet/DB_Access/db_provider.dart';
 import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Datatypes/repeat_type.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/bottom_sheets.dart';
 import 'package:finewallet/corner_triangle.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

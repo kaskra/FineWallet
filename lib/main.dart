@@ -4,10 +4,7 @@
  *
  */
 
-import 'package:finewallet/DB_Access/transaction_list.dart';
-import 'package:finewallet/DB_Access/transaction_provider.dart';
 import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/db_initilization.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
 import 'package:finewallet/bottom_bar_app_item.dart';
@@ -15,6 +12,9 @@ import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
 import 'package:finewallet/profile.dart';
+import 'package:finewallet/resources/db_initilization.dart';
+import 'package:finewallet/resources/transaction_list.dart';
+import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/sliding_fab_menu.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';

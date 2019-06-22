@@ -9,7 +9,7 @@ import 'dart:io';
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/db_migration.dart';
+import 'package:finewallet/resources/db_migration.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
