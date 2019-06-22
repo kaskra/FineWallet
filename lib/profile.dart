@@ -135,19 +135,15 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _savingsBox() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Column(
       children: <Widget>[
         Text(
           "Savings: ",
-          style: TextStyle(
-              fontSize: 20,
-              color: Theme.of(context).colorScheme.primaryVariant),
         ),
-        Text("1345 €",
+        Text("1345€",
             style: TextStyle(
                 fontSize: 20,
+                fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primaryVariant))
       ],
     );
