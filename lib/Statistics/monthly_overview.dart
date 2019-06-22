@@ -1,14 +1,14 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Resources/DBProvider.dart';
 import 'package:finewallet/Statistics/chart_data_point.dart';
 import 'package:finewallet/Statistics/chart_type.dart';
+import 'package:finewallet/resources/transaction_list.dart';
+import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -223,9 +223,9 @@ class _MonthCardState extends State<MonthCard> {
 
   Widget _buildChart() {
     return FutureBuilder(
-      future: DBProvider.db
+      future: TransactionsProvider.db
           .getTransactionsOfMonth(widget.month.millisecondsSinceEpoch),
-      builder: (context, AsyncSnapshot<List<TransactionModel>> snapshot) {
+      builder: (context, AsyncSnapshot<TransactionList> snapshot) {
         if (snapshot.hasData) {
           List<DataPoint> dataPoints = generateDataPoints(snapshot);
           return Column(
@@ -261,8 +261,7 @@ class _MonthCardState extends State<MonthCard> {
     );
   }
 
-  List<DataPoint> generateDataPoints(
-      AsyncSnapshot<List<TransactionModel>> snapshot) {
+  List<DataPoint> generateDataPoints(AsyncSnapshot<TransactionList> snapshot) {
     DateTime date = widget.month ?? DateTime.now();
 
     int lastDay = getLastDayOfMonth(date);
@@ -279,17 +278,10 @@ class _MonthCardState extends State<MonthCard> {
     }
 
     List<double> expense = data
-        .map((date) => snapshot.data
-            .where((item) => item.date == date)
-            .where((item) => item.isExpense == 1)
-            .fold(0.0, (double prev, curr) => (prev + curr.amount.toDouble())))
+        .map((date) => snapshot.data.byDayInMillis(date.toInt()).sumExpenses())
         .toList();
-
     List<double> income = data
-        .map((date) => snapshot.data
-            .where((item) => item.date == date)
-            .where((item) => item.isExpense == 0)
-            .fold(0.0, (double prev, curr) => (prev + curr.amount.toDouble())))
+        .map((date) => snapshot.data.byDayInMillis(date.toInt()).sumIncomes())
         .toList();
     List<int> days = data
         .map((d) => DateTime.fromMillisecondsSinceEpoch(d.toInt()).day)
