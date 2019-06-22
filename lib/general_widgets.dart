@@ -1,18 +1,22 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 21.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'package:flutter/material.dart';
 
-Widget generalCard(Widget child,
-    [BoxDecoration decoration, double padding = 10]) {
+Widget generalCard(
+  Widget child, {
+  BorderRadius cardBorderRadius = BorderRadius.zero,
+  BoxDecoration decoration,
+  double padding = 10,
+}) {
   return Container(
       child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          shape: RoundedRectangleBorder(borderRadius: cardBorderRadius),
           child: Container(
-              decoration: decoration,
+              decoration: decoration ?? BoxDecoration(),
               padding: EdgeInsets.all(padding),
               child: child)));
 }

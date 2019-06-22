@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 22.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -16,6 +16,7 @@ import 'package:finewallet/history.dart';
 import 'package:finewallet/profile.dart';
 import 'package:finewallet/sliding_fab_menu.dart';
 import 'package:finewallet/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -145,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ))
           ],
         ),
-        isToday
+        decoration: isToday
             ? BoxDecoration(
                 border: Border.all(
                     width: 2, color: Theme.of(context).colorScheme.secondary))
@@ -353,6 +354,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
       ProfilePage(
         showAppBar: false,
@@ -380,10 +382,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: _buildBottomBar(),
       body: children[_currentIndex],
-      floatingActionButton: SlidingFABMenu(
-        onMenuFunction: _addTransaction,
-        tapCallback: _navCallback,
-      ),
+      floatingActionButton: keyboardOpen
+          ? SizedBox()
+          : SlidingFABMenu(
+              onMenuFunction: _addTransaction,
+              tapCallback: _navCallback,
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
