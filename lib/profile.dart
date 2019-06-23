@@ -44,22 +44,24 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _syncDatabase() async {
-    int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
-    if (numRecordedMonths == 0) {
-      Provider.db.newMonth(MonthModel(
-        firstDayOfMonth:
-            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
-        currentMaxBudget: 0,
-        savings: 0,
-      ));
-    }
-
     TransactionList monthlyTransactions = await TransactionsProvider.db
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
     });
+
+    int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
+    print(numRecordedMonths);
+
+    if (numRecordedMonths == 0) {
+      Provider.db.newMonth(MonthModel(
+        firstDayOfMonth:
+            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+        currentMaxBudget: monthlyTransactions.sumIncomes(),
+        savings: 0,
+      ));
+    }
   }
 
   Widget _toScreenWidth(Widget child) => Container(

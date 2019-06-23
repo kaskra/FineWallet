@@ -62,11 +62,11 @@ class Provider {
           ")");
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
-      print(oldVersion.toString() + " -> " + newVersion.toString());
       for (int oVersion in Migration.migrationScripts.keys) {
-        print(oVersion);
         if (oVersion >= oldVersion) {
-          print("Migrating database to version $oVersion");
+          print(
+              "Migrating database from version $oVersion to version $newVersion");
+          print(oldVersion.toString() + " -> " + newVersion.toString());
           for (String query in Migration.migrationScripts[oVersion]) {
             await db.execute(query);
           }
