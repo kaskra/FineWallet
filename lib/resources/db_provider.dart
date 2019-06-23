@@ -62,7 +62,7 @@ class Provider {
           ")");
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
-
+      print(oldVersion.toString() + " -> " + newVersion.toString());
       for (int oVersion in Migration.migrationScripts.keys) {
         if (oVersion >= oldVersion) {
           print("Migrating database to version $oVersion");
@@ -94,7 +94,7 @@ class Provider {
 
   newMonth(MonthModel newMonth) async {
     final db = await database;
-    var raw = await db.insert("month", newMonth.toMap());
+    var raw = await db.insert("months", newMonth.toMap());
     return raw;
   }
 
