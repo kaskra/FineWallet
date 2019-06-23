@@ -1,10 +1,13 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
+import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/resources/db_provider.dart';
+import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/utils.dart';
@@ -41,6 +44,16 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _syncDatabase() async {
+    int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
+    if (numRecordedMonths == 0) {
+      Provider.db.newMonth(MonthModel(
+        firstDayOfMonth:
+            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+        currentMaxBudget: 0,
+        savings: 0,
+      ));
+    }
+
     TransactionList monthlyTransactions = await TransactionsProvider.db
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 

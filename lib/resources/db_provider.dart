@@ -64,6 +64,7 @@ class Provider {
       if (oldVersion > newVersion) return;
       print(oldVersion.toString() + " -> " + newVersion.toString());
       for (int oVersion in Migration.migrationScripts.keys) {
+        print(oVersion);
         if (oVersion >= oldVersion) {
           print("Migrating database to version $oVersion");
           for (String query in Migration.migrationScripts[oVersion]) {
