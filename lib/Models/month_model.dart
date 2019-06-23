@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -23,18 +23,21 @@ class MonthModel {
   double savings;
   double currentMaxBudget;
   int firstDayOfMonth;
+  double monthlyExpenses;
 
   MonthModel(
       {this.id,
       @required this.savings,
       @required this.currentMaxBudget,
-      @required this.firstDayOfMonth});
+      @required this.firstDayOfMonth,
+      @required this.monthlyExpenses});
 
   factory MonthModel.fromMap(Map<String, dynamic> json) => new MonthModel(
         id: json["id"],
         savings: json["savings"],
         currentMaxBudget: json["currentMaxBudget"],
         firstDayOfMonth: json["firstOfMonth"],
+        monthlyExpenses: json["monthlyExpenses"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -42,5 +45,6 @@ class MonthModel {
         "savings": savings,
         "currentMaxBudget": currentMaxBudget,
         "firstOfMonth": firstDayOfMonth,
+        "monthlyExpenses": monthlyExpenses
       };
 }

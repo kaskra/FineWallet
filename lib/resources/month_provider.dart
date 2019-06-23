@@ -54,13 +54,14 @@ class MonthProvider {
     return await getMonth(DateTime.now());
   }
 
-  updateCurrentMonth(double currentMaxBudget, double savings) async {
+  updateCurrentMonth(
+      double currentMaxBudget, double savings, double monthlyExpenses) async {
     MonthModel monthEntity = MonthModel(
-      firstDayOfMonth:
-          dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
-      currentMaxBudget: currentMaxBudget,
-      savings: savings,
-    );
+        firstDayOfMonth:
+            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+        currentMaxBudget: currentMaxBudget,
+        savings: savings,
+        monthlyExpenses: monthlyExpenses);
     updateMonth(monthEntity);
   }
 

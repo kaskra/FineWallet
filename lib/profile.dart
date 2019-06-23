@@ -28,7 +28,9 @@ class _ProfilePageState extends State<ProfilePage> {
   double _currentMaxMonthlyBudget = 0;
   TextEditingController _textEditingController = TextEditingController();
 
-  double _overallMaxBudget = 1600;
+  double _overallMaxBudget = 0;
+  double _monthlyExpenses = 0;
+  double _savings = 0;
 
   void initState() {
     super.initState();
@@ -40,6 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
   void dispose() {
     super.dispose();
     _textEditingController.dispose();
+    _updateDatabase();
+  }
+
+  void _updateDatabase() async {
+    print("Update month in database!");
+    await MonthProvider.db.updateCurrentMonth(
+        _currentMaxMonthlyBudget, _savings, _monthlyExpenses);
   }
 
   void _syncDatabase() async {
@@ -47,11 +56,15 @@ class _ProfilePageState extends State<ProfilePage> {
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 
     // TODO check if new month, close previous month
-    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+    List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
 
+    double allSavings =
+        allMonths.fold(0.0, (prev, next) => prev + next.savings);
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
-      _currentMaxMonthlyBudget = currentMonth.currentMaxBudget;
+      _monthlyExpenses = monthlyTransactions.sumExpenses();
+      _savings = allSavings;
+      _currentMaxMonthlyBudget = allMonths.last.currentMaxBudget;
     });
   }
 
@@ -78,6 +91,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     onChanged: (value) {
                       _setMaxMonthlyBudget(value);
                     },
+                    onChangeEnd: (value) {
+                      print("Value: " + value.toString());
+                    },
                     onChangeStart: (value) {
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
@@ -87,11 +103,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     divisions: 100,
                   ),
                 ),
-//                Icon(
-//                  Icons.euro_symbol,
-//                  color: Theme.of(context).colorScheme.onBackground,
-//                  size: 18,
-//                ),
                 Text(
                   "€ ",
                   style: TextStyle(fontSize: 16),
@@ -145,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Text(
           "Savings: ",
         ),
-        Text("1345€",
+        Text("${_savings.toStringAsFixed(2)}€",
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

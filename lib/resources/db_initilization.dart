@@ -146,10 +146,10 @@ void initDB() async {
   int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
   if (numRecordedMonths == 0) {
     Provider.db.newMonth(MonthModel(
-      firstDayOfMonth:
-          dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
-      currentMaxBudget: 0.0,
-      savings: 0.0,
-    ));
+        firstDayOfMonth:
+            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+        currentMaxBudget: 0.0,
+        savings: 0.0,
+        monthlyExpenses: 0.0));
   }
 }

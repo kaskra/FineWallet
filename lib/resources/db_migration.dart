@@ -21,7 +21,8 @@ class Migration {
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "savings REAL, "
         "currentMaxBudget REAL, "
-        "firstOfMonth INTEGER"
+        "firstOfMonth INTEGER,"
+        "monthlyExpenses REAL"
         ")"
   ];
 }

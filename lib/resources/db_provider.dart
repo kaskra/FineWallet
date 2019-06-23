@@ -58,7 +58,8 @@ class Provider {
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "savings REAL,"
           "currentMaxBudget REAL,"
-          "firstOfMonth INTEGER"
+          "firstOfMonth INTEGER,"
+          "monthlyExpenses REAL"
           ")");
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
