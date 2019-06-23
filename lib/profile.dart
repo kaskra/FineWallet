@@ -29,8 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController _textEditingController = TextEditingController();
 
   double _overallMaxBudget = 0;
-  double _monthlyExpenses = 0;
   double _savings = 0;
+  MonthModel _currentMonth;
 
   void initState() {
     super.initState();
@@ -47,25 +47,24 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _updateDatabase() async {
     print("Update month in database!");
-    await MonthProvider.db.updateCurrentMonth(
-        _currentMaxMonthlyBudget, _savings, _monthlyExpenses);
+    _currentMonth.currentMaxBudget = _currentMaxMonthlyBudget;
+    await MonthProvider.db.updateMonth(_currentMonth);
   }
 
   void _syncDatabase() async {
     TransactionList monthlyTransactions = await TransactionsProvider.db
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 
-    // TODO check if new month, close previous month
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
-
+    // TODO check if new month, close previous month
     double allSavings =
         allMonths.fold(0.0, (prev, next) => prev + next.savings);
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
-      _monthlyExpenses = monthlyTransactions.sumExpenses();
       _savings = allSavings;
-      _currentMaxMonthlyBudget = allMonths.last.currentMaxBudget;
+      _currentMonth = allMonths.last;
     });
+    _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
   }
 
   Widget _toScreenWidth(Widget child) => Container(
@@ -90,9 +89,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Slider(
                     onChanged: (value) {
                       _setMaxMonthlyBudget(value);
-                    },
-                    onChangeEnd: (value) {
-                      print("Value: " + value.toString());
                     },
                     onChangeStart: (value) {
                       FocusScope.of(context).requestFocus(new FocusNode());

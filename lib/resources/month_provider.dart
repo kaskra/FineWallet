@@ -55,7 +55,7 @@ class MonthProvider {
   }
 
   updateCurrentMonth(
-      double currentMaxBudget, double savings, double monthlyExpenses) async {
+      num currentMaxBudget, num savings, num monthlyExpenses) async {
     MonthModel monthEntity = MonthModel(
         firstDayOfMonth:
             dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),

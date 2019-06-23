@@ -1,9 +1,10 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
+import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
@@ -13,6 +14,7 @@ import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
 import 'package:finewallet/profile.dart';
 import 'package:finewallet/resources/db_initilization.dart';
+import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/sliding_fab_menu.dart';
@@ -63,10 +65,20 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 4;
   bool _showBottomBar = true;
 
+  double _monthlyMaxBudget = 0;
+
   @override
   void initState() {
     super.initState();
     initDB();
+    _syncDatabase();
+  }
+
+  void _syncDatabase() async {
+    MonthModel month = await MonthProvider.db.getCurrentMonth();
+    setState(() {
+      _monthlyMaxBudget = month.currentMaxBudget;
+    });
   }
 
   Widget _overviewBox(String title, double amount, bool last, Function onTap) {
@@ -197,6 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onDayTap() {}
 
   Widget _buildBody() {
+    _syncDatabase();
     return Center(
         child: Container(
             constraints: BoxConstraints.expand(),
@@ -219,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             .where((TransactionModel txn) =>
                                 txn.date != dayInMillis(DateTime.now()))
                             .sumExpenses();
-                        double monthlyIncomes = snapshot.data.sumIncomes();
+                        double monthlyIncomes = _monthlyMaxBudget;
                         double expensesToday = snapshot.data
                             .byDayInMillis(dayInMillis(DateTime.now()))
                             .sumExpenses();

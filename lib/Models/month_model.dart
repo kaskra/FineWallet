@@ -20,10 +20,10 @@ String monthToJson(MonthModel data) {
 
 class MonthModel {
   int id;
-  double savings;
-  double currentMaxBudget;
+  num savings;
+  num currentMaxBudget;
   int firstDayOfMonth;
-  double monthlyExpenses;
+  num monthlyExpenses;
 
   MonthModel(
       {this.id,
