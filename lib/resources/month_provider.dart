@@ -7,6 +7,7 @@
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/utils.dart' as utils;
+import 'package:finewallet/utils.dart';
 
 class MonthProvider {
   MonthProvider._();
@@ -36,12 +37,11 @@ class MonthProvider {
 
   Future<List<MonthModel>> getAllRecordedMonths() async {
     var db = await Provider.db.database;
-    List<Map<String, dynamic>> res =
-        await db.rawQuery("PRAGMA table_info(months)");
-    print(res);
+    List<Map<String, dynamic>> res = await db.rawQuery("SELECT * FROM months");
     if (res.isEmpty) return [];
-    List<MonthModel> list =
-        res.map((Map<String, dynamic> json) => MonthModel.fromMap(json));
+    List<MonthModel> list = res
+        .map((Map<String, dynamic> json) => MonthModel.fromMap(json))
+        .toList();
     return list;
   }
 
@@ -52,6 +52,16 @@ class MonthProvider {
 
   Future<MonthModel> getCurrentMonth() async {
     return await getMonth(DateTime.now());
+  }
+
+  updateCurrentMonth(double currentMaxBudget, double savings) async {
+    MonthModel monthEntity = MonthModel(
+      firstDayOfMonth:
+          dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+      currentMaxBudget: currentMaxBudget,
+      savings: savings,
+    );
+    updateMonth(monthEntity);
   }
 
   updateMonth(MonthModel monthModelEntity) async {

@@ -6,7 +6,6 @@
 
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/general_widgets.dart';
-import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
@@ -33,9 +32,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void initState() {
     super.initState();
+    _syncDatabase();
     _textEditingController = TextEditingController(
         text: _currentMaxMonthlyBudget.toStringAsFixed(2));
-    _syncDatabase();
   }
 
   void dispose() {
@@ -47,21 +46,13 @@ class _ProfilePageState extends State<ProfilePage> {
     TransactionList monthlyTransactions = await TransactionsProvider.db
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 
+    // TODO check if new month, close previous month
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
+      _currentMaxMonthlyBudget = currentMonth.currentMaxBudget;
     });
-
-    int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
-    print(numRecordedMonths);
-
-    if (numRecordedMonths == 0) {
-      Provider.db.newMonth(MonthModel(
-        firstDayOfMonth:
-            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
-        currentMaxBudget: monthlyTransactions.sumIncomes(),
-        savings: 0,
-      ));
-    }
   }
 
   Widget _toScreenWidth(Widget child) => Container(
