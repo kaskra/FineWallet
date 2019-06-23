@@ -150,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
               alignment: Alignment.centerRight,
               child: Text(
-                "${budget.toStringAsFixed(2)}€",
+                "${(budget > 0) ? "-" : ""}${budget.toStringAsFixed(2)}€",
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
