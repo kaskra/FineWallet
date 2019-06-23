@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -116,32 +116,37 @@ class _AddPageState extends State<AddPage> {
         builder: (context) {
           _keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
           return Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    top: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: topBorderHeight))),
-            padding: EdgeInsets.only(left: 10, right: 10),
-            height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
-            child: TextField(
-              decoration: InputDecoration(
-                  labelText:
-                      "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
-                  contentPadding: EdgeInsets.all(4),
-                  labelStyle: TextStyle(
-                      fontSize: 15,
-                      color: Theme.of(context).textTheme.body1.color),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.onSurface)),
-                  hintText: "0.00"),
-              autofocus: true,
-              onSubmitted: (s) {
-                return Navigator.pop(context);
-              },
-              controller: _textEditingController,
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 25),
+            color: Color(0xFF636a75),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  border: Border.all(
+                      color: Theme.of(context).canvasColor,
+                      width: topBorderHeight / 2),
+                  borderRadius:
+                      BorderRadius.vertical(top: new Radius.circular(16))),
+              padding: EdgeInsets.only(left: 10, right: 15),
+              height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText:
+                        "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
+                    contentPadding: EdgeInsets.all(4),
+                    labelStyle: TextStyle(
+                        fontSize: 15,
+                        color: Theme.of(context).textTheme.body1.color),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onSurface)),
+                    hintText: "0.00"),
+                autofocus: true,
+                onSubmitted: (s) {
+                  return Navigator.pop(context);
+                },
+                controller: _textEditingController,
+                keyboardType: TextInputType.number,
+                style: TextStyle(fontSize: 25),
+              ),
             ),
           );
         }).whenComplete(() {
@@ -166,7 +171,10 @@ class _AddPageState extends State<AddPage> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return CategoryBottomSheet(widget.isExpense, _subcategory);
+          return Container(
+            color: Color(0xFF636a75),
+            child: CategoryBottomSheet(widget.isExpense, _subcategory),
+          );
         }).then((chosenCategory) {
       setState(() {
         _subcategory = chosenCategory ?? _subcategory;
@@ -199,20 +207,23 @@ class _AddPageState extends State<AddPage> {
     showCupertinoModalPopup<DateTime>(
       context: context,
       builder: (BuildContext context) {
-        return buildBottomPicker(
-            CupertinoDatePicker(
-              mode: CupertinoDatePickerMode.date,
-              initialDateTime:
-                  _repeatUntil ?? DateTime.now().add(Duration(days: 1)),
-              onDateTimeChanged: (DateTime newDateTime) {
-                setState(() {
-                  _repeatUntil = newDateTime;
-                });
-              },
-            ),
-            bottomSheetHeight,
-            topBorderHeight,
-            context);
+        return Container(
+          color: Color(0xFF636a75),
+          child: buildBottomPicker(
+              CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                initialDateTime:
+                    _repeatUntil ?? DateTime.now().add(Duration(days: 1)),
+                onDateTimeChanged: (DateTime newDateTime) {
+                  setState(() {
+                    _repeatUntil = newDateTime;
+                  });
+                },
+              ),
+              bottomSheetHeight,
+              topBorderHeight,
+              context),
+        );
       },
     );
   }
