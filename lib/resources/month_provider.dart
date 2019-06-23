@@ -36,8 +36,9 @@ class MonthProvider {
 
   Future<List<MonthModel>> getAllRecordedMonths() async {
     var db = await Provider.db.database;
-    List<Map<String, dynamic>> res = await db.rawQuery("SELECT * FROM months");
-
+    List<Map<String, dynamic>> res =
+        await db.rawQuery("PRAGMA table_info(months)");
+    print(res);
     if (res.isEmpty) return [];
     List<MonthModel> list =
         res.map((Map<String, dynamic> json) => MonthModel.fromMap(json));

@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -19,8 +19,8 @@ class Migration {
   static List<String> _migration_2_3 = [
     "CREATE TABLE months ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "savings REAL"
-        "currentMaxBudget REAL"
+        "savings REAL, "
+        "currentMaxBudget REAL, "
         "firstOfMonth INTEGER"
         ")"
   ];

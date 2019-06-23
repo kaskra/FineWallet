@@ -95,6 +95,7 @@ class Provider {
 
   newMonth(MonthModel newMonth) async {
     final db = await database;
+    print(newMonth.toMap());
     var raw = await db.insert("months", newMonth.toMap());
     return raw;
   }
