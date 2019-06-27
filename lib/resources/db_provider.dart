@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 23.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -118,5 +118,10 @@ class Provider {
   _deleteAllSubcategoriesOfCategory(int id) async {
     final db = await database;
     return db.delete("subcategories", where: "category = ?", whereArgs: [id]);
+  }
+
+  findMonth(int month) async {
+    final db = await database;
+    return db.query("months", where: "firstOfMonth = ?", whereArgs: [month]);
   }
 }

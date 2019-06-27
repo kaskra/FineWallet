@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 23.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -27,9 +27,7 @@ class MonthProvider {
     }
     dayInMillis = utils.dayInMillis(firstOfMonth);
 
-    var db = await Provider.db.database;
-    var res = await db
-        .query("months", where: "firstOfMonth = ?", whereArgs: [dayInMillis]);
+    var res = await Provider.db.findMonth(dayInMillis);
 
     if (res.isEmpty) return null;
     return MonthModel.fromMap(res.first);
