@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 23.6.2019.
+ * Developed by Lukas Krauch 29.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -397,78 +397,80 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Color(0xffd8e7ff),
-        appBar: AppBar(
-          iconTheme: Theme.of(context).iconTheme,
-          actions: <Widget>[
-            Container(
-              width: 50,
-              child: InkWell(
-                onTap: () {
-                  if (_expense != null &&
-                      _date != null &&
-                      _subcategory != null &&
-                      _typeIndex != null) {
-                    if (_repeatUntil != null) {
-                      if (_repeatUntil.isBefore(_date))
-                        return _showSnackBar(context,
-                            "Please choose a date that is after the current date.");
-
-                      if (isRecurrencePossible(dayInMillis(_date),
-                              dayInMillis(_repeatUntil), _typeIndex) ==
-                          -1)
-                        return _showSnackBar(context,
-                            "Your recurrence type does not fit inside the time frame.");
-                    }
-
-                    TransactionModel tx = new TransactionModel(
-                        amount: _expense,
-                        isExpense: widget.isExpense,
-                        date: dayInMillis(_date),
-                        subcategory: _subcategory.index,
-                        isRecurring: _isExpanded ? 1 : 0,
-                        replayType: _typeIndex,
-                        replayUntil: _repeatUntil != null
-                            ? dayInMillis(_repeatUntil)
-                            : null);
-                    Provider.db.newTransaction(tx);
-                    Navigator.pop(context);
-                  } else {
-                    return _showSnackBar(context);
-                  }
-                },
-                child: Icon(Icons.save),
-              ),
-            )
-          ],
-          centerTitle: true,
-          title: Text(
-            widget.title,
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-          ),
+      key: _scaffoldKey,
+      backgroundColor: Color(0xffd8e7ff),
+      appBar: AppBar(
+        iconTheme: Theme.of(context).iconTheme,
+        centerTitle: true,
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topCenter,
-              height: 100,
-              margin: EdgeInsets.all(5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _expenseCards(
-                      Icons.euro_symbol,
-                      "Amount ${widget.isExpense == 1 ? "Expense" : "Income"}",
-                      0,
-                      setExpense),
-                  _expenseCards(Icons.local_offer, "Category", 1, setCategory),
-                  _expenseCards(Icons.today, "Date", 2, setDate),
-                ],
-              ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topCenter,
+            height: 100,
+            margin: EdgeInsets.all(5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                _expenseCards(
+                    Icons.euro_symbol,
+                    "Amount ${widget.isExpense == 1 ? "Expense" : "Income"}",
+                    0,
+                    setExpense),
+                _expenseCards(Icons.local_offer, "Category", 1, setCategory),
+                _expenseCards(Icons.today, "Date", 2, setDate),
+              ],
             ),
-            _buildRecurringCard()
-          ],
-        ));
+          ),
+          _buildRecurringCard()
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text("SAVE",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+            )),
+        icon: Icon(
+          Icons.save,
+          color: Theme.of(context).colorScheme.onSecondary,
+        ),
+        onPressed: () {
+          if (_expense != null &&
+              _date != null &&
+              _subcategory != null &&
+              _typeIndex != null) {
+            if (_repeatUntil != null) {
+              if (_repeatUntil.isBefore(_date))
+                return _showSnackBar(context,
+                    "Please choose a date that is after the current date.");
+
+              if (isRecurrencePossible(dayInMillis(_date),
+                      dayInMillis(_repeatUntil), _typeIndex) ==
+                  -1)
+                return _showSnackBar(context,
+                    "Your recurrence type does not fit inside the time frame.");
+            }
+
+            TransactionModel tx = new TransactionModel(
+                amount: _expense,
+                isExpense: widget.isExpense,
+                date: dayInMillis(_date),
+                subcategory: _subcategory.index,
+                isRecurring: _isExpanded ? 1 : 0,
+                replayType: _typeIndex,
+                replayUntil:
+                    _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
+            Provider.db.newTransaction(tx);
+            Navigator.pop(context);
+          } else {
+            return _showSnackBar(context);
+          }
+        },
+      ),
+    );
   }
 }
