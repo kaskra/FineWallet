@@ -6,6 +6,7 @@
 
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
@@ -57,6 +58,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
     // TODO check if new month, close previous month
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+
+    if (currentMonth == null) {
+      if (allMonths.length > 0) {
+        MonthModel prevMonth = allMonths.last;
+        TransactionList prevMonthlyTransactions = await TransactionsProvider.db
+            .getTransactionsOfMonth(prevMonth.firstDayOfMonth);
+        prevMonth.monthlyExpenses = prevMonthlyTransactions.sumExpenses();
+        prevMonth.savings =
+            prevMonthlyTransactions.sumIncomes() - prevMonth.monthlyExpenses;
+        MonthProvider.db.updateMonth(prevMonth);
+      }
+      MonthModel month = new MonthModel(
+        monthlyExpenses: 0,
+        savings: 0,
+        currentMaxBudget: 0,
+        firstDayOfMonth:
+            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+      );
+      await Provider.db.newMonth(month);
+    }
+
     double allSavings =
         allMonths.fold(0.0, (prev, next) => prev + next.savings);
     setState(() {
