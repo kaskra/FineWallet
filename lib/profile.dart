@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -33,7 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Color(0xffd8e7ff),
       appBar: widget.showAppBar
           ? AppBar(
               iconTheme: Theme.of(context).iconTheme,

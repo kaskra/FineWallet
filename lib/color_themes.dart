@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 20.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -11,6 +11,10 @@ final ThemeData normalTheme = ThemeData(
     primarySwatch: Colors.orange,
     appBarTheme:
         AppBarTheme(actionsIconTheme: IconThemeData(color: Colors.white)));
+
+const double appBarElevation = 0; // default 4
+const double appBarOpacity = 1;
+const bool centerAppBar = true;
 
 const _primary = Colors.orange;
 const _secondary = Colors.orangeAccent;
