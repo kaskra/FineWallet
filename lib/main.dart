@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ))
           ],
         ),
-        isToday
+        decoration: isToday
             ? BoxDecoration(
                 border: Border.all(
                     width: 2, color: Theme.of(context).colorScheme.secondary))
