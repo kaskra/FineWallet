@@ -1,10 +1,9 @@
 /*
- * Developed by Lukas Krauch 23.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
-import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
@@ -14,12 +13,10 @@ import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/history.dart';
 import 'package:finewallet/profile.dart';
 import 'package:finewallet/resources/db_initilization.dart';
-import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/sliding_fab_menu.dart';
 import 'package:finewallet/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -65,20 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 4;
   bool _showBottomBar = true;
 
-  double _monthlyMaxBudget = 0;
-
   @override
   void initState() {
     super.initState();
     initDB();
-    _syncDatabase();
-  }
-
-  void _syncDatabase() async {
-    MonthModel month = await MonthProvider.db.getCurrentMonth();
-    setState(() {
-      _monthlyMaxBudget = month.currentMaxBudget;
-    });
   }
 
   Widget _overviewBox(String title, double amount, bool last, Function onTap) {
@@ -150,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
               alignment: Alignment.centerRight,
               child: Text(
-                "${(budget > 0) ? "-" : ""}${budget.toStringAsFixed(2)}€",
+                "${budget.toStringAsFixed(2)}€",
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
@@ -159,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ))
           ],
         ),
-        decoration: isToday
+        isToday
             ? BoxDecoration(
                 border: Border.all(
                     width: 2, color: Theme.of(context).colorScheme.secondary))
@@ -197,6 +184,47 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _buildFABs() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+//        Spacer(
+//          flex: 4,
+//        ),
+        FloatingActionButton(
+          heroTag: null,
+          onPressed: () => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddPage("Income", 0))),
+          child:
+              Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+        ),
+//        Spacer(),
+        FloatingActionButton(
+          mini: true,
+          heroTag: null,
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HistoryPage("Transaction History",
+                      day: dayInMillis(DateTime.now())))),
+          child: Icon(Icons.list,
+              color: Theme.of(context).colorScheme.onSecondary),
+        ),
+//        Spacer(),
+        FloatingActionButton(
+          heroTag: null,
+          onPressed: () => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddPage("Expense", 1))),
+          child: Icon(Icons.remove,
+              color: Theme.of(context).colorScheme.onSecondary),
+        ),
+//        Spacer(
+//          flex: 4,
+//        ),
+      ],
+    );
+  }
+
   void _onMonthTap() {
     Navigator.push(
         context,
@@ -209,7 +237,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onDayTap() {}
 
   Widget _buildBody() {
-    _syncDatabase();
     return Center(
         child: Container(
             constraints: BoxConstraints.expand(),
@@ -232,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             .where((TransactionModel txn) =>
                                 txn.date != dayInMillis(DateTime.now()))
                             .sumExpenses();
-                        double monthlyIncomes = _monthlyMaxBudget;
+                        double monthlyIncomes = snapshot.data.sumIncomes();
                         double expensesToday = snapshot.data
                             .byDayInMillis(dayInMillis(DateTime.now()))
                             .sumExpenses();
@@ -319,7 +346,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
       ProfilePage(
         showAppBar: false,
@@ -339,7 +365,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        centerTitle: centerAppBar,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
         title: Text(
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
@@ -347,12 +376,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: _buildBottomBar(),
       body: children[_currentIndex],
-      floatingActionButton: keyboardOpen
-          ? SizedBox()
-          : SlidingFABMenu(
-              onMenuFunction: _addTransaction,
-              tapCallback: _navCallback,
-            ),
+      floatingActionButton: SlidingFABMenu(
+        onMenuFunction: _addTransaction,
+        tapCallback: _navCallback,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

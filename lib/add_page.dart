@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 23.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -8,6 +8,7 @@ import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Datatypes/repeat_type.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/bottom_sheets.dart';
+import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/corner_triangle.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/db_provider.dart';
@@ -115,48 +116,33 @@ class _AddPageState extends State<AddPage> {
         context: context,
         builder: (context) {
           _keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-          return WillPopScope(
-            onWillPop: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
-              return Future.value(true);
-            },
-            child: Container(
-              color: Color(0xFF636a75),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                    border: Border.all(
-                        color: Theme.of(context).canvasColor,
-                        width: topBorderHeight / 2),
-                    borderRadius:
-                        BorderRadius.vertical(top: new Radius.circular(16))),
-                padding: EdgeInsets.only(left: 10, right: 10),
-                height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
-                child: Align(
-                  alignment: FractionalOffset.topCenter,
-                  child: TextField(
-                    decoration: InputDecoration(
-                        labelText:
-                            "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
-                        contentPadding: EdgeInsets.all(4),
-                        labelStyle: TextStyle(
-                            fontSize: 15,
-                            color: Theme.of(context).textTheme.body1.color),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color:
-                                    Theme.of(context).colorScheme.onSurface)),
-                        hintText: "0.00"),
-                    autofocus: true,
-                    onSubmitted: (s) {
-                      return Navigator.pop(context);
-                    },
-                    controller: _textEditingController,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(fontSize: 25),
-                  ),
-                ),
-              ),
+          return Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: topBorderHeight))),
+            padding: EdgeInsets.only(left: 10, right: 10),
+            height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
+            child: TextField(
+              decoration: InputDecoration(
+                  labelText:
+                      "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
+                  contentPadding: EdgeInsets.all(4),
+                  labelStyle: TextStyle(
+                      fontSize: 15,
+                      color: Theme.of(context).textTheme.body1.color),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSurface)),
+                  hintText: "0.00"),
+              autofocus: true,
+              onSubmitted: (s) {
+                return Navigator.pop(context);
+              },
+              controller: _textEditingController,
+              keyboardType: TextInputType.number,
+              style: TextStyle(fontSize: 25),
             ),
           );
         }).whenComplete(() {
@@ -181,10 +167,7 @@ class _AddPageState extends State<AddPage> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return Container(
-            color: Color(0xFF636a75),
-            child: CategoryBottomSheet(widget.isExpense, _subcategory),
-          );
+          return CategoryBottomSheet(widget.isExpense, _subcategory);
         }).then((chosenCategory) {
       setState(() {
         _subcategory = chosenCategory ?? _subcategory;
@@ -217,23 +200,20 @@ class _AddPageState extends State<AddPage> {
     showCupertinoModalPopup<DateTime>(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          color: Color(0xFF636a75),
-          child: buildBottomPicker(
-              CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                initialDateTime:
-                    _repeatUntil ?? DateTime.now().add(Duration(days: 1)),
-                onDateTimeChanged: (DateTime newDateTime) {
-                  setState(() {
-                    _repeatUntil = newDateTime;
-                  });
-                },
-              ),
-              bottomSheetHeight,
-              topBorderHeight,
-              context),
-        );
+        return buildBottomPicker(
+            CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              initialDateTime:
+                  _repeatUntil ?? DateTime.now().add(Duration(days: 1)),
+              onDateTimeChanged: (DateTime newDateTime) {
+                setState(() {
+                  _repeatUntil = newDateTime;
+                });
+              },
+            ),
+            bottomSheetHeight,
+            topBorderHeight,
+            context);
       },
     );
   }
@@ -397,78 +377,82 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Color(0xffd8e7ff),
-        appBar: AppBar(
-          iconTheme: Theme.of(context).iconTheme,
-          actions: <Widget>[
-            Container(
-              width: 50,
-              child: InkWell(
-                onTap: () {
-                  if (_expense != null &&
-                      _date != null &&
-                      _subcategory != null &&
-                      _typeIndex != null) {
-                    if (_repeatUntil != null) {
-                      if (_repeatUntil.isBefore(_date))
-                        return _showSnackBar(context,
-                            "Please choose a date that is after the current date.");
-
-                      if (isRecurrencePossible(dayInMillis(_date),
-                              dayInMillis(_repeatUntil), _typeIndex) ==
-                          -1)
-                        return _showSnackBar(context,
-                            "Your recurrence type does not fit inside the time frame.");
-                    }
-
-                    TransactionModel tx = new TransactionModel(
-                        amount: _expense,
-                        isExpense: widget.isExpense,
-                        date: dayInMillis(_date),
-                        subcategory: _subcategory.index,
-                        isRecurring: _isExpanded ? 1 : 0,
-                        replayType: _typeIndex,
-                        replayUntil: _repeatUntil != null
-                            ? dayInMillis(_repeatUntil)
-                            : null);
-                    Provider.db.newTransaction(tx);
-                    Navigator.pop(context);
-                  } else {
-                    return _showSnackBar(context);
-                  }
-                },
-                child: Icon(Icons.save),
-              ),
-            )
-          ],
-          centerTitle: true,
-          title: Text(
-            widget.title,
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-          ),
+      key: _scaffoldKey,
+      appBar: AppBar(
+        iconTheme: Theme.of(context).iconTheme,
+        centerTitle: centerAppBar,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topCenter,
-              height: 100,
-              margin: EdgeInsets.all(5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _expenseCards(
-                      Icons.euro_symbol,
-                      "Amount ${widget.isExpense == 1 ? "Expense" : "Income"}",
-                      0,
-                      setExpense),
-                  _expenseCards(Icons.local_offer, "Category", 1, setCategory),
-                  _expenseCards(Icons.today, "Date", 2, setDate),
-                ],
-              ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topCenter,
+            height: 100,
+            margin: EdgeInsets.all(5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                _expenseCards(
+                    Icons.euro_symbol,
+                    "Amount ${widget.isExpense == 1 ? "Expense" : "Income"}",
+                    0,
+                    setExpense),
+                _expenseCards(Icons.local_offer, "Category", 1, setCategory),
+                _expenseCards(Icons.today, "Date", 2, setDate),
+              ],
             ),
-            _buildRecurringCard()
-          ],
-        ));
+          ),
+          _buildRecurringCard()
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text("SAVE",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+            )),
+        icon: Icon(
+          Icons.save,
+          color: Theme.of(context).colorScheme.onSecondary,
+        ),
+        onPressed: () {
+          if (_expense != null &&
+              _date != null &&
+              _subcategory != null &&
+              _typeIndex != null) {
+            if (_repeatUntil != null) {
+              if (_repeatUntil.isBefore(_date))
+                return _showSnackBar(context,
+                    "Please choose a date that is after the current date.");
+
+              if (isRecurrencePossible(dayInMillis(_date),
+                      dayInMillis(_repeatUntil), _typeIndex) ==
+                  -1)
+                return _showSnackBar(context,
+                    "Your recurrence type does not fit inside the time frame.");
+            }
+
+            TransactionModel tx = new TransactionModel(
+                amount: _expense,
+                isExpense: widget.isExpense,
+                date: dayInMillis(_date),
+                subcategory: _subcategory.index,
+                isRecurring: _isExpanded ? 1 : 0,
+                replayType: _typeIndex,
+                replayUntil:
+                    _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
+            Provider.db.newTransaction(tx);
+            Navigator.pop(context);
+          } else {
+            return _showSnackBar(context);
+          }
+        },
+      ),
+    );
   }
 }

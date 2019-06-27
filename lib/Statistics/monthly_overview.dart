@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 27.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -139,7 +139,6 @@ class _MonthlyOverviewState extends State<MonthlyOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffd8e7ff),
         appBar: widget.showAppBar
             ? AppBar(
                 iconTheme:

@@ -1,10 +1,15 @@
 /*
+<<<<<<< HEAD
  * Developed by Lukas Krauch 23.6.2019.
+=======
+ * Developed by Lukas Krauch 27.6.2019.
+>>>>>>> master
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'package:finewallet/Models/month_model.dart';
+import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
@@ -179,7 +184,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Color(0xffd8e7ff),
+      backgroundColor:
+          Theme.of(context).scaffoldBackgroundColor.withOpacity(appBarOpacity),
       resizeToAvoidBottomInset: true,
       appBar: widget.showAppBar
           ? AppBar(
