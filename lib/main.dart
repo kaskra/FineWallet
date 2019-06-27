@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 23.6.2019.
+ * Developed by Lukas Krauch 29.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -339,7 +339,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        centerTitle: centerAppBar,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
         title: Text(
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),

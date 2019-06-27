@@ -8,6 +8,7 @@ import 'package:finewallet/Datatypes/category.dart';
 import 'package:finewallet/Datatypes/repeat_type.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/bottom_sheets.dart';
+import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/corner_triangle.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/db_provider.dart';
@@ -398,10 +399,12 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Color(0xffd8e7ff),
       appBar: AppBar(
         iconTheme: Theme.of(context).iconTheme,
-        centerTitle: true,
+        centerTitle: centerAppBar,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
         title: Text(
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
