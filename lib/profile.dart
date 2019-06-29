@@ -1,10 +1,11 @@
 /*
- * Developed by Lukas Krauch 27.6.2019.
+ * Developed by Lukas Krauch 29.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
 import 'package:finewallet/Models/month_model.dart';
+import 'package:finewallet/Statistics/profile_chart.dart';
 import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/db_provider.dart';
@@ -167,6 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _categoryBox() {
     return Container(
       height: 200,
+      child: CircularProfileChart.withSampleData(),
     );
   }
 
