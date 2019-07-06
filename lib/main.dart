@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 29.6.2019.
+ * Developed by Lukas Krauch 6.7.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _syncDatabase() async {
     MonthModel month = await MonthProvider.db.getCurrentMonth();
     setState(() {
-      _monthlyMaxBudget = month.currentMaxBudget;
+      _monthlyMaxBudget = month != null ? month.currentMaxBudget : 0;
     });
   }
 
