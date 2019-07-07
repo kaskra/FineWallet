@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 29.6.2019.
+ * Developed by Lukas Krauch 7.7.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: child,
       );
 
-  Widget _sliderBox() {
+  Widget _buildSliderBox() {
     return Column(
       children: <Widget>[
         Align(
@@ -144,7 +144,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   textInputAction: TextInputAction.done,
                 ))
               ],
-            ))
+            )),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+              "Expected savings: ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
+              style: TextStyle(fontSize: 14)),
+        )
       ],
     );
   }
@@ -191,7 +197,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        _toScreenWidth(generalCard(_sliderBox(), cardBorderRadius: radius)),
+        _toScreenWidth(
+            generalCard(_buildSliderBox(), cardBorderRadius: radius)),
         _toScreenWidth(generalCard(_categoryBox(), cardBorderRadius: radius)),
         _toScreenWidth(
           generalCard(_savingsBox(), cardBorderRadius: radius),
