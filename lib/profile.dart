@@ -29,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   double _currentMaxMonthlyBudget = 0;
   TextEditingController _textEditingController = TextEditingController();
+  DateTime _today;
 
   double _overallMaxBudget = 0;
   double _savings = 0;
@@ -36,6 +37,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void initState() {
     super.initState();
+    DateTime now = DateTime.now();
+    setState(() {
+      _today = DateTime.utc(now.year, now.month, now.day);
+    });
     _syncDatabase();
     _textEditingController = TextEditingController(
         text: _currentMaxMonthlyBudget.toStringAsFixed(2));
@@ -55,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _syncDatabase() async {
     TransactionList monthlyTransactions = await TransactionsProvider.db
-        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
+        .getTransactionsOfMonth(dayInMillis(_today));
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
     // TODO check if new month, close previous month
@@ -75,8 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
         monthlyExpenses: 0,
         savings: 0,
         currentMaxBudget: 0,
-        firstDayOfMonth:
-            dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
+        firstDayOfMonth: dayInMillis(DateTime(_today.year, _today.month, 1)),
       );
       await Provider.db.newMonth(month);
     }
