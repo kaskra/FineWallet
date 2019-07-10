@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 7.7.2019.
+ * Developed by Lukas Krauch 10.7.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -171,10 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _categoryBox() {
-    return Container(
-      height: 200,
-      child: CircularProfileChart.withSampleData(),
-    );
+    return Container(height: 200, child: ProfileChart());
   }
 
   Widget _savingsBox() {
