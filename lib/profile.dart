@@ -185,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: <Widget>[
         Column(children: <Widget>[
           Text(
-            "Monthly expenses",
+            "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Container(
