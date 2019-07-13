@@ -23,6 +23,7 @@ class PredictionPoint {
   final int timestamp;
   final double amount;
   final bool isPrediction;
-  // final bool isAboveMax;
-  PredictionPoint(this.timestamp, this.amount, this.isPrediction);
+  final bool isAboveMax;
+  PredictionPoint(
+      this.timestamp, this.amount, this.isPrediction, this.isAboveMax);
 }

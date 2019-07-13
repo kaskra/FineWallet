@@ -47,7 +47,8 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
         future: TransactionsProvider.db.getAllTrans(dayInMillis(_today)),
         builder: (context, AsyncSnapshot<TransactionList> snapshot) {
           if (snapshot.hasData) {
-            return PredictionChart.withTransactions(_calcDataPoints(snapshot));
+            return PredictionChart.withTransactions(
+                _calcDataPoints(snapshot), widget.monthlyBudget);
           }
           return Center(child: CircularProgressIndicator());
         });
@@ -89,7 +90,9 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
     List<PredictionPoint> dataPoints = [];
     for (int i = 0; i < days.length; i++) {
       bool isPrediction = i > todayIdx;
-      dataPoints.add(PredictionPoint(days[i], expense[i], isPrediction));
+      bool isAboveMax = expense[i] > widget.monthlyBudget;
+      dataPoints
+          .add(PredictionPoint(days[i], expense[i], isPrediction, isAboveMax));
     }
     return dataPoints;
   }
@@ -101,15 +104,28 @@ class PredictionChart extends StatelessWidget {
 
   PredictionChart(this.seriesList, {this.animate});
 
-  factory PredictionChart.withTransactions(List<PredictionPoint> data) {
-    List<charts.Series<PredictionPoint, int>> outputData = [
+  factory PredictionChart.withTransactions(
+      List<PredictionPoint> data, double monthlyMaxBudget) {
+    List<charts.Series<dynamic, int>> outputData = [
       charts.Series<PredictionPoint, int>(
           data: data,
           id: "SpendingPrediction",
           domainFn: (PredictionPoint ce, _) => ce.timestamp,
           measureFn: (PredictionPoint ce, _) => ce.amount,
+          colorFn: (PredictionPoint ce, _) => ce.isAboveMax
+              ? charts.MaterialPalette.red.shadeDefault
+              : charts.MaterialPalette.blue.shadeDefault,
+          strokeWidthPxFn: (PredictionPoint pp, _) => pp.isPrediction ? 1 : 2,
           dashPatternFn: (PredictionPoint ce, _) =>
-              ce.isPrediction ? [3, 0, 0, 3] : null)
+              ce.isPrediction ? [3, 3] : null),
+      charts.Series<double, int>(
+          data: [monthlyMaxBudget, monthlyMaxBudget],
+          id: "MaxBudget",
+          domainFn: (double d, int i) => i == 0 ? 0 : data.length,
+          measureFn: (double d, _) => d,
+          colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+          strokeWidthPxFn: (_, __) => 1,
+          areaColorFn: (_, __) => charts.MaterialPalette.transparent)
     ];
 
     return PredictionChart(
@@ -123,25 +139,7 @@ class PredictionChart extends StatelessWidget {
     return new charts.LineChart(seriesList,
         animate: false,
         defaultRenderer: charts.LineRendererConfig(
-            roundEndCaps: true,
-            strokeWidthPx: 2,
-//            includeArea: true,
-            areaOpacity: 0.5),
-        behaviors: [
-          charts.ChartTitle("Days",
-              behaviorPosition: charts.BehaviorPosition.bottom,
-              titleOutsideJustification: charts.OutsideJustification.end,
-              innerPadding: 0,
-              titleStyleSpec: charts.TextStyleSpec(fontSize: 12)),
-          charts.ChartTitle("€",
-              behaviorPosition: charts.BehaviorPosition.start,
-              titleOutsideJustification:
-                  charts.OutsideJustification.endDrawArea,
-              titleDirection: charts.ChartTitleDirection.horizontal,
-              titleStyleSpec: charts.TextStyleSpec(fontSize: 12),
-              outerPadding: 0,
-              innerPadding: 0),
-        ],
+            roundEndCaps: true, strokeWidthPx: 1.8, areaOpacity: 0.3),
         domainAxis: charts.NumericAxisSpec(
             tickProviderSpec:
                 charts.StaticNumericTickProviderSpec(<charts.TickSpec<int>>[
@@ -153,7 +151,9 @@ class PredictionChart extends StatelessWidget {
           charts.TickSpec<int>(30),
         ])),
         primaryMeasureAxis: charts.NumericAxisSpec(
-          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0),
+          //          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0), // TODO
+          renderSpec: charts.GridlineRendererSpec(
+              lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
           tickProviderSpec: charts.BasicNumericTickProviderSpec(
               dataIsInWholeNumbers: true,
               desiredTickCount: 10,
