@@ -7,6 +7,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/Statistics/chart_data.dart';
 import 'package:finewallet/resources/category_list.dart';
 import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
@@ -70,7 +71,7 @@ class _ProfileChartState extends State<ProfileChart> {
                   .sumExpenses();
               expenses.add(ex);
             }
-            return CircularProfileChart.withMonthlyTransactions(
+            return CircularProfileChart.withTransactions(
                 expenses, categories, categoryNames);
           }
           return Center(child: CircularProgressIndicator());
@@ -93,7 +94,7 @@ class CircularProfileChart extends StatelessWidget {
 
   CircularProfileChart(this.seriesList, {this.animate});
 
-  factory CircularProfileChart.withMonthlyTransactions(
+  factory CircularProfileChart.withTransactions(
       List<double> expenses, List<int> categories, List<String> categoryNames) {
     List<CategoryExpenses> inputData = [];
     for (int i = 0; i < expenses.length; i++) {
@@ -137,12 +138,4 @@ class CircularProfileChart extends StatelessWidget {
       ),
     );
   }
-}
-
-class CategoryExpenses {
-  final double amount;
-  final int categoryId;
-  final String categoryName;
-
-  CategoryExpenses(this.amount, this.categoryId, this.categoryName);
 }

@@ -10,3 +10,11 @@ class DataPoint {
   final double income;
   DataPoint(this.timeStamp, this.expense, this.income);
 }
+
+class CategoryExpenses {
+  final double amount;
+  final int categoryId;
+  final String categoryName;
+
+  CategoryExpenses(this.amount, this.categoryId, this.categoryName);
+}

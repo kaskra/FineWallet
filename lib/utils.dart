@@ -19,6 +19,24 @@ DateTime getLastDateOfMonth(DateTime date) {
       : new DateTime(date.year + 1, 1, 0);
 }
 
+List<double> getListOfMonthDays(DateTime month) {
+  DateTime date = month ?? DateTime.now();
+
+  int lastDay = getLastDayOfMonth(date);
+  DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
+  DateTime lastOfMonth =
+      DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
+
+  List<double> data = List();
+  for (var i = firstOfMonth.millisecondsSinceEpoch;
+      i < lastOfMonth.millisecondsSinceEpoch;
+      i = i + Duration(days: 1).inMilliseconds) {
+    int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
+    data.add(day.toDouble());
+  }
+  return data;
+}
+
 String getDayName(int day) {
   List<String> days = [
     "Monday",
