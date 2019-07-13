@@ -16,6 +16,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileChart extends StatefulWidget {
+  static const int MONTHLY_CHART = 1;
+  static const int LIFE_CHART = 2;
+
+  ProfileChart({this.type = MONTHLY_CHART});
+
+  final int type;
+
   @override
   _ProfileChartState createState() => _ProfileChartState();
 }
@@ -46,9 +53,14 @@ class _ProfileChartState extends State<ProfileChart> {
   }
 
   Widget _buildChart() {
+    Future<TransactionList> transactionFuture =
+        widget.type == ProfileChart.MONTHLY_CHART
+            ? TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(today))
+            : TransactionsProvider.db
+                .getAllTrans(dayInMillis(getLastDateOfMonth(today)));
+
     return FutureBuilder(
-        future:
-            TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(today)),
+        future: transactionFuture,
         builder: (context, AsyncSnapshot<TransactionList> snapshot) {
           if (snapshot.hasData && categories != null) {
             List<double> expenses = [];

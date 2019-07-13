@@ -10,10 +10,13 @@ int dayInMillis(DateTime time) {
 }
 
 int getLastDayOfMonth(DateTime date) {
-  int day = (date.month < 12)
-      ? new DateTime(date.year, date.month + 1, 0).day
-      : new DateTime(date.year + 1, 1, 0).day;
-  return day;
+  return getLastDateOfMonth(date).day;
+}
+
+DateTime getLastDateOfMonth(DateTime date) {
+  return (date.month < 12)
+      ? new DateTime(date.year, date.month + 1, 0)
+      : new DateTime(date.year + 1, 1, 0);
 }
 
 String getDayName(int day) {
