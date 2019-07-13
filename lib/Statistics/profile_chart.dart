@@ -105,12 +105,14 @@ class CircularProfileChart extends StatelessWidget {
 
     List<charts.Series<CategoryExpenses, int>> data = [
       charts.Series<CategoryExpenses, int>(
-        data: inputData,
-        id: "CategoryExpenses",
-        domainFn: (CategoryExpenses ce, _) => ce.categoryId,
-        measureFn: (CategoryExpenses ce, _) => ce.amount,
-        labelAccessorFn: (CategoryExpenses ce, _) => ce.categoryName,
-      )
+          data: inputData,
+          id: "CategoryExpenses",
+          domainFn: (CategoryExpenses ce, _) => ce.categoryId,
+          measureFn: (CategoryExpenses ce, _) => ce.amount,
+          labelAccessorFn: (CategoryExpenses ce, _) => ce.categoryName,
+          colorFn: (CategoryExpenses ce, int i) => charts
+              .MaterialPalette.deepOrange
+              .makeShades(categories.length)[i])
     ];
 
     return CircularProfileChart(
