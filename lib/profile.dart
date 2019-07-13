@@ -205,24 +205,32 @@ class _ProfilePageState extends State<ProfilePage> {
         Align(
           alignment: Alignment.topRight,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              InkWell(
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.repeat,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _chartType = _chartType == ProfileChart.MONTHLY_CHART
-                        ? ProfileChart.LIFE_CHART
-                        : ProfileChart.MONTHLY_CHART;
-                  });
-                },
-              ),
+              !_showPrediction
+                  ? InkWell(
+                      child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: Icon(
+                            Icons.repeat,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          )),
+                      onTap: () {
+                        setState(() {
+                          _chartType = _chartType == ProfileChart.MONTHLY_CHART
+                              ? ProfileChart.LIFE_CHART
+                              : ProfileChart.MONTHLY_CHART;
+                        });
+                      },
+                    )
+                  : Container(
+                      padding: EdgeInsets.all(5),
+                      child: Icon(
+                        Icons.repeat,
+                        size: 16,
+                        color: Colors.transparent,
+                      )),
               InkWell(
                   child: Container(
                     margin: EdgeInsets.all(5),
