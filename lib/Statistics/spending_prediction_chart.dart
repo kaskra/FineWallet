@@ -113,9 +113,9 @@ class PredictionChart extends StatelessWidget {
           domainFn: (PredictionPoint ce, _) => ce.timestamp,
           measureFn: (PredictionPoint ce, _) => ce.amount,
           colorFn: (PredictionPoint ce, _) => ce.isAboveMax
-              ? charts.MaterialPalette.red.shadeDefault
-              : charts.MaterialPalette.blue.shadeDefault,
-          strokeWidthPxFn: (PredictionPoint pp, _) => pp.isPrediction ? 1 : 2,
+              ? charts.MaterialPalette.red.shadeDefault.darker.darker
+              : charts.MaterialPalette.deepOrange.shadeDefault,
+          strokeWidthPxFn: (PredictionPoint pp, _) => pp.isPrediction ? 1 : 1.8,
           dashPatternFn: (PredictionPoint ce, _) =>
               ce.isPrediction ? [3, 3] : null),
       charts.Series<double, int>(
@@ -123,7 +123,8 @@ class PredictionChart extends StatelessWidget {
           id: "MaxBudget",
           domainFn: (double d, int i) => i == 0 ? 0 : data.length,
           measureFn: (double d, _) => d,
-          colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+          colorFn: (_, __) =>
+              charts.MaterialPalette.red.shadeDefault.darker.darker,
           strokeWidthPxFn: (_, __) => 1,
           areaColorFn: (_, __) => charts.MaterialPalette.transparent)
     ];
@@ -154,10 +155,6 @@ class PredictionChart extends StatelessWidget {
           //          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0), // TODO
           renderSpec: charts.GridlineRendererSpec(
               lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
-          tickProviderSpec: charts.BasicNumericTickProviderSpec(
-              dataIsInWholeNumbers: true,
-              desiredTickCount: 10,
-              desiredMaxTickCount: 10),
         ));
   }
 }
