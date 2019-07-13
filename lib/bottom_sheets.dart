@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 23.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -139,11 +139,11 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            border: Border(
-                top: BorderSide(
-                    color: Theme.of(context).colorScheme.secondary,
-                    width: topBorderHeight))),
+            color: Theme.of(context).canvasColor,
+            border: Border.all(
+                color: Theme.of(context).canvasColor,
+                width: topBorderHeight / 2),
+            borderRadius: BorderRadius.vertical(top: new Radius.circular(16))),
         height: bottomSheetHeight,
         child: GestureDetector(
             // Blocks taps from propagating to the modal sheet and popping.
@@ -152,31 +152,35 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 top: false,
                 child: Column(
                   children: <Widget>[
-                    Container(
-                      height: categoryListHeight,
-                      width: MediaQuery.of(context).size.width,
-                      child: FutureBuilder(
-                        future: CategoryProvider.db
-                            .getAllCategories(isExpense: widget.isExpense == 1),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return ListView.builder(
-                              controller: _categoryScrollController,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                int iconIndex = widget.isExpense == 1
-                                    ? index
-                                    : icons.length - 1;
-                                CategoryModel item = snapshot.data[index];
-                                return _categoryCard(
-                                    icons[iconIndex], item.name, index);
-                              },
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
+                    ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(top: new Radius.circular(16)),
+                      child: Container(
+                        height: categoryListHeight,
+                        width: MediaQuery.of(context).size.width,
+                        child: FutureBuilder(
+                          future: CategoryProvider.db.getAllCategories(
+                              isExpense: widget.isExpense == 1),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                controller: _categoryScrollController,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (context, index) {
+                                  int iconIndex = widget.isExpense == 1
+                                      ? index
+                                      : icons.length - 1;
+                                  CategoryModel item = snapshot.data[index];
+                                  return _categoryCard(
+                                      icons[iconIndex], item.name, index);
+                                },
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
                       ),
                     ),
                     Divider(
@@ -219,13 +223,12 @@ Widget buildBottomPicker(Widget picker, double bottomSheetHeight,
         double topBorderHeight, BuildContext context) =>
     Container(
       decoration: BoxDecoration(
-          color: CupertinoColors.white,
-          border: Border(
-              top: BorderSide(
-                  color: Theme.of(context).colorScheme.secondary,
-                  width: topBorderHeight))),
+          color: Theme.of(context).canvasColor,
+          border: Border.all(
+              color: Theme.of(context).canvasColor, width: topBorderHeight / 2),
+          borderRadius: BorderRadius.vertical(top: new Radius.circular(16))),
       height: bottomSheetHeight,
-      padding: const EdgeInsets.only(top: 6.0),
+      padding: const EdgeInsets.only(top: 6.0, left: 2, right: 2),
       child: DefaultTextStyle(
         style: const TextStyle(
           color: CupertinoColors.black,

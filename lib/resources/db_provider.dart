@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch 29.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -7,6 +7,7 @@
 import 'dart:io';
 
 import 'package:finewallet/Models/category_model.dart';
+import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Models/subcategory_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/resources/db_migration.dart';
@@ -18,7 +19,7 @@ class Provider {
   Provider._();
 
   static final Provider db = Provider._();
-  static const int VERSION = 2;
+  static const int VERSION = 3;
 
   Database _database;
 
@@ -53,12 +54,19 @@ class Provider {
           "name TEXT,"
           "category INTEGER"
           ")");
+      await db.execute("CREATE TABLE months ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "savings REAL,"
+          "currentMaxBudget REAL,"
+          "firstOfMonth INTEGER,"
+          "monthlyExpenses REAL"
+          ")");
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion > newVersion) return;
-
       for (int oVersion in Migration.migrationScripts.keys) {
         if (oVersion >= oldVersion) {
-          print("Migrating database to version $oVersion");
+          print(
+              "Migrating database from version $oVersion to version $newVersion");
           for (String query in Migration.migrationScripts[oVersion]) {
             await db.execute(query);
           }
@@ -85,6 +93,12 @@ class Provider {
     return raw;
   }
 
+  newMonth(MonthModel newMonth) async {
+    final db = await database;
+    var raw = await db.insert("months", newMonth.toMap());
+    return raw;
+  }
+
   deleteTransaction(int id) async {
     final db = await database;
     return db.delete("transactions", where: "id = ?", whereArgs: [id]);
@@ -104,5 +118,10 @@ class Provider {
   _deleteAllSubcategoriesOfCategory(int id) async {
     final db = await database;
     return db.delete("subcategories", where: "category = ?", whereArgs: [id]);
+  }
+
+  findMonth(int month) async {
+    final db = await database;
+    return db.query("months", where: "firstOfMonth = ?", whereArgs: [month]);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 27.6.2019.
+ * Developed by Lukas Krauch 29.6.2019.
  * Copyright (c) 2019. All rights reserved.
  *
  */
@@ -214,7 +214,7 @@ class _HistoryPageState extends State<HistoryPage> {
               _showSnackBar(context);
             },
             confirmDismiss: (DismissDirection direction) => _showDialog(),
-            child: generalCard(_transactionCard(item), null, 3),
+            child: generalCard(_transactionCard(item), padding: 3),
           ),
         ),
         (item.isExpense == 0)
