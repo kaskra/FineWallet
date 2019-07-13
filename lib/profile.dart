@@ -6,6 +6,7 @@
 
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Statistics/profile_chart.dart';
+import 'package:finewallet/Statistics/spending_prediction_chart.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/month_provider.dart';
@@ -36,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
   MonthModel _currentMonth;
 
   int _chartType = ProfileChart.MONTHLY_CHART;
+  bool _showPrediction = false;
 
   void initState() {
     super.initState();
@@ -65,7 +67,6 @@ class _ProfilePageState extends State<ProfilePage> {
         .getTransactionsOfMonth(dayInMillis(_today));
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
-    // TODO check if new month, close previous month
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
 
     if (currentMonth == null) {
@@ -185,15 +186,21 @@ class _ProfilePageState extends State<ProfilePage> {
       children: <Widget>[
         Column(children: <Widget>[
           Text(
-            "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
+            _showPrediction
+                ? "Spending prediction"
+                : "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Container(
               height: 200,
               padding: EdgeInsets.all(15),
-              child: ProfileChart(
-                type: _chartType,
-              )),
+              child: _showPrediction
+                  ? SpendingPredictionChart(
+                      monthlyBudget: _currentMaxMonthlyBudget,
+                    )
+                  : ProfileChart(
+                      type: _chartType,
+                    )),
         ]),
         Align(
           alignment: Alignment.topRight,
@@ -226,7 +233,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   onTap: () {
-                    print("Show prediction!");
+                    setState(() {
+                      _showPrediction = !_showPrediction;
+                    });
                   }),
             ],
           ),

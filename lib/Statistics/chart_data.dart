@@ -18,3 +18,11 @@ class CategoryExpenses {
 
   CategoryExpenses(this.amount, this.categoryId, this.categoryName);
 }
+
+class PredictionPoint {
+  final int timestamp;
+  final double amount;
+  final bool isPrediction;
+  // final bool isAboveMax;
+  PredictionPoint(this.timestamp, this.amount, this.isPrediction);
+}
