@@ -315,7 +315,7 @@ class ExpenseIncomeChart extends StatelessWidget {
 
   Widget _buildLineChart() {
     return new charts.LineChart(seriesList,
-        animate: true,
+        animate: false,
         animationDuration: Duration(milliseconds: 150),
         defaultRenderer: charts.LineRendererConfig(
             roundEndCaps: true,
@@ -373,7 +373,7 @@ class ExpenseIncomeChart extends StatelessWidget {
         .toList();
 
     return new charts.BarChart(series,
-        animate: true,
+        animate: false,
         animationDuration: Duration(milliseconds: 150),
         defaultRenderer: charts.BarRendererConfig(
           groupingType: charts.BarGroupingType.grouped,
