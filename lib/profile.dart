@@ -35,6 +35,8 @@ class _ProfilePageState extends State<ProfilePage> {
   double _savings = 0;
   MonthModel _currentMonth;
 
+  int _chartType = ProfileChart.MONTHLY_CHART;
+
   void initState() {
     super.initState();
     DateTime now = DateTime.now();
@@ -106,7 +108,10 @@ class _ProfilePageState extends State<ProfilePage> {
       children: <Widget>[
         Align(
           alignment: Alignment.topCenter,
-          child: Text("Monthly available budget"),
+          child: Text(
+            "Monthly available budget",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         Align(
             alignment: Alignment.centerRight,
@@ -175,14 +180,67 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _categoryBox() {
-    return Container(height: 200, child: ProfileChart());
+    return Stack(
+//      fit: StackFit.expand,
+      children: <Widget>[
+        Column(children: <Widget>[
+          Text(
+            "Monthly expenses",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Container(
+              height: 200,
+              padding: EdgeInsets.all(15),
+              child: ProfileChart(
+                type: _chartType,
+              )),
+        ]),
+        Align(
+          alignment: Alignment.topRight,
+          child: Column(
+            children: <Widget>[
+              InkWell(
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  child: Icon(
+                    Icons.repeat,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _chartType = _chartType == ProfileChart.MONTHLY_CHART
+                        ? ProfileChart.LIFE_CHART
+                        : ProfileChart.MONTHLY_CHART;
+                  });
+                },
+              ),
+              InkWell(
+                  child: Container(
+                    margin: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.show_chart,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                  onTap: () {
+                    print("Show prediction!");
+                  }),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _savingsBox() {
     return Column(
       children: <Widget>[
         Text(
-          "Savings: ",
+          "Savings",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         Text("${_savings.toStringAsFixed(2)}€",
             style: TextStyle(
