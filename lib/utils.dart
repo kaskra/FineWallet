@@ -13,10 +13,14 @@ int getLastDayOfMonth(DateTime date) {
   return getLastDateOfMonth(date).day;
 }
 
+DateTime getFirstDateOfNextMonth(DateTime date) {
+  return getLastDateOfMonth(date).add(Duration(days: 1, hours: 12));
+}
+
 DateTime getLastDateOfMonth(DateTime date) {
   return (date.month < 12)
-      ? new DateTime(date.year, date.month + 1, 0)
-      : new DateTime(date.year + 1, 1, 0);
+      ? new DateTime.utc(date.year, date.month + 1, 0)
+      : new DateTime.utc(date.year + 1, 1, 0);
 }
 
 List<double> getListOfMonthDays(DateTime month) {
