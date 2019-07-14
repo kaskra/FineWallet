@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'FineWallet',
       theme: normalTheme2,
       home: MyHomePage(title: 'FineWallet'),
     );
