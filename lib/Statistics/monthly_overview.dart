@@ -5,7 +5,7 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:finewallet/Statistics/chart_data_point.dart';
+import 'package:finewallet/Statistics/chart_data.dart';
 import 'package:finewallet/Statistics/chart_type.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
@@ -261,20 +261,7 @@ class _MonthCardState extends State<MonthCard> {
   }
 
   List<DataPoint> generateDataPoints(AsyncSnapshot<TransactionList> snapshot) {
-    DateTime date = widget.month ?? DateTime.now();
-
-    int lastDay = getLastDayOfMonth(date);
-    DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
-    DateTime lastOfMonth =
-        DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
-
-    List<double> data = List();
-    for (var i = firstOfMonth.millisecondsSinceEpoch;
-        i < lastOfMonth.millisecondsSinceEpoch;
-        i = i + Duration(days: 1).inMilliseconds) {
-      int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
-      data.add(day.toDouble());
-    }
+    List<double> data = getListOfMonthDays(widget.month);
 
     List<double> expense = data
         .map((date) => snapshot.data.byDayInMillis(date.toInt()).sumExpenses())
@@ -315,7 +302,7 @@ class ExpenseIncomeChart extends StatelessWidget {
 
   Widget _buildLineChart() {
     return new charts.LineChart(seriesList,
-        animate: true,
+        animate: false,
         animationDuration: Duration(milliseconds: 150),
         defaultRenderer: charts.LineRendererConfig(
             roundEndCaps: true,
@@ -373,7 +360,7 @@ class ExpenseIncomeChart extends StatelessWidget {
         .toList();
 
     return new charts.BarChart(series,
-        animate: true,
+        animate: false,
         animationDuration: Duration(milliseconds: 150),
         defaultRenderer: charts.BarRendererConfig(
           groupingType: charts.BarGroupingType.grouped,

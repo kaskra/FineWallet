@@ -6,6 +6,7 @@
 
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Statistics/profile_chart.dart';
+import 'package:finewallet/Statistics/spending_prediction_chart.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/month_provider.dart';
@@ -35,6 +36,9 @@ class _ProfilePageState extends State<ProfilePage> {
   double _savings = 0;
   MonthModel _currentMonth;
 
+  int _chartType = ProfileChart.MONTHLY_CHART;
+  bool _showPrediction = false;
+
   void initState() {
     super.initState();
     DateTime now = DateTime.now();
@@ -63,9 +67,61 @@ class _ProfilePageState extends State<ProfilePage> {
         .getTransactionsOfMonth(dayInMillis(_today));
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
-    // TODO check if new month, close previous month
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
 
+    await checkCurrentMonth(currentMonth, allMonths);
+
+    await checkAllPreviousMonths(currentMonth, allMonths);
+
+    allMonths = await MonthProvider.db.getAllRecordedMonths();
+
+    double allSavings =
+        allMonths.fold(0.0, (prev, next) => prev + next.savings);
+    setState(() {
+      _overallMaxBudget = monthlyTransactions.sumIncomes();
+      _savings = allSavings;
+      _currentMonth = allMonths.last;
+    });
+    _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
+  }
+
+  Future checkAllPreviousMonths(
+      MonthModel currentMonth, List<MonthModel> all) async {
+    MonthModel firstRecordedMonth = all.first;
+    DateTime date =
+        DateTime.fromMillisecondsSinceEpoch(firstRecordedMonth.firstDayOfMonth);
+    DateTime currentMonthDate =
+        DateTime.fromMillisecondsSinceEpoch(currentMonth.firstDayOfMonth);
+
+    while (date.isBefore(currentMonthDate)) {
+      if (all
+              .where((MonthModel m) =>
+                  m.firstDayOfMonth == date.millisecondsSinceEpoch)
+              .length ==
+          0) {
+        MonthModel month = new MonthModel(
+          monthlyExpenses: 0,
+          savings: 0,
+          currentMaxBudget: 0,
+          firstDayOfMonth: date.millisecondsSinceEpoch,
+        );
+        await Provider.db.newMonth(month);
+      } else {
+        MonthModel m = all.firstWhere((MonthModel month) =>
+            month.firstDayOfMonth == date.millisecondsSinceEpoch);
+        TransactionList prevMonthlyTransactions = await TransactionsProvider.db
+            .getTransactionsOfMonth(m.firstDayOfMonth);
+        m.monthlyExpenses = prevMonthlyTransactions.sumExpenses();
+        m.savings = prevMonthlyTransactions.sumIncomes() - m.monthlyExpenses;
+        MonthProvider.db.updateMonth(m);
+      }
+
+      date = getFirstDateOfNextMonth(date);
+    }
+  }
+
+  Future checkCurrentMonth(
+      MonthModel currentMonth, List<MonthModel> allMonths) async {
     if (currentMonth == null) {
       if (allMonths.length > 0) {
         MonthModel prevMonth = allMonths.last;
@@ -84,15 +140,6 @@ class _ProfilePageState extends State<ProfilePage> {
       );
       await Provider.db.newMonth(month);
     }
-
-    double allSavings =
-        allMonths.fold(0.0, (prev, next) => prev + next.savings);
-    setState(() {
-      _overallMaxBudget = monthlyTransactions.sumIncomes();
-      _savings = allSavings;
-      _currentMonth = allMonths.last;
-    });
-    _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
   }
 
   Widget _toScreenWidth(Widget child) => Container(
@@ -106,7 +153,10 @@ class _ProfilePageState extends State<ProfilePage> {
       children: <Widget>[
         Align(
           alignment: Alignment.topCenter,
-          child: Text("Monthly available budget"),
+          child: Text(
+            "Monthly available budget",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         Align(
             alignment: Alignment.centerRight,
@@ -166,8 +216,6 @@ class _ProfilePageState extends State<ProfilePage> {
       } else if (value < 0) {
         value = 0;
       }
-      assert(value <= _overallMaxBudget);
-      assert(value >= 0);
 
       _currentMaxMonthlyBudget = value;
       _textEditingController.text = value.toStringAsFixed(2);
@@ -175,14 +223,82 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _categoryBox() {
-    return Container(height: 200, child: ProfileChart());
+    return Stack(
+      children: <Widget>[
+        Column(children: <Widget>[
+          Text(
+            _showPrediction
+                ? "Spending prediction"
+                : "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Container(
+              height: 200,
+              padding: EdgeInsets.all(15),
+              child: _showPrediction
+                  ? SpendingPredictionChart(
+                      monthlyBudget: _currentMaxMonthlyBudget,
+                    )
+                  : ProfileChart(
+                      type: _chartType,
+                    )),
+        ]),
+        Align(
+          alignment: Alignment.topRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              !_showPrediction
+                  ? InkWell(
+                      child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: Icon(
+                            Icons.repeat,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          )),
+                      onTap: () {
+                        setState(() {
+                          _chartType = _chartType == ProfileChart.MONTHLY_CHART
+                              ? ProfileChart.LIFE_CHART
+                              : ProfileChart.MONTHLY_CHART;
+                        });
+                      },
+                    )
+                  : Container(
+                      padding: EdgeInsets.all(5),
+                      child: Icon(
+                        Icons.repeat,
+                        size: 16,
+                        color: Colors.transparent,
+                      )),
+              InkWell(
+                  child: Container(
+                    margin: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.show_chart,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _showPrediction = !_showPrediction;
+                    });
+                  }),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _savingsBox() {
     return Column(
       children: <Widget>[
         Text(
-          "Savings: ",
+          "Savings",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         Text("${_savings.toStringAsFixed(2)}€",
             style: TextStyle(

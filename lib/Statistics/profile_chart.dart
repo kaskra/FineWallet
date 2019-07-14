@@ -7,6 +7,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:finewallet/Models/category_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/Statistics/chart_data.dart';
 import 'package:finewallet/resources/category_list.dart';
 import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
@@ -16,6 +17,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileChart extends StatefulWidget {
+  static const int MONTHLY_CHART = 1;
+  static const int LIFE_CHART = 2;
+
+  ProfileChart({this.type = MONTHLY_CHART});
+
+  final int type;
+
   @override
   _ProfileChartState createState() => _ProfileChartState();
 }
@@ -46,9 +54,14 @@ class _ProfileChartState extends State<ProfileChart> {
   }
 
   Widget _buildChart() {
+    Future<TransactionList> transactionFuture =
+        widget.type == ProfileChart.MONTHLY_CHART
+            ? TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(today))
+            : TransactionsProvider.db
+                .getAllTrans(dayInMillis(getLastDateOfMonth(today)));
+
     return FutureBuilder(
-        future:
-            TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(today)),
+        future: transactionFuture,
         builder: (context, AsyncSnapshot<TransactionList> snapshot) {
           if (snapshot.hasData && categories != null) {
             List<double> expenses = [];
@@ -58,7 +71,7 @@ class _ProfileChartState extends State<ProfileChart> {
                   .sumExpenses();
               expenses.add(ex);
             }
-            return CircularProfileChart.withMonthlyTransactions(
+            return CircularProfileChart.withTransactions(
                 expenses, categories, categoryNames);
           }
           return Center(child: CircularProgressIndicator());
@@ -81,7 +94,7 @@ class CircularProfileChart extends StatelessWidget {
 
   CircularProfileChart(this.seriesList, {this.animate});
 
-  factory CircularProfileChart.withMonthlyTransactions(
+  factory CircularProfileChart.withTransactions(
       List<double> expenses, List<int> categories, List<String> categoryNames) {
     List<CategoryExpenses> inputData = [];
     for (int i = 0; i < expenses.length; i++) {
@@ -90,16 +103,31 @@ class CircularProfileChart extends StatelessWidget {
             CategoryExpenses(expenses[i], categories[i], categoryNames[i]));
     }
 
-    List<charts.Series<CategoryExpenses, int>> data = [
-      charts.Series<CategoryExpenses, int>(
-        data: inputData,
-        id: "CategoryExpenses",
-        domainFn: (CategoryExpenses ce, _) => ce.categoryId,
-        measureFn: (CategoryExpenses ce, _) => ce.amount,
-        labelAccessorFn: (CategoryExpenses ce, _) => ce.categoryName,
-      )
-    ];
-
+    List<charts.Series<CategoryExpenses, int>> data = [];
+    if (inputData.length > 0) {
+      data = [
+        charts.Series<CategoryExpenses, int>(
+            data: inputData,
+            id: "CategoryExpenses",
+            domainFn: (CategoryExpenses ce, _) => ce.categoryId,
+            measureFn: (CategoryExpenses ce, _) => ce.amount,
+            labelAccessorFn: (CategoryExpenses ce, _) => ce.categoryName,
+            colorFn: (CategoryExpenses ce, int i) => charts
+                .MaterialPalette.deepOrange
+                .makeShades(categories.length)[i])
+      ];
+    } else {
+      data = [
+        charts.Series<CategoryExpenses, int>(
+            data: [CategoryExpenses(0, 0, "0")],
+            id: "CategoryExpenses",
+            domainFn: (CategoryExpenses ce, _) => 0,
+            measureFn: (CategoryExpenses ce, _) => 1,
+            labelAccessorFn: (CategoryExpenses ce, _) => "",
+            colorFn: (CategoryExpenses ce, int i) =>
+                charts.MaterialPalette.gray.shade200)
+      ];
+    }
     return CircularProfileChart(
       data,
       animate: false,
@@ -125,12 +153,4 @@ class CircularProfileChart extends StatelessWidget {
       ),
     );
   }
-}
-
-class CategoryExpenses {
-  final double amount;
-  final int categoryId;
-  final String categoryName;
-
-  CategoryExpenses(this.amount, this.categoryId, this.categoryName);
 }

@@ -10,10 +10,35 @@ int dayInMillis(DateTime time) {
 }
 
 int getLastDayOfMonth(DateTime date) {
-  int day = (date.month < 12)
-      ? new DateTime(date.year, date.month + 1, 0).day
-      : new DateTime(date.year + 1, 1, 0).day;
-  return day;
+  return getLastDateOfMonth(date).day;
+}
+
+DateTime getFirstDateOfNextMonth(DateTime date) {
+  return getLastDateOfMonth(date).add(Duration(days: 1, hours: 12));
+}
+
+DateTime getLastDateOfMonth(DateTime date) {
+  return (date.month < 12)
+      ? new DateTime.utc(date.year, date.month + 1, 0)
+      : new DateTime.utc(date.year + 1, 1, 0);
+}
+
+List<double> getListOfMonthDays(DateTime month) {
+  DateTime date = month ?? DateTime.now();
+
+  int lastDay = getLastDayOfMonth(date);
+  DateTime firstOfMonth = DateTime.utc(date.year, date.month, 1);
+  DateTime lastOfMonth =
+      DateTime.utc(date.year, date.month, lastDay, 23, 59, 59);
+
+  List<double> data = List();
+  for (var i = firstOfMonth.millisecondsSinceEpoch;
+      i < lastOfMonth.millisecondsSinceEpoch;
+      i = i + Duration(days: 1).inMilliseconds) {
+    int day = dayInMillis(DateTime.fromMillisecondsSinceEpoch(i));
+    data.add(day.toDouble());
+  }
+  return data;
 }
 
 String getDayName(int day) {
