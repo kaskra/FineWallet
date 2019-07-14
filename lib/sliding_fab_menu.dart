@@ -152,6 +152,7 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
                   elevation: 5,
                   child: Center(
                       child: FloatingActionButton(
+                    heroTag: 'DockedFAB',
                     onPressed: () {},
                     child: Icon(
                       Icons.swap_horiz,
