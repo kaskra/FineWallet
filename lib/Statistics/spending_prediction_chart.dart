@@ -44,7 +44,8 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
 
   Widget _buildChart() {
     return FutureBuilder(
-        future: TransactionsProvider.db.getAllTrans(dayInMillis(_today)),
+        future:
+            TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(_today)),
         builder: (context, AsyncSnapshot<TransactionList> snapshot) {
           if (snapshot.hasData) {
             return PredictionChart.withTransactions(
@@ -77,8 +78,8 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
           isToday = false;
           todayIdx = i;
         }
-        if (gradient > 0 && i > 0) {
-          expense[i] = expense[i - 1] + gradient;
+        if (i > 0) {
+          expense[i] += gradient * (i - todayIdx);
         }
       }
     }
