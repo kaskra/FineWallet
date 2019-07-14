@@ -103,18 +103,31 @@ class CircularProfileChart extends StatelessWidget {
             CategoryExpenses(expenses[i], categories[i], categoryNames[i]));
     }
 
-    List<charts.Series<CategoryExpenses, int>> data = [
-      charts.Series<CategoryExpenses, int>(
-          data: inputData,
-          id: "CategoryExpenses",
-          domainFn: (CategoryExpenses ce, _) => ce.categoryId,
-          measureFn: (CategoryExpenses ce, _) => ce.amount,
-          labelAccessorFn: (CategoryExpenses ce, _) => ce.categoryName,
-          colorFn: (CategoryExpenses ce, int i) => charts
-              .MaterialPalette.deepOrange
-              .makeShades(categories.length)[i])
-    ];
-
+    List<charts.Series<CategoryExpenses, int>> data = [];
+    if (inputData.length > 0) {
+      data = [
+        charts.Series<CategoryExpenses, int>(
+            data: inputData,
+            id: "CategoryExpenses",
+            domainFn: (CategoryExpenses ce, _) => ce.categoryId,
+            measureFn: (CategoryExpenses ce, _) => ce.amount,
+            labelAccessorFn: (CategoryExpenses ce, _) => ce.categoryName,
+            colorFn: (CategoryExpenses ce, int i) => charts
+                .MaterialPalette.deepOrange
+                .makeShades(categories.length)[i])
+      ];
+    } else {
+      data = [
+        charts.Series<CategoryExpenses, int>(
+            data: [CategoryExpenses(0, 0, "0")],
+            id: "CategoryExpenses",
+            domainFn: (CategoryExpenses ce, _) => 0,
+            measureFn: (CategoryExpenses ce, _) => 1,
+            labelAccessorFn: (CategoryExpenses ce, _) => "",
+            colorFn: (CategoryExpenses ce, int i) =>
+                charts.MaterialPalette.gray.shade200)
+      ];
+    }
     return CircularProfileChart(
       data,
       animate: false,
