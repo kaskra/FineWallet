@@ -73,6 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     await checkAllPreviousMonths(currentMonth, allMonths);
 
+    allMonths = await MonthProvider.db.getAllRecordedMonths();
+
     double allSavings =
         allMonths.fold(0.0, (prev, next) => prev + next.savings);
     setState(() {
