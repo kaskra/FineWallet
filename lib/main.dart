@@ -67,6 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   double _monthlyMaxBudget = 0;
 
+  Widget _appBar;
+
   @override
   void initState() {
     super.initState();
@@ -317,6 +319,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Widget _buildDefaultAppBar() {
+    return AppBar(
+      centerTitle: centerAppBar,
+      elevation: appBarElevation,
+      backgroundColor:
+          Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+      title: Text(
+        widget.title,
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
@@ -334,21 +349,23 @@ class _MyHomePageState extends State<MyHomePage> {
 //        day: dayInMillis(DateTime.now()),
 //        showAppBar: false,
 //      ),
-      ReworkedHistory(),
+      ReworkedHistory(
+        onChangeSelectionMode: (isSelectionModeOn) {
+          setState(() {
+            _appBar = isSelectionModeOn
+                ? SelectionAppBar(
+                    appBarElevation: appBarElevation,
+                    appBarOpacity: appBarOpacity,
+                  )
+                : _buildDefaultAppBar();
+          });
+        },
+      ),
       _buildBody(),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: centerAppBar,
-        elevation: appBarElevation,
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-        ),
-      ),
+      appBar: _appBar ?? _buildDefaultAppBar(),
       bottomNavigationBar: _buildBottomBar(),
       body: children[_currentIndex],
       floatingActionButton: keyboardOpen

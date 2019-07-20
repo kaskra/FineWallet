@@ -13,7 +13,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
+class SelectionAppBar extends StatelessWidget {
+  SelectionAppBar({this.appBarElevation = 0, this.appBarOpacity});
+  final double appBarElevation;
+  final double appBarOpacity;
+
+  @override
+  Widget build(BuildContext context) {
+    print(appBarElevation);
+    return AppBar(
+      backgroundColor:
+          Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+      elevation: appBarElevation,
+    );
+  }
+}
+
 class ReworkedHistory extends StatefulWidget {
+  ReworkedHistory({this.onChangeSelectionMode});
+
+  final void Function(bool) onChangeSelectionMode;
+
   @override
   _ReworkedHistoryState createState() => _ReworkedHistoryState();
 }
@@ -32,6 +52,12 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
   @override
   Widget build(BuildContext context) {
     return Container(child: Center(child: _buildBody()));
+  }
+
+  void _checkSelectionMode() {
+    if (widget.onChangeSelectionMode != null) {
+      widget.onChangeSelectionMode(_selectionMode);
+    }
   }
 
   Widget _buildBody() {
@@ -98,7 +124,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
               _selectionMode = false;
             }
           }
-          print(_selectionMode);
+          _checkSelectionMode();
         },
       ));
     }
