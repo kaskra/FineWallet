@@ -130,9 +130,9 @@ class HistoryItem extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-            margin: EdgeInsets.all(10),
-            height: 80,
-            width: MediaQuery.of(context).size.width * 0.4,
+            margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
+            height: 70,
+            width: MediaQuery.of(context).size.width * 0.6,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -144,21 +144,38 @@ class HistoryItem extends StatelessWidget {
   }
 
   Widget _buildItemIcon() {
-    return Padding(
-      padding: EdgeInsets.only(right: 10),
-      child: Align(
-          alignment: Alignment.topLeft,
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-            child: Container(
-              padding: EdgeInsets.all(5),
-              color: Colors.orange,
-              child: Icon(
-                icons[category - 1],
-                size: 25,
+    return Stack(
+      children: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  color: Colors.orange,
+                  child: Icon(
+                    icons[category - 1],
+                    size: 25,
+                  ),
+                ),
               ),
-            ),
-          )),
+            )),
+        Positioned(
+            right: 8,
+            top: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(25)),
+              child: Container(
+                color: isExpense ? Colors.red : Colors.green,
+                child: Icon(
+                  isExpense ? Icons.remove : Icons.add,
+                  size: 14,
+                ),
+              ),
+            ))
+      ],
     );
   }
 

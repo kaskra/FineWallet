@@ -49,6 +49,7 @@ class DateSeparator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Container(
+            margin: EdgeInsets.symmetric(vertical: 5),
             padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
