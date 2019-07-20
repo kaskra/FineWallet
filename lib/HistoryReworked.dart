@@ -30,8 +30,6 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
 
   @override
   Widget build(BuildContext context) {
-    print(_selectedItems.length);
-
     return Container(child: Center(child: _buildBody()));
   }
 
@@ -85,14 +83,14 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         isExpense: snapshot.data[i].isExpense == 1,
         category: snapshot.data[i].category,
         subcategoryName: snapshot.data[i].subcategoryName,
-        isSelected: _selectedItems.contains(snapshot.data[i].id),
+        isSelected: _selectedItems.contains(i),
         onSelect: (selected) {
           if (selected) {
-            if (!_selectedItems.contains(snapshot.data[i].id)) {
-              _selectedItems.add(snapshot.data[i].id);
+            if (!_selectedItems.contains(i)) {
+              _selectedItems.add(i);
             }
           } else {
-            _selectedItems.remove(snapshot.data[i].id);
+            _selectedItems.remove(i);
           }
         },
       ));
