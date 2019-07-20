@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 
 Widget generalCard(
   Widget child, {
@@ -30,4 +31,35 @@ Widget growAnimation(
     crossFadeState:
         isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
   );
+}
+
+class DateSeparator extends StatelessWidget {
+  final bool isToday;
+  final int dateInMillis;
+  DateSeparator({@required this.isToday, @required this.dateInMillis});
+
+  String _getDateString() {
+    intl.DateFormat d = intl.DateFormat.MMMEd();
+    return d
+        .format(DateTime.fromMillisecondsSinceEpoch(dateInMillis))
+        .toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Container(
+            padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.black38,
+            ),
+            child: Text(
+              isToday ? "TODAY" : _getDateString(),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.button.color,
+                  fontSize: 11,
+                  fontWeight: isToday ? FontWeight.bold : FontWeight.bold),
+            )));
+  }
 }
