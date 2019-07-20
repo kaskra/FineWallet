@@ -21,7 +21,8 @@ class ReworkedHistory extends StatefulWidget {
 class _ReworkedHistoryState extends State<ReworkedHistory> {
   TransactionBloc _txBloc = TransactionBloc(dayInMillis(DateTime.now()));
 
-  List<int> _selectedItems = new List();
+  Map<int, int> _selectedItems = new Map();
+  bool _selectionMode = false;
 
   @override
   void initState() {
@@ -83,15 +84,21 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         isExpense: snapshot.data[i].isExpense == 1,
         category: snapshot.data[i].category,
         subcategoryName: snapshot.data[i].subcategoryName,
-        isSelected: _selectedItems.contains(i),
+        isSelected: _selectedItems.containsKey(i),
+        isSelectionModeActive: _selectionMode,
         onSelect: (selected) {
           if (selected) {
-            if (!_selectedItems.contains(i)) {
-              _selectedItems.add(i);
+            if (!_selectedItems.containsKey(i)) {
+              _selectedItems.putIfAbsent(i, () => snapshot.data[i].id);
+              _selectionMode = true;
             }
           } else {
             _selectedItems.remove(i);
+            if (_selectedItems.isEmpty) {
+              _selectionMode = false;
+            }
           }
+          print(_selectionMode);
         },
       ));
     }
@@ -109,6 +116,7 @@ class HistoryItem extends StatefulWidget {
       @required this.category,
       @required this.subcategoryName,
       this.isSelected,
+      this.isSelectionModeActive,
       this.onSelect});
   final int id;
   final int category;
@@ -116,6 +124,7 @@ class HistoryItem extends StatefulWidget {
   final double amount;
   final bool isExpense;
   final bool isSelected;
+  final bool isSelectionModeActive;
   final void Function(bool) onSelect;
 
   @override
@@ -140,8 +149,22 @@ class HistoryItemState extends State<HistoryItem> {
     return GestureDetector(
       onLongPress: () {
         setState(() {
-          _isSelected = !_isSelected;
+          _isSelected = true;
         });
+        if (widget.onSelect != null) {
+          widget.onSelect(_isSelected);
+        }
+      },
+      onTap: () {
+        if (_isSelected) {
+          setState(() {
+            _isSelected = false;
+          });
+        } else if (widget.isSelectionModeActive) {
+          setState(() {
+            _isSelected = true;
+          });
+        }
         if (widget.onSelect != null) {
           widget.onSelect(_isSelected);
         }
@@ -157,6 +180,11 @@ class HistoryItemState extends State<HistoryItem> {
         child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
+                border: _isSelected
+                    ? Border.all(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 2)
+                    : null,
                 color:
                     _isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
             padding: EdgeInsets.only(left: 10, right: 10, top: 15),
@@ -184,7 +212,7 @@ class HistoryItemState extends State<HistoryItem> {
                 borderRadius: BorderRadius.all(Radius.circular(25)),
                 child: Container(
                   padding: EdgeInsets.all(5),
-                  color: Colors.orange,
+                  color: Theme.of(context).colorScheme.secondary,
                   child: Icon(
                     icons[widget.category - 1],
                     size: 25,
@@ -216,12 +244,13 @@ class HistoryItemState extends State<HistoryItem> {
           fit: BoxFit.fitWidth,
           child: Text(
             widget.subcategoryName,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: _isSelected ? FontWeight.bold : FontWeight.normal),
           ),
         ));
   }
 
-  // TODO title bold, icon turns --- when selected
   // TODO add repeating symbol
 
   Widget _buildItemContent() {
