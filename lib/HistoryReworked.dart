@@ -4,6 +4,7 @@
  *
  */
 
+import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/internal_data.dart';
@@ -20,7 +21,6 @@ class SelectionAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(appBarElevation);
     return AppBar(
       backgroundColor:
           Theme.of(context).primaryColor.withOpacity(appBarOpacity),
@@ -32,10 +32,63 @@ class SelectionAppBar extends StatelessWidget {
 class ReworkedHistory extends StatefulWidget {
   ReworkedHistory({this.onChangeSelectionMode});
 
-  final void Function(bool) onChangeSelectionMode;
+  final void Function(bool, Map<int, int>) onChangeSelectionMode;
 
   @override
   _ReworkedHistoryState createState() => _ReworkedHistoryState();
+
+  static Widget buildSelectionAppBar(
+      BuildContext context, Map<int, int> selectedItems) {
+    return AppBar(
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        elevation: appBarElevation,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () {
+                print("Edit");
+              },
+              child: Icon(
+                Icons.edit,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 15),
+            child: GestureDetector(
+              onTap: () {
+                print("Delete");
+              },
+              child: Icon(
+                Icons.delete,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+          ),
+        ],
+        titleSpacing: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: GestureDetector(
+            onTap: () {
+              print("Close");
+            },
+            child: Icon(
+              Icons.close,
+              color: Theme.of(context).iconTheme.color,
+            ),
+          ),
+        ),
+        title: Container(
+          child: Text(
+            selectedItems.length.toString(),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          ),
+        ));
+  }
 }
 
 class _ReworkedHistoryState extends State<ReworkedHistory> {
@@ -56,7 +109,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
 
   void _checkSelectionMode() {
     if (widget.onChangeSelectionMode != null) {
-      widget.onChangeSelectionMode(_selectionMode);
+      widget.onChangeSelectionMode(_selectionMode, _selectedItems);
     }
   }
 

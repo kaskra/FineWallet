@@ -350,13 +350,10 @@ class _MyHomePageState extends State<MyHomePage> {
 //        showAppBar: false,
 //      ),
       ReworkedHistory(
-        onChangeSelectionMode: (isSelectionModeOn) {
+        onChangeSelectionMode: (isSelectionModeOn, selectedItems) {
           setState(() {
             _appBar = isSelectionModeOn
-                ? SelectionAppBar(
-                    appBarElevation: appBarElevation,
-                    appBarOpacity: appBarOpacity,
-                  )
+                ? ReworkedHistory.buildSelectionAppBar(context, selectedItems)
                 : _buildDefaultAppBar();
           });
         },
