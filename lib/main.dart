@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double _monthlyMaxBudget = 0;
 
   final StreamController<SelectionEvent> _appBarController =
-      StreamController<SelectionEvent>.broadcast();
+      StreamController<SelectionEvent>();
   bool _isSelectionModeActive = false;
   Map<int, TransactionModel> _selectedItems = new Map();
 
@@ -354,6 +354,9 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       onEdit: () {
         _appBarController.sink.add(SelectionEvent.EDIT);
+      },
+      onClose: () {
+        _appBarController.sink.add(SelectionEvent.CLOSE);
       },
     );
   }

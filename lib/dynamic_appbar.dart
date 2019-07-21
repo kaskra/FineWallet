@@ -15,6 +15,7 @@ class DynamicAppBar extends StatefulWidget implements PreferredSizeWidget {
       @required this.selectedItems,
       this.isSelectionMode = false,
       this.onDelete,
+      this.onClose,
       this.onEdit})
       : preferredSize = Size.fromHeight(kToolbarHeight);
 
@@ -23,6 +24,7 @@ class DynamicAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final void Function() onDelete;
   final void Function() onEdit;
+  final void Function() onClose;
 
   @override
   final Size preferredSize;
@@ -51,6 +53,10 @@ class _DynamicAppBarState extends State<DynamicAppBar> {
         ),
       );
 
+  /// Build selection app bar that counts the items in [selectedItems].
+  /// Has possible actions like Edit, Delete, Close.
+  ///
+  /// Returns: The built app bar.
   Widget _buildSelectionAppBar(Map<int, TransactionModel> selectedItems) {
     return AppBar(
         backgroundColor:
@@ -60,13 +66,28 @@ class _DynamicAppBarState extends State<DynamicAppBar> {
           _buildEditAction(selectedItems),
           _buildDeleteAction()
         ],
-        title: Container(
-          margin: EdgeInsets.only(left: 15),
-          child: Text(
-            selectedItems.length.toString(),
-            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-          ),
+        leading: _buildCloseAction(),
+        titleSpacing: 2,
+        title: Text(
+          selectedItems.length.toString(),
+          maxLines: 1,
+          style: TextStyle(
+              fontSize: 20, color: Theme.of(context).colorScheme.onSecondary),
         ));
+  }
+
+  Widget _buildCloseAction() {
+    return Padding(
+      padding: EdgeInsets.only(left: 15),
+      child: GestureDetector(
+        onTap: () {
+          if (widget.onClose != null) {
+            widget.onClose();
+          }
+        },
+        child: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
+      ),
+    );
   }
 
   Widget _buildEditAction(Map<int, TransactionModel> selectedItems) {
