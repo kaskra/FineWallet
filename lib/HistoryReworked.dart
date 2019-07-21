@@ -37,10 +37,16 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
   @override
   void initState() {
     super.initState();
-    if (widget.streamController != null) {
+    if (widget.streamController != null &&
+        !widget.streamController.hasListener) {
       widget.streamController.stream
           .listen((SelectionEvent e) => _handleSelectionEvent(e));
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -49,13 +55,38 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
     return Container(child: Center(child: _buildBody()));
   }
 
+  void deleteItems() async {
+    print("Delete");
+    if (await showConfirmDialog(
+        context, "Delete transaction?", "This will delete the transaction.")) {
+      for (TransactionModel tx in _selectedItems.values) {
+        _txBloc.delete(tx.id);
+      }
+      setState(() {
+        _selectedItems.clear();
+        _selectionMode = false;
+      });
+    }
+  }
+
+  void editItem() {
+    print("Edit");
+  }
+
+  void closeSelection() {
+    setState(() {
+      _selectedItems.clear();
+      _selectionMode = false;
+    });
+  }
+
   void _handleSelectionEvent(SelectionEvent e) {
     if (e == SelectionEvent.DELETE) {
-      print("Delete");
+      deleteItems();
     } else if (e == SelectionEvent.EDIT) {
-      print("Edit");
+      editItem();
     } else if (e == SelectionEvent.CLOSE) {
-      print("Close");
+      closeSelection();
     }
   }
 
@@ -66,17 +97,6 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
 //      if (e != null) {
 //        if (e == SelectionEvent.EDIT) {
 //          print("Edit!");
-//        } else if (e == SelectionEvent.DELETE) {
-//          if (await showConfirmDialog(context, "Delete transaction?",
-//              "This will delete the transaction.")) {
-//            for (TransactionModel tx in _selectedItems.values) {
-//              _txBloc.delete(tx.id);
-//            }
-//            _selectionMode = false;
-//            _selectedItems.clear();
-//            print(_selectedItems.length);
-//            print("Delete!");
-//          }
 //        } else if (e == SelectionEvent.CLOSE) {
 //          print("Close!");
 //        }
