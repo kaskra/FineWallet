@@ -4,7 +4,9 @@
  *
  */
 
-import 'package:finewallet/color_themes.dart';
+import 'dart:async';
+
+import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/internal_data.dart';
@@ -14,102 +16,71 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-class SelectionAppBar extends StatelessWidget {
-  SelectionAppBar({this.appBarElevation = 0, this.appBarOpacity});
-  final double appBarElevation;
-  final double appBarOpacity;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor:
-          Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-      elevation: appBarElevation,
-    );
-  }
-}
+enum SelectionEvent { DELETE, EDIT, CLOSE }
 
 class ReworkedHistory extends StatefulWidget {
-  ReworkedHistory({this.onChangeSelectionMode});
+  ReworkedHistory({this.onChangeSelectionMode, this.streamController});
 
-  final void Function(bool, Map<int, int>) onChangeSelectionMode;
+  final void Function(bool, Map<int, TransactionModel>) onChangeSelectionMode;
+  final StreamController<SelectionEvent> streamController;
 
   @override
   _ReworkedHistoryState createState() => _ReworkedHistoryState();
-
-  static Widget buildSelectionAppBar(
-      BuildContext context, Map<int, int> selectedItems) {
-    return AppBar(
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        elevation: appBarElevation,
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: GestureDetector(
-              onTap: () {
-                print("Edit");
-              },
-              child: Icon(
-                Icons.edit,
-                color: Theme.of(context).iconTheme.color,
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 15),
-            child: GestureDetector(
-              onTap: () {
-                print("Delete");
-              },
-              child: Icon(
-                Icons.delete,
-                color: Theme.of(context).iconTheme.color,
-              ),
-            ),
-          ),
-        ],
-        titleSpacing: 0,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: GestureDetector(
-            onTap: () {
-              print("Close");
-            },
-            child: Icon(
-              Icons.close,
-              color: Theme.of(context).iconTheme.color,
-            ),
-          ),
-        ),
-        title: Container(
-          child: Text(
-            selectedItems.length.toString(),
-            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-          ),
-        ));
-  }
 }
 
 class _ReworkedHistoryState extends State<ReworkedHistory> {
   TransactionBloc _txBloc = TransactionBloc(dayInMillis(DateTime.now()));
 
-  Map<int, int> _selectedItems = new Map();
+  Map<int, TransactionModel> _selectedItems = new Map();
   bool _selectionMode = false;
 
   @override
   void initState() {
     super.initState();
+    if (widget.streamController != null) {
+      widget.streamController.stream
+          .listen((SelectionEvent e) => _handleSelectionEvent(e));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    _txBloc.update();
     return Container(child: Center(child: _buildBody()));
   }
 
-  void _checkSelectionMode() {
+  void _handleSelectionEvent(SelectionEvent e) {
+    if (e == SelectionEvent.DELETE) {
+      print("Delete");
+    } else if (e == SelectionEvent.EDIT) {
+      print("Edit");
+    } else if (e == SelectionEvent.CLOSE) {
+      print("Close");
+    }
+  }
+
+  void _checkSelectionMode() async {
     if (widget.onChangeSelectionMode != null) {
       widget.onChangeSelectionMode(_selectionMode, _selectedItems);
+
+//      if (e != null) {
+//        if (e == SelectionEvent.EDIT) {
+//          print("Edit!");
+//        } else if (e == SelectionEvent.DELETE) {
+//          if (await showConfirmDialog(context, "Delete transaction?",
+//              "This will delete the transaction.")) {
+//            for (TransactionModel tx in _selectedItems.values) {
+//              _txBloc.delete(tx.id);
+//            }
+//            _selectionMode = false;
+//            _selectedItems.clear();
+//            print(_selectedItems.length);
+//            print("Delete!");
+//          }
+//        } else if (e == SelectionEvent.CLOSE) {
+//          print("Close!");
+//        }
+//      }
     }
   }
 
@@ -168,7 +139,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         onSelect: (selected) {
           if (selected) {
             if (!_selectedItems.containsKey(i)) {
-              _selectedItems.putIfAbsent(i, () => snapshot.data[i].id);
+              _selectedItems.putIfAbsent(i, () => snapshot.data[i]);
               _selectionMode = true;
             }
           } else {
