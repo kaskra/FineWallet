@@ -13,7 +13,7 @@ import 'package:finewallet/general/bottom_bar_app_item.dart';
 import 'package:finewallet/general/general_widgets.dart';
 import 'package:finewallet/general/sliding_fab_menu.dart';
 import 'package:finewallet/history/history.dart';
-import 'package:finewallet/profile.dart';
+import 'package:finewallet/profile/profile.dart';
 import 'package:finewallet/resources/db_initilization.dart';
 import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
