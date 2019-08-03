@@ -5,6 +5,7 @@
  */
 
 import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/add_page/add_page.dart';
 import 'package:finewallet/general/general_widgets.dart';
 import 'package:finewallet/general/selection_appbar.dart';
 import 'package:finewallet/history/date_separator.dart';
@@ -76,7 +77,20 @@ class _HistoryState extends State<History> {
     }
   }
 
-  void editItem() {}
+  void editItem() {
+    TransactionModel tx = _selectedItems.values.first;
+    int isExpense = 0;
+    String title = "Income";
+
+    if (tx.isExpense == 1) {
+      isExpense = 1;
+      title = "Expense";
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddPage(title, isExpense, transaction: tx)));
+  }
 
   void closeSelection() {
     setState(() {

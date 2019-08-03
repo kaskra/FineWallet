@@ -11,17 +11,22 @@ import 'package:finewallet/add_page/bottom_sheets.dart';
 import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general/corner_triangle.dart';
 import 'package:finewallet/general/general_widgets.dart';
+import 'package:finewallet/resources/category_list.dart';
+import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/db_provider.dart';
+import 'package:finewallet/resources/internal_data.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddPage extends StatefulWidget {
-  AddPage(this.title, this.isExpense, {Key key}) : super(key: key);
+  AddPage(this.title, this.isExpense, {Key key, this.transaction})
+      : super(key: key);
 
   final String title;
   final int isExpense;
+  final TransactionModel transaction;
 
   _AddPageState createState() => _AddPageState();
 }
@@ -43,13 +48,43 @@ class _AddPageState extends State<AddPage> {
   bool _isExpanded = false;
   DateTime _repeatUntil;
   int _typeIndex = 2;
+  bool _isEditMode = false;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _date = DateTime.now();
-    });
+
+    _date = DateTime.now();
+    checkForEditMode();
+  }
+
+  void checkForEditMode() async {
+    if (widget.transaction != null) {
+      CategoryList categories = await CategoryProvider.db.getAllCategories();
+      int selectedCategory = widget.transaction.category;
+      if (widget.transaction.isExpense != 1) {
+        selectedCategory -= categories.length;
+      } else {
+        selectedCategory -= 1;
+      }
+
+      _isEditMode = true;
+      _expense = widget.transaction.amount;
+      _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
+      _subcategory = Category(icons[widget.transaction.category - 1],
+          widget.transaction.subcategoryName, widget.transaction.subcategory,
+          selectedCategory: selectedCategory);
+
+      if (widget.transaction.isRecurring == 1) {
+        if (widget.transaction.replayUntil != null) {
+          _repeatUntil = DateTime.fromMillisecondsSinceEpoch(
+              widget.transaction.replayUntil);
+        }
+        _typeIndex = widget.transaction.replayType;
+        _isExpanded = widget.transaction.isRecurring == 1;
+      }
+      setState(() {});
+    }
   }
 
   Widget _expenseCards(IconData icon, String label, int value, Function onTap) {
@@ -457,6 +492,8 @@ class _AddPageState extends State<AddPage> {
                 return _showSnackBar(context,
                     "Your recurrence type does not fit inside the time frame.");
             }
+
+            // TODO update tx in DB when isEditMode
 
             TransactionModel tx = new TransactionModel(
                 amount: _expense,
