@@ -300,8 +300,6 @@ class HistoryItem extends StatelessWidget {
         ));
   }
 
-  // TODO add repeating symbol
-
   Widget _buildItemContent() {
     return Expanded(
         child: Container(
