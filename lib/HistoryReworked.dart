@@ -137,9 +137,8 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         l = List();
         l.add(DateSeparator(isToday: isToday, dateInMillis: prevDate));
       }
-      var key = new Key(snapshot.data.hashCode.toString());
-      print(snapshot.data[i].hashCode.toString());
 
+      var key = new Key(snapshot.data.hashCode.toString());
       l.add(HistoryItem(
         key: key,
         context: context,
@@ -202,7 +201,7 @@ class HistoryItem extends StatelessWidget {
         }
       },
       onTap: () {
-        bool isSelect;
+        bool isSelect = false;
         if (isSelected) {
           isSelect = false;
         } else if (isSelectionModeActive) {
