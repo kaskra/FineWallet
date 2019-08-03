@@ -7,6 +7,7 @@
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/general/general_widgets.dart';
 import 'package:finewallet/general/selection_appbar.dart';
+import 'package:finewallet/history/date_separator.dart';
 import 'package:finewallet/history/history_item.dart';
 import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/transaction_list.dart';
