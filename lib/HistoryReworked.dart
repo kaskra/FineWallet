@@ -266,7 +266,22 @@ class HistoryItem extends StatelessWidget {
                   size: 14,
                 ),
               ),
-            ))
+            )),
+        isRecurring
+            ? Positioned(
+                left: 0,
+                bottom: 18,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  child: Container(
+                    color: Theme.of(context).colorScheme.secondary,
+                    child: Icon(
+                      Icons.replay,
+                      size: 14,
+                    ),
+                  ),
+                ))
+            : Container()
       ],
     );
   }
