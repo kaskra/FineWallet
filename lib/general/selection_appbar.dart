@@ -8,18 +8,16 @@ import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/color_themes.dart';
 import 'package:flutter/material.dart';
 
-class DynamicAppBar extends StatefulWidget implements PreferredSizeWidget {
-  DynamicAppBar(
+class SelectionAppBar extends StatefulWidget implements PreferredSizeWidget {
+  SelectionAppBar(
       {Key key,
       @required this.title,
       this.selectedItems,
-      this.isSelectionMode = false,
       this.onDelete,
       this.onClose,
       this.onEdit})
       : preferredSize = Size.fromHeight(kToolbarHeight);
 
-  final bool isSelectionMode;
   final Map<int, TransactionModel> selectedItems;
   final String title;
   final void Function() onDelete;
@@ -30,28 +28,14 @@ class DynamicAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Size preferredSize;
 
   @override
-  _DynamicAppBarState createState() => _DynamicAppBarState();
+  _SelectionAppBarState createState() => _SelectionAppBarState();
 }
 
-class _DynamicAppBarState extends State<DynamicAppBar> {
+class _SelectionAppBarState extends State<SelectionAppBar> {
   @override
   Widget build(BuildContext context) {
-    if (widget.isSelectionMode) {
-      return _buildSelectionAppBar(widget.selectedItems);
-    }
-    return _buildDefaultAppBar();
+    return _buildSelectionAppBar(widget.selectedItems);
   }
-
-  Widget _buildDefaultAppBar() => AppBar(
-        centerTitle: centerAppBar,
-        elevation: appBarElevation,
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-        ),
-      );
 
   /// Build selection app bar that counts the items in [selectedItems].
   /// Has possible actions like Edit, Delete, Close.

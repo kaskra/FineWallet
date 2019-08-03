@@ -5,8 +5,8 @@
  */
 
 import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/general/dynamic_appbar.dart';
 import 'package:finewallet/general/general_widgets.dart';
+import 'package:finewallet/general/selection_appbar.dart';
 import 'package:finewallet/history/history_item.dart';
 import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/transaction_list.dart';
@@ -33,6 +33,7 @@ class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     _txBloc.update();
+
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -54,9 +55,8 @@ class _HistoryState extends State<History> {
   Widget customAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: DynamicAppBar(
+      child: SelectionAppBar(
         title: "FineWallet",
-        isSelectionMode: _selectionMode,
         selectedItems: _selectedItems,
         onClose: () => closeSelection(),
         onEdit: () => editItem(),
