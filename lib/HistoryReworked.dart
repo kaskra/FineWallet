@@ -147,16 +147,17 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         isExpense: snapshot.data[i].isExpense == 1,
         category: snapshot.data[i].category,
         subcategoryName: snapshot.data[i].subcategoryName,
-        isSelected: _selectedItems.containsKey(i),
+        isSelected: _selectedItems.containsKey(snapshot.data[i].id),
         isSelectionModeActive: _selectionMode,
         onSelect: (selected) {
           if (selected) {
-            if (!_selectedItems.containsKey(i)) {
-              _selectedItems.putIfAbsent(i, () => snapshot.data[i]);
+            if (!_selectedItems.containsKey(snapshot.data[i].id)) {
+              _selectedItems.putIfAbsent(
+                  snapshot.data[i].id, () => snapshot.data[i]);
               _selectionMode = true;
             }
           } else {
-            _selectedItems.remove(i);
+            _selectedItems.remove(snapshot.data[i].id);
             if (_selectedItems.isEmpty) {
               _selectionMode = false;
             }
