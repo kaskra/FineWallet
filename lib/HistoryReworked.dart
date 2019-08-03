@@ -33,16 +33,19 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
   @override
   Widget build(BuildContext context) {
     _txBloc.update();
-    return Stack(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         _selectionMode ? customAppBar() : Container(),
-        Container(
-          child: Center(child: _buildBody()),
-          margin: EdgeInsets.only(
-              top: _selectionMode
-                  ? Size.fromHeight(kToolbarHeight).height +
-                      MediaQuery.of(context).padding.top
-                  : 0),
+        Expanded(
+          child: Container(
+            child: MediaQuery.removePadding(
+              context: context,
+              child: _buildBody(),
+              removeTop: true,
+            ),
+          ),
         )
       ],
     );
@@ -51,8 +54,6 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
   Widget customAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Size.fromHeight(kToolbarHeight).height +
-          MediaQuery.of(context).padding.top,
       child: DynamicAppBar(
         title: "FineWallet",
         isSelectionMode: _selectionMode,
@@ -100,7 +101,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
           if (snapshot.hasData) {
             List<List<Widget>> listOfLists = _buildLists(snapshot);
             return ListView.builder(
-              shrinkWrap: true,
+              padding: EdgeInsets.only(bottom: 50),
               itemCount: listOfLists.length,
               itemBuilder: (context, index) {
                 if (listOfLists[index].length > 0) {
