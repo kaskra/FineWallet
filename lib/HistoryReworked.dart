@@ -254,36 +254,44 @@ class HistoryItem extends StatelessWidget {
                 ),
               ),
             )),
-        Positioned(
-            right: 8,
-            top: 0,
+        expenseIndicator(),
+        recurrenceIndicator()
+      ],
+    );
+  }
+
+  Widget recurrenceIndicator() {
+    return isRecurring
+        ? Positioned(
+            left: 0,
+            bottom: 18,
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(25)),
               child: Container(
-                color: isExpense ? Colors.red : Colors.green,
+                color: Theme.of(context).colorScheme.secondary,
                 child: Icon(
-                  isExpense ? Icons.remove : Icons.add,
+                  Icons.replay,
                   size: 14,
                 ),
               ),
-            )),
-        isRecurring
-            ? Positioned(
-                left: 0,
-                bottom: 18,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  child: Container(
-                    color: Theme.of(context).colorScheme.secondary,
-                    child: Icon(
-                      Icons.replay,
-                      size: 14,
-                    ),
-                  ),
-                ))
-            : Container()
-      ],
-    );
+            ))
+        : Container();
+  }
+
+  Positioned expenseIndicator() {
+    return Positioned(
+        right: 8,
+        top: 0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+          child: Container(
+            color: isExpense ? Colors.red : Colors.green,
+            child: Icon(
+              isExpense ? Icons.remove : Icons.add,
+              size: 14,
+            ),
+          ),
+        ));
   }
 
   Widget _buildItemTitle() {
