@@ -292,10 +292,12 @@ class _MyHomePageState extends State<MyHomePage> {
         FABBottomAppBarItem(iconData: Icons.home, text: "Home"),
       ],
       onTabSelected: (int index) {
-        setState(() {
-          _currentIndex = index;
-          _isSelectionModeActive = false;
-        });
+        if (index != _currentIndex) {
+          setState(() {
+            _currentIndex = index;
+            _isSelectionModeActive = false;
+          });
+        }
       },
       selectedIndex: _currentIndex,
       isVisible: _showBottomBar,
