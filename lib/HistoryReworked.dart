@@ -85,6 +85,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
       _selectedItems.clear();
       _selectionMode = false;
     });
+    _checkSelectionMode();
   }
 
   void _checkSelectionMode() async {
@@ -136,10 +137,12 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         l = List();
         l.add(DateSeparator(isToday: isToday, dateInMillis: prevDate));
       }
-      var key = new GlobalKey<HistoryItemState>();
+      var key = new Key(snapshot.data.hashCode.toString());
+      print(snapshot.data[i].hashCode.toString());
 
       l.add(HistoryItem(
         key: key,
+        context: context,
         id: snapshot.data[i].id,
         amount: snapshot.data[i].amount,
         isExpense: snapshot.data[i].isExpense == 1,
@@ -168,9 +171,10 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
   }
 }
 
-class HistoryItem extends StatefulWidget {
+class HistoryItem extends StatelessWidget {
   HistoryItem(
       {@required Key key,
+      @required this.context,
       @required this.id,
       @required this.amount,
       @required this.isExpense,
@@ -180,54 +184,32 @@ class HistoryItem extends StatefulWidget {
       this.isSelectionModeActive,
       this.onSelect});
   final int id;
+  final BuildContext context;
   final int category;
   final String subcategoryName;
   final double amount;
   final bool isExpense;
-  final bool isSelected;
   final bool isSelectionModeActive;
   final void Function(bool) onSelect;
-
-  @override
-  State<StatefulWidget> createState() {
-    return new HistoryItemState();
-  }
-}
-
-class HistoryItemState extends State<HistoryItem> {
-  bool _isSelected = false;
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      _isSelected = widget.isSelected;
-    });
-  }
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        setState(() {
-          _isSelected = true;
-        });
-        if (widget.onSelect != null) {
-          widget.onSelect(_isSelected);
+        if (onSelect != null) {
+          onSelect(true);
         }
       },
       onTap: () {
-        if (_isSelected) {
-          setState(() {
-            _isSelected = false;
-          });
-        } else if (widget.isSelectionModeActive) {
-          setState(() {
-            _isSelected = true;
-          });
+        bool isSelect;
+        if (isSelected) {
+          isSelect = false;
+        } else if (isSelectionModeActive) {
+          isSelect = true;
         }
-        if (widget.onSelect != null) {
-          widget.onSelect(_isSelected);
+        if (onSelect != null) {
+          onSelect(isSelect);
         }
       },
       child: _buildBody(context),
@@ -236,18 +218,17 @@ class HistoryItemState extends State<HistoryItem> {
 
   Widget _buildBody(BuildContext context) {
     return Align(
-        alignment:
-            widget.isExpense ? Alignment.centerRight : Alignment.centerLeft,
+        alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: _isSelected
+                border: isSelected
                     ? Border.all(
                         color: Theme.of(context).colorScheme.secondary,
                         width: 2)
                     : null,
                 color:
-                    _isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
+                    isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
             padding: EdgeInsets.only(left: 10, right: 10, top: 15),
             margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
             height: 70,
@@ -275,7 +256,7 @@ class HistoryItemState extends State<HistoryItem> {
                   padding: EdgeInsets.all(5),
                   color: Theme.of(context).colorScheme.secondary,
                   child: Icon(
-                    icons[widget.category - 1],
+                    icons[category - 1],
                     size: 25,
                   ),
                 ),
@@ -287,9 +268,9 @@ class HistoryItemState extends State<HistoryItem> {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(25)),
               child: Container(
-                color: widget.isExpense ? Colors.red : Colors.green,
+                color: isExpense ? Colors.red : Colors.green,
                 child: Icon(
-                  widget.isExpense ? Icons.remove : Icons.add,
+                  isExpense ? Icons.remove : Icons.add,
                   size: 14,
                 ),
               ),
@@ -304,10 +285,10 @@ class HistoryItemState extends State<HistoryItem> {
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: Text(
-            widget.subcategoryName,
+            subcategoryName,
             style: TextStyle(
                 fontSize: 16,
-                fontWeight: _isSelected ? FontWeight.bold : FontWeight.normal),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
           ),
         ));
   }
@@ -328,15 +309,15 @@ class HistoryItemState extends State<HistoryItem> {
   }
 
   Widget _buildItemText() {
-    String prefix = widget.isExpense && widget.amount < 0 ? "-" : "";
+    String prefix = isExpense && amount < 0 ? "-" : "";
     String suffix = "€";
-    Color color = widget.isExpense ? Colors.red : Colors.green;
+    Color color = isExpense ? Colors.red : Colors.green;
     return Align(
       alignment: Alignment.bottomRight,
       child: FittedBox(
         fit: BoxFit.fitWidth,
         child: Text(
-          prefix + widget.amount.toStringAsFixed(2) + suffix,
+          prefix + amount.toStringAsFixed(2) + suffix,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 18, color: color),
           maxLines: 2,
