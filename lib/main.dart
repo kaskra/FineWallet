@@ -4,7 +4,6 @@
  *
  */
 
-import 'package:finewallet/HistoryReworked.dart';
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/Statistics/monthly_overview.dart';
@@ -12,6 +11,7 @@ import 'package:finewallet/add_page.dart';
 import 'package:finewallet/bottom_bar_app_item.dart';
 import 'package:finewallet/color_themes.dart';
 import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/history/history.dart';
 import 'package:finewallet/profile.dart';
 import 'package:finewallet/resources/db_initilization.dart';
 import 'package:finewallet/resources/month_provider.dart';
@@ -322,7 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildHistory() {
-    return ReworkedHistory(
+    return History(
       onChangeSelectionMode: (isSelectionModeOn) {
         setState(() {
           _isSelectionModeActive = isSelectionModeOn;
