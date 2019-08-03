@@ -4,8 +4,6 @@
  *
  */
 
-import 'dart:async';
-
 import 'package:finewallet/HistoryReworked.dart';
 import 'package:finewallet/Models/month_model.dart';
 import 'package:finewallet/Models/transaction_model.dart';
@@ -13,7 +11,6 @@ import 'package:finewallet/Statistics/monthly_overview.dart';
 import 'package:finewallet/add_page.dart';
 import 'package:finewallet/bottom_bar_app_item.dart';
 import 'package:finewallet/color_themes.dart';
-import 'package:finewallet/dynamic_appbar.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/profile.dart';
 import 'package:finewallet/resources/db_initilization.dart';
@@ -69,23 +66,13 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _showBottomBar = true;
 
   double _monthlyMaxBudget = 0;
-
-  final StreamController<SelectionEvent> _appBarController =
-      StreamController<SelectionEvent>();
   bool _isSelectionModeActive = false;
-  Map<int, TransactionModel> _selectedItems = new Map();
 
   @override
   void initState() {
     super.initState();
     initDB();
     _syncDatabase();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _appBarController.close();
   }
 
   void _syncDatabase() async {
@@ -334,32 +321,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildHistory() {
     return ReworkedHistory(
-      onChangeSelectionMode: (isSelectionModeOn, selectedItems) {
+      onChangeSelectionMode: (isSelectionModeOn) {
         setState(() {
           _isSelectionModeActive = isSelectionModeOn;
-          _selectedItems = selectedItems;
         });
       },
-      streamController: _appBarController,
     );
   }
 
-  Widget _buildAppBar() {
-    return DynamicAppBar(
-      title: widget.title,
-      isSelectionMode: _isSelectionModeActive,
-      selectedItems: _selectedItems,
-      onDelete: () {
-        _appBarController.sink.add(SelectionEvent.DELETE);
-      },
-      onEdit: () {
-        _appBarController.sink.add(SelectionEvent.EDIT);
-      },
-      onClose: () {
-        _appBarController.sink.add(SelectionEvent.CLOSE);
-      },
-    );
-  }
+  Widget _buildDefaultAppBar() => AppBar(
+        centerTitle: centerAppBar,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -378,7 +357,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
       bottomNavigationBar: _buildBottomBar(),
       body: children[_currentIndex],
       floatingActionButton: keyboardOpen

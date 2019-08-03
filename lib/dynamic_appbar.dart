@@ -12,7 +12,7 @@ class DynamicAppBar extends StatefulWidget implements PreferredSizeWidget {
   DynamicAppBar(
       {Key key,
       @required this.title,
-      @required this.selectedItems,
+      this.selectedItems,
       this.isSelectionMode = false,
       this.onDelete,
       this.onClose,

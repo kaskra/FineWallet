@@ -4,9 +4,8 @@
  *
  */
 
-import 'dart:async';
-
 import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/dynamic_appbar.dart';
 import 'package:finewallet/general_widgets.dart';
 import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/internal_data.dart';
@@ -16,13 +15,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-enum SelectionEvent { DELETE, EDIT, CLOSE }
-
 class ReworkedHistory extends StatefulWidget {
-  ReworkedHistory({this.onChangeSelectionMode, this.streamController});
+  ReworkedHistory({this.onChangeSelectionMode});
 
-  final void Function(bool, Map<int, TransactionModel>) onChangeSelectionMode;
-  final StreamController<SelectionEvent> streamController;
+  final void Function(bool) onChangeSelectionMode;
 
   @override
   _ReworkedHistoryState createState() => _ReworkedHistoryState();
@@ -35,24 +31,37 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
   bool _selectionMode = false;
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.streamController != null &&
-        !widget.streamController.hasListener) {
-      widget.streamController.stream
-          .listen((SelectionEvent e) => _handleSelectionEvent(e));
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     _txBloc.update();
-    return Container(child: Center(child: _buildBody()));
+    return Stack(
+      children: <Widget>[
+        _selectionMode ? customAppBar() : Container(),
+        Container(
+          child: Center(child: _buildBody()),
+          margin: EdgeInsets.only(
+              top: _selectionMode
+                  ? Size.fromHeight(kToolbarHeight).height +
+                      MediaQuery.of(context).padding.top
+                  : 0),
+        )
+      ],
+    );
+  }
+
+  Widget customAppBar() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Size.fromHeight(kToolbarHeight).height +
+          MediaQuery.of(context).padding.top,
+      child: DynamicAppBar(
+        title: "FineWallet",
+        isSelectionMode: _selectionMode,
+        selectedItems: _selectedItems,
+        onClose: () => closeSelection(),
+        onEdit: () => editItem(),
+        onDelete: () => deleteItems(),
+      ),
+    );
   }
 
   void deleteItems() async {
@@ -62,10 +71,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
       for (TransactionModel tx in _selectedItems.values) {
         _txBloc.delete(tx.id);
       }
-      setState(() {
-        _selectedItems.clear();
-        _selectionMode = false;
-      });
+      closeSelection();
     }
   }
 
@@ -80,27 +86,9 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
     });
   }
 
-  void _handleSelectionEvent(SelectionEvent e) {
-    if (e == SelectionEvent.DELETE) {
-      deleteItems();
-    } else if (e == SelectionEvent.EDIT) {
-      editItem();
-    } else if (e == SelectionEvent.CLOSE) {
-      closeSelection();
-    }
-  }
-
   void _checkSelectionMode() async {
     if (widget.onChangeSelectionMode != null) {
-      widget.onChangeSelectionMode(_selectionMode, _selectedItems);
-
-//      if (e != null) {
-//        if (e == SelectionEvent.EDIT) {
-//          print("Edit!");
-//        } else if (e == SelectionEvent.CLOSE) {
-//          print("Close!");
-//        }
-//      }
+      widget.onChangeSelectionMode(_selectionMode);
     }
   }
 
@@ -112,6 +100,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
           if (snapshot.hasData) {
             List<List<Widget>> listOfLists = _buildLists(snapshot);
             return ListView.builder(
+              shrinkWrap: true,
               itemCount: listOfLists.length,
               itemBuilder: (context, index) {
                 if (listOfLists[index].length > 0) {
@@ -147,6 +136,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
         l.add(DateSeparator(isToday: isToday, dateInMillis: prevDate));
       }
       var key = new GlobalKey<HistoryItemState>();
+
       l.add(HistoryItem(
         key: key,
         id: snapshot.data[i].id,
