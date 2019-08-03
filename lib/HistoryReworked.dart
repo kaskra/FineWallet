@@ -142,11 +142,7 @@ class _ReworkedHistoryState extends State<ReworkedHistory> {
       l.add(HistoryItem(
         key: key,
         context: context,
-        id: snapshot.data[i].id,
-        amount: snapshot.data[i].amount,
-        isExpense: snapshot.data[i].isExpense == 1,
-        category: snapshot.data[i].category,
-        subcategoryName: snapshot.data[i].subcategoryName,
+        transaction: snapshot.data[i],
         isSelected: _selectedItems.containsKey(snapshot.data[i].id),
         isSelectionModeActive: _selectionMode,
         onSelect: (selected) {
@@ -175,20 +171,16 @@ class HistoryItem extends StatelessWidget {
   HistoryItem(
       {@required Key key,
       @required this.context,
-      @required this.id,
-      @required this.amount,
-      @required this.isExpense,
-      @required this.category,
-      @required this.subcategoryName,
-      this.isSelected,
-      this.isSelectionModeActive,
-      this.onSelect});
-  final int id;
+      @required this.transaction,
+      @required this.isSelected,
+      @required this.isSelectionModeActive,
+      this.onSelect})
+      : isExpense = transaction.isExpense == 1,
+        isRecurring = transaction.isRecurring == 1;
   final BuildContext context;
-  final int category;
-  final String subcategoryName;
-  final double amount;
+  final TransactionModel transaction;
   final bool isExpense;
+  final bool isRecurring;
   final bool isSelectionModeActive;
   final void Function(bool) onSelect;
   final bool isSelected;
@@ -256,7 +248,7 @@ class HistoryItem extends StatelessWidget {
                   padding: EdgeInsets.all(5),
                   color: Theme.of(context).colorScheme.secondary,
                   child: Icon(
-                    icons[category - 1],
+                    icons[transaction.category - 1],
                     size: 25,
                   ),
                 ),
@@ -285,7 +277,7 @@ class HistoryItem extends StatelessWidget {
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: Text(
-            subcategoryName,
+            transaction.subcategoryName,
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
@@ -309,7 +301,7 @@ class HistoryItem extends StatelessWidget {
   }
 
   Widget _buildItemText() {
-    String prefix = isExpense && amount < 0 ? "-" : "";
+    String prefix = isExpense && transaction.amount < 0 ? "-" : "";
     String suffix = "€";
     Color color = isExpense ? Colors.red : Colors.green;
     return Align(
@@ -317,7 +309,7 @@ class HistoryItem extends StatelessWidget {
       child: FittedBox(
         fit: BoxFit.fitWidth,
         child: Text(
-          prefix + amount.toStringAsFixed(2) + suffix,
+          prefix + transaction.amount.toStringAsFixed(2) + suffix,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 18, color: color),
           maxLines: 2,
