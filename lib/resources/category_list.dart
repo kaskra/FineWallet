@@ -6,7 +6,7 @@
 
 import 'dart:collection';
 
-import 'package:finewallet/Models/category_model.dart';
+import 'package:finewallet/models/category_model.dart';
 
 CategoryList toCategoryList(List<CategoryModel> l) {
   CategoryList list = new CategoryList();

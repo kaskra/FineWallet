@@ -4,9 +4,9 @@
  *
  */
 
-import 'package:finewallet/Models/category_model.dart';
-import 'package:finewallet/Models/month_model.dart';
-import 'package:finewallet/Models/subcategory_model.dart';
+import 'package:finewallet/models/category_model.dart';
+import 'package:finewallet/models/month_model.dart';
+import 'package:finewallet/models/subcategory_model.dart';
 import 'package:finewallet/resources/category_list.dart';
 import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/db_provider.dart';

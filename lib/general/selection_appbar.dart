@@ -4,8 +4,8 @@
  *
  */
 
-import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/color_themes.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 
 class SelectionAppBar extends StatefulWidget implements PreferredSizeWidget {

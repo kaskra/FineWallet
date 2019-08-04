@@ -4,17 +4,18 @@
  *
  */
 
-import 'package:finewallet/Datatypes/category.dart';
-import 'package:finewallet/Datatypes/repeat_type.dart';
-import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/add_page/bottom_sheets.dart';
 import 'package:finewallet/color_themes.dart';
+import 'package:finewallet/datatypes/category.dart';
+import 'package:finewallet/datatypes/repeat_type.dart';
 import 'package:finewallet/general/corner_triangle.dart';
 import 'package:finewallet/general/general_widgets.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/category_list.dart';
 import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/internal_data.dart';
+import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

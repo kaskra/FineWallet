@@ -4,7 +4,7 @@
  *
  */
 
-import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/internal_data.dart';
 import 'package:flutter/material.dart';
 
