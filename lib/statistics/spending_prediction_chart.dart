@@ -5,9 +5,9 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:finewallet/Statistics/chart_data.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
+import 'package:finewallet/statistics/chart_data.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/material.dart';
 

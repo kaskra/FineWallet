@@ -1,27 +1,34 @@
 /*
- * Developed by Lukas Krauch 29.6.2019.
+ * Developed by Lukas Krauch $file.today.day.$file.today.month.$file.today.year.
  * Copyright (c) 2019. All rights reserved.
  *
  */
 
-import 'package:finewallet/Datatypes/category.dart';
-import 'package:finewallet/Datatypes/repeat_type.dart';
-import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/bottom_sheets.dart';
+import 'package:finewallet/add_page/bottom_sheets.dart';
 import 'package:finewallet/color_themes.dart';
-import 'package:finewallet/corner_triangle.dart';
-import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/datatypes/category.dart';
+import 'package:finewallet/datatypes/repeat_type.dart';
+import 'package:finewallet/general/corner_triangle.dart';
+import 'package:finewallet/general/general_widgets.dart';
+import 'package:finewallet/models/transaction_model.dart';
+import 'package:finewallet/resources/category_list.dart';
+import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/db_provider.dart';
+import 'package:finewallet/resources/internal_data.dart';
+import 'package:finewallet/resources/transaction_list.dart';
+import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddPage extends StatefulWidget {
-  AddPage(this.title, this.isExpense, {Key key}) : super(key: key);
+  AddPage(this.title, this.isExpense, {Key key, this.transaction})
+      : super(key: key);
 
   final String title;
   final int isExpense;
+  final TransactionModel transaction;
 
   _AddPageState createState() => _AddPageState();
 }
@@ -43,13 +50,53 @@ class _AddPageState extends State<AddPage> {
   bool _isExpanded = false;
   DateTime _repeatUntil;
   int _typeIndex = 2;
+  bool _isEditMode = false;
+  int _editTxId = -1;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _date = DateTime.now();
-    });
+
+    _date = DateTime.now();
+    checkForEditMode();
+  }
+
+  void checkForEditMode() async {
+    if (widget.transaction != null) {
+      CategoryList categories = await CategoryProvider.db.getAllCategories();
+      int selectedCategory = widget.transaction.category;
+      if (widget.transaction.isExpense != 1) {
+        selectedCategory -= categories.length;
+      } else {
+        selectedCategory -= 1;
+      }
+
+      _editTxId = widget.transaction.id;
+      _isEditMode = true;
+      _expense = widget.transaction.amount;
+      _textEditingController.text = _expense.toStringAsFixed(2);
+      _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
+      _subcategory = Category(icons[widget.transaction.category - 1],
+          widget.transaction.subcategoryName, widget.transaction.subcategory,
+          selectedCategory: selectedCategory);
+
+      if (widget.transaction.isRecurring == 1) {
+        if (widget.transaction.replayUntil != null) {
+          _repeatUntil = DateTime.fromMillisecondsSinceEpoch(
+              widget.transaction.replayUntil);
+        }
+        _typeIndex = widget.transaction.replayType;
+        _isExpanded = widget.transaction.isRecurring == 1;
+
+        // If recurring, set the date to the first of the recurrence.
+        // With that every recurring instance is changed
+        TransactionList txs = await TransactionsProvider.db
+            .getAllTrans(dayInMillis(DateTime.now()));
+        txs = txs.where((tx) => tx.id == _editTxId);
+        _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
+      }
+      setState(() {});
+    }
   }
 
   Widget _expenseCards(IconData icon, String label, int value, Function onTap) {
@@ -467,7 +514,13 @@ class _AddPageState extends State<AddPage> {
                 replayType: _typeIndex,
                 replayUntil:
                     _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
-            Provider.db.newTransaction(tx);
+
+            if (_isEditMode) {
+              tx.id = _editTxId;
+              TransactionsProvider.db.update(tx);
+            } else {
+              Provider.db.newTransaction(tx);
+            }
             Navigator.pop(context);
           } else {
             return _showSnackBar(context);

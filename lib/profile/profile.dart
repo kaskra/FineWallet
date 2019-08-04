@@ -4,14 +4,14 @@
  *
  */
 
-import 'package:finewallet/Models/month_model.dart';
-import 'package:finewallet/Statistics/profile_chart.dart';
-import 'package:finewallet/Statistics/spending_prediction_chart.dart';
-import 'package:finewallet/general_widgets.dart';
+import 'package:finewallet/general/general_widgets.dart';
+import 'package:finewallet/models/month_model.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
+import 'package:finewallet/statistics/profile_chart.dart';
+import 'package:finewallet/statistics/spending_prediction_chart.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

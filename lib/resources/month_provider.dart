@@ -4,7 +4,7 @@
  *
  */
 
-import 'package:finewallet/Models/month_model.dart';
+import 'package:finewallet/models/month_model.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/utils.dart' as utils;
 import 'package:finewallet/utils.dart';

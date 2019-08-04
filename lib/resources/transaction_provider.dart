@@ -4,7 +4,7 @@
  *
  */
 
-import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/utils.dart';
@@ -81,5 +81,9 @@ class TransactionsProvider {
 
     var res = await getAllTrans(dayInMillis(lastOfMonth));
     return res.after(firstOfMonth);
+  }
+
+  Future update(TransactionModel tx) async {
+    await Provider.db.updateTransaction(tx);
   }
 }

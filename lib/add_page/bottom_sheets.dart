@@ -4,9 +4,9 @@
  *
  */
 
-import 'package:finewallet/Datatypes/category.dart';
-import 'package:finewallet/Models/category_model.dart';
-import 'package:finewallet/Models/subcategory_model.dart';
+import 'package:finewallet/datatypes/category.dart';
+import 'package:finewallet/models/category_model.dart';
+import 'package:finewallet/models/subcategory_model.dart';
 import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/internal_data.dart';
 import 'package:flutter/cupertino.dart';

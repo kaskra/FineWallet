@@ -1,5 +1,5 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
+ * Developed by Lukas Krauch $file.today.day.$file.today.month.$file.today.year.
  * Copyright (c) 2019. All rights reserved.
  *
  */

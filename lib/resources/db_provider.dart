@@ -6,10 +6,10 @@
 
 import 'dart:io';
 
-import 'package:finewallet/Models/category_model.dart';
-import 'package:finewallet/Models/month_model.dart';
-import 'package:finewallet/Models/subcategory_model.dart';
-import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/models/category_model.dart';
+import 'package:finewallet/models/month_model.dart';
+import 'package:finewallet/models/subcategory_model.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/db_migration.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -123,5 +123,11 @@ class Provider {
   findMonth(int month) async {
     final db = await database;
     return db.query("months", where: "firstOfMonth = ?", whereArgs: [month]);
+  }
+
+  updateTransaction(TransactionModel model) async {
+    final db = await database;
+    return db.update("transactions", model.toMap(),
+        where: "id = ?", whereArgs: [model.id]);
   }
 }

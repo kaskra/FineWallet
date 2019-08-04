@@ -4,20 +4,20 @@
  *
  */
 
-import 'package:finewallet/Models/month_model.dart';
-import 'package:finewallet/Models/transaction_model.dart';
-import 'package:finewallet/Statistics/monthly_overview.dart';
-import 'package:finewallet/add_page.dart';
-import 'package:finewallet/bottom_bar_app_item.dart';
+import 'package:finewallet/add_page/add_page.dart';
 import 'package:finewallet/color_themes.dart';
-import 'package:finewallet/general_widgets.dart';
-import 'package:finewallet/history.dart';
-import 'package:finewallet/profile.dart';
+import 'package:finewallet/general/bottom_bar_app_item.dart';
+import 'package:finewallet/general/general_widgets.dart';
+import 'package:finewallet/general/sliding_fab_menu.dart';
+import 'package:finewallet/history/history.dart';
+import 'package:finewallet/models/month_model.dart';
+import 'package:finewallet/models/transaction_model.dart';
+import 'package:finewallet/profile/profile.dart';
 import 'package:finewallet/resources/db_initilization.dart';
 import 'package:finewallet/resources/month_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
-import 'package:finewallet/sliding_fab_menu.dart';
+import 'package:finewallet/statistics/monthly_overview.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _showBottomBar = true;
 
   double _monthlyMaxBudget = 0;
+  bool _isSelectionModeActive = false;
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _syncDatabase() async {
     MonthModel month = await MonthProvider.db.getCurrentMonth();
+
     setState(() {
       _monthlyMaxBudget = month != null ? month.currentMaxBudget : 0;
     });
@@ -291,9 +293,12 @@ class _MyHomePageState extends State<MyHomePage> {
         FABBottomAppBarItem(iconData: Icons.home, text: "Home"),
       ],
       onTabSelected: (int index) {
-        setState(() {
-          _currentIndex = index;
-        });
+        if (index != _currentIndex) {
+          setState(() {
+            _currentIndex = index;
+            _isSelectionModeActive = false;
+          });
+        }
       },
       selectedIndex: _currentIndex,
       isVisible: _showBottomBar,
@@ -317,6 +322,27 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Widget _buildHistory() {
+    return History(
+      onChangeSelectionMode: (isSelectionModeOn) {
+        setState(() {
+          _isSelectionModeActive = isSelectionModeOn;
+        });
+      },
+    );
+  }
+
+  Widget _buildDefaultAppBar() => AppBar(
+        centerTitle: centerAppBar,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
@@ -329,25 +355,12 @@ class _MyHomePageState extends State<MyHomePage> {
         showAppBar: false,
       ),
       Container(),
-      HistoryPage(
-        "Transaction History",
-        day: dayInMillis(DateTime.now()),
-        showAppBar: false,
-      ),
+      _buildHistory(),
       _buildBody(),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: centerAppBar,
-        elevation: appBarElevation,
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-        ),
-      ),
+      appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
       bottomNavigationBar: _buildBottomBar(),
       body: children[_currentIndex],
       floatingActionButton: keyboardOpen

@@ -6,7 +6,7 @@
 
 import 'dart:async';
 
-import 'package:finewallet/Models/transaction_model.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
@@ -43,6 +43,11 @@ class TransactionBloc {
 
   delete(int id) {
     Provider.db.deleteTransaction(id);
+    getTransactions();
+  }
+
+  updateTransaction(TransactionModel tx) {
+    Provider.db.updateTransaction(tx);
     getTransactions();
   }
 }
