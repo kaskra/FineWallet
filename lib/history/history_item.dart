@@ -4,8 +4,10 @@
  *
  */
 
+import 'package:finewallet/history/history_item_icon.dart';
 import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/internal_data.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HistoryItem extends StatelessWidget {
@@ -70,69 +72,15 @@ class HistoryItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                _buildItemIcon(),
+//                _buildItemIcon(),
+                HistoryItemIcon(
+                    isSelected: isSelected,
+                    isExpense: isExpense,
+                    isRecurring: isRecurring,
+                    iconData: icons[transaction.category - 1]),
                 _buildItemContent(),
               ],
             )));
-  }
-
-  Widget _buildItemIcon() {
-    return Stack(
-      children: <Widget>[
-        Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  color: Theme.of(context).colorScheme.secondary,
-                  child: Icon(
-                    icons[transaction.category - 1],
-                    size: 25,
-                  ),
-                ),
-              ),
-            )),
-        expenseIndicator(),
-        recurrenceIndicator()
-      ],
-    );
-  }
-
-  Widget recurrenceIndicator() {
-    return isRecurring
-        ? Positioned(
-            left: 0,
-            bottom: 18,
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(25)),
-              child: Container(
-                color: Theme.of(context).colorScheme.secondary,
-                child: Icon(
-                  Icons.replay,
-                  size: 14,
-                ),
-              ),
-            ))
-        : Container();
-  }
-
-  Positioned expenseIndicator() {
-    return Positioned(
-        right: 8,
-        top: 0,
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-          child: Container(
-            color: isExpense ? Colors.red : Colors.green,
-            child: Icon(
-              isExpense ? Icons.remove : Icons.add,
-              size: 14,
-            ),
-          ),
-        ));
   }
 
   Widget _buildItemTitle() {
