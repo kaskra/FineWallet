@@ -72,12 +72,13 @@ class HistoryItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-//                _buildItemIcon(),
                 HistoryItemIcon(
-                    isSelected: isSelected,
-                    isExpense: isExpense,
-                    isRecurring: isRecurring,
-                    iconData: icons[transaction.category - 1]),
+                  isSelected: isSelected,
+                  isExpense: isExpense,
+                  isRecurring: isRecurring,
+                  iconData: icons[transaction.category - 1],
+                  context: context,
+                ),
                 _buildItemContent(),
               ],
             )));

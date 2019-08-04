@@ -4,34 +4,38 @@
  *
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HistoryItemIcon extends StatefulWidget {
+class HistoryItemIcon extends StatelessWidget {
   HistoryItemIcon(
       {@required this.isSelected,
       @required this.isExpense,
       @required this.isRecurring,
-      @required this.iconData});
+      @required this.iconData,
+      @required this.context});
 
   final bool isSelected;
   final bool isRecurring;
   final bool isExpense;
   final IconData iconData;
-
-  @override
-  _HistoryItemIconState createState() => _HistoryItemIconState();
-}
-
-class _HistoryItemIconState extends State<HistoryItemIcon> {
-  Widget _selectionWidget = Container(
-    width: 40,
-    height: 40,
-    color: Colors.blue,
-  );
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
-    return _buildItemIcon();
+    return isSelected ? _buildSelectionIcon() : _buildItemIcon();
+  }
+
+  Widget _buildSelectionIcon() {
+    return _iconWrapper(
+        child: Container(
+      padding: EdgeInsets.all(5),
+      color: Theme.of(context).colorScheme.secondaryVariant,
+      child: Icon(
+        Icons.check,
+        size: 25,
+      ),
+    ));
   }
 
   Widget _buildItemIcon() {
@@ -45,26 +49,31 @@ class _HistoryItemIconState extends State<HistoryItemIcon> {
   }
 
   Widget _categoryIcon() {
+    return _iconWrapper(
+      child: Container(
+        padding: EdgeInsets.all(5),
+        color: Theme.of(context).colorScheme.secondary,
+        child: Icon(
+          iconData,
+          size: 25,
+        ),
+      ),
+    );
+  }
+
+  Widget _iconWrapper({Widget child}) {
     return Padding(
         padding: EdgeInsets.only(right: 10),
         child: Align(
           alignment: Alignment.topLeft,
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-            child: Container(
-              padding: EdgeInsets.all(5),
-              color: Theme.of(context).colorScheme.secondary,
-              child: Icon(
-                widget.iconData,
-                size: 25,
-              ),
-            ),
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(25)),
+              child: child),
         ));
   }
 
   Widget recurrenceIndicator() {
-    return widget.isRecurring
+    return isRecurring
         ? Positioned(
             left: 0,
             bottom: 18,
@@ -88,9 +97,9 @@ class _HistoryItemIconState extends State<HistoryItemIcon> {
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(25)),
           child: Container(
-            color: widget.isExpense ? Colors.red : Colors.green,
+            color: isExpense ? Colors.red : Colors.green,
             child: Icon(
-              widget.isExpense ? Icons.remove : Icons.add,
+              isExpense ? Icons.remove : Icons.add,
               size: 14,
             ),
           ),
