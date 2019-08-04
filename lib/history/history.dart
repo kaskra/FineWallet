@@ -4,12 +4,12 @@
  *
  */
 
-import 'package:finewallet/Models/transaction_model.dart';
 import 'package:finewallet/add_page/add_page.dart';
 import 'package:finewallet/general/general_widgets.dart';
 import 'package:finewallet/general/selection_appbar.dart';
 import 'package:finewallet/history/date_separator.dart';
 import 'package:finewallet/history/history_item.dart';
+import 'package:finewallet/models/transaction_model.dart';
 import 'package:finewallet/resources/blocs/transaction_bloc.dart';
 import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/utils.dart';
@@ -90,6 +90,7 @@ class _HistoryState extends State<History> {
         context,
         MaterialPageRoute(
             builder: (context) => AddPage(title, isExpense, transaction: tx)));
+    closeSelection();
   }
 
   void closeSelection() {

@@ -50,6 +50,7 @@ class _AddPageState extends State<AddPage> {
   DateTime _repeatUntil;
   int _typeIndex = 2;
   bool _isEditMode = false;
+  int _editTxId = -1;
 
   @override
   void initState() {
@@ -69,8 +70,10 @@ class _AddPageState extends State<AddPage> {
         selectedCategory -= 1;
       }
 
+      _editTxId = widget.transaction.id;
       _isEditMode = true;
       _expense = widget.transaction.amount;
+      _textEditingController.text = _expense.toString();
       _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
       _subcategory = Category(icons[widget.transaction.category - 1],
           widget.transaction.subcategoryName, widget.transaction.subcategory,
@@ -494,8 +497,6 @@ class _AddPageState extends State<AddPage> {
                     "Your recurrence type does not fit inside the time frame.");
             }
 
-            // TODO update tx in DB when isEditMode
-
             TransactionModel tx = new TransactionModel(
                 amount: _expense,
                 isExpense: widget.isExpense,
@@ -505,7 +506,13 @@ class _AddPageState extends State<AddPage> {
                 replayType: _typeIndex,
                 replayUntil:
                     _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
-            Provider.db.newTransaction(tx);
+
+            if (_isEditMode) {
+              tx.id = _editTxId;
+              TransactionsProvider.db.update(tx);
+            } else {
+              Provider.db.newTransaction(tx);
+            }
             Navigator.pop(context);
           } else {
             return _showSnackBar(context);
