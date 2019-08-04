@@ -15,6 +15,7 @@ import 'package:finewallet/resources/category_list.dart';
 import 'package:finewallet/resources/category_provider.dart';
 import 'package:finewallet/resources/db_provider.dart';
 import 'package:finewallet/resources/internal_data.dart';
+import 'package:finewallet/resources/transaction_list.dart';
 import 'package:finewallet/resources/transaction_provider.dart';
 import 'package:finewallet/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -73,7 +74,7 @@ class _AddPageState extends State<AddPage> {
       _editTxId = widget.transaction.id;
       _isEditMode = true;
       _expense = widget.transaction.amount;
-      _textEditingController.text = _expense.toString();
+      _textEditingController.text = _expense.toStringAsFixed(2);
       _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
       _subcategory = Category(icons[widget.transaction.category - 1],
           widget.transaction.subcategoryName, widget.transaction.subcategory,
@@ -86,6 +87,13 @@ class _AddPageState extends State<AddPage> {
         }
         _typeIndex = widget.transaction.replayType;
         _isExpanded = widget.transaction.isRecurring == 1;
+
+        // If recurring, set the date to the first of the recurrence.
+        // With that every recurring instance is changed
+        TransactionList txs = await TransactionsProvider.db
+            .getAllTrans(dayInMillis(DateTime.now()));
+        txs = txs.where((tx) => tx.id == _editTxId);
+        _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
       }
       setState(() {});
     }
