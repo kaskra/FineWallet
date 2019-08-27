@@ -5,11 +5,11 @@
  */
 
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:finewallet/resources/transaction_list.dart';
-import 'package:finewallet/resources/transaction_provider.dart';
-import 'package:finewallet/statistics/chart_data.dart';
-import 'package:finewallet/statistics/chart_type.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/resources/transaction_list.dart';
+import 'package:FineWallet/resources/transaction_provider.dart';
+import 'package:FineWallet/statistics/chart_data.dart';
+import 'package:FineWallet/statistics/chart_type.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

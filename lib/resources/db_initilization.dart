@@ -4,14 +4,14 @@
  *
  */
 
-import 'package:finewallet/models/category_model.dart';
-import 'package:finewallet/models/month_model.dart';
-import 'package:finewallet/models/subcategory_model.dart';
-import 'package:finewallet/resources/category_list.dart';
-import 'package:finewallet/resources/category_provider.dart';
-import 'package:finewallet/resources/db_provider.dart';
-import 'package:finewallet/resources/month_provider.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/models/category_model.dart';
+import 'package:FineWallet/models/month_model.dart';
+import 'package:FineWallet/models/subcategory_model.dart';
+import 'package:FineWallet/resources/category_list.dart';
+import 'package:FineWallet/resources/category_provider.dart';
+import 'package:FineWallet/resources/db_provider.dart';
+import 'package:FineWallet/resources/month_provider.dart';
+import 'package:FineWallet/utils.dart';
 
 void initDB() async {
   CategoryList categories = await CategoryProvider.db.getAllCategories();

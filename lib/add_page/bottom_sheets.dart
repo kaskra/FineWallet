@@ -4,11 +4,11 @@
  *
  */
 
-import 'package:finewallet/datatypes/category.dart';
-import 'package:finewallet/models/category_model.dart';
-import 'package:finewallet/models/subcategory_model.dart';
-import 'package:finewallet/resources/category_provider.dart';
-import 'package:finewallet/resources/internal_data.dart';
+import 'package:FineWallet/datatypes/category.dart';
+import 'package:FineWallet/models/category_model.dart';
+import 'package:FineWallet/models/subcategory_model.dart';
+import 'package:FineWallet/resources/category_provider.dart';
+import 'package:FineWallet/resources/internal_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

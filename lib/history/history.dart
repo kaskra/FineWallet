@@ -4,15 +4,15 @@
  *
  */
 
-import 'package:finewallet/add_page/add_page.dart';
-import 'package:finewallet/general/general_widgets.dart';
-import 'package:finewallet/general/selection_appbar.dart';
-import 'package:finewallet/history/date_separator.dart';
-import 'package:finewallet/history/history_item.dart';
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/resources/blocs/transaction_bloc.dart';
-import 'package:finewallet/resources/transaction_list.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/add_page/add_page.dart';
+import 'package:FineWallet/general/general_widgets.dart';
+import 'package:FineWallet/general/selection_appbar.dart';
+import 'package:FineWallet/history/date_separator.dart';
+import 'package:FineWallet/history/history_item.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/resources/transaction_list.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';

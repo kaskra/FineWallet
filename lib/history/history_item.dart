@@ -4,9 +4,9 @@
  *
  */
 
-import 'package:finewallet/history/history_item_icon.dart';
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/resources/internal_data.dart';
+import 'package:FineWallet/history/history_item_icon.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/internal_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

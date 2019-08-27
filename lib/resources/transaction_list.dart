@@ -6,8 +6,8 @@
 
 import 'dart:collection';
 
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/utils.dart';
 
 TransactionList toTransactionList(List<TransactionModel> l) {
   TransactionList list = new TransactionList();

@@ -6,10 +6,10 @@
 
 import 'dart:async';
 
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/resources/db_provider.dart';
-import 'package:finewallet/resources/transaction_list.dart';
-import 'package:finewallet/resources/transaction_provider.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/db_provider.dart';
+import 'package:FineWallet/resources/transaction_list.dart';
+import 'package:FineWallet/resources/transaction_provider.dart';
 
 class TransactionBloc {
   final _transactionController = StreamController<TransactionList>.broadcast();

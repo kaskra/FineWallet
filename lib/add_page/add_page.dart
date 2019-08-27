@@ -4,20 +4,20 @@
  *
  */
 
-import 'package:finewallet/add_page/bottom_sheets.dart';
-import 'package:finewallet/color_themes.dart';
-import 'package:finewallet/datatypes/category.dart';
-import 'package:finewallet/datatypes/repeat_type.dart';
-import 'package:finewallet/general/corner_triangle.dart';
-import 'package:finewallet/general/general_widgets.dart';
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/resources/category_list.dart';
-import 'package:finewallet/resources/category_provider.dart';
-import 'package:finewallet/resources/db_provider.dart';
-import 'package:finewallet/resources/internal_data.dart';
-import 'package:finewallet/resources/transaction_list.dart';
-import 'package:finewallet/resources/transaction_provider.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/add_page/bottom_sheets.dart';
+import 'package:FineWallet/color_themes.dart';
+import 'package:FineWallet/datatypes/category.dart';
+import 'package:FineWallet/datatypes/repeat_type.dart';
+import 'package:FineWallet/general/corner_triangle.dart';
+import 'package:FineWallet/general/general_widgets.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/category_list.dart';
+import 'package:FineWallet/resources/category_provider.dart';
+import 'package:FineWallet/resources/db_provider.dart';
+import 'package:FineWallet/resources/internal_data.dart';
+import 'package:FineWallet/resources/transaction_list.dart';
+import 'package:FineWallet/resources/transaction_provider.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

@@ -1,4 +1,4 @@
-package com.sylu.finewallet;
+package com.sylu.FineWallet;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

@@ -4,21 +4,21 @@
  *
  */
 
-import 'package:finewallet/add_page/add_page.dart';
-import 'package:finewallet/color_themes.dart';
-import 'package:finewallet/general/bottom_bar_app_item.dart';
-import 'package:finewallet/general/general_widgets.dart';
-import 'package:finewallet/general/sliding_fab_menu.dart';
-import 'package:finewallet/history/history.dart';
-import 'package:finewallet/models/month_model.dart';
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/profile/profile.dart';
-import 'package:finewallet/resources/db_initilization.dart';
-import 'package:finewallet/resources/month_provider.dart';
-import 'package:finewallet/resources/transaction_list.dart';
-import 'package:finewallet/resources/transaction_provider.dart';
-import 'package:finewallet/statistics/monthly_overview.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/add_page/add_page.dart';
+import 'package:FineWallet/color_themes.dart';
+import 'package:FineWallet/general/bottom_bar_app_item.dart';
+import 'package:FineWallet/general/general_widgets.dart';
+import 'package:FineWallet/general/sliding_fab_menu.dart';
+import 'package:FineWallet/history/history.dart';
+import 'package:FineWallet/models/month_model.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/profile/profile.dart';
+import 'package:FineWallet/resources/db_initilization.dart';
+import 'package:FineWallet/resources/month_provider.dart';
+import 'package:FineWallet/resources/transaction_list.dart';
+import 'package:FineWallet/resources/transaction_provider.dart';
+import 'package:FineWallet/statistics/monthly_overview.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

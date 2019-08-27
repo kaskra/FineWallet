@@ -4,10 +4,10 @@
  *
  */
 
-import 'package:finewallet/models/transaction_model.dart';
-import 'package:finewallet/resources/db_provider.dart';
-import 'package:finewallet/resources/transaction_list.dart';
-import 'package:finewallet/utils.dart';
+import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/db_provider.dart';
+import 'package:FineWallet/resources/transaction_list.dart';
+import 'package:FineWallet/utils.dart';
 
 class TransactionsProvider {
   TransactionsProvider._();

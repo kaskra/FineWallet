@@ -6,7 +6,7 @@
 
 import 'dart:collection';
 
-import 'package:finewallet/models/subcategory_model.dart';
+import 'package:FineWallet/models/subcategory_model.dart';
 
 SubcategoryList toSubcategoryList(List<SubcategoryModel> l) {
   SubcategoryList list = new SubcategoryList();
