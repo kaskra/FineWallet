@@ -27,14 +27,14 @@ class MonthProvider {
     }
     dayInMillis = utils.dayInMillis(firstOfMonth);
 
-    var res = await Provider.db.findMonth(dayInMillis);
+    var res = await DatabaseProvider.db.findMonth(dayInMillis);
 
     if (res.isEmpty) return null;
     return MonthModel.fromMap(res.first);
   }
 
   Future<List<MonthModel>> getAllRecordedMonths() async {
-    var db = await Provider.db.database;
+    var db = await DatabaseProvider.db.database;
     List<Map<String, dynamic>> res = await db.rawQuery("SELECT * FROM months");
     if (res.isEmpty) return [];
     List<MonthModel> list = res
@@ -64,7 +64,7 @@ class MonthProvider {
   }
 
   updateMonth(MonthModel monthModelEntity) async {
-    var db = await Provider.db.database;
+    var db = await DatabaseProvider.db.database;
     db.update("months", monthModelEntity.toMap(),
         where: "firstOfMonth = ?",
         whereArgs: [monthModelEntity.firstDayOfMonth]);

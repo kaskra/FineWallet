@@ -181,113 +181,110 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _days() {
-    List<DateTime> days = getLastWeekAsDates();
-    return FutureBuilder<List<SumOfTransactionModel>>(
-      future: TransactionsProvider.db
-          .getExpensesGroupedByDay(dayInMillis(DateTime.now())),
-      initialData: List(),
-      builder: (BuildContext context,
-          AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
-        if (snapshot.hasData) {
-          List<Widget> listItems = List();
-          for (DateTime date in days) {
-            int index = snapshot.data
-                .indexWhere((s) => s.hasSameValue(dayInMillis(date)));
-            if (index >= 0) {
-              listItems.add(_day(date.weekday, snapshot.data[index].amount));
-            } else {
-              listItems.add(_day(date.weekday, 0));
-            }
+    return Consumer<TransactionBloc>(builder: (_, bloc, child) {
+      bloc.getLastWeekTransactions();
+      return StreamBuilder(
+        stream: bloc.lastWeekTransactions,
+        builder:
+            (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: <Widget>[
+                for (SumOfTransactionModel m in snapshot.data)
+                  _day(m.date, m.amount.toDouble())
+              ],
+            );
+          } else {
+            return CircularProgressIndicator();
           }
-          return ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: listItems,
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
-    );
+        },
+      );
+    });
   }
 
   void _onMonthTap() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MonthlyOverview(
-                  initialMonth: DateTime.now(),
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => MonthlyOverview(
+          initialMonth: DateTime.now(),
+        ),
+      ),
+    );
   }
 
   void _onDayTap() {}
 
+
+  // TODO rework... move logic into bloc
   Widget _buildBody() {
     _syncDatabase();
     return Center(
-        child: Container(
-            constraints: BoxConstraints.expand(),
-            padding: EdgeInsets.all(5.0),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(bottom: 5),
-                  child: FutureBuilder<TransactionList>(
-                    future: TransactionsProvider.db
-                        .getTransactionsOfMonth(dayInMillis(DateTime.now())),
-                    initialData: TransactionList(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<TransactionList> snapshot) {
-                      if (snapshot.hasData) {
-                        int dayOfMonth = DateTime.now().day;
-                        int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
+      child: Container(
+        constraints: BoxConstraints.expand(),
+        padding: EdgeInsets.all(5.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(bottom: 5),
+              child: FutureBuilder<TransactionList>(
+                future: TransactionsProvider.db
+                    .getTransactionsOfMonth(dayInMillis(DateTime.now())),
+                initialData: TransactionList(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<TransactionList> snapshot) {
+                  if (snapshot.hasData) {
+                    int dayOfMonth = DateTime.now().day;
+                    int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
 
-                        double monthlyExpenses = snapshot.data
-                            .where((TransactionModel txn) =>
-                                txn.date != dayInMillis(DateTime.now()))
-                            .sumExpenses();
-                        double monthlyIncomes = _monthlyMaxBudget;
-                        double expensesToday = snapshot.data
-                            .byDayInMillis(dayInMillis(DateTime.now()))
-                            .sumExpenses();
+                    double monthlyExpenses = snapshot.data
+                        .where((TransactionModel txn) =>
+                            txn.date != dayInMillis(DateTime.now()))
+                        .sumExpenses();
+                    double monthlyIncomes = _monthlyMaxBudget;
+                    double expensesToday = snapshot.data
+                        .byDayInMillis(dayInMillis(DateTime.now()))
+                        .sumExpenses();
 
-                        int remainingDaysInMonth =
-                            lastDayOfMonth - dayOfMonth + 1;
-                        double monthlySpareBudget =
-                            monthlyIncomes - monthlyExpenses;
-                        double budgetPerDay =
-                            (monthlySpareBudget / remainingDaysInMonth) -
-                                expensesToday;
-                        double displayedMonthlySpareBudget =
-                            monthlySpareBudget - expensesToday;
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            _overviewBox(
-                                "TODAY", budgetPerDay, false, _onDayTap),
-                            _overviewBox(
-                                getMonthName(DateTime.now().month)
-                                    .toUpperCase(),
-                                displayedMonthlySpareBudget,
-                                true,
-                                _onMonthTap),
-                          ],
-                        );
-                      } else {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            CircularProgressIndicator(),
-                            CircularProgressIndicator(),
-                          ],
-                        );
-                      }
-                    },
-                  ),
-                ),
-                Container(child: _days())
-              ],
-            )));
+                    int remainingDaysInMonth = lastDayOfMonth - dayOfMonth + 1;
+                    double monthlySpareBudget =
+                        monthlyIncomes - monthlyExpenses;
+                    double budgetPerDay =
+                        (monthlySpareBudget / remainingDaysInMonth) -
+                            expensesToday;
+                    double displayedMonthlySpareBudget =
+                        monthlySpareBudget - expensesToday;
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _overviewBox("TODAY", budgetPerDay, false, _onDayTap),
+                        _overviewBox(
+                            getMonthName(DateTime.now().month).toUpperCase(),
+                            displayedMonthlySpareBudget,
+                            true,
+                            _onMonthTap),
+                      ],
+                    );
+                  } else {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        CircularProgressIndicator(),
+                        CircularProgressIndicator(),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ),
+            Container(child: _days())
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildBottomBar() {

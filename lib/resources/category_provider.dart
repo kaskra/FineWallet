@@ -16,7 +16,7 @@ class CategoryProvider {
   static final CategoryProvider db = CategoryProvider._();
 
   Future<CategoryList> getAllCategories({bool isExpense}) async {
-    final db = await Provider.db.database;
+    final db = await DatabaseProvider.db.database;
     var res = await db.query("categories");
 
     if (res.isEmpty) return new CategoryList();
@@ -35,7 +35,7 @@ class CategoryProvider {
   }
 
   Future<SubcategoryList> getSubcategories([int categoryId]) async {
-    final db = await Provider.db.database;
+    final db = await DatabaseProvider.db.database;
     List res = [];
     if (categoryId != null) {
       res = await db.query("subcategories",
@@ -52,7 +52,7 @@ class CategoryProvider {
   }
 
   Future<int> indexOf(int subcategoryId) async {
-    final db = await Provider.db.database;
+    final db = await DatabaseProvider.db.database;
     var c = await db.query("subcategories",
         columns: ["category"], where: "id=?", whereArgs: [subcategoryId]);
     if (c.isEmpty) return null;

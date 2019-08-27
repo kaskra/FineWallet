@@ -4,6 +4,8 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:FineWallet/add_page/bottom_sheets.dart';
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/datatypes/category.dart';
@@ -11,6 +13,7 @@ import 'package:FineWallet/datatypes/repeat_type.dart';
 import 'package:FineWallet/general/corner_triangle.dart';
 import 'package:FineWallet/general/general_widgets.dart';
 import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/category_list.dart';
 import 'package:FineWallet/resources/category_provider.dart';
 import 'package:FineWallet/resources/db_provider.dart';
@@ -21,6 +24,7 @@ import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddPage extends StatefulWidget {
   AddPage(this.title, this.isExpense, {Key key, this.transaction})
@@ -61,6 +65,7 @@ class _AddPageState extends State<AddPage> {
     checkForEditMode();
   }
 
+  // TODO rework this
   void checkForEditMode() async {
     if (widget.transaction != null) {
       CategoryList categories = await CategoryProvider.db.getAllCategories();
@@ -125,7 +130,7 @@ class _AddPageState extends State<AddPage> {
         child: InkWell(
           onTap: () => onTap(),
           child: Container(
-            padding: EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
             child: LayoutBuilder(
               builder: (context, constraint) {
                 return Column(
@@ -169,7 +174,7 @@ class _AddPageState extends State<AddPage> {
               return Future.value(true);
             },
             child: Container(
-              color: Color(0xFF636a75),
+              color: const Color(0xFF636a75),
               child: Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
@@ -177,8 +182,8 @@ class _AddPageState extends State<AddPage> {
                         color: Theme.of(context).canvasColor,
                         width: topBorderHeight / 2),
                     borderRadius:
-                        BorderRadius.vertical(top: new Radius.circular(16))),
-                padding: EdgeInsets.only(left: 10, right: 10),
+                        BorderRadius.vertical(top: const Radius.circular(16))),
+                padding: const EdgeInsets.only(left: 10, right: 10),
                 height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
                 child: Align(
                   alignment: FractionalOffset.topCenter,
@@ -186,7 +191,7 @@ class _AddPageState extends State<AddPage> {
                     decoration: InputDecoration(
                         labelText:
                             "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
-                        contentPadding: EdgeInsets.all(4),
+                        contentPadding: const EdgeInsets.all(4),
                         labelStyle: TextStyle(
                             fontSize: 15,
                             color: Theme.of(context).textTheme.body1.color),
@@ -294,11 +299,11 @@ class _AddPageState extends State<AddPage> {
 
   Widget _buildRecurringCard() {
     return Container(
-        margin: EdgeInsets.only(left: 5, right: 5),
+        margin: const EdgeInsets.only(left: 5, right: 5),
         child: Card(
           child: CornerTriangle(
               corner: Corner.TOP_LEFT,
-              size: Size(25, 25),
+              size: const Size(25, 25),
               icon: CornerIcon(Icons.replay,
                   color: Theme.of(context).colorScheme.onSecondary),
               color: Theme.of(context).colorScheme.secondary,
@@ -330,7 +335,7 @@ class _AddPageState extends State<AddPage> {
                   growAnimation(
                       Container(
                         margin:
-                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                            const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           mainAxisSize: MainAxisSize.max,
@@ -339,11 +344,11 @@ class _AddPageState extends State<AddPage> {
                               child: Divider(
                                 height: 1,
                               ),
-                              margin: EdgeInsets.only(bottom: 4),
+                              margin: const EdgeInsets.only(bottom: 4),
                             ),
                             _repeatTypeChoice(),
                             Padding(
-                              padding: EdgeInsets.only(top: 6),
+                              padding: const EdgeInsets.only(top: 6),
                               child: _repeatUntilDate(),
                             )
                           ],
@@ -351,7 +356,7 @@ class _AddPageState extends State<AddPage> {
                       ),
                       Container(),
                       _isExpanded,
-                      Duration(milliseconds: 300))
+                      const Duration(milliseconds: 300))
                 ],
               )),
         ));
@@ -517,9 +522,9 @@ class _AddPageState extends State<AddPage> {
 
             if (_isEditMode) {
               tx.id = _editTxId;
-              TransactionsProvider.db.update(tx);
+              Provider.of<TransactionBloc>(context).updateTransaction(tx);
             } else {
-              Provider.db.newTransaction(tx);
+              DatabaseProvider.db.newTransaction(tx);
             }
             Navigator.pop(context);
           } else {

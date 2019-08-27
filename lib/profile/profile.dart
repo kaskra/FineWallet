@@ -105,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
           currentMaxBudget: 0,
           firstDayOfMonth: date.millisecondsSinceEpoch,
         );
-        await Provider.db.newMonth(month);
+        await DatabaseProvider.db.newMonth(month);
       } else {
         MonthModel m = all.firstWhere((MonthModel month) =>
             month.firstDayOfMonth == date.millisecondsSinceEpoch);
@@ -138,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
         currentMaxBudget: 0,
         firstDayOfMonth: dayInMillis(DateTime(_today.year, _today.month, 1)),
       );
-      await Provider.db.newMonth(month);
+      await DatabaseProvider.db.newMonth(month);
     }
   }
 

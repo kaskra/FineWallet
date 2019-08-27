@@ -28,124 +28,124 @@ void initDB() async {
 
     var cat10 = CategoryModel(name: "Income");
 
-    Provider.db.newCategory(cat1);
-    Provider.db.newCategory(cat2);
-    Provider.db.newCategory(cat3);
-    Provider.db.newCategory(cat4);
-    Provider.db.newCategory(cat5);
-    Provider.db.newCategory(cat6);
-    Provider.db.newCategory(cat7);
-    Provider.db.newCategory(cat8);
-    Provider.db.newCategory(cat9);
-    Provider.db.newCategory(cat10);
+    DatabaseProvider.db.newCategory(cat1);
+    DatabaseProvider.db.newCategory(cat2);
+    DatabaseProvider.db.newCategory(cat3);
+    DatabaseProvider.db.newCategory(cat4);
+    DatabaseProvider.db.newCategory(cat5);
+    DatabaseProvider.db.newCategory(cat6);
+    DatabaseProvider.db.newCategory(cat7);
+    DatabaseProvider.db.newCategory(cat8);
+    DatabaseProvider.db.newCategory(cat9);
+    DatabaseProvider.db.newCategory(cat10);
   }
 
   List<SubcategoryModel> subcategories =
       await CategoryProvider.db.getSubcategories();
   if (subcategories.length == 0) {
-    Provider.db.newSubcategory(SubcategoryModel(category: 1, name: "Debt"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 1, name: "Tuition"));
-    Provider.db.newSubcategory(
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 1, name: "Debt"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 1, name: "Tuition"));
+    DatabaseProvider.db.newSubcategory(
         SubcategoryModel(category: 1, name: "Computer & Supply"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 1, name: "Mail"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 1, name: "Gadget"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 1, name: "Mail"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 1, name: "Gadget"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 2, name: "Mobile"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 2, name: "Tax"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 2, name: "Pet"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 2, name: "Mobile"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 2, name: "Tax"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 2, name: "Pet"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 2, name: "Education"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 2, name: "Fitness"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 2, name: "Fitness"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 2, name: "Subscription"));
 
-    Provider.db
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 3, name: "Grocieres"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "Sweets"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "Backery"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "Sweets"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "Backery"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 3, name: "Fast Food"));
-    Provider.db
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 3, name: "Take Away"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "Café"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "Café"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 3, name: "Dining Out"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "Drinks"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "Fruits"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "Drinks"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "Fruits"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 3, name: "Breakfast"));
-    Provider.db
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 3, name: "Ice Cream"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "Baking"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 3, name: "BBQ"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "Baking"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 3, name: "BBQ"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Rent"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Laundry"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Rent"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Laundry"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 4, name: "Electricity"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Internet"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Cable"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Water"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Repairs"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Plants"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Internet"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Cable"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Water"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Repairs"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Plants"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 4, name: "Furniture"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Heating"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 4, name: "Hotel"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Heating"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 4, name: "Hotel"));
 
-    Provider.db
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 5, name: "Going Out"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Event"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Cinema"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Sport"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Cultural"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Book"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Music"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "App"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Software"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 5, name: "Shopping"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Event"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Cinema"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Sport"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Cultural"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Book"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Music"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "App"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Software"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 5, name: "Shopping"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 6, name: "Gas"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 6, name: "Gas"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 6, name: "Maintenance"));
-    Provider.db.newSubcategory(
+    DatabaseProvider.db.newSubcategory(
         SubcategoryModel(category: 6, name: "Public Transport"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 6, name: "Taxi"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 6, name: "Taxi"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 6, name: "Car Insurance"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 6, name: "Flight"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 6, name: "Parking"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 6, name: "Flight"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 6, name: "Parking"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 6, name: "Car Rental"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 6, name: "Penalty"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 6, name: "Penalty"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 7, name: "Medicine"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 7, name: "Medicine"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 7, name: "Doctors Visit"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 7, name: "Hospital"));
-    Provider.db.newSubcategory(
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 7, name: "Hospital"));
+    DatabaseProvider.db.newSubcategory(
         SubcategoryModel(category: 7, name: "Medical Insurance"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 8, name: "Clothes"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 8, name: "Shoes"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 8, name: "Clothes"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 8, name: "Shoes"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 8, name: "Accessoire"));
-    Provider.db
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 8, name: "Underwear"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 8, name: "Bag"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 8, name: "Bag"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 9, name: "Gift"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 9, name: "Souvenir"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 9, name: "Gift"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 9, name: "Souvenir"));
 
-    Provider.db.newSubcategory(SubcategoryModel(category: 10, name: "Payment"));
-    Provider.db
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 10, name: "Payment"));
+    DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 10, name: "Money Gift"));
-    Provider.db.newSubcategory(SubcategoryModel(category: 10, name: "Voucher"));
+    DatabaseProvider.db.newSubcategory(SubcategoryModel(category: 10, name: "Voucher"));
   }
 
   int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
   if (numRecordedMonths == 0) {
-    Provider.db.newMonth(MonthModel(
+    DatabaseProvider.db.newMonth(MonthModel(
         firstDayOfMonth:
             dayInMillis(DateTime(DateTime.now().year, DateTime.now().month, 1)),
         currentMaxBudget: 0.0,

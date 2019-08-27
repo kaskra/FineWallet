@@ -15,7 +15,7 @@ class TransactionsProvider {
   static final TransactionsProvider db = TransactionsProvider._();
 
   Future<TransactionList> getAllTrans(int untilDay) async {
-    final db = await Provider.db.database;
+    final db = await DatabaseProvider.db.database;
     String whereDay = "";
     if (untilDay != null) whereDay = " WHERE transactions.date <= $untilDay";
     var res = await db.rawQuery(
@@ -42,7 +42,7 @@ class TransactionsProvider {
 
   Future<TransactionList> getTransactionsByCategory(
       String categoryName, int untilDay) async {
-    final db = await Provider.db.database;
+    final db = await DatabaseProvider.db.database;
     var table = await db.query("categories",
         columns: ["id"], where: "name = ?", whereArgs: [categoryName]);
     if (table.isEmpty) return new TransactionList();
@@ -84,6 +84,6 @@ class TransactionsProvider {
   }
 
   Future update(TransactionModel tx) async {
-    await Provider.db.updateTransaction(tx);
+    await DatabaseProvider.db.updateTransaction(tx);
   }
 }

@@ -16,6 +16,7 @@ class TransactionBloc {
   TransactionBloc({int untilDay}) {
     _untilDay = untilDay ?? dayInMillis(DateTime.now());
     getAllTransactions();
+    getMonthlyTransactions(_untilDay);
   }
 
   int _untilDay;
@@ -24,10 +25,13 @@ class TransactionBloc {
       StreamController<TransactionList>.broadcast();
   final _monthlyTransactionsController =
       StreamController<TransactionList>.broadcast();
+  final _lastWeekTransactionsController = StreamController<List<SumOfTransactionModel>>.broadcast();
 
   get allTransactions => _allTransactionsController.stream;
 
   get monthlyTransactions => _monthlyTransactionsController.stream;
+
+  get lastWeekTransactions => _lastWeekTransactionsController.stream;
 
   void updateAllTransactions() {
     getAllTransactions();
@@ -36,6 +40,7 @@ class TransactionBloc {
   void dispose() {
     _allTransactionsController.close();
     _monthlyTransactionsController.close();
+    _lastWeekTransactionsController.close();
   }
 
   getAllTransactions() async {
@@ -48,18 +53,37 @@ class TransactionBloc {
         .add(await TransactionsProvider.db.getTransactionsOfMonth(dateInMonth));
   }
 
+  getLastWeekTransactions() async {
+    List<SumOfTransactionModel> groupedExpenses = await TransactionsProvider.db
+          .getExpensesGroupedByDay(dayInMillis(DateTime.now()));
+
+    List<SumOfTransactionModel> resultingExpenses = [];
+
+    for (DateTime date in getLastWeekAsDates()) {
+      int index = groupedExpenses
+          .indexWhere((s) => s.hasSameValue(dayInMillis(date)));
+      if (index < 0){
+        resultingExpenses.add(SumOfTransactionModel(date: date.weekday, amount: 0.0));
+      }else {
+        resultingExpenses.add(SumOfTransactionModel(date: date.weekday, amount: groupedExpenses[index].amount));
+      }
+    }
+    _lastWeekTransactionsController.add(resultingExpenses);
+  }
+
   add(TransactionModel tx) {
-    Provider.db.newTransaction(tx);
+    DatabaseProvider.db.newTransaction(tx);
     getAllTransactions();
   }
 
   delete(int id) {
-    Provider.db.deleteTransaction(id);
+    DatabaseProvider.db.deleteTransaction(id);
     getAllTransactions();
   }
 
   updateTransaction(TransactionModel tx) {
-    Provider.db.updateTransaction(tx);
+    DatabaseProvider.db.updateTransaction(tx);
     getAllTransactions();
   }
 }
+
