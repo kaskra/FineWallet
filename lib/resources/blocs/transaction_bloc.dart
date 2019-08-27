@@ -16,7 +16,7 @@ class TransactionBloc {
   TransactionBloc({int untilDay}) {
     _untilDay = untilDay ?? dayInMillis(DateTime.now());
     getAllTransactions();
-    getMonthlyTransactions(_untilDay);
+    getMonthlyTransactions(dateInMonth: _untilDay);
   }
 
   int _untilDay;
@@ -48,7 +48,8 @@ class TransactionBloc {
         .add(await TransactionsProvider.db.getAllTrans(_untilDay));
   }
 
-  getMonthlyTransactions(int dateInMonth) async {
+  getMonthlyTransactions({int dateInMonth}) async {
+    dateInMonth = dateInMonth ?? dayInMillis(DateTime.now());
     _monthlyTransactionsController.sink
         .add(await TransactionsProvider.db.getTransactionsOfMonth(dateInMonth));
   }

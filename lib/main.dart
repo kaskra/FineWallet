@@ -17,7 +17,6 @@ import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/db_initilization.dart';
 import 'package:FineWallet/resources/month_provider.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
-import 'package:FineWallet/resources/transaction_provider.dart';
 import 'package:FineWallet/statistics/monthly_overview.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -178,30 +177,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildDayList() {
-    return Consumer<TransactionBloc>(builder: (_, bloc, child) {
-      bloc.getLastWeekTransactions();
-      return StreamBuilder(
-        stream: bloc.lastWeekTransactions,
-        builder:
-            (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              children: <Widget>[
-                for (SumOfTransactionModel m in snapshot.data)
-                  _buildDay(m.date, m.amount.toDouble())
-              ],
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      );
-    });
+    return Container(
+      child: Consumer<TransactionBloc>(builder: (_, bloc, child) {
+        bloc.getLastWeekTransactions();
+        return StreamBuilder(
+          stream: bloc.lastWeekTransactions,
+          builder:
+              (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
+            if (snapshot.hasData) {
+              return ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                children: <Widget>[
+                  for (SumOfTransactionModel m in snapshot.data)
+                    _buildDay(m.date, m.amount.toDouble())
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        );
+      }),
+    );
   }
 
   void _onMonthTap() {
@@ -215,7 +216,30 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // TODO rework... move logic into bloc
+  Map<String, double> _calculateOverviewValues(
+      TransactionList transactionList) {
+    int remainingDaysInMonth =
+        getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
+
+    double monthlyExpenses = transactionList
+        .where(
+            (TransactionModel txn) => txn.date != dayInMillis(DateTime.now()))
+        .sumExpenses();
+    double expensesToday = transactionList
+        .byDayInMillis(dayInMillis(DateTime.now()))
+        .sumExpenses();
+
+    double monthlySpareBudget = _monthlyMaxBudget - monthlyExpenses;
+
+    double budgetPerDay =
+        (monthlySpareBudget / remainingDaysInMonth) - expensesToday;
+
+    return {
+      'dayBudget': budgetPerDay,
+      'monthSpareBudget': monthlySpareBudget - expensesToday,
+    };
+  }
+
   Widget _buildBody() {
     _syncDatabase();
     return Center(
@@ -223,63 +247,49 @@ class _MyHomePageState extends State<MyHomePage> {
         constraints: const BoxConstraints.expand(),
         padding: const EdgeInsets.all(5.0),
         child: Column(
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(bottom: 5),
-              child: FutureBuilder<TransactionList>(
-                future: TransactionsProvider.db
-                    .getTransactionsOfMonth(dayInMillis(DateTime.now())),
-                initialData: TransactionList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<TransactionList> snapshot) {
-                  if (snapshot.hasData) {
-                    int dayOfMonth = DateTime.now().day;
-                    int lastDayOfMonth = getLastDayOfMonth(DateTime.now());
-
-                    double monthlyExpenses = snapshot.data
-                        .where((TransactionModel txn) =>
-                            txn.date != dayInMillis(DateTime.now()))
-                        .sumExpenses();
-                    double monthlyIncomes = _monthlyMaxBudget;
-                    double expensesToday = snapshot.data
-                        .byDayInMillis(dayInMillis(DateTime.now()))
-                        .sumExpenses();
-
-                    int remainingDaysInMonth = lastDayOfMonth - dayOfMonth + 1;
-                    double monthlySpareBudget =
-                        monthlyIncomes - monthlyExpenses;
-                    double budgetPerDay =
-                        (monthlySpareBudget / remainingDaysInMonth) -
-                            expensesToday;
-                    double displayedMonthlySpareBudget =
-                        monthlySpareBudget - expensesToday;
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _overviewBox("TODAY", budgetPerDay, false, () {}),
-                        _overviewBox(
-                            getMonthName(DateTime.now().month).toUpperCase(),
-                            displayedMonthlySpareBudget,
-                            true,
-                            _onMonthTap),
-                      ],
-                    );
-                  } else {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        CircularProgressIndicator(),
-                        CircularProgressIndicator(),
-                      ],
-                    );
-                  }
-                },
-              ),
-            ),
-            Container(child: _buildDayList())
-          ],
+          children: <Widget>[_buildOverview(), _buildDayList()],
         ),
       ),
+    );
+  }
+
+  Container _buildOverview() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5),
+      child: Consumer<TransactionBloc>(builder: (_, bloc, child) {
+        bloc.getMonthlyTransactions();
+        return StreamBuilder<TransactionList>(
+          stream: bloc.monthlyTransactions,
+          initialData: TransactionList(),
+          builder:
+              (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
+            if (snapshot.hasData) {
+              final displayValues = _calculateOverviewValues(snapshot.data);
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _overviewBox(
+                      "TODAY", displayValues['dayBudget'], false, () {}),
+                  _overviewBox(getMonthName(DateTime.now().month).toUpperCase(),
+                      displayValues['monthSpareBudget'], true, _onMonthTap),
+                ],
+              );
+            } else {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ],
+              );
+            }
+          },
+        );
+      }),
     );
   }
 
