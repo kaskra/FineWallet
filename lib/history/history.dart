@@ -15,69 +15,48 @@ import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class History extends StatefulWidget {
   History({this.onChangeSelectionMode});
 
-  final void Function(bool) onChangeSelectionMode;
-
   @override
   _HistoryState createState() => _HistoryState();
+
+  final void Function(bool) onChangeSelectionMode;
 }
 
 class _HistoryState extends State<History> {
-  TransactionBloc _txBloc = TransactionBloc(dayInMillis(DateTime.now()));
-
   Map<int, TransactionModel> _selectedItems = new Map();
   bool _selectionMode = false;
 
-  @override
-  Widget build(BuildContext context) {
-    _txBloc.update();
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        _selectionMode ? customAppBar() : Container(),
-        Expanded(
-          child: Container(
-            child: MediaQuery.removePadding(
-              context: context,
-              child: _buildBody(),
-              removeTop: true,
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget customAppBar() {
+  Widget _customAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: SelectionAppBar(
-        title: "FineWallet",
-        selectedItems: _selectedItems,
-        onClose: () => closeSelection(),
-        onEdit: () => editItem(),
-        onDelete: () => deleteItems(),
+      child: Consumer<TransactionBloc>(
+        builder: (_, bloc, child) => SelectionAppBar(
+          title: "FineWallet",
+          selectedItems: _selectedItems,
+          onClose: () => _closeSelection(),
+          onEdit: () => _editItem(),
+          onDelete: () => _deleteItems(bloc),
+        ),
       ),
     );
   }
 
-  void deleteItems() async {
+  void _deleteItems(TransactionBloc bloc) async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
       for (TransactionModel tx in _selectedItems.values) {
-        _txBloc.delete(tx.id);
+        bloc.delete(tx.id);
       }
-      closeSelection();
+      _closeSelection();
     }
   }
 
-  void editItem() {
+  void _editItem() {
     TransactionModel tx = _selectedItems.values.first;
     int isExpense = 0;
     String title = "Income";
@@ -90,10 +69,10 @@ class _HistoryState extends State<History> {
         context,
         MaterialPageRoute(
             builder: (context) => AddPage(title, isExpense, transaction: tx)));
-    closeSelection();
+    _closeSelection();
   }
 
-  void closeSelection() {
+  void _closeSelection() {
     setState(() {
       _selectedItems.clear();
       _selectionMode = false;
@@ -108,34 +87,40 @@ class _HistoryState extends State<History> {
   }
 
   Widget _buildBody() {
-    return StreamBuilder<TransactionList>(
-        stream: _txBloc.transactions,
-        builder:
-            (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
-          if (snapshot.hasData) {
-            List<List<Widget>> listOfLists = _buildLists(snapshot);
-            return ListView.builder(
-              padding: EdgeInsets.only(bottom: 50),
-              itemCount: listOfLists.length,
-              itemBuilder: (context, index) {
-                if (listOfLists[index].length > 0) {
-                  return StickyHeader(
-                    header: listOfLists[index][0],
-                    content: Column(
-                      children: listOfLists[index]
-                          .getRange(1, listOfLists[index].length)
-                          .toList(),
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              },
-            );
-          } else {
-            return Container();
-          }
-        });
+    return Consumer<TransactionBloc>(
+      builder: (_, bloc, child) {
+        bloc.updateAllTransactions();
+        return StreamBuilder<TransactionList>(
+          stream: bloc.allTransactions,
+          builder:
+              (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
+            if (snapshot.hasData) {
+              List<List<Widget>> listOfLists = _buildLists(snapshot);
+              return ListView.builder(
+                padding: EdgeInsets.only(bottom: 50),
+                itemCount: listOfLists.length,
+                itemBuilder: (context, index) {
+                  if (listOfLists[index].length > 0) {
+                    return StickyHeader(
+                      header: listOfLists[index][0],
+                      content: Column(
+                        children: listOfLists[index]
+                            .getRange(1, listOfLists[index].length)
+                            .toList(),
+                      ),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                },
+              );
+            } else {
+              return SizedBox();
+            }
+          },
+        );
+      },
+    );
   }
 
   List<List<Widget>> _buildLists(AsyncSnapshot<TransactionList> snapshot) {
@@ -159,23 +144,47 @@ class _HistoryState extends State<History> {
         isSelected: _selectedItems.containsKey(snapshot.data[i].id),
         isSelectionModeActive: _selectionMode,
         onSelect: (selected) {
-          if (selected) {
-            if (!_selectedItems.containsKey(snapshot.data[i].id)) {
-              _selectedItems.putIfAbsent(
-                  snapshot.data[i].id, () => snapshot.data[i]);
-              _selectionMode = true;
-            }
-          } else {
-            _selectedItems.remove(snapshot.data[i].id);
-            if (_selectedItems.isEmpty) {
-              _selectionMode = false;
-            }
-          }
+          _toggleSelectionMode(selected, snapshot.data[i]);
           _checkSelectionMode();
         },
       ));
     }
     listOfLists.add(l);
     return listOfLists;
+  }
+
+  void _toggleSelectionMode(bool selected, TransactionModel data) {
+    if (selected) {
+      if (!_selectedItems.containsKey(data.id)) {
+        _selectedItems.putIfAbsent(
+            data.id, () => data);
+        _selectionMode = true;
+      }
+    } else {
+      _selectedItems.remove(data.id);
+      if (_selectedItems.isEmpty) {
+        _selectionMode = false;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        _selectionMode ? _customAppBar() : Container(),
+        Expanded(
+          child: Container(
+            child: MediaQuery.removePadding(
+              context: context,
+              child: _buildBody(),
+              removeTop: true,
+            ),
+          ),
+        )
+      ],
+    );
   }
 }

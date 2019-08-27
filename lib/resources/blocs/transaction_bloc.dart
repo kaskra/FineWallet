@@ -10,44 +10,56 @@ import 'package:FineWallet/models/transaction_model.dart';
 import 'package:FineWallet/resources/db_provider.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/resources/transaction_provider.dart';
+import 'package:FineWallet/utils.dart';
 
 class TransactionBloc {
-  final _transactionController = StreamController<TransactionList>.broadcast();
+  TransactionBloc({int untilDay}) {
+    _untilDay = untilDay ?? dayInMillis(DateTime.now());
+    getAllTransactions();
+  }
 
   int _untilDay;
 
-  get transactions => _transactionController.stream;
+  final _allTransactionsController =
+      StreamController<TransactionList>.broadcast();
+  final _monthlyTransactionsController =
+      StreamController<TransactionList>.broadcast();
 
-  void update() {
-    getTransactions();
+  get allTransactions => _allTransactionsController.stream;
+
+  get monthlyTransactions => _monthlyTransactionsController.stream;
+
+  void updateAllTransactions() {
+    getAllTransactions();
   }
 
   void dispose() {
-    _transactionController.close();
+    _allTransactionsController.close();
+    _monthlyTransactionsController.close();
   }
 
-  getTransactions() async {
-    _transactionController.sink
+  getAllTransactions() async {
+    _allTransactionsController.sink
         .add(await TransactionsProvider.db.getAllTrans(_untilDay));
   }
 
-  TransactionBloc(int untilDay) {
-    _untilDay = untilDay;
-    getTransactions();
+  getMonthlyTransactions(int dateInMonth) async {
+    _monthlyTransactionsController.sink
+        .add(await TransactionsProvider.db.getTransactionsOfMonth(dateInMonth));
   }
 
   add(TransactionModel tx) {
     Provider.db.newTransaction(tx);
-    getTransactions();
+    getAllTransactions();
   }
 
   delete(int id) {
     Provider.db.deleteTransaction(id);
-    getTransactions();
+    getAllTransactions();
   }
 
   updateTransaction(TransactionModel tx) {
     Provider.db.updateTransaction(tx);
-    getTransactions();
+    getAllTransactions();
   }
 }

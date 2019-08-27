@@ -13,6 +13,7 @@ import 'package:FineWallet/history/history.dart';
 import 'package:FineWallet/models/month_model.dart';
 import 'package:FineWallet/models/transaction_model.dart';
 import 'package:FineWallet/profile/profile.dart';
+import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/db_initilization.dart';
 import 'package:FineWallet/resources/month_provider.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
@@ -24,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   // set mock values for testing/emulator
@@ -34,7 +36,17 @@ void main() {
     }
     return null;
   });
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider(
+          dispose: (context, bloc) => bloc.dispose(),
+          builder: (context) => TransactionBloc(),
+        )
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
