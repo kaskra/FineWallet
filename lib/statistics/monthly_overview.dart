@@ -6,13 +6,14 @@
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:FineWallet/resources/transaction_list.dart';
-import 'package:FineWallet/resources/transaction_provider.dart';
 import 'package:FineWallet/statistics/chart_data.dart';
 import 'package:FineWallet/statistics/chart_type.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 
 class MonthlyOverview extends StatefulWidget {
   MonthlyOverview({@required this.initialMonth, this.showAppBar: true});
@@ -221,41 +222,48 @@ class _MonthCardState extends State<MonthCard> {
   }
 
   Widget _buildChart() {
-    return FutureBuilder(
-      future: TransactionsProvider.db
-          .getTransactionsOfMonth(widget.month.millisecondsSinceEpoch),
-      builder: (context, AsyncSnapshot<TransactionList> snapshot) {
-        if (snapshot.hasData) {
-          List<DataPoint> dataPoints = generateDataPoints(snapshot);
-          return Column(
-            children: <Widget>[
-              SizedBox(
-                child: ExpenseIncomeChart(buildSeries(dataPoints), _type),
-                width: MediaQuery.of(context).size.width - 40,
-                height: 300,
-              ),
-              RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    _type = _type == ChartType.LINE
-                        ? ChartType.BAR
-                        : ChartType.LINE;
-                  });
-                  _savePrefs();
-                },
-                child: Text(
-                  "Switch",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSecondary),
+    return Consumer<TransactionBloc>(
+      builder: (_, bloc, child) {
+        bloc.getMonthlyTransactions(
+            dateInMonth: widget.month.millisecondsSinceEpoch);
+        return StreamBuilder(
+          stream: bloc.monthlyTransactions,
+          builder: (context, AsyncSnapshot<TransactionList> snapshot) {
+            if (snapshot.hasData) {
+              List<DataPoint> dataPoints = generateDataPoints(snapshot);
+              return Column(
+                children: <Widget>[
+                  SizedBox(
+                    child: ExpenseIncomeChart(buildSeries(dataPoints), _type),
+                    width: MediaQuery.of(context).size.width - 40,
+                    height: 300,
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        _type = _type == ChartType.LINE
+                            ? ChartType.BAR
+                            : ChartType.LINE;
+                      });
+                      _savePrefs();
+                    },
+                    child: Text(
+                      "Switch",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSecondary),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Center(
+                child: Center(
+                  child: CircularProgressIndicator(),
                 ),
-              ),
-            ],
-          );
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+              );
+            }
+          },
+        );
       },
     );
   }

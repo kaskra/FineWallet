@@ -4,12 +4,13 @@
  *
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
-import 'package:FineWallet/resources/transaction_provider.dart';
 import 'package:FineWallet/statistics/chart_data.dart';
 import 'package:FineWallet/utils.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SpendingPredictionChart extends StatefulWidget {
   SpendingPredictionChart({this.monthlyBudget = 0});
@@ -43,16 +44,21 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   }
 
   Widget _buildChart() {
-    return FutureBuilder(
-        future:
-            TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(_today)),
-        builder: (context, AsyncSnapshot<TransactionList> snapshot) {
-          if (snapshot.hasData) {
-            return PredictionChart.withTransactions(
-                _calcDataPoints(snapshot), widget.monthlyBudget);
-          }
-          return Center(child: CircularProgressIndicator());
-        });
+    return Consumer<TransactionBloc>(
+      builder: (_, bloc, child) {
+        bloc.getMonthlyTransactions();
+        return StreamBuilder(
+          stream: bloc.monthlyTransactions,
+          builder: (context, AsyncSnapshot<TransactionList> snapshot) {
+            if (snapshot.hasData) {
+              return PredictionChart.withTransactions(
+                  _calcDataPoints(snapshot), widget.monthlyBudget);
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        );
+      },
+    );
   }
 
   List<PredictionPoint> _calcDataPoints(

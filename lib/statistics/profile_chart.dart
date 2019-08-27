@@ -4,23 +4,23 @@
  *
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:FineWallet/models/category_model.dart';
 import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/category_list.dart';
 import 'package:FineWallet/resources/category_provider.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
-import 'package:FineWallet/resources/transaction_provider.dart';
 import 'package:FineWallet/statistics/chart_data.dart';
-import 'package:FineWallet/utils.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileChart extends StatefulWidget {
-  static const int MONTHLY_CHART = 1;
-  static const int LIFE_CHART = 2;
-
   ProfileChart({this.type = MONTHLY_CHART});
+
+  static const int LIFE_CHART = 2;
+  static const int MONTHLY_CHART = 1;
 
   final int type;
 
@@ -54,28 +54,36 @@ class _ProfileChartState extends State<ProfileChart> {
   }
 
   Widget _buildChart() {
-    Future<TransactionList> transactionFuture =
-        widget.type == ProfileChart.MONTHLY_CHART
-            ? TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(today))
-            : TransactionsProvider.db
-                .getAllTrans(dayInMillis(getLastDateOfMonth(today)));
+    return Consumer<TransactionBloc>(
+      builder: (_, bloc, child) {
+        Stream stream;
+        if (widget.type == ProfileChart.MONTHLY_CHART) {
+          bloc.getMonthlyTransactions();
+          stream = bloc.monthlyTransactions;
+        } else {
+          bloc.getAllTransactions();
+          stream = bloc.allTransactions;
+        }
 
-    return FutureBuilder(
-        future: transactionFuture,
-        builder: (context, AsyncSnapshot<TransactionList> snapshot) {
-          if (snapshot.hasData && categories != null) {
-            List<double> expenses = [];
-            for (int c in categories) {
-              double ex = snapshot.data
-                  .where((TransactionModel tx) => tx.category == c)
-                  .sumExpenses();
-              expenses.add(ex);
+        return StreamBuilder<TransactionList>(
+          stream: stream,
+          builder: (context, AsyncSnapshot<TransactionList> snapshot) {
+            if (snapshot.hasData && categories != null) {
+              List<double> expenses = [];
+              for (int c in categories) {
+                double ex = snapshot.data
+                    .where((TransactionModel tx) => tx.category == c)
+                    .sumExpenses();
+                expenses.add(ex);
+              }
+              return CircularProfileChart.withTransactions(
+                  expenses, categories, categoryNames);
             }
-            return CircularProfileChart.withTransactions(
-                expenses, categories, categoryNames);
-          }
-          return Center(child: CircularProgressIndicator());
-        });
+            return Center(child: CircularProgressIndicator());
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -89,9 +97,6 @@ class _ProfileChartState extends State<ProfileChart> {
 }
 
 class CircularProfileChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
-
   CircularProfileChart(this.seriesList, {this.animate});
 
   factory CircularProfileChart.withTransactions(
@@ -133,6 +138,9 @@ class CircularProfileChart extends StatelessWidget {
       animate: false,
     );
   }
+
+  final bool animate;
+  final List<charts.Series> seriesList;
 
   @override
   Widget build(BuildContext context) {
