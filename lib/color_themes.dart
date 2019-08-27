@@ -26,7 +26,7 @@ const _negBudget = Colors.red;
 const _overallBackground = Color(0xffd8e7ff);
 const _brightness = Brightness.light;
 
-final ThemeData normalTheme2 = ThemeData(
+final ThemeData standardTheme = ThemeData(
   primaryColor: _primary,
   primaryColorDark: _primary.shade700,
   textSelectionColor: _onBackground.withOpacity(0.15),

@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
-      theme: normalTheme2,
+      theme: standardTheme,
       home: MyHomePage(title: 'FineWallet'),
     );
   }
