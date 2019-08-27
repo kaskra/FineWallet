@@ -97,7 +97,7 @@ class _HistoryState extends State<History> {
             if (snapshot.hasData) {
               List<List<Widget>> listOfLists = _buildLists(snapshot);
               return ListView.builder(
-                padding: EdgeInsets.only(bottom: 50),
+                padding: const EdgeInsets.only(bottom: 50),
                 itemCount: listOfLists.length,
                 itemBuilder: (context, index) {
                   if (listOfLists[index].length > 0) {
@@ -110,12 +110,12 @@ class _HistoryState extends State<History> {
                       ),
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 },
               );
             } else {
-              return SizedBox();
+              return const SizedBox();
             }
           },
         );
