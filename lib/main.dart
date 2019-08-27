@@ -75,10 +75,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 4;
-  bool _showBottomBar = true;
-
-  double _monthlyMaxBudget = 0;
   bool _isSelectionModeActive = false;
+  double _monthlyMaxBudget = 0;
+  bool _showBottomBar = true;
 
   @override
   void initState() {
@@ -97,55 +96,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _overviewBox(String title, double amount, bool last, Function onTap) {
     return Expanded(
-        child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0),
-                color: Theme.of(context).primaryColor),
-            margin:
-                EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
-            child: Material(
-                color: Theme.of(context).colorScheme.primary,
-                child: InkWell(
-                  onTap: () => onTap(),
-                  child: Container(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              title,
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text(
-                            "Spare budget",
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 10,
-                            ),
-                          ),
-                          Text(
-                            "${amount.toStringAsFixed(2)}€",
-                            style: TextStyle(
-                                color: amount <= 0
-                                    ? Theme.of(context)
-                                        .accentTextTheme
-                                        .body1
-                                        .color
-                                    : Theme.of(context).colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )),
-                ))));
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(0),
+            color: Theme.of(context).primaryColor),
+        margin: EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
+        child: Material(
+          color: Theme.of(context).colorScheme.primary,
+          child: InkWell(
+            onTap: () => onTap(),
+            child: Container(
+                padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Text(
+                      "Spare budget",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 10,
+                      ),
+                    ),
+                    Text(
+                      "${amount.toStringAsFixed(2)}€",
+                      style: TextStyle(
+                          color: amount <= 0
+                              ? Theme.of(context).accentTextTheme.body1.color
+                              : Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                )),
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _day(int day, double budget) {
+  Widget _buildDay(int day, double budget) {
     bool isToday = (day == DateTime.now().weekday);
 
     return generalCard(
@@ -180,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
             : null);
   }
 
-  Widget _days() {
+  Widget _buildDayList() {
     return Consumer<TransactionBloc>(builder: (_, bloc, child) {
       bloc.getLastWeekTransactions();
       return StreamBuilder(
@@ -189,16 +186,18 @@ class _MyHomePageState extends State<MyHomePage> {
             (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
           if (snapshot.hasData) {
             return ListView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
               children: <Widget>[
                 for (SumOfTransactionModel m in snapshot.data)
-                  _day(m.date, m.amount.toDouble())
+                  _buildDay(m.date, m.amount.toDouble())
               ],
             );
           } else {
-            return CircularProgressIndicator();
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }
         },
       );
@@ -216,20 +215,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _onDayTap() {}
-
-
   // TODO rework... move logic into bloc
   Widget _buildBody() {
     _syncDatabase();
     return Center(
       child: Container(
-        constraints: BoxConstraints.expand(),
-        padding: EdgeInsets.all(5.0),
+        constraints: const BoxConstraints.expand(),
+        padding: const EdgeInsets.all(5.0),
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(bottom: 5),
+              margin: const EdgeInsets.only(bottom: 5),
               child: FutureBuilder<TransactionList>(
                 future: TransactionsProvider.db
                     .getTransactionsOfMonth(dayInMillis(DateTime.now())),
@@ -260,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _overviewBox("TODAY", budgetPerDay, false, _onDayTap),
+                        _overviewBox("TODAY", budgetPerDay, false, () {}),
                         _overviewBox(
                             getMonthName(DateTime.now().month).toUpperCase(),
                             displayedMonthlySpareBudget,
@@ -280,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             ),
-            Container(child: _days())
+            Container(child: _buildDayList())
           ],
         ),
       ),
