@@ -19,6 +19,7 @@ class DatabaseProvider {
   DatabaseProvider._();
 
   static final DatabaseProvider db = DatabaseProvider._();
+
   static const int VERSION = 3;
 
   Database _database;
@@ -128,6 +129,12 @@ class DatabaseProvider {
   updateTransaction(TransactionModel model) async {
     final db = await database;
     return db.update("transactions", model.toMap(),
+        where: "id = ?", whereArgs: [model.id]);
+  }
+
+  updateMonth(MonthModel model) async {
+    final db = await database;
+    return db.update("months", model.toMap(),
         where: "id = ?", whereArgs: [model.id]);
   }
 }
