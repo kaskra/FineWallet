@@ -135,4 +135,17 @@ class TransactionList extends ListBase<TransactionModel> {
   TransactionList where(bool Function(TransactionModel element) test) {
     return toTransactionList(super.where(test).toList());
   }
+
+  List<int> getRecordedMonthIds() {
+    List<int> ids = [];
+
+    l.forEach((x) {
+      int id = getMonthId(DateTime.fromMillisecondsSinceEpoch(x.date));
+      if (!ids.contains(id)) {
+        ids.add(id);
+      }
+    });
+
+    return ids;
+  }
 }

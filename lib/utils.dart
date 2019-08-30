@@ -4,6 +4,8 @@
  *
  */
 
+import 'package:FineWallet/resources/transaction_list.dart';
+
 int dayInMillis(DateTime time) {
   DateTime newDay = DateTime.utc(time.year, time.month, time.day, 12);
   return newDay.millisecondsSinceEpoch;
@@ -17,10 +19,18 @@ DateTime getFirstDateOfNextMonth(DateTime date) {
   return getLastDateOfMonth(date).add(Duration(days: 1, hours: 12));
 }
 
+int getFirstDateOfMonth(DateTime date) {
+  return dayInMillis(DateTime.utc(date.year, date.month, 1));
+}
+
 DateTime getLastDateOfMonth(DateTime date) {
   return (date.month < 12)
       ? new DateTime.utc(date.year, date.month + 1, 0)
       : new DateTime.utc(date.year + 1, 1, 0);
+}
+
+int getMonthId(DateTime time){
+  return getFirstDateOfMonth(time);
 }
 
 List<double> getListOfMonthDays(DateTime month) {
@@ -127,3 +137,27 @@ int isRecurrencePossible(
 
   return -1;
 }
+
+
+  List<int> getAllMonthIds(TransactionList list) {
+    List<int> ids = [];
+
+    void addToIdList(int id){
+      if (!ids.contains(id)) {
+        ids.add(id);
+      }
+    }
+    
+    DateTime current = DateTime.fromMillisecondsSinceEpoch(list.last.date);
+    addToIdList(getMonthId(current));
+    DateTime last = DateTime.fromMillisecondsSinceEpoch(list.first.date);
+    addToIdList(getMonthId(last));
+
+    while(current.isBefore(last)){
+      int id = getMonthId(current);
+      addToIdList(id);
+      current = getFirstDateOfNextMonth(current);
+    }
+
+    return ids;
+  }

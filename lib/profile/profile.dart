@@ -4,9 +4,11 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:FineWallet/general/general_widgets.dart';
 import 'package:FineWallet/models/month_model.dart';
-import 'package:FineWallet/resources/db_provider.dart';
+import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/month_provider.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/resources/transaction_provider.dart';
@@ -15,6 +17,7 @@ import 'package:FineWallet/statistics/spending_prediction_chart.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({this.showAppBar: true});
@@ -53,13 +56,18 @@ class _ProfilePageState extends State<ProfilePage> {
   void dispose() {
     super.dispose();
     _textEditingController.dispose();
-    _updateDatabase();
   }
 
-  void _updateDatabase() async {
-    print("Update month in database!");
+  void deactivate(){
+    super.deactivate();
+    _onLeavingPage();
+  }
+
+  Future<bool> _onLeavingPage() async {
+    print("Update current month in database!");
     _currentMonth.currentMaxBudget = _currentMaxMonthlyBudget;
-    await MonthProvider.db.updateMonth(_currentMonth);
+    Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
+    return true;
   }
 
   void _syncDatabase() async {
@@ -67,14 +75,10 @@ class _ProfilePageState extends State<ProfilePage> {
         .getTransactionsOfMonth(dayInMillis(_today));
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
-    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
-
-    await checkCurrentMonth(currentMonth, allMonths);
-
-    await checkAllPreviousMonths(currentMonth, allMonths);
 
     allMonths = await MonthProvider.db.getAllRecordedMonths();
 
+    // TODO update savings with bloc too
     double allSavings =
         allMonths.fold(0.0, (prev, next) => prev + next.savings);
     setState(() {
@@ -85,65 +89,8 @@ class _ProfilePageState extends State<ProfilePage> {
     _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
   }
 
-  Future checkAllPreviousMonths(
-      MonthModel currentMonth, List<MonthModel> all) async {
-    MonthModel firstRecordedMonth = all.first;
-    DateTime date =
-        DateTime.fromMillisecondsSinceEpoch(firstRecordedMonth.firstDayOfMonth);
-    DateTime currentMonthDate =
-        DateTime.fromMillisecondsSinceEpoch(currentMonth.firstDayOfMonth);
-
-    while (date.isBefore(currentMonthDate)) {
-      if (all
-              .where((MonthModel m) =>
-                  m.firstDayOfMonth == date.millisecondsSinceEpoch)
-              .length ==
-          0) {
-        MonthModel month = new MonthModel(
-          monthlyExpenses: 0,
-          savings: 0,
-          currentMaxBudget: 0,
-          firstDayOfMonth: date.millisecondsSinceEpoch,
-        );
-        await DatabaseProvider.db.newMonth(month);
-      } else {
-        MonthModel m = all.firstWhere((MonthModel month) =>
-            month.firstDayOfMonth == date.millisecondsSinceEpoch);
-        TransactionList prevMonthlyTransactions = await TransactionsProvider.db
-            .getTransactionsOfMonth(m.firstDayOfMonth);
-        m.monthlyExpenses = prevMonthlyTransactions.sumExpenses();
-        m.savings = prevMonthlyTransactions.sumIncomes() - m.monthlyExpenses;
-        MonthProvider.db.updateMonth(m);
-      }
-
-      date = getFirstDateOfNextMonth(date);
-    }
-  }
-
-  Future checkCurrentMonth(
-      MonthModel currentMonth, List<MonthModel> allMonths) async {
-    if (currentMonth == null) {
-      if (allMonths.length > 0) {
-        MonthModel prevMonth = allMonths.last;
-        TransactionList prevMonthlyTransactions = await TransactionsProvider.db
-            .getTransactionsOfMonth(prevMonth.firstDayOfMonth);
-        prevMonth.monthlyExpenses = prevMonthlyTransactions.sumExpenses();
-        prevMonth.savings =
-            prevMonthlyTransactions.sumIncomes() - prevMonth.monthlyExpenses;
-        MonthProvider.db.updateMonth(prevMonth);
-      }
-      MonthModel month = new MonthModel(
-        monthlyExpenses: 0,
-        savings: 0,
-        currentMaxBudget: 0,
-        firstDayOfMonth: dayInMillis(DateTime(_today.year, _today.month, 1)),
-      );
-      await DatabaseProvider.db.newMonth(month);
-    }
-  }
-
   Widget _toScreenWidth(Widget child) => Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 5),
         width: MediaQuery.of(context).size.width,
         child: child,
       );
@@ -155,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
           alignment: Alignment.topCenter,
           child: Text(
             "Monthly available budget",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         Align(
@@ -179,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Text(
                   "€ ",
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 Expanded(
                     child: TextField(
@@ -203,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
           alignment: Alignment.center,
           child: Text(
               "Expected savings: ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
-              style: TextStyle(fontSize: 14)),
+              style: const TextStyle(fontSize: 14)),
         )
       ],
     );
@@ -234,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Container(
               height: 200,
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: _showPrediction
                   ? SpendingPredictionChart(
                       monthlyBudget: _currentMaxMonthlyBudget,
@@ -251,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
               !_showPrediction
                   ? InkWell(
                       child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Icon(
                             Icons.repeat,
                             size: 16,
@@ -266,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                     )
                   : Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Icon(
                         Icons.repeat,
                         size: 16,
@@ -274,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       )),
               InkWell(
                   child: Container(
-                    margin: EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(5),
                     child: Icon(
                       Icons.show_chart,
                       size: 16,
@@ -328,7 +275,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Color(0xffd8e7ff),
+      backgroundColor: const Color(0xffd8e7ff),
       resizeToAvoidBottomInset: true,
       appBar: widget.showAppBar
           ? AppBar(
@@ -350,7 +297,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           behavior: HitTestBehavior.translucent,
           child: Container(
-            padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+            padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
             child: _buildBody(),
           ),
         ),
