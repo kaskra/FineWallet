@@ -17,7 +17,6 @@ import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/category_list.dart';
 import 'package:FineWallet/resources/category_provider.dart';
-import 'package:FineWallet/resources/db_provider.dart';
 import 'package:FineWallet/resources/internal_data.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/resources/transaction_provider.dart';
