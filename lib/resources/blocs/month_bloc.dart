@@ -57,11 +57,6 @@ class MonthBloc {
     
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
     List<int> recordedMonthIds = allMonths.map((m) => m.firstDayOfMonth).toList();
-    
-    
-    print("ids: $ids");
-    print("recorded ids: $recordedMonthIds");
-    allMonths.forEach((m) => print(m.toMap()));
 
     for (int i in ids){
       if (recordedMonthIds.contains(i)){
@@ -84,10 +79,7 @@ class MonthBloc {
     // Reset every month that has no transactions left
     // TODO integrate above?
     allMonths.removeWhere((month) => ids.contains(month.firstDayOfMonth));
-    print(allMonths);
-
     for (MonthModel m in allMonths) {
-      print(m.id);
       m.reset();
       MonthProvider.db.updateMonth(m);
     }
