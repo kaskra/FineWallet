@@ -62,7 +62,7 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
 
   Widget _buildCloseAction() {
     return Padding(
-      padding: EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.only(left: 15),
       child: GestureDetector(
         onTap: () {
           if (widget.onClose != null) {
@@ -77,7 +77,7 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
   Widget _buildEditAction(Map<int, TransactionModel> selectedItems) {
     return selectedItems.length == 1
         ? Padding(
-            padding: EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
               onTap: () {
                 if (widget.onEdit != null) {
@@ -95,7 +95,7 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
 
   Widget _buildDeleteAction() {
     return Padding(
-      padding: EdgeInsets.only(right: 15),
+      padding: const EdgeInsets.only(right: 15),
       child: GestureDetector(
         onTap: () {
           if (widget.onDelete != null) {

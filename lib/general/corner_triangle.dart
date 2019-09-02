@@ -86,7 +86,7 @@ class CornerTriangle extends StatelessWidget {
             child: child,
           ),
           Container(
-            padding: EdgeInsets.all(2),
+            padding: const EdgeInsets.all(2),
             alignment: Alignment(iconSide, -1),
             child: Icon(
               icon.data,

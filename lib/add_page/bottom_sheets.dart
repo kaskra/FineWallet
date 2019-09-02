@@ -85,7 +85,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                     : Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
-              margin: EdgeInsets.all(6),
+              margin: const EdgeInsets.all(6),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

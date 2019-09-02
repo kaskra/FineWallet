@@ -105,7 +105,7 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
     }
   }
 
-  Widget _test() {
+  Widget _buildSlider() {
     return FittedBox(
         child: Container(
       width: _width,
@@ -170,6 +170,6 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
 
   @override
   Widget build(BuildContext context) {
-    return _test();
+    return _buildSlider();
   }
 }

@@ -101,21 +101,9 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
       );
     });
 
-    if (widget.isVisible != null) {
-      if (widget.isVisible) {
-        return BottomAppBar(
-          elevation: 20,
-          shape: CircularNotchedRectangle(),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: items,
-          ),
-        );
-      }
-    }
     return BottomAppBar(
       elevation: 20,
+      shape: widget.isVisible? CircularNotchedRectangle() : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,

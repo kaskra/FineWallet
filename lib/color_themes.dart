@@ -40,7 +40,7 @@ final ThemeData standardTheme = ThemeData(
   ),
   iconTheme: IconThemeData(color: _onMainColor),
   accentTextTheme: TextTheme(body1: TextStyle(color: _negBudget)),
-  scaffoldBackgroundColor: _overallBackground, //// Colors.white,
+  scaffoldBackgroundColor: _overallBackground, // Colors.white,
   canvasColor: _background,
   colorScheme: ColorScheme(
     primary: _primary,
