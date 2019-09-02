@@ -39,13 +39,13 @@ class _HistoryState extends State<History> {
           title: "FineWallet",
           selectedItems: _selectedItems,
           onClose: () => _closeSelection(),
-          onEdit: () => _editItem(),
+        onEdit: () => _editItem(_selectedItems.values.first),
           onDelete: () => _deleteItems(),
         ),
-
     );
   }
 
+  /// Delete the selected items from database. Close selection mode afterwards.
   void _deleteItems() async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
@@ -57,15 +57,10 @@ class _HistoryState extends State<History> {
     }
   }
 
-  void _editItem() {
-    TransactionModel tx = _selectedItems.values.first;
-    int isExpense = 0;
-    String title = "Income";
-
-    if (tx.isExpense == 1) {
-      isExpense = 1;
-      title = "Expense";
-    }
+  /// Edit an item on the add page. Close selection mode afterwards.
+  void _editItem(TransactionModel tx) {
+    int isExpense = tx.isExpense;
+    String title = tx.isExpense == 1 ? "Expense" : "Income";
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -73,6 +68,7 @@ class _HistoryState extends State<History> {
     _closeSelection();
   }
 
+  /// Closes selection mode and clears the selected items list.
   void _closeSelection() {
     setState(() {
       _selectedItems.clear();
@@ -81,6 +77,10 @@ class _HistoryState extends State<History> {
     _checkSelectionMode();
   }
 
+  /// Execute the passed function when the selection mode changes.
+  ///
+  /// The selection mode gets activated when some history item is pressed for a longer time.
+  /// In selection mode the displayed app bar changes to the selection app bar.
   void _checkSelectionMode() async {
     if (widget.onChangeSelectionMode != null) {
       widget.onChangeSelectionMode(_selectionMode);
