@@ -42,11 +42,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void initState() {
     super.initState();
-    _loadCurrentMonth();
     _textEditingController = TextEditingController(
         text: _currentMaxMonthlyBudget.toStringAsFixed(2));
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadCurrentMonth();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _textEditingController.dispose();
@@ -58,7 +64,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<bool> _onLeavingPage() async {
-    print("Update current month in database!");
     _currentMonth?.currentMaxBudget = _currentMaxMonthlyBudget;
     Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
     return true;
@@ -75,6 +80,19 @@ class _ProfilePageState extends State<ProfilePage> {
     });
 
     _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
+  }
+
+  void _setMaxMonthlyBudget(double value) {
+    setState(() {
+      if (value >= _overallMaxBudget) {
+        value = _overallMaxBudget;
+      } else if (value < 0) {
+        value = 0;
+      }
+
+      _currentMaxMonthlyBudget = value;
+      _textEditingController.text = value.toStringAsFixed(2);
+    });
   }
 
   Widget _toScreenWidth(Widget child) => Container(
@@ -142,19 +160,6 @@ class _ProfilePageState extends State<ProfilePage> {
         )
       ],
     );
-  }
-
-  void _setMaxMonthlyBudget(double value) {
-    setState(() {
-      if (value >= _overallMaxBudget) {
-        value = _overallMaxBudget;
-      } else if (value < 0) {
-        value = 0;
-      }
-
-      _currentMaxMonthlyBudget = value;
-      _textEditingController.text = value.toStringAsFixed(2);
-    });
   }
 
   Widget _categoryBox() {
@@ -238,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Consumer<MonthBloc>(builder: (_, bloc, __) {
           bloc.getSavings();
           return StreamBuilder<double>(
-            initialData: 0,
+              initialData: 0,
               stream: bloc.savings,
               builder: (context, snapshot) {
                 return Text(
