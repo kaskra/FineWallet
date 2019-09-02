@@ -142,6 +142,7 @@ class PredictionChart extends StatelessWidget {
     );
   }
 
+  // TODO add more points in between for smoother color movement
   @override
   Widget build(BuildContext context) {
     return new charts.LineChart(seriesList,
@@ -159,7 +160,6 @@ class PredictionChart extends StatelessWidget {
           charts.TickSpec<int>(30),
         ])),
         primaryMeasureAxis: charts.NumericAxisSpec(
-          //          renderSpec: charts.SmallTickRendererSpec(labelOffsetFromTickPx: 0), // TODO
           renderSpec: charts.GridlineRendererSpec(
               lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
         ));

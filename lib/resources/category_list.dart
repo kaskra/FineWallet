@@ -36,4 +36,13 @@ class CategoryList extends ListBase<CategoryModel> {
   CategoryList where(bool Function(CategoryModel element) test) {
     return toCategoryList(super.where(test).toList());
   }
+
+  List<int> ids(){
+    return super.map((c) => c.id).toList();
+  }
+
+  List<String> names() {
+    return super.map((c) => c.name).toList();
+  }
+
 }

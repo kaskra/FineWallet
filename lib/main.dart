@@ -13,6 +13,7 @@ import 'package:FineWallet/history/history.dart';
 import 'package:FineWallet/models/month_model.dart';
 import 'package:FineWallet/models/transaction_model.dart';
 import 'package:FineWallet/profile/profile.dart';
+import 'package:FineWallet/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/db_initilization.dart';
@@ -46,6 +47,10 @@ void main() {
         Provider(
           dispose: (context, bloc) => bloc.dispose(),
           builder: (context) => MonthBloc(),
+        ),
+        Provider(
+          dispose: (context, bloc) => bloc.dispose(),
+          builder: (context) => CategoryBloc(),
         ),
       ],
       child: MyApp(),

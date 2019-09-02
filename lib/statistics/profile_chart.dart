@@ -6,6 +6,7 @@
 
 import 'package:FineWallet/models/category_model.dart';
 import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/category_list.dart';
 import 'package:FineWallet/resources/category_provider.dart';
@@ -29,68 +30,70 @@ class ProfileChart extends StatefulWidget {
 }
 
 class _ProfileChartState extends State<ProfileChart> {
-  List<int> categories;
-  List<String> categoryNames;
   DateTime today;
 
   @override
   void initState() {
     super.initState();
-    _getCategories();
-    DateTime now = DateTime.now();
-    setState(() {
-      today = DateTime.utc(now.year, now.month, now.day);
-    });
   }
 
-  void _getCategories() async {
-    CategoryList cate =
-        await CategoryProvider.db.getAllCategories(isExpense: true);
-    setState(() {
-      categories = cate.map((CategoryModel category) => category.id).toList();
-      categoryNames =
-          cate.map((CategoryModel category) => category.name).toList();
-    });
-  }
+  Widget _buildChartByType() {
+    return Consumer2<TransactionBloc, CategoryBloc>(
+      builder: (_, transactionBloc, categoryBloc, child) {
+        categoryBloc.getCategories(true);
 
-  Widget _buildChart() {
-    return Consumer<TransactionBloc>(
-      builder: (_, bloc, child) {
         Stream stream;
         if (widget.type == ProfileChart.MONTHLY_CHART) {
-          bloc.getMonthlyTransactions();
-          stream = bloc.monthlyTransactions;
+          transactionBloc.getMonthlyTransactions();
+          stream = transactionBloc.monthlyTransactions;
         } else {
-          bloc.getAllTransactions();
-          stream = bloc.allTransactions;
+          transactionBloc.getAllTransactions();
+          stream = transactionBloc.allTransactions;
         }
-
-        return StreamBuilder<TransactionList>(
-          stream: stream,
-          builder: (context, AsyncSnapshot<TransactionList> snapshot) {
-            if (snapshot.hasData && categories != null) {
-              List<double> expenses = [];
-              for (int c in categories) {
-                double ex = snapshot.data
-                    .where((TransactionModel tx) => tx.category == c)
-                    .sumExpenses();
-                expenses.add(ex);
-              }
-              return CircularProfileChart.withTransactions(
-                  expenses, categories, categoryNames);
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        );
+        return _addCategories(categoryBloc, stream);
       },
     );
+  }
+
+  StreamBuilder<CategoryList> _addCategories(CategoryBloc categoryBloc, Stream stream) {
+    return StreamBuilder<CategoryList>(
+      stream: categoryBloc.allCategories,
+      builder: (context, AsyncSnapshot<CategoryList> categorySnapshot) {
+        if (categorySnapshot.hasData) {
+          return _addTransactions(stream, categorySnapshot);
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  StreamBuilder<TransactionList> _addTransactions(
+      Stream stream, AsyncSnapshot<CategoryList> categorySnapshot) {
+    return StreamBuilder<TransactionList>(
+      stream: stream,
+      builder: (context, AsyncSnapshot<TransactionList> transactionSnapshot) {
+        return _buildChart(transactionSnapshot, categorySnapshot);
+      },
+    );
+  }
+
+  Widget _buildChart(AsyncSnapshot<TransactionList> transactionSnapshot, AsyncSnapshot<CategoryList> categorySnapshot) {
+    if (transactionSnapshot.hasData && categorySnapshot.data.ids() != null) {
+      List<double> expenses = [
+        for (int c in categorySnapshot.data.ids()) transactionSnapshot.data.byCategory(c).sumExpenses()
+      ];
+      return CircularProfileChart.withTransactions(expenses,
+          categorySnapshot.data.ids(), categorySnapshot.data.names());
+    }
+    return Center(child: CircularProgressIndicator());
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: _buildChart(),
+        child: _buildChartByType(),
       ),
     );
   }
