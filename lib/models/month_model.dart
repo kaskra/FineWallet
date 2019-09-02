@@ -40,6 +40,12 @@ class MonthModel {
         monthlyExpenses: json["monthlyExpenses"],
       );
 
+  reset() {
+    currentMaxBudget = 0;
+    savings = 0;
+    monthlyExpenses = 0;
+  }
+
   Map<String, dynamic> toMap() => {
         "id": id,
         "savings": savings,

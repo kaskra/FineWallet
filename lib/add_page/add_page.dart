@@ -13,6 +13,7 @@ import 'package:FineWallet/datatypes/repeat_type.dart';
 import 'package:FineWallet/general/corner_triangle.dart';
 import 'package:FineWallet/general/general_widgets.dart';
 import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/category_list.dart';
 import 'package:FineWallet/resources/category_provider.dart';
@@ -524,8 +525,9 @@ class _AddPageState extends State<AddPage> {
               tx.id = _editTxId;
               Provider.of<TransactionBloc>(context).updateTransaction(tx);
             } else {
-              DatabaseProvider.db.newTransaction(tx);
+              DatabaseProvider.db.newTransaction(tx); // TODO bloc
             }
+            Provider.of<MonthBloc>(context).syncMonths();
             Navigator.pop(context);
           } else {
             return _showSnackBar(context);

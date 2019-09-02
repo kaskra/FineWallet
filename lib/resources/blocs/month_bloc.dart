@@ -14,14 +14,18 @@ class MonthBloc {
 
   final _allMonthController = StreamController<List<MonthModel>>.broadcast();
   final _currentMonthController = StreamController<MonthModel>.broadcast();
+  final _savingsController = StreamController<double>.broadcast();
 
   get currentMonth => _currentMonthController.stream;
 
   get allMonths => _allMonthController.stream;
 
+  get savings => _savingsController.stream;
+
   void dispose() {
     _currentMonthController.close();
     _allMonthController.close();
+    _savingsController.close();
   }
 
   getCurrentMonth() async {
@@ -32,16 +36,19 @@ class MonthBloc {
     _allMonthController.sink.add(await MonthProvider.db.getAllRecordedMonths());
   }
 
+  getSavings() async {
+    double x = await MonthProvider.db.getAllSavings();
+    _savingsController.sink.add(x);
+  }
+
   add(MonthModel month) {
     DatabaseProvider.db.newMonth(month);
-    getCurrentMonth();
-    getMonths();
+    syncMonths();
   }
 
   updateMonth(MonthModel month) {
     DatabaseProvider.db.updateMonth(month);
-    getCurrentMonth();
-    getMonths();
+    syncMonths();
   }
 
   syncMonths() async {
@@ -50,6 +57,11 @@ class MonthBloc {
     
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
     List<int> recordedMonthIds = allMonths.map((m) => m.firstDayOfMonth).toList();
+    
+    
+    print("ids: $ids");
+    print("recorded ids: $recordedMonthIds");
+    allMonths.forEach((m) => print(m.toMap()));
 
     for (int i in ids){
       if (recordedMonthIds.contains(i)){
@@ -69,7 +81,20 @@ class MonthBloc {
       }
     }
 
+    // Reset every month that has no transactions left
+    // TODO integrate above?
+    allMonths.removeWhere((month) => ids.contains(month.firstDayOfMonth));
+    print(allMonths);
+
+    for (MonthModel m in allMonths) {
+      print(m.id);
+      m.reset();
+      MonthProvider.db.updateMonth(m);
+    }
+
+
     getCurrentMonth();
     getMonths();
+    getSavings();
   }
 }

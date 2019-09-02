@@ -11,6 +11,7 @@ import 'package:FineWallet/history/date_separator.dart';
 import 'package:FineWallet/history/history_item.dart';
 import 'package:FineWallet/models/transaction_model.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,23 +35,23 @@ class _HistoryState extends State<History> {
   Widget _customAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: Consumer<TransactionBloc>(
-        builder: (_, bloc, child) => SelectionAppBar(
+      child: SelectionAppBar(
           title: "FineWallet",
           selectedItems: _selectedItems,
           onClose: () => _closeSelection(),
           onEdit: () => _editItem(),
-          onDelete: () => _deleteItems(bloc),
+          onDelete: () => _deleteItems(),
         ),
-      ),
+
     );
   }
 
-  void _deleteItems(TransactionBloc bloc) async {
+  void _deleteItems() async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
       for (TransactionModel tx in _selectedItems.values) {
-        bloc.delete(tx.id);
+        Provider.of<TransactionBloc>(context).delete(tx.id);
+        Provider.of<MonthBloc>(context).syncMonths();
       }
       _closeSelection();
     }

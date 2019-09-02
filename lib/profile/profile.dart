@@ -31,12 +31,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  double _currentMaxMonthlyBudget = 0;
   TextEditingController _textEditingController = TextEditingController();
-  DateTime _today;
 
+  double _currentMaxMonthlyBudget = 0;
   double _overallMaxBudget = 0;
-  double _savings = 0;
   MonthModel _currentMonth;
 
   int _chartType = ProfileChart.MONTHLY_CHART;
@@ -44,11 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
-    setState(() {
-      _today = DateTime.utc(now.year, now.month, now.day);
-    });
-    _syncDatabase();
+    _loadCurrentMonth();
     _textEditingController = TextEditingController(
         text: _currentMaxMonthlyBudget.toStringAsFixed(2));
   }
@@ -58,34 +52,28 @@ class _ProfilePageState extends State<ProfilePage> {
     _textEditingController.dispose();
   }
 
-  void deactivate(){
+  void deactivate() {
     super.deactivate();
     _onLeavingPage();
   }
 
   Future<bool> _onLeavingPage() async {
     print("Update current month in database!");
-    _currentMonth.currentMaxBudget = _currentMaxMonthlyBudget;
+    _currentMonth?.currentMaxBudget = _currentMaxMonthlyBudget;
     Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
     return true;
   }
 
-  void _syncDatabase() async {
+  void _loadCurrentMonth() async {
     TransactionList monthlyTransactions = await TransactionsProvider.db
-        .getTransactionsOfMonth(dayInMillis(_today));
+        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 
-    List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
-
-    allMonths = await MonthProvider.db.getAllRecordedMonths();
-
-    // TODO update savings with bloc too
-    double allSavings =
-        allMonths.fold(0.0, (prev, next) => prev + next.savings);
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
-      _savings = allSavings;
-      _currentMonth = allMonths.last;
+      _currentMonth = currentMonth;
     });
+
     _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
   }
 
@@ -247,11 +235,20 @@ class _ProfilePageState extends State<ProfilePage> {
           "Savings",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        Text("${_savings.toStringAsFixed(2)}€",
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primaryVariant))
+        Consumer<MonthBloc>(builder: (_, bloc, __) {
+          bloc.getSavings();
+          return StreamBuilder<double>(
+            initialData: 0,
+              stream: bloc.savings,
+              builder: (context, snapshot) {
+                return Text(
+                    "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}€",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primaryVariant));
+              });
+        })
       ],
     );
   }

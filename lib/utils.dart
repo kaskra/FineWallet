@@ -142,6 +142,8 @@ int isRecurrencePossible(
   List<int> getAllMonthIds(TransactionList list) {
     List<int> ids = [];
 
+    if (list.isEmpty) return [];
+
     void addToIdList(int id){
       if (!ids.contains(id)) {
         ids.add(id);

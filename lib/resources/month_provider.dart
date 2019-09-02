@@ -52,6 +52,16 @@ class MonthProvider {
     return await getMonth(DateTime.now());
   }
 
+  Future<double> getAllSavings() async {
+    var db = await DatabaseProvider.db.database;
+    int id = utils.getMonthId(DateTime.now());
+    List<Map<String, dynamic>> res = await db.rawQuery("SELECT SUM(savings) AS allSavings FROM MONTHS WHERE firstOfMonth != $id");
+    if (res.isEmpty) return 0;
+    double savings = res.first["allSavings"];
+    return savings;
+
+  }
+
   updateCurrentMonth(
       num currentMaxBudget, num savings, num monthlyExpenses) async {
     MonthModel monthEntity = MonthModel(
