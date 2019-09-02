@@ -292,8 +292,8 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  void _showSnackBar(BuildContext context, [String text]) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+  void _showMissingValueSnackBar(BuildContext context, [String text]) {
+    _scaffoldKey.currentState?.showSnackBar(SnackBar(
       content: Text(text ?? "Please fill out every panel!"),
     ));
   }
@@ -335,8 +335,8 @@ class _AddPageState extends State<AddPage> {
                   ),
                   growAnimation(
                       Container(
-                        margin:
-                            const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        margin: const EdgeInsets.only(
+                            left: 10, right: 10, bottom: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           mainAxisSize: MainAxisSize.max,
@@ -485,7 +485,12 @@ class _AddPageState extends State<AddPage> {
           _buildRecurringCard()
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: buildFloatingActionButton(context),
+    );
+  }
+
+  FloatingActionButton buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton.extended(
         label: Text("SAVE",
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSecondary,
@@ -501,13 +506,13 @@ class _AddPageState extends State<AddPage> {
               _typeIndex != null) {
             if (_repeatUntil != null) {
               if (_repeatUntil.isBefore(_date))
-                return _showSnackBar(context,
+                return _showMissingValueSnackBar(context,
                     "Please choose a date that is after the current date.");
 
               if (isRecurrencePossible(dayInMillis(_date),
                       dayInMillis(_repeatUntil), _typeIndex) ==
                   -1)
-                return _showSnackBar(context,
+                return _showMissingValueSnackBar(context,
                     "Your recurrence type does not fit inside the time frame.");
             }
 
@@ -525,15 +530,13 @@ class _AddPageState extends State<AddPage> {
               tx.id = _editTxId;
               Provider.of<TransactionBloc>(context).updateTransaction(tx);
             } else {
-              DatabaseProvider.db.newTransaction(tx); // TODO bloc
+              Provider.of<TransactionBloc>(context).add(tx);
             }
             Provider.of<MonthBloc>(context).syncMonths();
             Navigator.pop(context);
           } else {
-            return _showSnackBar(context);
+            return _showMissingValueSnackBar(context);
           }
-        },
-      ),
-    );
+        });
   }
 }
