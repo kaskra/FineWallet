@@ -164,9 +164,9 @@ class _MyHomePageState extends State<MyHomePage> {
         initialMonth: DateTime.now(),
         showAppBar: false,
       ),
-      Container(),
+      const SizedBox(),
       _buildHistory(),
-      OverviewPage()
+      const OverviewPage()
     ];
 
     return Scaffold(
