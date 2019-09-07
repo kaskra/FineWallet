@@ -160,10 +160,16 @@ class _MyHomePageState extends State<MyHomePage> {
       ProfilePage(
         showAppBar: false,
       ),
-      MonthlyOverview(
-        initialMonth: DateTime.now(),
-        showAppBar: false,
-      ),
+      const SizedBox(child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(50.0),
+          child: Text("Wird noch überarbeitet, liebe Bille :P"),
+        ),
+      ),),
+      // MonthlyOverview(
+      //   initialMonth: DateTime.now(),
+      //   showAppBar: false,
+      // ),
       const SizedBox(),
       _buildHistory(),
       const OverviewPage()
