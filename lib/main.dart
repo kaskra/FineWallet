@@ -7,17 +7,15 @@
 import 'package:FineWallet/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/general/bottom_bar_app_item.dart';
-import 'package:FineWallet/general/general_widgets.dart';
 import 'package:FineWallet/general/sliding_fab_menu.dart';
 import 'package:FineWallet/history/history.dart';
-import 'package:FineWallet/models/transaction_model.dart';
+import 'package:FineWallet/overview_page/overview.dart';
 import 'package:FineWallet/profile/profile.dart';
 import 'package:FineWallet/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/db_initilization.dart';
 import 'package:FineWallet/statistics/monthly_overview.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -88,179 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     initDB();
-  }
-
-  Widget _overviewBox(String title, double amount, bool last, Function onTap) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(0),
-            color: Theme.of(context).primaryColor),
-        margin: EdgeInsets.only(right: last ? 4 : 2.5, left: last ? 2.5 : 4),
-        child: Material(
-          color: Theme.of(context).colorScheme.primary,
-          child: InkWell(
-            onTap: () => onTap(),
-            child: Container(
-                padding: EdgeInsets.fromLTRB(5, 5, 5, 15),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Text(
-                      "Spare budget",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontSize: 10,
-                      ),
-                    ),
-                    Text(
-                      "${amount.toStringAsFixed(2)}€",
-                      style: TextStyle(
-                          color: amount <= 0
-                              ? Theme.of(context).accentTextTheme.body1.color
-                              : Theme.of(context).colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                )),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDay(int day, double budget) {
-    bool isToday = (day == DateTime.now().weekday);
-
-    return generalCard(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            isToday
-                ? Text("Today",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontWeight: FontWeight.bold))
-                : Text(getDayName(day),
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface)),
-            Expanded(
-                child: Container(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "${(budget > 0) ? "-" : ""}${budget.toStringAsFixed(2)}€",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-            ))
-          ],
-        ),
-        decoration: isToday
-            ? BoxDecoration(
-                border: Border.all(
-                    width: 2, color: Theme.of(context).colorScheme.secondary))
-            : null);
-  }
-
-  Widget _buildDayList() {
-    return Container(
-      child: Consumer<TransactionBloc>(builder: (_, bloc, child) {
-        bloc.getLastWeekTransactions();
-        return StreamBuilder(
-          stream: bloc.lastWeekTransactions,
-          builder:
-              (context, AsyncSnapshot<List<SumOfTransactionModel>> snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  for (SumOfTransactionModel m in snapshot.data)
-                    _buildDay(m.date, m.amount.toDouble())
-                ],
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        );
-      }),
-    );
-  }
-
-  void _onMonthTap() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MonthlyOverview(
-          initialMonth: DateTime.now(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBody() {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints.expand(),
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          children: <Widget>[_buildOverview(), _buildDayList()],
-        ),
-      ),
-    );
-  }
-
-  Container _buildOverview() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 5),
-      child: Consumer<MonthBloc>(builder: (_, bloc, child) {
-        bloc.getBudgetOverview();
-        return StreamBuilder<Map<String, double>>(
-          stream: bloc.budgetOverview,
-          builder: (BuildContext context,
-              AsyncSnapshot<Map<String, double>> snapshot) {
-            if (snapshot.hasData) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _overviewBox(
-                      "TODAY", snapshot.data['dayBudget'], false, () {}),
-                  _overviewBox(getMonthName(DateTime.now().month).toUpperCase(),
-                      snapshot.data['monthSpareBudget'], true, _onMonthTap),
-                ],
-              );
-            } else {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ],
-              );
-            }
-          },
-        );
-      }),
-    );
   }
 
   Widget _buildBottomBar() {
@@ -341,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       Container(),
       _buildHistory(),
-      _buildBody(),
+      OverviewPage()
     ];
 
     return Scaffold(
