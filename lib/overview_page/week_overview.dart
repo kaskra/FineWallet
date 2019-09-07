@@ -1,8 +1,8 @@
+import 'package:FineWallet/general/decorated_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/models/transaction_model.dart';
-import 'package:FineWallet/general/general_widgets.dart';
 import 'package:FineWallet/utils.dart';
 
 class WeekOverview extends StatelessWidget {
@@ -29,8 +29,8 @@ class WeekOverview extends StatelessWidget {
   }
 
   Widget _buildDay(int day, double budget) {
-    return generalCard(
-        Row(
+    return DecoratedCard(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             _buildNameWidget(day),

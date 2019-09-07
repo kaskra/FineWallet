@@ -6,21 +6,6 @@
 
 import 'package:flutter/material.dart';
 
-Widget generalCard(
-  Widget child, {
-  BorderRadius cardBorderRadius = BorderRadius.zero,
-  BoxDecoration decoration,
-  double padding = 10,
-}) {
-  return Container(
-      child: Card(
-          shape: RoundedRectangleBorder(borderRadius: cardBorderRadius),
-          child: Container(
-              decoration: decoration ?? BoxDecoration(),
-              padding: EdgeInsets.all(padding),
-              child: child)));
-}
-
 Widget growAnimation(
     Widget first, Widget second, bool isExpanded, Duration duration) {
   return AnimatedCrossFade(

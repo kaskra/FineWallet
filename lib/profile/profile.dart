@@ -6,7 +6,7 @@
 
 import 'dart:async';
 
-import 'package:FineWallet/general/general_widgets.dart';
+import 'package:FineWallet/general/decorated_card.dart';
 import 'package:FineWallet/models/month_model.dart';
 import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/month_provider.dart';
@@ -264,10 +264,11 @@ class _ProfilePageState extends State<ProfilePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         _toScreenWidth(
-            generalCard(_buildSliderBox(), cardBorderRadius: radius)),
-        _toScreenWidth(generalCard(_categoryBox(), cardBorderRadius: radius)),
+            DecoratedCard(child: _buildSliderBox(), borderRadius: radius)),
         _toScreenWidth(
-          generalCard(_savingsBox(), cardBorderRadius: radius),
+            DecoratedCard(child: _categoryBox(), borderRadius: radius)),
+        _toScreenWidth(
+          DecoratedCard(child: _savingsBox(), borderRadius: radius),
         )
       ],
     );
