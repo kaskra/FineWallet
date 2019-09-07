@@ -26,7 +26,6 @@ class TransactionBloc {
   final _monthlyTransactionsController =
       StreamController<TransactionList>.broadcast();
   final _lastWeekTransactionsController = StreamController<List<SumOfTransactionModel>>.broadcast();
-  // final _budgetOverviewController = StreamController<Map<String, double>>.broadcast();
 
   get allTransactions => _allTransactionsController.stream;
 
@@ -34,7 +33,6 @@ class TransactionBloc {
 
   get lastWeekTransactions => _lastWeekTransactionsController.stream;
 
-  // get budgetOverview => _budgetOverviewController.stream;
 
   void updateAllTransactions() {
     getAllTransactions();
@@ -74,32 +72,6 @@ class TransactionBloc {
     }
     _lastWeekTransactionsController.add(resultingExpenses);
   }
-
-  // in month bloc??
-  // getBudgetOverview() async {
-  //   TransactionList transactionList = await TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(DateTime.now()));
-
-  //   int remainingDaysInMonth =
-  //       getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
-
-  //   double monthlyExpenses = transactionList
-  //       .where(
-  //           (TransactionModel txn) => txn.date != dayInMillis(DateTime.now()))
-  //       .sumExpenses();
-  //   double expensesToday = transactionList
-  //       .byDayInMillis(dayInMillis(DateTime.now()))
-  //       .sumExpenses();
-
-  //   double monthlySpareBudget = _monthlyMaxBudget - monthlyExpenses;
-
-  //   double budgetPerDay =
-  //       (monthlySpareBudget / remainingDaysInMonth) - expensesToday;
-
-  //   return {
-  //     'dayBudget': budgetPerDay,
-  //     'monthSpareBudget': monthlySpareBudget - expensesToday,
-  //   };
-  // }
 
   add(TransactionModel tx) {
     DatabaseProvider.db.newTransaction(tx);

@@ -15,6 +15,7 @@ class MonthBloc {
   final _allMonthController = StreamController<List<MonthModel>>.broadcast();
   final _currentMonthController = StreamController<MonthModel>.broadcast();
   final _savingsController = StreamController<double>.broadcast();
+  final _budgetOverviewController = StreamController<Map<String, double>>.broadcast();
 
   get currentMonth => _currentMonthController.stream;
 
@@ -22,10 +23,13 @@ class MonthBloc {
 
   get savings => _savingsController.stream;
 
+  get budgetOverview => _budgetOverviewController.stream;
+
   void dispose() {
     _currentMonthController.close();
     _allMonthController.close();
     _savingsController.close();
+    _budgetOverviewController.close();
   }
 
   getCurrentMonth() async {
@@ -89,4 +93,34 @@ class MonthBloc {
     getMonths();
     getSavings();
   }
+
+  /// Calculate the budget for the current day as well as the spare budget for the month.
+  /// 
+  /// Add the Map to the budgetOverview stream.
+  getBudgetOverview() async {
+    TransactionList list = await TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(DateTime.now()));
+    double currentMaxBudget = (await MonthProvider.db.getCurrentMonth()).currentMaxBudget;
+
+    int remainingDaysInMonth =
+        getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
+
+    double monthlyExpenses = list
+        .exceptDate(DateTime.now())
+        .sumExpenses();
+
+    double expensesToday = list
+        .byDayInMillis(dayInMillis(DateTime.now()))
+        .sumExpenses();
+
+    double monthlySpareBudget = currentMaxBudget - monthlyExpenses;
+
+    double budgetPerDay =
+        (monthlySpareBudget / remainingDaysInMonth) - expensesToday;
+
+    _budgetOverviewController.sink.add({
+      'dayBudget': budgetPerDay,
+      'monthSpareBudget': monthlySpareBudget - expensesToday,
+    });
+  }
+
 }

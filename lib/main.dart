@@ -10,15 +10,12 @@ import 'package:FineWallet/general/bottom_bar_app_item.dart';
 import 'package:FineWallet/general/general_widgets.dart';
 import 'package:FineWallet/general/sliding_fab_menu.dart';
 import 'package:FineWallet/history/history.dart';
-import 'package:FineWallet/models/month_model.dart';
 import 'package:FineWallet/models/transaction_model.dart';
 import 'package:FineWallet/profile/profile.dart';
 import 'package:FineWallet/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/db_initilization.dart';
-import 'package:FineWallet/resources/month_provider.dart';
-import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/statistics/monthly_overview.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,22 +82,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 4;
   bool _isSelectionModeActive = false;
-  double _monthlyMaxBudget = 0;
   bool _showBottomBar = true;
 
   @override
   void initState() {
     super.initState();
     initDB();
-    _syncDatabase();
-  }
-
-  void _syncDatabase() async {
-    MonthModel month = await MonthProvider.db.getCurrentMonth();
-
-    setState(() {
-      _monthlyMaxBudget = month != null ? month.currentMaxBudget : 0;
-    });
   }
 
   Widget _overviewBox(String title, double amount, bool last, Function onTap) {
@@ -226,32 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Map<String, double> _calculateOverviewValues(
-      TransactionList transactionList) {
-    int remainingDaysInMonth =
-        getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
-
-    double monthlyExpenses = transactionList
-        .where(
-            (TransactionModel txn) => txn.date != dayInMillis(DateTime.now()))
-        .sumExpenses();
-    double expensesToday = transactionList
-        .byDayInMillis(dayInMillis(DateTime.now()))
-        .sumExpenses();
-
-    double monthlySpareBudget = _monthlyMaxBudget - monthlyExpenses;
-
-    double budgetPerDay =
-        (monthlySpareBudget / remainingDaysInMonth) - expensesToday;
-
-    return {
-      'dayBudget': budgetPerDay,
-      'monthSpareBudget': monthlySpareBudget - expensesToday,
-    };
-  }
-
   Widget _buildBody() {
-    _syncDatabase();
     return Center(
       child: Container(
         constraints: const BoxConstraints.expand(),
@@ -266,22 +228,20 @@ class _MyHomePageState extends State<MyHomePage> {
   Container _buildOverview() {
     return Container(
       margin: const EdgeInsets.only(bottom: 5),
-      child: Consumer<TransactionBloc>(builder: (_, bloc, child) {
-        bloc.getMonthlyTransactions();
-        return StreamBuilder<TransactionList>(
-          stream: bloc.monthlyTransactions,
-          initialData: TransactionList(),
-          builder:
-              (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
+      child: Consumer<MonthBloc>(builder: (_, bloc, child) {
+        bloc.getBudgetOverview();
+        return StreamBuilder<Map<String, double>>(
+          stream: bloc.budgetOverview,
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, double>> snapshot) {
             if (snapshot.hasData) {
-              final displayValues = _calculateOverviewValues(snapshot.data);
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _overviewBox(
-                      "TODAY", displayValues['dayBudget'], false, () {}),
+                      "TODAY", snapshot.data['dayBudget'], false, () {}),
                   _overviewBox(getMonthName(DateTime.now().month).toUpperCase(),
-                      displayValues['monthSpareBudget'], true, _onMonthTap),
+                      snapshot.data['monthSpareBudget'], true, _onMonthTap),
                 ],
               );
             } else {

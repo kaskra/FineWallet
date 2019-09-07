@@ -148,4 +148,9 @@ class TransactionList extends ListBase<TransactionModel> {
 
     return ids;
   }
+
+  /// Return all transactions that are not on the date argument.
+  TransactionList exceptDate(DateTime date) {
+    return this.where((TransactionModel txn) => txn.date != dayInMillis(date));
+  }
 }
