@@ -4,6 +4,7 @@
  *
  */
 
+import 'package:FineWallet/resources/category_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class HistoryItemIcon extends StatelessWidget {
   final bool isSelected;
   final bool isRecurring;
   final bool isExpense;
-  final IconData iconData;
+  final CategoryIcon iconData;
   final BuildContext context;
 
   @override
@@ -54,7 +55,7 @@ class HistoryItemIcon extends StatelessWidget {
         padding: EdgeInsets.all(5),
         color: Theme.of(context).colorScheme.secondary,
         child: Icon(
-          iconData,
+          iconData.data,
           size: 25,
         ),
       ),

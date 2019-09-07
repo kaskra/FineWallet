@@ -8,7 +8,7 @@ import 'package:FineWallet/datatypes/category.dart';
 import 'package:FineWallet/models/category_model.dart';
 import 'package:FineWallet/models/subcategory_model.dart';
 import 'package:FineWallet/resources/category_provider.dart';
-import 'package:FineWallet/resources/internal_data.dart';
+import 'package:FineWallet/resources/category_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -67,7 +67,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
     });
   }
 
-  Widget _categoryCard(IconData iconData, String label, int index) {
+  Widget _categoryCard(CategoryIcon iconData, String label, int index) {
     return Container(
         width: categoryCardWidth,
         child: Material(
@@ -90,7 +90,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Icon(
-                    iconData,
+                    iconData.data,
                     color: Theme.of(context).colorScheme.onSecondary,
                   ),
                   Text(
@@ -127,8 +127,8 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
               onTap: () {
                 int iconIndex = widget.isExpense == 1
                     ? _selectedCategory
-                    : icons.length - 1;
-                _subcategory = new Category(icons[iconIndex], name, index,
+                    : CategoryIcon.amount - 1;
+                _subcategory = new Category(CategoryIcon(iconIndex).data, name, index,
                     selectedCategory: _selectedCategory);
                 Navigator.pop(context, _subcategory);
               },
@@ -170,10 +170,10 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                                 itemBuilder: (context, index) {
                                   int iconIndex = widget.isExpense == 1
                                       ? index
-                                      : icons.length - 1;
+                                      : CategoryIcon.amount - 1;
                                   CategoryModel item = snapshot.data[index];
                                   return _categoryCard(
-                                      icons[iconIndex], item.name, index);
+                                      CategoryIcon(iconIndex), item.name, index);
                                 },
                               );
                             } else {
@@ -196,7 +196,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                         future: CategoryProvider.db.getSubcategories(
                             widget.isExpense == 1
                                 ? _selectedCategory + 1
-                                : icons.length),
+                                : CategoryIcon.amount),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return ListView.builder(

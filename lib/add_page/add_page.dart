@@ -17,7 +17,7 @@ import 'package:FineWallet/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/resources/category_list.dart';
 import 'package:FineWallet/resources/category_provider.dart';
-import 'package:FineWallet/resources/internal_data.dart';
+import 'package:FineWallet/resources/category_icon.dart';
 import 'package:FineWallet/resources/transaction_list.dart';
 import 'package:FineWallet/resources/transaction_provider.dart';
 import 'package:FineWallet/utils.dart';
@@ -81,7 +81,7 @@ class _AddPageState extends State<AddPage> {
       _expense = widget.transaction.amount;
       _textEditingController.text = _expense.toStringAsFixed(2);
       _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
-      _subcategory = Category(icons[widget.transaction.category - 1],
+      _subcategory = Category(CategoryIcon(widget.transaction.category - 1).data,
           widget.transaction.subcategoryName, widget.transaction.subcategory,
           selectedCategory: selectedCategory);
 

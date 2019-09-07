@@ -6,7 +6,7 @@
 
 import 'package:FineWallet/history/history_item_icon.dart';
 import 'package:FineWallet/models/transaction_model.dart';
-import 'package:FineWallet/resources/internal_data.dart';
+import 'package:FineWallet/resources/category_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +76,7 @@ class HistoryItem extends StatelessWidget {
                   isSelected: isSelected,
                   isExpense: isExpense,
                   isRecurring: isRecurring,
-                  iconData: icons[transaction.category - 1],
+                  iconData: CategoryIcon(transaction.category - 1),
                   context: context,
                 ),
                 _buildItemContent(),
