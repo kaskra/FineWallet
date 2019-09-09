@@ -81,7 +81,7 @@ class HistoryItemIcon extends StatelessWidget {
             left: 0,
             bottom: 0,
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(25)),
+              borderRadius: const BorderRadius.all(Radius.circular(25)),
               child: Container(
                 color: Theme.of(context).colorScheme.secondary,
                 child: Icon(
