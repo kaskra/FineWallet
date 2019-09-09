@@ -62,7 +62,6 @@ class HistoryItem extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary, width: 0)
                 : null,
             color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
-        // padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
         margin: const EdgeInsets.fromLTRB(10, 2, 10, 2),
         height: 50,
         width: MediaQuery.of(context).size.width * 0.55,
