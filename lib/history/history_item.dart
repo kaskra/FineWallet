@@ -65,25 +65,29 @@ class HistoryItem extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(10, 2, 10, 2),
         height: 50,
         width: MediaQuery.of(context).size.width * 0.55,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: HistoryItemIcon(
-                isSelected: isSelected,
-                isExpense: isExpense,
-                isRecurring: isRecurring,
-                iconData: CategoryIcon(transaction.category - 1),
-                context: context,
-              ),
-            ),
-            _buildItemContent(),
-          ],
-        ),
+        child: _buildMainItemContent(context),
       ),
     );
+  }
+
+  Row _buildMainItemContent(BuildContext context) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: HistoryItemIcon(
+              isSelected: isSelected,
+              isExpense: isExpense,
+              isRecurring: isRecurring,
+              iconData: CategoryIcon(transaction.category - 1),
+              context: context,
+            ),
+          ),
+          _buildContent(),
+        ],
+      );
   }
 
   Widget _buildItemTitle() {
@@ -101,7 +105,7 @@ class HistoryItem extends StatelessWidget {
     );
   }
 
-  Widget _buildItemContent() {
+  Widget _buildContent() {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.only(bottom: 8, top: 8, right: 20),
