@@ -8,6 +8,43 @@ import 'package:FineWallet/resources/category_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class IconWrapper extends StatelessWidget {
+  const IconWrapper({Key key, @required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(25)),
+            child: child),
+      ),
+    );
+  }
+}
+
+class SelectionIcon extends StatelessWidget {
+  const SelectionIcon({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconWrapper(
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        color: Theme.of(context).colorScheme.secondaryVariant,
+        child: Icon(
+          Icons.check,
+          size: 25,
+        ),
+      ),
+    );
+  }
+}
+
 class HistoryItemIcon extends StatelessWidget {
   HistoryItemIcon(
       {@required this.isSelected,
@@ -24,34 +61,21 @@ class HistoryItemIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isSelected ? _buildSelectionIcon() : _buildItemIcon();
-  }
-
-  Widget _buildSelectionIcon() {
-    return _iconWrapper(
-      child: Container(
-        padding: const EdgeInsets.all(5),
-        color: Theme.of(context).colorScheme.secondaryVariant,
-        child: Icon(
-          Icons.check,
-          size: 25,
-        ),
-      ),
-    );
+    return isSelected ? SelectionIcon() : _buildItemIcon();
   }
 
   Widget _buildItemIcon() {
     return Stack(
       children: <Widget>[
-        _categoryIcon(),
-        expenseIndicator(),
-        recurrenceIndicator()
+        _buildCategoryIcon(),
+        _buildExpenseIndicator(),
+        _buildRecurrenceIndicator()
       ],
     );
   }
 
-  Widget _categoryIcon() {
-    return _iconWrapper(
+  Widget _buildCategoryIcon() {
+    return IconWrapper(
       child: Container(
         padding: const EdgeInsets.all(5),
         color: Theme.of(context).colorScheme.secondary,
@@ -63,19 +87,7 @@ class HistoryItemIcon extends StatelessWidget {
     );
   }
 
-  Widget _iconWrapper({Widget child}) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(25)),
-            child: child),
-      ),
-    );
-  }
-
-  Widget recurrenceIndicator() {
+  Widget _buildRecurrenceIndicator() {
     return isRecurring
         ? Positioned(
             left: 0,
@@ -94,7 +106,7 @@ class HistoryItemIcon extends StatelessWidget {
         : Container();
   }
 
-  Widget expenseIndicator() {
+  Widget _buildExpenseIndicator() {
     return Positioned(
       right: 8,
       top: 0,
