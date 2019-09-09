@@ -36,12 +36,12 @@ class _HistoryState extends State<History> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: SelectionAppBar(
-          title: "FineWallet",
-          selectedItems: _selectedItems,
-          onClose: () => _closeSelection(),
+        title: "FineWallet",
+        selectedItems: _selectedItems,
+        onClose: () => _closeSelection(),
         onEdit: () => _editItem(_selectedItems.values.first),
-          onDelete: () => _deleteItems(),
-        ),
+        onDelete: () => _deleteItems(),
+      ),
     );
   }
 
@@ -138,17 +138,19 @@ class _HistoryState extends State<History> {
       }
 
       var key = new Key(snapshot.data.hashCode.toString());
-      l.add(HistoryItem(
-        key: key,
-        context: context,
-        transaction: snapshot.data[i],
-        isSelected: _selectedItems.containsKey(snapshot.data[i].id),
-        isSelectionModeActive: _selectionMode,
-        onSelect: (selected) {
-          _toggleSelectionMode(selected, snapshot.data[i]);
-          _checkSelectionMode();
-        },
-      ));
+      l.add(
+        HistoryItem(
+          key: key,
+          context: context,
+          transaction: snapshot.data[i],
+          isSelected: _selectedItems.containsKey(snapshot.data[i].id),
+          isSelectionModeActive: _selectionMode,
+          onSelect: (selected) {
+            _toggleSelectionMode(selected, snapshot.data[i]);
+            _checkSelectionMode();
+          },
+        ),
+      );
     }
     listOfLists.add(l);
     return listOfLists;
@@ -157,8 +159,7 @@ class _HistoryState extends State<History> {
   void _toggleSelectionMode(bool selected, TransactionModel data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.id)) {
-        _selectedItems.putIfAbsent(
-            data.id, () => data);
+        _selectedItems.putIfAbsent(data.id, () => data);
         _selectionMode = true;
       }
     } else {

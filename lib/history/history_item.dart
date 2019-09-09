@@ -53,62 +53,67 @@ class HistoryItem extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     return Align(
-        alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: isSelected
-                    ? Border.all(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: 2)
-                    : null,
-                color:
-                    isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
-            padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-            margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
-            height: 70,
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                HistoryItemIcon(
-                  isSelected: isSelected,
-                  isExpense: isExpense,
-                  isRecurring: isRecurring,
-                  iconData: CategoryIcon(transaction.category - 1),
-                  context: context,
-                ),
-                _buildItemContent(),
-              ],
-            )));
+      alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            border: isSelected
+                ? Border.all(
+                    color: Theme.of(context).colorScheme.secondary, width: 0)
+                : null,
+            color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
+        // padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
+        margin: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+        height: 50,
+        width: MediaQuery.of(context).size.width * 0.55,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: HistoryItemIcon(
+                isSelected: isSelected,
+                isExpense: isExpense,
+                isRecurring: isRecurring,
+                iconData: CategoryIcon(transaction.category - 1),
+                context: context,
+              ),
+            ),
+            _buildItemContent(),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildItemTitle() {
     return Align(
-        alignment: Alignment.topLeft,
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: Text(
-            transaction.subcategoryName,
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
-          ),
-        ));
+      alignment: Alignment.topLeft,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          transaction.subcategoryName,
+          style: TextStyle(
+              fontSize: 14,
+              fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal),
+        ),
+      ),
+    );
   }
 
   Widget _buildItemContent() {
     return Expanded(
-        child: Container(
-      padding: EdgeInsets.only(bottom: 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[_buildItemTitle(), _buildItemText()],
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 8, top: 8, right: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[_buildItemTitle(), _buildItemText()],
+        ),
       ),
-    ));
+    );
   }
 
   Widget _buildItemText() {
@@ -118,11 +123,11 @@ class HistoryItem extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight,
       child: FittedBox(
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.fitHeight,
         child: Text(
           prefix + transaction.amount.toStringAsFixed(2) + suffix,
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 18, color: color),
+              fontWeight: FontWeight.bold, fontSize: 15, color: color),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
