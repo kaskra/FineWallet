@@ -1,3 +1,11 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Tuesday, 10th September 2019 11:16:08 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
 import 'package:flutter/material.dart';
 
 class DecoratedCard extends StatelessWidget {

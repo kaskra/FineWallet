@@ -1,3 +1,11 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Tuesday, 10th September 2019 11:17:58 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
 import 'package:FineWallet/general/decorated_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -1,7 +1,9 @@
 /*
- * Developed by Lukas Krauch 13.7.2019.
- * Copyright (c) 2019. All rights reserved.
- *
+ * Project: FineWallet
+ * Last Modified: Tuesday, 10th September 2019 11:20:08 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
  */
 
 import 'package:FineWallet/resources/blocs/transaction_bloc.dart';

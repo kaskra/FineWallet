@@ -1,7 +1,9 @@
 /*
- * Developed by Lukas Krauch 22.6.2019.
- * Copyright (c) 2019. All rights reserved.
- *
+ * Project: FineWallet
+ * Last Modified: Tuesday, 10th September 2019 11:19:29 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
  */
 
 import 'dart:collection';

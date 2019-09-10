@@ -1,7 +1,9 @@
 /*
- * Developed by Lukas Krauch $file.today.day.$file.today.month.$file.today.year.
- * Copyright (c) 2019. All rights reserved.
- *
+ * Project: FineWallet
+ * Last Modified: Tuesday, 10th September 2019 11:16:24 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
  */
 
 import 'package:FineWallet/color_themes.dart';

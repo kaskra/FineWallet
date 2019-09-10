@@ -1,3 +1,11 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Tuesday, 10th September 2019 11:18:24 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
 import 'dart:async';
 
 import 'package:FineWallet/models/month_model.dart';
