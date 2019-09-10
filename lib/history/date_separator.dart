@@ -25,7 +25,7 @@ class DateSeparator extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 5),
             padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
               color: Colors.black38,
             ),
             child: Text(
