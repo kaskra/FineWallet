@@ -13,9 +13,10 @@ class MonthBloc {
   }
 
   final _allMonthController = StreamController<List<MonthModel>>.broadcast();
+  final _budgetOverviewController =
+      StreamController<Map<String, double>>.broadcast();
   final _currentMonthController = StreamController<MonthModel>.broadcast();
   final _savingsController = StreamController<double>.broadcast();
-  final _budgetOverviewController = StreamController<Map<String, double>>.broadcast();
 
   get currentMonth => _currentMonthController.stream;
 
@@ -56,20 +57,25 @@ class MonthBloc {
   }
 
   syncMonths() async {
-    TransactionList transactions = await TransactionsProvider.db.getAllTrans(dayInMillis(DateTime.now()));
+    TransactionList transactions =
+        await TransactionsProvider.db.getAllTrans(dayInMillis(DateTime.now()));
     List<int> ids = getAllMonthIds(transactions);
-    
-    List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
-    List<int> recordedMonthIds = allMonths.map((m) => m.firstDayOfMonth).toList();
 
-    for (int i in ids){
-      if (recordedMonthIds.contains(i)){
-        MonthModel currentMonth = allMonths.firstWhere((m) => m.firstDayOfMonth == i);
-        TransactionList transactionsOfMonth = await TransactionsProvider.db.getTransactionsOfMonth(i);
+    List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
+    List<int> recordedMonthIds =
+        allMonths.map((m) => m.firstDayOfMonth).toList();
+
+    for (int i in ids) {
+      if (recordedMonthIds.contains(i)) {
+        MonthModel currentMonth =
+            allMonths.firstWhere((m) => m.firstDayOfMonth == i);
+        TransactionList transactionsOfMonth =
+            await TransactionsProvider.db.getTransactionsOfMonth(i);
         currentMonth.monthlyExpenses = transactionsOfMonth.sumExpenses();
-        currentMonth.savings = transactionsOfMonth.sumIncomes() - currentMonth.monthlyExpenses;
+        currentMonth.savings =
+            transactionsOfMonth.sumIncomes() - currentMonth.monthlyExpenses;
         MonthProvider.db.updateMonth(currentMonth);
-      }else {
+      } else {
         MonthModel current = new MonthModel(
           currentMaxBudget: 0,
           monthlyExpenses: 0,
@@ -88,7 +94,6 @@ class MonthBloc {
       MonthProvider.db.updateMonth(m);
     }
 
-
     getCurrentMonth();
     getMonths();
     getSavings();
@@ -96,23 +101,22 @@ class MonthBloc {
   }
 
   /// Calculate the budget for the current day as well as the spare budget for the month.
-  /// 
+  ///
   /// Add the Map to the budgetOverview stream.
   getBudgetOverview() async {
-    TransactionList list = await TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(DateTime.now()));
+    TransactionList list = await TransactionsProvider.db
+        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
-    double currentMaxBudget = currentMonth != null ? currentMonth.currentMaxBudget : 0;
+    double currentMaxBudget =
+        currentMonth != null ? currentMonth.currentMaxBudget : 0;
 
     int remainingDaysInMonth =
         getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
 
-    double monthlyExpenses = list
-        .exceptDate(DateTime.now())
-        .sumExpenses();
+    double monthlyExpenses = list.exceptDate(DateTime.now()).sumExpenses();
 
-    double expensesToday = list
-        .byDayInMillis(dayInMillis(DateTime.now()))
-        .sumExpenses();
+    double expensesToday =
+        list.byDayInMillis(dayInMillis(DateTime.now())).sumExpenses();
 
     double monthlySpareBudget = currentMaxBudget - monthlyExpenses;
 
@@ -124,5 +128,4 @@ class MonthBloc {
       'monthSpareBudget': monthlySpareBudget - expensesToday,
     });
   }
-
 }
