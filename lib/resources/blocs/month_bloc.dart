@@ -92,6 +92,7 @@ class MonthBloc {
     getCurrentMonth();
     getMonths();
     getSavings();
+    getBudgetOverview();
   }
 
   /// Calculate the budget for the current day as well as the spare budget for the month.
@@ -99,7 +100,8 @@ class MonthBloc {
   /// Add the Map to the budgetOverview stream.
   getBudgetOverview() async {
     TransactionList list = await TransactionsProvider.db.getTransactionsOfMonth(dayInMillis(DateTime.now()));
-    double currentMaxBudget = (await MonthProvider.db.getCurrentMonth()).currentMaxBudget;
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+    double currentMaxBudget = currentMonth != null ? currentMonth.currentMaxBudget : 0;
 
     int remainingDaysInMonth =
         getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
