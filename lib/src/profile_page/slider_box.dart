@@ -3,23 +3,24 @@ import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
-import 'package:FineWallet/src/profile_page/profile.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SliderBox extends StatefulWidget {
-  SliderBox({Key key, this.onChanged, this.borderRadius = BorderRadius.zero})
+/// The slider box widgets shows a slider with title, a slider-dependent text field and an text below the slider
+class BudgetSlider extends StatefulWidget {
+  BudgetSlider({Key key, this.onChanged, this.borderRadius = BorderRadius.zero})
       : super(key: key);
 
   final BorderRadius borderRadius;
   final Function(double budget) onChanged;
 
-  _SliderBoxState createState() => _SliderBoxState();
+  _BudgetSliderState createState() => _BudgetSliderState();
 }
 
-class _SliderBoxState extends State<SliderBox> {
+class _BudgetSliderState extends State<BudgetSlider> {
   double _currentMaxMonthlyBudget = 0;
   MonthModel _currentMonth;
   double _overallMaxBudget = 0;

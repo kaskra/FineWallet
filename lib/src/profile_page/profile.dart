@@ -11,6 +11,7 @@ import 'package:FineWallet/src/profile_page/slider_box.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/savings_box.dart';
+import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -106,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        SliderBox(
+        BudgetSlider(
           onChanged: (value) => {
             setState(() {
               _currentMaxMonthlyBudget = value;
@@ -114,12 +115,12 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           borderRadius: radius,
         ),
-        new ExpandToWidth(
+        ExpandToWidth(
             context: context,
             child: DecoratedCard(child: _categoryBox(), borderRadius: radius)),
-        new ExpandToWidth(
-            context: context,
-            child: DecoratedCard(child: const SavingsBox(), borderRadius: radius))
+         SavingsBox(
+           borderRadius: radius,
+         )
       ],
     );
   }
@@ -151,20 +152,3 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class ExpandToWidth extends StatelessWidget {
-  const ExpandToWidth({
-    Key key,
-    @required this.context,
-    @required this.child,
-  }) : super(key: key);
-
-  final Widget child;
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        width: MediaQuery.of(context).size.width,
-        child: child,
-      );
-}
