@@ -1,6 +1,6 @@
-import 'package:FineWallet/resources/blocs/category_bloc.dart';
-import 'package:FineWallet/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:provider/provider.dart';
 
 List<SingleChildCloneableWidget> providers = [

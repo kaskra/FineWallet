@@ -6,16 +6,16 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/add_page/add_page.dart';
+import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
-import 'package:FineWallet/general/bottom_bar_app_item.dart';
-import 'package:FineWallet/general/sliding_fab_menu.dart';
-import 'package:FineWallet/history/history.dart';
-import 'package:FineWallet/overview_page/overview.dart';
-import 'package:FineWallet/profile/profile.dart';
+import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
+import 'package:FineWallet/src/widgets/sliding_fab_menu.dart';
+import 'package:FineWallet/src/history_page/history.dart';
+import 'package:FineWallet/src/overview_page/overview.dart';
+import 'package:FineWallet/src/profile_page/profile.dart';
 import 'package:FineWallet/provider_setup.dart';
-import 'package:FineWallet/resources/db_initilization.dart';
-import 'package:FineWallet/statistics/monthly_overview.dart';
+import 'package:FineWallet/core/resources/db_initilization.dart';
+import 'package:FineWallet/src/statistics/monthly_overview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
