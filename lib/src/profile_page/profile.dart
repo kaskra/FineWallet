@@ -1,22 +1,16 @@
 /*
  * Project: FineWallet
- * Last Modified: Tuesday, 10th September 2019 11:18:05 am
+ * Last Modified: Saturday, 14th September 2019 5:36:48 pm
  * Modified By: Lukas (luke.krauch@gmail.com>)
  * -----
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'dart:async';
-
+import 'package:FineWallet/src/profile_page/slider_box.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/month_provider.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
-import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/src/profile_page/profile_chart.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,132 +25,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  TextEditingController _textEditingController = TextEditingController();
-
-  double _currentMaxMonthlyBudget = 0;
-  double _overallMaxBudget = 0;
-  MonthModel _currentMonth;
-
   int _chartType = ProfileChart.MONTHLY_CHART;
+  double _currentMaxMonthlyBudget = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _showPrediction = false;
-
-  void initState() {
-    super.initState();
-    _textEditingController = TextEditingController(
-        text: _currentMaxMonthlyBudget.toStringAsFixed(2));
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadCurrentMonth();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _textEditingController.dispose();
-  }
-
-  void deactivate() {
-    super.deactivate();
-    _onLeavingPage();
-  }
-
-  Future<bool> _onLeavingPage() async {
-    _currentMonth?.currentMaxBudget = _currentMaxMonthlyBudget;
-    Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
-    return true;
-  }
-
-  void _loadCurrentMonth() async {
-    TransactionList monthlyTransactions = await TransactionsProvider.db
-        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
-
-    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
-    setState(() {
-      _overallMaxBudget = monthlyTransactions.sumIncomes();
-      _currentMonth = currentMonth;
-    });
-
-    _setMaxMonthlyBudget(_currentMonth.currentMaxBudget);
-  }
-
-  void _setMaxMonthlyBudget(double value) {
-    setState(() {
-      if (value >= _overallMaxBudget) {
-        value = _overallMaxBudget;
-      } else if (value < 0) {
-        value = 0;
-      }
-
-      _currentMaxMonthlyBudget = value;
-      _textEditingController.text = value.toStringAsFixed(2);
-    });
-  }
-
-  Widget _buildSliderBox() {
-    return Column(
-      children: <Widget>[
-        Align(
-          alignment: Alignment.topCenter,
-          child: Text(
-            "Monthly available budget",
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Align(
-            alignment: Alignment.centerRight,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 3,
-                  child: Slider(
-                    onChanged: (value) {
-                      _setMaxMonthlyBudget(value);
-                    },
-                    onChangeStart: (value) {
-                      FocusScope.of(context).requestFocus(new FocusNode());
-                    },
-                    value: _currentMaxMonthlyBudget,
-                    min: 0,
-                    max: _overallMaxBudget,
-                    divisions: 100,
-                  ),
-                ),
-                Text(
-                  "€ ",
-                  style: const TextStyle(fontSize: 16),
-                ),
-                Expanded(
-                    child: TextField(
-                  decoration: InputDecoration(border: InputBorder.none),
-                  onSubmitted: (valueAsString) {
-                    double value = double.parse(valueAsString);
-                    _setMaxMonthlyBudget(value);
-                  },
-                  onTap: () {
-                    _textEditingController.selection = TextSelection(
-                        baseOffset: 0,
-                        extentOffset: _textEditingController.text.length);
-                  },
-                  controller: _textEditingController,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                ))
-              ],
-            )),
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-              "Expected savings: ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
-              style: const TextStyle(fontSize: 14)),
-        )
-      ],
-    );
-  }
 
   Widget _categoryBox() {
     return Stack(
@@ -260,10 +132,14 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        new ExpandToWidth(
-            context: context,
-            child:
-                DecoratedCard(child: _buildSliderBox(), borderRadius: radius)),
+        SliderBox(
+          onChanged: (value) => {
+            setState(() {
+              _currentMaxMonthlyBudget = value;
+            }),
+          },
+          borderRadius: radius,
+        ),
         new ExpandToWidth(
             context: context,
             child: DecoratedCard(child: _categoryBox(), borderRadius: radius)),
@@ -292,17 +168,9 @@ class _ProfilePageState extends State<ProfilePage> {
           : null,
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-            _setMaxMonthlyBudget(
-                double.parse(_textEditingController.value.text));
-          },
-          behavior: HitTestBehavior.translucent,
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-            child: _buildBody(),
-          ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+          child: _buildBody(),
         ),
       ),
     );
@@ -316,8 +184,8 @@ class ExpandToWidth extends StatelessWidget {
     @required this.child,
   }) : super(key: key);
 
-  final BuildContext context;
   final Widget child;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) => Container(
