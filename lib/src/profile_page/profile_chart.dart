@@ -31,18 +31,12 @@ class ProfileChart extends StatefulWidget {
 class _ProfileChartState extends State<ProfileChart> {
   DateTime today;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Widget _buildChartByType() {
+  Widget _buildChartByType(int type) {
     return Consumer2<TransactionBloc, CategoryBloc>(
       builder: (_, transactionBloc, categoryBloc, child) {
         categoryBloc.getCategories(true);
-
         Stream stream;
-        if (widget.type == ProfileChart.MONTHLY_CHART) {
+        if (type == ProfileChart.MONTHLY_CHART) {
           transactionBloc.getMonthlyTransactions();
           stream = transactionBloc.monthlyTransactions;
         } else {
@@ -92,7 +86,7 @@ class _ProfileChartState extends State<ProfileChart> {
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: _buildChartByType(),
+        child: _buildChartByType(widget.type),
       ),
     );
   }

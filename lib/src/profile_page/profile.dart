@@ -8,14 +8,14 @@
 
 import 'dart:async';
 
+import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
-import 'package:FineWallet/src/statistics/profile_chart.dart';
-import 'package:FineWallet/src/statistics/spending_prediction_chart.dart';
+import 'package:FineWallet/src/profile_page/profile_chart.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,12 +97,6 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  Widget _toScreenWidth(Widget child) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        width: MediaQuery.of(context).size.width,
-        child: child,
-      );
-
   Widget _buildSliderBox() {
     return Column(
       children: <Widget>[
@@ -175,15 +169,16 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Container(
-              height: 200,
-              padding: const EdgeInsets.all(15),
-              child: _showPrediction
-                  ? SpendingPredictionChart(
-                      monthlyBudget: _currentMaxMonthlyBudget,
-                    )
-                  : ProfileChart(
-                      type: _chartType,
-                    )),
+            height: 200,
+            padding: const EdgeInsets.all(15),
+            child: _showPrediction
+                ? SpendingPredictionChart(
+                    monthlyBudget: _currentMaxMonthlyBudget,
+                  )
+                : ProfileChart(
+                    type: _chartType,
+                  ),
+          ),
         ]),
         Align(
           alignment: Alignment.topRight,
@@ -265,13 +260,16 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        _toScreenWidth(
-            DecoratedCard(child: _buildSliderBox(), borderRadius: radius)),
-        _toScreenWidth(
-            DecoratedCard(child: _categoryBox(), borderRadius: radius)),
-        _toScreenWidth(
-          DecoratedCard(child: _savingsBox(), borderRadius: radius),
-        )
+        new ExpandToWidth(
+            context: context,
+            child:
+                DecoratedCard(child: _buildSliderBox(), borderRadius: radius)),
+        new ExpandToWidth(
+            context: context,
+            child: DecoratedCard(child: _categoryBox(), borderRadius: radius)),
+        new ExpandToWidth(
+            context: context,
+            child: DecoratedCard(child: _savingsBox(), borderRadius: radius))
       ],
     );
   }
@@ -309,4 +307,22 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+}
+
+class ExpandToWidth extends StatelessWidget {
+  const ExpandToWidth({
+    Key key,
+    @required this.context,
+    @required this.child,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        width: MediaQuery.of(context).size.width,
+        child: child,
+      );
 }
