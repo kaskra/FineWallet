@@ -6,14 +6,13 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/src/profile_page/profile_chart.dart';
 import 'package:FineWallet/src/profile_page/slider_box.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/src/profile_page/profile_chart.dart';
+import 'package:FineWallet/src/widgets/savings_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({this.showAppBar: true});
@@ -102,31 +101,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _savingsBox() {
-    return Column(
-      children: <Widget>[
-        Text(
-          "Savings",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Consumer<MonthBloc>(builder: (_, bloc, __) {
-          bloc.getSavings();
-          return StreamBuilder<double>(
-              initialData: 0,
-              stream: bloc.savings,
-              builder: (context, snapshot) {
-                return Text(
-                    "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}€",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primaryVariant));
-              });
-        })
-      ],
-    );
-  }
-
   Widget _buildBody() {
     BorderRadius radius = BorderRadius.circular(4);
     return Column(
@@ -145,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: DecoratedCard(child: _categoryBox(), borderRadius: radius)),
         new ExpandToWidth(
             context: context,
-            child: DecoratedCard(child: _savingsBox(), borderRadius: radius))
+            child: DecoratedCard(child: const SavingsBox(), borderRadius: radius))
       ],
     );
   }
