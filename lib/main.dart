@@ -13,9 +13,7 @@ import 'package:FineWallet/general/sliding_fab_menu.dart';
 import 'package:FineWallet/history/history.dart';
 import 'package:FineWallet/overview_page/overview.dart';
 import 'package:FineWallet/profile/profile.dart';
-import 'package:FineWallet/resources/blocs/category_bloc.dart';
-import 'package:FineWallet/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/resources/db_initilization.dart';
 import 'package:FineWallet/statistics/monthly_overview.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,20 +34,7 @@ void main() {
   });
   runApp(
     MultiProvider(
-      providers: [
-        Provider(
-          dispose: (context, bloc) => bloc.dispose(),
-          builder: (context) => TransactionBloc(),
-        ),
-        Provider(
-          dispose: (context, bloc) => bloc.dispose(),
-          builder: (context) => MonthBloc(),
-        ),
-        Provider(
-          dispose: (context, bloc) => bloc.dispose(),
-          builder: (context) => CategoryBloc(),
-        ),
-      ],
+      providers: providers,
       child: MyApp(),
     ),
   );
