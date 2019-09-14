@@ -21,7 +21,6 @@ class SavingsBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       ratio: screenWidthRatio,
-      context: context,
       child: DecoratedCard(
         child: Column(
           children: <Widget>[

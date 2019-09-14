@@ -163,7 +163,6 @@ class _BudgetSliderState extends State<BudgetSlider> {
   @override
   Widget build(BuildContext context) {
     return ExpandToWidth(
-      context: context,
       ratio: widget.screenWidthRatio,
       child: DecoratedCard(
         child: Column(

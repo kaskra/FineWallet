@@ -116,11 +116,10 @@ class _ProfilePageState extends State<ProfilePage> {
           borderRadius: radius,
         ),
         ExpandToWidth(
-            context: context,
             child: DecoratedCard(child: _categoryBox(), borderRadius: radius)),
-         SavingsBox(
-           borderRadius: radius,
-         )
+        SavingsBox(
+          borderRadius: radius,
+        )
       ],
     );
   }
@@ -151,4 +150,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
