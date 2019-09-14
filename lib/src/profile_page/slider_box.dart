@@ -9,21 +9,39 @@ import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// The slider box widgets shows a slider with title, a slider-dependent text field and an text below the slider
+/// The slider box widgets shows a slider with title, a slider-dependent text field
+/// and a text below the slider for more information about the value.
+///
+/// The slider box is rendered to screen width with an optional ratio.
 class BudgetSlider extends StatefulWidget {
-  BudgetSlider({Key key, this.onChanged, this.borderRadius = BorderRadius.zero})
-      : super(key: key);
+  BudgetSlider(
+      {Key key,
+      this.onChanged,
+      this.borderRadius = BorderRadius.zero,
+      double widthRatio = 1})
+      : this.screenWidthRatio = widthRatio,
+        super(key: key);
 
   final BorderRadius borderRadius;
   final Function(double budget) onChanged;
+  final double screenWidthRatio;
 
   _BudgetSliderState createState() => _BudgetSliderState();
 }
 
 class _BudgetSliderState extends State<BudgetSlider> {
-  double _currentMaxMonthlyBudget = 0;
+  /// Current month entity, holding the current available budget of the month.
   MonthModel _currentMonth;
+
+  /// The maximum available budget for the month.
+  double _currentMaxMonthlyBudget = 0;
+
+  /// The overall maximum budget, which depends on all incomes of the month.
+  /// 
+  /// Sum of all incomes of the current month.
   double _overallMaxBudget = 0;
+
+  /// The text editor controller for the slider-dependend textfield.
   TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -32,6 +50,9 @@ class _BudgetSliderState extends State<BudgetSlider> {
     super.initState();
   }
 
+  /// Load the current month and set the overall maximum budget, 
+  /// the current maximum available budget, update the parent by 
+  /// calling onChanged event callback.
   void _loadCurrentMonth() async {
     TransactionList monthlyTransactions = await TransactionsProvider.db
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
@@ -48,6 +69,10 @@ class _BudgetSliderState extends State<BudgetSlider> {
     _setMaxMonthlyBudget(_currentMaxMonthlyBudget);
   }
 
+  /// Set the maximum available budget.
+  /// 
+  /// Clamp the value to [0, overall max budget], 
+  /// update the parent by calling onChanged event callback.
   void _setMaxMonthlyBudget(double value) {
     if (value >= _overallMaxBudget) {
       value = _overallMaxBudget;
@@ -63,11 +88,15 @@ class _BudgetSliderState extends State<BudgetSlider> {
     }
   }
 
+  /// Update the current month by updating the current monthly available budget in the entity. 
+  ///
+  /// Then update the entity in the database.
   Future _updateMonthModel() async {
     _currentMonth?.currentMaxBudget = _currentMaxMonthlyBudget;
     Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
   }
 
+  /// Build the center row with slider, suffix and the slider-dependend textfield.
   Widget _buildSliderWithTextInput() {
     return Align(
       alignment: Alignment.centerRight,
@@ -84,6 +113,10 @@ class _BudgetSliderState extends State<BudgetSlider> {
     );
   }
 
+  /// Build the slider, which calls sets the current maximum budget when getting changed.
+  /// 
+  /// When the change ends, the database is updated. 
+  /// When the change starts, a new focus node is set, to force the keyboard to be closed.
   Widget _buildSlider() {
     return Expanded(
       flex: 3,
@@ -103,6 +136,10 @@ class _BudgetSliderState extends State<BudgetSlider> {
     );
   }
 
+  /// The dependend textfield shows the current value of the slider.
+  /// 
+  /// It can be changed by keyboard input to a custom value. 
+  /// That value is then shown on the slider.
   Widget _buildDependendTextField() {
     return Expanded(
       child: TextField(
@@ -127,6 +164,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       context: context,
+      ratio: widget.screenWidthRatio,
       child: DecoratedCard(
         child: Column(
           children: <Widget>[
