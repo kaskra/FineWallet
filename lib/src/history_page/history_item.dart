@@ -51,11 +51,11 @@ class HistoryItem extends StatelessWidget {
           onSelect(isSelect);
         }
       },
-      child: _buildBody2(context),
+      child: _buildBody(context),
     );
   }
 
-  Widget _buildBody2(BuildContext context) {
+  Widget _buildBody(BuildContext context) {
     return Align(
       alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
       child: ExpandToWidth(

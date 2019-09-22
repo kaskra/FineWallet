@@ -136,7 +136,9 @@ class _HistoryState extends State<History> {
         listOfLists.add(l);
         bool isToday = prevDate == dayInMillis(DateTime.now());
         l = List();
-        l.add(DateSeparator(isToday: isToday, dateInMillis: prevDate));
+        l.add(
+          DateSeparator(isToday: isToday, dateInMillis: prevDate),
+        );
       }
 
       var key = new Key(snapshot.data.hashCode.toString());
