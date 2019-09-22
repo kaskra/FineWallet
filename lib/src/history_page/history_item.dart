@@ -9,6 +9,8 @@
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -49,25 +51,24 @@ class HistoryItem extends StatelessWidget {
           onSelect(isSelect);
         }
       },
-      child: _buildBody(context),
+      child: _buildBody2(context),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody2(BuildContext context) {
     return Align(
       alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            border: isSelected
-                ? Border.all(
-                    color: Theme.of(context).colorScheme.secondary, width: 0)
-                : null,
-            color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white),
-        margin: const EdgeInsets.fromLTRB(10, 2, 10, 2),
-        height: 50,
-        width: MediaQuery.of(context).size.width * 0.55,
-        child: _buildMainItemContent(context),
+      child: ExpandToWidth(
+        ratio: 0.55,
+        height: 60,
+        child: DecoratedCard(
+          borderRadius: BorderRadius.circular(4),
+          color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white,
+          borderColor: isSelected ? Theme.of(context).colorScheme.secondary : Colors.white,
+          borderWidth: isSelected ? 2 : 0,
+          padding: 0,
+          child: _buildMainItemContent(context),
+        ),
       ),
     );
   }

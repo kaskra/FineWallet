@@ -27,25 +27,17 @@ class WeekOverview extends StatelessWidget {
             fontWeight: isToday ? FontWeight.bold : FontWeight.normal));
   }
 
-  BoxDecoration _buildDayDecoration(int day) {
-    bool isToday = day == DateTime.now().weekday;
-    return isToday
-        ? BoxDecoration(
-            border: Border.all(
-                width: 2, color: Theme.of(context).colorScheme.secondary))
-        : const BoxDecoration();
-  }
-
   Widget _buildDay(int day, double budget) {
+    bool isToday = day == DateTime.now().weekday;
+
     return DecoratedCard(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            _buildNameWidget(day),
-            _buildExpenseString(budget)
-          ],
-        ),
-        decoration: _buildDayDecoration(day));
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[_buildNameWidget(day), _buildExpenseString(budget)],
+      ),
+      borderColor: Theme.of(context).colorScheme.secondary,
+      borderWidth: isToday ? 2 : 0,
+    );
   }
 
   Expanded _buildExpenseString(double budget) {

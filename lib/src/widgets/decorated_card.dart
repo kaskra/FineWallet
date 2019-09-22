@@ -13,23 +13,27 @@ class DecoratedCard extends StatelessWidget {
       {Key key,
       this.child,
       this.borderRadius = BorderRadius.zero,
-      this.decoration = const BoxDecoration(),
+      this.color = Colors.white,
+      this.borderColor = Colors.white,
+      this.borderWidth = 1,
       this.padding = 10})
       : super(key: key);
 
   final Widget child;
   final BorderRadius borderRadius;
-  final BoxDecoration decoration;
+  final double borderWidth;
+  final Color borderColor;
   final double padding;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: borderRadius),
-      child: Container(
-          decoration: decoration,
-          padding: EdgeInsets.all(padding),
-          child: child),
+      color: color,
+      shape: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+          side: BorderSide(width: borderWidth, color: borderColor)),
+      child: Padding(padding: EdgeInsets.all(padding), child: child),
     );
   }
 }
