@@ -65,7 +65,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 4;
+  int _currentIndex = 3;
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
 
@@ -83,11 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
         FABBottomAppBarItem(iconData: Icons.person, text: "Me"),
         FABBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
         FABBottomAppBarItem(disabled: true),
+        FABBottomAppBarItem(iconData: Icons.home, text: "Home"),
         FABBottomAppBarItem(
           iconData: Icons.list,
           text: "History",
         ),
-        FABBottomAppBarItem(iconData: Icons.home, text: "Home"),
       ],
       onTabSelected: (int index) {
         if (index != _currentIndex) {
@@ -158,8 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
       //   showAppBar: false,
       // ),
       const SizedBox(),
+      const OverviewPage(),
       _buildHistory(),
-      const OverviewPage()
     ];
 
     return Scaffold(
