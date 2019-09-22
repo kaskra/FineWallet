@@ -6,7 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +23,6 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation _animation;
-  bool _pressed = false;
 
   double _width = 60;
 
@@ -60,9 +58,6 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
   }
 
   void _onPanStart(DragStartDetails details) {
-    setState(() {
-      _pressed = true;
-    });
     _controller.stop();
     _controller.value = offsetFromGlobalPos(details.globalPosition);
   }
@@ -101,7 +96,6 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
 
     _controller.value = 0;
     setState(() {
-      _pressed = false;
       _width = 60;
     });
     if (widget.tapCallback != null) {
@@ -118,29 +112,25 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
         clipBehavior: Clip.antiAlias,
         type: MaterialType.canvas,
         borderRadius: BorderRadius.circular(30),
-        color: _pressed ? Colors.black38 : Colors.transparent,
+        color: Colors.black38,
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            _pressed
-                ? Positioned(
-                    left: 10,
-                    bottom: null,
-                    child: Icon(Icons.add,
-                        size: 26, color: Theme.of(context).iconTheme.color),
-                  )
-                : Container(),
-            _pressed
-                ? Positioned(
-                    right: 10,
-                    bottom: null,
-                    child: Icon(
-                      Icons.remove,
-                      size: 26,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                  )
-                : Container(),
+            Positioned(
+              left: 10,
+              bottom: null,
+              child: Icon(Icons.add,
+                  size: 26, color: Theme.of(context).iconTheme.color),
+            ),
+            Positioned(
+              right: 10,
+              bottom: null,
+              child: Icon(
+                Icons.remove,
+                size: 26,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
             GestureDetector(
               onHorizontalDragStart: _onPanStart,
               onHorizontalDragUpdate: _onPanUpdate,
