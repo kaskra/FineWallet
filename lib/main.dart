@@ -9,7 +9,7 @@
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
-import 'package:FineWallet/src/widgets/sliding_fab_menu.dart';
+import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
@@ -169,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: children[_currentIndex],
       floatingActionButton: keyboardOpen
           ? SizedBox()
-          : SlidingFABMenu(
+          : SlidingButtonMenu(
               onMenuFunction: _addTransaction,
               tapCallback: _navCallback,
             ),

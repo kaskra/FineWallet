@@ -9,17 +9,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class SlidingFABMenu extends StatefulWidget {
-  SlidingFABMenu({@required this.onMenuFunction, this.tapCallback});
+class SlidingButtonMenu extends StatefulWidget {
+  SlidingButtonMenu({@required this.onMenuFunction, this.tapCallback});
 
   final ValueChanged<int> onMenuFunction;
   final Function(bool) tapCallback;
 
   @override
-  _SlidingFABMenuState createState() => _SlidingFABMenuState();
+  _SlidingButtonMenuState createState() => _SlidingButtonMenuState();
 }
 
-class _SlidingFABMenuState extends State<SlidingFABMenu>
+class _SlidingButtonMenuState extends State<SlidingButtonMenu>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation _animation;
@@ -39,7 +39,7 @@ class _SlidingFABMenuState extends State<SlidingFABMenu>
   }
 
   @override
-  void didUpdateWidget(SlidingFABMenu oldWidget) {
+  void didUpdateWidget(SlidingButtonMenu oldWidget) {
     super.didUpdateWidget(oldWidget);
     _animation = Tween<Offset>(begin: Offset(0.0, 0.0), end: Offset(1.5, 0.0))
         .animate(_controller);
