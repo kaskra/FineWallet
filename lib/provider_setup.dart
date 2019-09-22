@@ -1,3 +1,11 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Sunday, 22nd September 2019 6:34:36 pm
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
 import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
