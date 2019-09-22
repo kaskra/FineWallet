@@ -22,8 +22,9 @@ class IconWrapper extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(25)),
-            child: child),
+          borderRadius: const BorderRadius.all(Radius.circular(25)),
+          child: child,
+        ),
       ),
     );
   }
@@ -110,12 +111,16 @@ class HistoryItemIcon extends StatelessWidget {
 
   Widget _buildExpenseIndicator() {
     return Positioned(
-      right: 8,
-      top: 0,
+      right: 4,
+      top: -2,
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         child: Container(
-          color: isExpense ? Colors.red : Colors.green,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+            color: isExpense ? Colors.red : Colors.green,
+          ),
           child: Icon(
             isExpense ? Icons.remove : Icons.add,
             size: 14,

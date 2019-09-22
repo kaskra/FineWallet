@@ -6,7 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
@@ -75,22 +74,22 @@ class HistoryItem extends StatelessWidget {
 
   Row _buildMainItemContent(BuildContext context) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: HistoryItemIcon(
-              isSelected: isSelected,
-              isExpense: isExpense,
-              isRecurring: isRecurring,
-              iconData: CategoryIcon(transaction.category - 1),
-              context: context,
-            ),
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: HistoryItemIcon(
+            isSelected: isSelected,
+            isExpense: isExpense,
+            isRecurring: isRecurring,
+            iconData: CategoryIcon(transaction.category - 1),
+            context: context,
           ),
-          _buildContent(),
-        ],
-      );
+        ),
+        _buildContent(),
+      ],
+    );
   }
 
   Widget _buildItemTitle() {
