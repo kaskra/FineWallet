@@ -39,7 +39,7 @@ class _HistoryState extends State<History> {
       width: MediaQuery.of(context).size.width,
       child: SelectionAppBar(
         title: "FineWallet",
-        selectedItems: Map(),
+        selectedItems: _selectedItems,
         onClose: () => _closeSelection(),
         onEdit: () => _editItem(_selectedItems.values.first),
         onDelete: () => _deleteItems(),
