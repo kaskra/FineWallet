@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
@@ -62,7 +63,7 @@ class HistoryItem extends StatelessWidget {
         ratio: 0.55,
         height: 60,
         child: DecoratedCard(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(CARD_RADIUS),
           color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white,
           borderColor: isSelected ? Theme.of(context).colorScheme.secondary : Colors.white,
           borderWidth: isSelected ? 2 : 0,

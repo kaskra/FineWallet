@@ -8,16 +8,6 @@
 
 import 'package:flutter/material.dart';
 
-final ThemeData normalTheme = ThemeData(
-    textSelectionColor: Colors.black26,
-    primarySwatch: Colors.orange,
-    appBarTheme:
-        AppBarTheme(actionsIconTheme: IconThemeData(color: Colors.white)));
-
-const double appBarElevation = 0; // default 4
-const double appBarOpacity = 1;
-const bool centerAppBar = true;
-
 const _primary = Colors.orange;
 const _secondary = Colors.orangeAccent;
 const _onMainColor = Colors.white;
@@ -27,6 +17,13 @@ const _background = Colors.white;
 const _negBudget = Colors.red;
 const _overallBackground = Color(0xffd8e7ff);
 const _brightness = Brightness.light;
+
+final ThemeData normalTheme = ThemeData(
+    textSelectionColor: Colors.black26,
+    primarySwatch: Colors.orange,
+    appBarTheme:
+        AppBarTheme(actionsIconTheme: IconThemeData(color: Colors.white)));
+
 
 final ThemeData standardTheme = ThemeData(
   primaryColor: _primary,

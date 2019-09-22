@@ -6,7 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/color_themes.dart';
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 
@@ -46,8 +46,8 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
   Widget _buildSelectionAppBar(Map<int, TransactionModel> selectedItems) {
     return AppBar(
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        elevation: appBarElevation,
+            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
+        elevation: APPBAR_ELEVATION,
         actions: <Widget>[
           _buildEditAction(selectedItems),
           _buildDeleteAction()

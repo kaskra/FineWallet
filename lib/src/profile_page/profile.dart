@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/src/profile_page/profile_chart.dart';
 import 'package:FineWallet/src/profile_page/slider_box.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
@@ -103,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildBody() {
-    BorderRadius radius = BorderRadius.circular(4);
+    BorderRadius radius = BorderRadius.circular(CARD_RADIUS);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[

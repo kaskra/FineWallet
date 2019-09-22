@@ -16,6 +16,7 @@ import 'package:FineWallet/src/profile_page/profile.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/core/resources/db_initilization.dart';
 import 'package:FineWallet/src/statistics/monthly_overview.dart';
+import 'package:FineWallet/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -130,10 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildDefaultAppBar() => AppBar(
-        centerTitle: centerAppBar,
-        elevation: appBarElevation,
+        centerTitle: CENTER_APPBAR,
+        elevation: APPBAR_ELEVATION,
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
         title: Text(
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),

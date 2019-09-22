@@ -9,7 +9,7 @@
 import 'dart:async';
 
 import 'package:FineWallet/src/add_page/bottom_sheets.dart';
-import 'package:FineWallet/color_themes.dart';
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/datatypes/repeat_type.dart';
 import 'package:FineWallet/src/widgets/corner_triangle.dart';
@@ -455,10 +455,10 @@ class _AddPageState extends State<AddPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         iconTheme: Theme.of(context).iconTheme,
-        centerTitle: centerAppBar,
-        elevation: appBarElevation,
+        centerTitle: CENTER_APPBAR,
+        elevation: APPBAR_ELEVATION,
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
         title: Text(
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
