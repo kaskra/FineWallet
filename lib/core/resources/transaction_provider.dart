@@ -60,14 +60,19 @@ class TransactionsProvider {
     List<SumOfTransactionModel> result = List();
     res.forEach((TransactionModel tx) {
       if (!result.contains(tx.date)) {
-        result.add(SumOfTransactionModel(date: tx.date, amount: 0));
+        result.add(
+          SumOfTransactionModel(
+              date: DateTime.fromMillisecondsSinceEpoch(tx.date), amount: 0),
+        );
       }
     });
 
     result
-        .map((SumOfTransactionModel s) => s.amount = res
-            .where((tx) => tx.date == s.date)
-            .fold(0.0, (prev, curr) => prev + curr.amount.toDouble()))
+        .map(
+          (SumOfTransactionModel s) => s.amount = res
+              .where((tx) => tx.date == s.date.millisecondsSinceEpoch)
+              .fold(0.0, (prev, curr) => prev + curr.amount.toDouble()),
+        )
         .toList();
     return result;
   }

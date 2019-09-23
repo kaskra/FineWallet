@@ -69,10 +69,11 @@ class TransactionModel {
 }
 
 class SumOfTransactionModel {
-  int date;
+  int weekday;
   num amount;
+  DateTime date;
 
-  SumOfTransactionModel({this.amount, this.date});
+  SumOfTransactionModel({this.amount, this.date}) : this.weekday = date.weekday;
 
   factory SumOfTransactionModel.fromMap(Map<String, dynamic> json) =>
       new SumOfTransactionModel(
@@ -83,9 +84,15 @@ class SumOfTransactionModel {
   Map<String, dynamic> toMap() => {
         "amount": amount,
         "date": date,
+        "weekday": date.weekday,
       };
 
   bool hasSameValue(dynamic v) {
-    return date == v || amount == v;
+    if (v is DateTime) {
+      return date.difference(v) < Duration(hours: 24);
+    } else if (v is double) {
+      return amount == v;
+    } else
+      return false;
   }
 }

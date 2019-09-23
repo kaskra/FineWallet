@@ -1,3 +1,4 @@
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
@@ -33,14 +34,20 @@ class WeekOverview extends StatelessWidget {
       fontWeight: FontWeight.bold,
     );
 
-    return Container(
-      padding: EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          _buildDayName(day, isToday, textStyle),
-          _buildAmountString(budget, numberTextStyle),
-        ],
+    return InkWell(
+      borderRadius: BorderRadius.circular(CARD_RADIUS),
+      onTap: () {
+        print("Go to $day!");
+      },
+      child: Container(
+        padding: EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            _buildDayName(day, isToday, textStyle),
+            _buildAmountString(budget, numberTextStyle),
+          ],
+        ),
       ),
     );
   }
@@ -88,7 +95,7 @@ class WeekOverview extends StatelessWidget {
                     selectionColor: Theme.of(context).colorScheme.secondary,
                     items: <Widget>[
                       for (SumOfTransactionModel m in snapshot.data)
-                        _buildDay(m.date, m.amount.toDouble())
+                        _buildDay(m.weekday, m.amount.toDouble())
                     ],
                   );
                 } else {
