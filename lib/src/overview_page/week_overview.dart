@@ -15,7 +15,7 @@ class WeekOverview extends StatelessWidget {
 
   final BuildContext context;
 
-  Widget _buildDay(int day, double budget) {
+  Widget _buildDay(int day, double budget, DateTime date) {
     bool isToday = day == DateTime.now().weekday;
 
     TextStyle textStyle = TextStyle(
@@ -37,7 +37,7 @@ class WeekOverview extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(CARD_RADIUS),
       onTap: () {
-        print("Go to $day!");
+        print("Go to ${date.day}.${date.month}.${date.year}!");
       },
       child: Container(
         padding: EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
@@ -95,7 +95,7 @@ class WeekOverview extends StatelessWidget {
                     selectionColor: Theme.of(context).colorScheme.secondary,
                     items: <Widget>[
                       for (SumOfTransactionModel m in snapshot.data)
-                        _buildDay(m.weekday, m.amount.toDouble())
+                        _buildDay(m.weekday, m.amount.toDouble(), m.date)
                     ],
                   );
                 } else {
