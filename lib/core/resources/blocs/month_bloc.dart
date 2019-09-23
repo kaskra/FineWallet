@@ -25,6 +25,8 @@ class MonthBloc {
       StreamController<Map<String, double>>.broadcast();
   final _currentMonthController = StreamController<MonthModel>.broadcast();
   final _savingsController = StreamController<double>.broadcast();
+  final _monthlyBudgetController = StreamController<double>.broadcast();
+  final _dailyBudgetController = StreamController<double>.broadcast();
 
   get currentMonth => _currentMonthController.stream;
 
@@ -34,11 +36,17 @@ class MonthBloc {
 
   get budgetOverview => _budgetOverviewController.stream;
 
+  get dailyBudget => _dailyBudgetController.stream;
+
+  get monthlyBudget => _monthlyBudgetController.stream;
+
   void dispose() {
     _currentMonthController.close();
     _allMonthController.close();
     _savingsController.close();
     _budgetOverviewController.close();
+    _dailyBudgetController.close();
+    _monthlyBudgetController.close();
   }
 
   getCurrentMonth() async {
@@ -106,6 +114,8 @@ class MonthBloc {
     getMonths();
     getSavings();
     getBudgetOverview();
+    getMonthlyBudget();
+    getDailyBudget();
   }
 
   /// Calculate the budget for the current day as well as the spare budget for the month.
@@ -135,5 +145,36 @@ class MonthBloc {
       'dayBudget': budgetPerDay,
       'monthSpareBudget': monthlySpareBudget - expensesToday,
     });
+  }
+
+  getMonthlyBudget() async {
+    TransactionList list = await TransactionsProvider.db
+        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+    double currentMaxBudget = currentMonth?.currentMaxBudget ?? 0;
+
+    double monthlySpareBudget = currentMaxBudget - list.sumExpenses();
+    _monthlyBudgetController.sink.add(monthlySpareBudget);
+  }
+
+  getDailyBudget() async {
+    TransactionList list = await TransactionsProvider.db
+        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+    double currentMaxBudget = currentMonth?.currentMaxBudget ?? 0;
+
+    int remainingDaysInMonth =
+        getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
+
+    double monthlyExpenses = list.exceptDate(DateTime.now()).sumExpenses();
+
+    double expensesToday =
+        list.byDayInMillis(dayInMillis(DateTime.now())).sumExpenses();
+
+    double monthlySpareBudget = currentMaxBudget - monthlyExpenses;
+
+    double budgetPerDay =
+        (monthlySpareBudget / remainingDaysInMonth) - expensesToday;
+    _dailyBudgetController.sink.add(budgetPerDay);
   }
 }
