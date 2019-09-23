@@ -50,8 +50,8 @@ class MonthBloc {
   }
 
   getSavings() async {
-    double x = await MonthProvider.db.getAllSavings();
-    _savingsController.sink.add(x);
+    double savings = await MonthProvider.db.getAllSavings();
+    _savingsController.sink.add(savings);
   }
 
   add(MonthModel month) {
