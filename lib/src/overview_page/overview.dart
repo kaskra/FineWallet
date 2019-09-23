@@ -22,7 +22,7 @@ class OverviewPage extends StatelessWidget {
           children: <Widget>[
             BudgetOverview(),
             DayOverview2(),
-            WeekOverview(context),
+            WeekOverview(),
           ],
         ),
       ),
