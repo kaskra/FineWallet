@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
@@ -66,7 +67,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 3;
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
 
@@ -91,14 +91,14 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
       onTabSelected: (int index) {
-        if (index != _currentIndex) {
+        if (index != Provider.of<NavigationNotifier>(context).page) {
           setState(() {
-            _currentIndex = index;
             _isSelectionModeActive = false;
           });
+          Provider.of<NavigationNotifier>(context).setPage(index);
         }
       },
-      selectedIndex: _currentIndex,
+      selectedIndex: Provider.of<NavigationNotifier>(context).page,
       isVisible: _showBottomBar,
     );
   }
@@ -148,12 +148,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ProfilePage(
         showAppBar: false,
       ),
-      const SizedBox(child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(50.0),
-          child: Text("Wird noch überarbeitet, liebe Bille :P"),
+      const SizedBox(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(50.0),
+            child: Text("Wird noch überarbeitet, liebe Bille :P"),
+          ),
         ),
-      ),),
+      ),
       // MonthlyOverview(
       //   initialMonth: DateTime.now(),
       //   showAppBar: false,
@@ -166,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
       bottomNavigationBar: _buildBottomBar(),
-      body: children[_currentIndex],
+      body: children[Provider.of<NavigationNotifier>(context).page],
       floatingActionButton: keyboardOpen
           ? SizedBox()
           : SlidingButtonMenu(
