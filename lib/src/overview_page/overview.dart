@@ -19,7 +19,11 @@ class OverviewPage extends StatelessWidget {
     return Center(
       child: Container(
         child: ListView(
-          children: <Widget>[BudgetOverview(), DayOverview2(), WeekOverview2(context)],
+          children: <Widget>[
+            BudgetOverview(),
+            DayOverview2(),
+            WeekOverview2(context),
+          ],
         ),
       ),
     );

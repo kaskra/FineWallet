@@ -76,54 +76,46 @@ class WeekOverview2 extends StatelessWidget {
   Widget _buildDay(int day, double budget) {
     bool isToday = day == DateTime.now().weekday;
 
+    TextStyle textStyle = TextStyle(
+      color: isToday
+          ? Theme.of(context).colorScheme.secondary
+          : Theme.of(context).textTheme.body1.color,
+      fontSize: isToday ? 17 : 14,
+      fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+    );
+
     return Container(
       padding: EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _buildDayName(isToday, day),
-          _buildAmountString(budget, isToday),
+          _buildDayName(day, isToday, textStyle),
+          _buildAmountString(budget, textStyle),
         ],
       ),
     );
   }
 
-  Widget _buildAmountString(double budget, bool isToday) {
+  Widget _buildAmountString(double budget, TextStyle textStyle) {
     return Text(
       "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}€",
       maxLines: 1,
-      style: TextStyle(
-        fontSize: isToday ? 18 : 14,
-        color: isToday
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).textTheme.body1.color,
-        fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-      ),
+      style: textStyle,
     );
   }
 
-  Widget _buildDayName(bool isToday, int day) {
-    var formatter = new DateFormat('dd.MM.yy');
+  Widget _buildDayName(int day, bool isToday, TextStyle textStyle) {
+    var formatter = new DateFormat('E, dd.MM.yy');
     String today = formatter.format(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          isToday ? "TODAY" : getDayName(day),
-          maxLines: 1,
-          style: TextStyle(
-            color: isToday
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).textTheme.body1.color,
-            fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-            fontSize: isToday ? 16 : 14,
-          ),
-        ),
+        Text(isToday ? "TODAY" : getDayName(day),
+            maxLines: 1, style: textStyle),
         isToday
-            ? new Timestamp(
-                color: Theme.of(context).primaryColor, size: 12, today: today)
-            : Container(),
+            ? new Timestamp(color: textStyle.color, size: 12, today: today)
+            : const SizedBox(),
       ],
     );
   }
@@ -144,7 +136,7 @@ class WeekOverview2 extends StatelessWidget {
                 if (snapshot.hasData) {
                   return Timeline(
                     color: Colors.grey,
-                    selectionColor: Theme.of(context).primaryColor,
+                    selectionColor: Theme.of(context).colorScheme.secondary,
                     items: <Widget>[
                       for (SumOfTransactionModel m in snapshot.data)
                         _buildDay(m.date, m.amount.toDouble())
@@ -163,5 +155,3 @@ class WeekOverview2 extends StatelessWidget {
     );
   }
 }
-
-
