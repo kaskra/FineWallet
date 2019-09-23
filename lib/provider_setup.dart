@@ -40,7 +40,4 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   ChangeNotifierProvider.value(
     value: NavigationNotifier(),
   ),
-  ChangeNotifierProvider.value(
-    value: WeekOverviewModel(),
-  )
 ];
