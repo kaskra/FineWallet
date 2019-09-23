@@ -51,7 +51,7 @@ final ThemeData standardTheme = ThemeData(
     brightness: _brightness,
     onError: _onMainColor,
     onPrimary: _onMainColor,
-    onSurface: _onBackground.withOpacity(0.54),
+    onSurface: _onBackground.withOpacity(0.7),
     onBackground: _onBackground,
     onSecondary: _onMainColor,
     error: _errorColor,

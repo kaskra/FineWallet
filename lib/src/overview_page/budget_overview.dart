@@ -79,9 +79,17 @@ class WeekOverview2 extends StatelessWidget {
     TextStyle textStyle = TextStyle(
       color: isToday
           ? Theme.of(context).colorScheme.secondary
-          : Theme.of(context).textTheme.body1.color,
-      fontSize: isToday ? 17 : 14,
+          : Theme.of(context).colorScheme.onSurface,
+      fontSize: isToday ? 20 : 16,
       fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+    );
+
+    TextStyle numberTextStyle = TextStyle(
+      color: isToday
+          ? Theme.of(context).colorScheme.secondary
+          : Theme.of(context).colorScheme.onSurface,
+      fontSize: isToday ? 20 : 16,
+      fontWeight: FontWeight.bold,
     );
 
     return Container(
@@ -90,7 +98,7 @@ class WeekOverview2 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           _buildDayName(day, isToday, textStyle),
-          _buildAmountString(budget, textStyle),
+          _buildAmountString(budget, numberTextStyle),
         ],
       ),
     );
