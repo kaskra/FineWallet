@@ -82,6 +82,7 @@ class TimelinePainter extends CustomPainter {
 
     if (index == 0 && gradientColors != null) {
       paint
+        ..style = PaintingStyle.fill
         ..shader = ui.Gradient.linear(Offset(0.0, 0.0),
             Offset(0.0, size.height), gradientColors, [0.8, 1]);
     }
