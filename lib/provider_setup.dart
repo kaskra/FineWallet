@@ -10,6 +10,7 @@ import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/navigation_notifier.dart';
+import 'package:FineWallet/src/overview_page/week_overview_model.dart';
 import 'package:provider/provider.dart';
 
 List<SingleChildCloneableWidget> providers = [
@@ -39,4 +40,7 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   ChangeNotifierProvider.value(
     value: NavigationNotifier(),
   ),
+  ChangeNotifierProvider.value(
+    value: WeekOverviewModel(),
+  )
 ];
