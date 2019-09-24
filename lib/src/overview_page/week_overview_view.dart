@@ -15,7 +15,6 @@ import 'package:FineWallet/src/widgets/timestamp.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class WeekOverviewView extends StatelessWidget {
   const WeekOverviewView({Key key, this.context}) : super(key: key);
