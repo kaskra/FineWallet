@@ -1,3 +1,11 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Tuesday, 24th September 2019 12:31:56 pm
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/src/base_view.dart';
