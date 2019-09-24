@@ -11,15 +11,13 @@ class MonthlyBudgetView extends StatelessWidget {
       model: MonthlyBudgetViewModel(),
       onModelReady: (model) => model.updateBudget(),
       builder: (_, model, __) {
-        return model.busy
-            ? const CircularProgressIndicator()
-            : Text(
-                "${model.budget.toStringAsFixed(2)}€",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26),
-              );
+        return Text(
+          model.busy ? "0.00€" : "${model.budget.toStringAsFixed(2)}€",
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 26),
+        );
       },
     );
   }
