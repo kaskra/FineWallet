@@ -1,11 +1,9 @@
-
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/src/base_model.dart';
 import 'package:FineWallet/utils.dart';
 
 class WeekOverviewModel extends BaseModel {
-
   List<SumOfTransactionModel> expenses = [];
 
   Future updateExpenseList() async {
@@ -36,11 +34,6 @@ class WeekOverviewModel extends BaseModel {
       }
     }
     expenses = resultingExpenses;
-    
     setBusy(false);
   }
-
-
-
-
 }

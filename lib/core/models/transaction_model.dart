@@ -89,7 +89,7 @@ class SumOfTransactionModel {
 
   bool hasSameValue(dynamic v) {
     if (v is DateTime) {
-      return date.difference(v) < Duration(hours: 24);
+      return date.day == v.day && date.month == v.month && date.year == v.year;
     } else if (v is double) {
       return amount == v;
     } else
