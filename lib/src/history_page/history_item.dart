@@ -124,7 +124,7 @@ class HistoryItem extends StatelessWidget {
   }
 
   Widget _buildItemText() {
-    String prefix = isExpense && transaction.amount < 0 ? "-" : "";
+    String prefix = (isExpense && transaction.amount > 0) ? "-" : "";
     String suffix = "€";
     Color color = isExpense ? Colors.red : Colors.green;
     return Align(
