@@ -8,15 +8,17 @@ class ExpandToWidth extends StatelessWidget {
     @required this.child,
     this.ratio = 1,
     this.height,
+    this.horizontalMargin = 5,
   }) : super(key: key);
 
   final Widget child;
   final double ratio;
   final double height;
+  final double horizontalMargin;
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
+        margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
         width: MediaQuery.of(context).size.width * ratio,
         height: height,
         child: child,

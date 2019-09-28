@@ -11,16 +11,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class IconWrapper extends StatelessWidget {
-  const IconWrapper({Key key, @required this.child}) : super(key: key);
+  const IconWrapper(
+      {Key key, @required this.child, this.alignment = Alignment.topLeft})
+      : super(key: key);
 
   final Widget child;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Align(
-        alignment: Alignment.topLeft,
+        alignment: alignment,
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(25)),
           child: child,

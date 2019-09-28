@@ -7,8 +7,11 @@
  */
 
 import 'package:FineWallet/src/overview_page/budget_overview.dart';
+import 'package:FineWallet/src/overview_page/placeholder_box.dart';
 import 'package:FineWallet/src/overview_page/week_overview.dart';
 import 'package:flutter/material.dart';
+
+import 'last_transaction.dart';
 
 class OverviewPage extends StatelessWidget {
   const OverviewPage({Key key}) : super(key: key);
@@ -20,7 +23,19 @@ class OverviewPage extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             BudgetOverview(),
-            LastTransaction(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                LastTransaction(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: PlaceholderOverview(),
+                  ),
+                ),
+              ],
+            ),
             WeekOverview(),
           ],
         ),

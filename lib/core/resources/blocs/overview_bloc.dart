@@ -20,6 +20,8 @@ class OverviewBloc {
   final _lastWeekTransactionsController =
       StreamController<List<SumOfTransactionModel>>.broadcast();
   final _monthlyBudgetController = StreamController<double>.broadcast();
+  final _latestTransactionController =
+      StreamController<TransactionModel>.broadcast();
 
   get lastWeekTransactions => _lastWeekTransactionsController.stream;
 
@@ -27,10 +29,13 @@ class OverviewBloc {
 
   get monthlyBudget => _monthlyBudgetController.stream;
 
+  get latestTransaction => _latestTransactionController.stream;
+
   void dispose() {
     _dailyBudgetController.close();
     _monthlyBudgetController.close();
     _lastWeekTransactionsController.close();
+    _latestTransactionController.close();
   }
 
   getMonthlyBudget() async {
@@ -88,6 +93,15 @@ class OverviewBloc {
         );
       }
     }
-    _lastWeekTransactionsController.add(resultingExpenses);
+    _lastWeekTransactionsController.sink.add(resultingExpenses);
+  }
+
+  getLatestTransaction() async {
+    TransactionList transactions = await TransactionsProvider.db
+        .getAllTrans(dayInMillis(DateTime.now()));
+
+    TransactionModel latest = transactions.length > 0 ? transactions.first : null;
+
+    _latestTransactionController.sink.add(latest);
   }
 }

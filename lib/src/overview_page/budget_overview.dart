@@ -97,19 +97,3 @@ class BudgetOverview extends StatelessWidget {
   }
 }
 
-class LastTransaction extends StatelessWidget {
-  const LastTransaction({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpandToWidth(
-      child: DecoratedCard(
-        borderWidth: 0,
-        borderRadius: BorderRadius.circular(10),
-        child: const SizedBox(
-          height: 50,
-        ),
-      ),
-    );
-  }
-}
