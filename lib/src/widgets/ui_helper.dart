@@ -33,15 +33,17 @@ class ExpandToHeight extends StatelessWidget {
     @required this.child,
     this.ratio = 1,
     this.width,
+    this.verticalMargin = 5,
   }) : super(key: key);
 
   final Widget child;
   final double ratio;
   final double width;
+  final double verticalMargin;
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
+        margin: EdgeInsets.symmetric(vertical: verticalMargin),
         height: MediaQuery.of(context).size.height * ratio,
         width: width,
         child: child,
@@ -56,15 +58,17 @@ class ExpandToScreenRatio extends StatelessWidget {
     @required this.child,
     this.widthRatio = 0.5,
     this.heightRatio = 0.5,
+    this.margin,
   }) : super(key: key);
 
   final Widget child;
   final double widthRatio;
   final double heightRatio;
+  final EdgeInsetsGeometry margin;
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
+        margin: margin,
         height: MediaQuery.of(context).size.height * heightRatio,
         width: MediaQuery.of(context).size.width * widthRatio,
         child: child,

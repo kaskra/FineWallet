@@ -22,8 +22,9 @@ class BudgetOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       child: DecoratedCard(
+        borderColor: Theme.of(context).colorScheme.onPrimary,
         color: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
+        borderWidth: 1,
         borderRadius: BorderRadius.circular(CARD_RADIUS),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -96,4 +97,3 @@ class BudgetOverview extends StatelessWidget {
     );
   }
 }
-

@@ -22,24 +22,27 @@ class LastTransaction extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       horizontalMargin: 5,
-      ratio: 0.5,
+      height: 100,
+      ratio: 0.46,
       child: DecoratedCard(
-          padding: 10,
-          borderWidth: 0,
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                _buildLastTransactionContent(),
-                Text(
-                  "Lastest transaction",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 13),
-                )
-              ],
-            ),
-          )),
+        borderColor: Theme.of(context).colorScheme.primary,
+        padding: 10,
+        borderWidth: 0,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              _buildLastTransactionContent(),
+              Text(
+                "Lastest transaction",
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 13),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 

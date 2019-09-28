@@ -28,28 +28,40 @@ class SavingsBox extends StatelessWidget {
               "Savings",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Consumer<MonthBloc>(
-              builder: (_, bloc, __) {
-                bloc.getSavings();
-                return StreamBuilder<double>(
-                  initialData: 0,
-                  stream: bloc.savings,
-                  builder: (context, snapshot) {
-                    return Text(
-                        "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}€",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                Theme.of(context).colorScheme.primaryVariant));
-                  },
-                );
-              },
-            )
+            SavingsWidget(
+              textStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primaryVariant),
+            ),
           ],
         ),
         borderRadius: borderRadius,
       ),
+    );
+  }
+}
+
+class SavingsWidget extends StatelessWidget {
+  final TextStyle textStyle;
+  const SavingsWidget({Key key, this.textStyle}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MonthBloc>(
+      builder: (context, bloc, child) {
+        bloc.getSavings();
+        return StreamBuilder(
+          initialData: 0.0,
+          stream: bloc.savings,
+          builder: (context, snapshot) {
+            return Text(
+              "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}€",
+              style: textStyle,
+            );
+          },
+        );
+      },
     );
   }
 }

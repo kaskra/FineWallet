@@ -7,7 +7,7 @@
  */
 
 import 'package:FineWallet/src/overview_page/budget_overview.dart';
-import 'package:FineWallet/src/overview_page/placeholder_box.dart';
+import 'package:FineWallet/src/overview_page/savings_overview.dart';
 import 'package:FineWallet/src/overview_page/week_overview.dart';
 import 'package:flutter/material.dart';
 
@@ -29,10 +29,7 @@ class OverviewPage extends StatelessWidget {
               children: <Widget>[
                 LastTransaction(),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: PlaceholderOverview(),
-                  ),
+                  child: SavingsOverview(),
                 ),
               ],
             ),

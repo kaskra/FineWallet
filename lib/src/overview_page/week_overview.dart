@@ -1,3 +1,11 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Saturday, 28th September 2019 11:47:17 pm
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
 import 'package:FineWallet/src/overview_page/week_overview_timeline.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -10,6 +18,7 @@ class WeekOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       child: DecoratedCard(
+        borderColor: Theme.of(context).colorScheme.primary,
         borderWidth: 0,
         borderRadius: BorderRadius.circular(10),
         child: WeekOverviewTimeline(
