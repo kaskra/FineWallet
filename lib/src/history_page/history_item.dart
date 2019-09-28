@@ -35,28 +35,6 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () {
-        if (onSelect != null) {
-          onSelect(true);
-        }
-      },
-      onTap: () {
-        bool isSelect = false;
-        if (isSelected) {
-          isSelect = false;
-        } else if (isSelectionModeActive) {
-          isSelect = true;
-        }
-        if (onSelect != null) {
-          onSelect(isSelect);
-        }
-      },
-      child: _buildBody(context),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
     return Align(
       alignment: isExpense ? Alignment.centerRight : Alignment.centerLeft,
       child: ExpandToWidth(
@@ -65,10 +43,30 @@ class HistoryItem extends StatelessWidget {
         child: DecoratedCard(
           borderRadius: BorderRadius.circular(CARD_RADIUS),
           color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white,
-          borderColor: isSelected ? Theme.of(context).colorScheme.secondary : Colors.white,
+          borderColor: isSelected
+              ? Theme.of(context).colorScheme.secondary
+              : Colors.white,
           borderWidth: isSelected ? 2 : 0,
           padding: 0,
-          child: _buildMainItemContent(context),
+          child: InkWell(
+            child: _buildMainItemContent(context),
+            onTap: () {
+              bool isSelect = false;
+              if (isSelected) {
+                isSelect = false;
+              } else if (isSelectionModeActive) {
+                isSelect = true;
+              }
+              if (onSelect != null) {
+                onSelect(isSelect);
+              }
+            },
+            onLongPress: () {
+              if (onSelect != null) {
+                onSelect(true);
+              }
+            },
+          ),
         ),
       ),
     );

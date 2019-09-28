@@ -26,7 +26,6 @@ class SavingsOverview extends StatelessWidget {
           children: <Widget>[
             Center(
               child: FittedBox(
-                fit: BoxFit.fill,
                 child: SavingsWidget(
                   textStyle: TextStyle(
                       fontSize: 22,
