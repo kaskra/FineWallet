@@ -15,18 +15,8 @@ import 'package:FineWallet/src/widgets/vertical_bar.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 
-class BudgetOverview extends StatefulWidget {
+class BudgetOverview extends StatelessWidget {
   const BudgetOverview({Key key}) : super(key: key);
-
-  @override
-  _BudgetOverviewState createState() => _BudgetOverviewState();
-}
-
-class _BudgetOverviewState extends State<BudgetOverview> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +32,9 @@ class _BudgetOverviewState extends State<BudgetOverview> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                buildDailyBudget(context),
-                buildVerticalDivider(context),
-                buildMonthlyBudget(context),
+                _buildDailyBudget(context),
+                _buildVerticalDivider(context),
+                _buildMonthlyBudget(context),
               ],
             ),
             Divider(
@@ -61,7 +51,7 @@ class _BudgetOverviewState extends State<BudgetOverview> {
     );
   }
 
-  Widget buildVerticalDivider(BuildContext context) {
+  Widget _buildVerticalDivider(BuildContext context) {
     return VerticalBar(
       color: Theme.of(context).colorScheme.onPrimary,
       height: 50,
@@ -70,7 +60,7 @@ class _BudgetOverviewState extends State<BudgetOverview> {
     );
   }
 
-  Widget buildMonthlyBudget(BuildContext context) {
+  Widget _buildMonthlyBudget(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
       child: Column(
@@ -89,7 +79,7 @@ class _BudgetOverviewState extends State<BudgetOverview> {
     );
   }
 
-  Widget buildDailyBudget(BuildContext context) {
+  Widget _buildDailyBudget(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
       child: Column(
