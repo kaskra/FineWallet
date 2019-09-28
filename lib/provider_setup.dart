@@ -11,7 +11,6 @@ import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/navigation_notifier.dart';
-import 'package:FineWallet/src/overview_page/week_overview_model.dart';
 import 'package:provider/provider.dart';
 
 List<SingleChildCloneableWidget> providers = [
@@ -32,7 +31,7 @@ List<SingleChildCloneableWidget> independentServices = [
   Provider(
     dispose: (context, bloc) => bloc.dispose(),
     builder: (context) => CategoryBloc(),
-  ),  
+  ),
   Provider(
     builder: (context) => OverviewBloc(),
     dispose: (context, bloc) => bloc.dispose(),

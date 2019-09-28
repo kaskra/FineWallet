@@ -21,7 +21,7 @@ class OverviewPage extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             BudgetOverview(),
-            DayOverview2(),
+            LastTransaction(),
             WeekOverview(),
           ],
         ),

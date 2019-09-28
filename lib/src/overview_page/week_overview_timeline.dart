@@ -8,16 +8,16 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
-import 'package:FineWallet/src/base_view.dart';
-import 'package:FineWallet/src/overview_page/week_overview_model.dart';
+import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
 import 'package:FineWallet/src/widgets/timeline.dart';
 import 'package:FineWallet/src/widgets/timestamp.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class WeekOverviewView extends StatelessWidget {
-  const WeekOverviewView({Key key, this.context}) : super(key: key);
+class WeekOverviewTimeline extends StatelessWidget {
+  const WeekOverviewTimeline({Key key, this.context}) : super(key: key);
 
   final BuildContext context;
 
@@ -84,20 +84,36 @@ class WeekOverviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseWidget<WeekOverviewModel>(
-      model: WeekOverviewModel(),
-      onModelReady: (model) => model.updateExpenseList(),
-      builder: (_, model, __) {
-        return model.busy
-            ? const CircularProgressIndicator()
-            : Timeline(
-                color: Colors.grey,
-                selectionColor: Theme.of(context).colorScheme.secondary,
-                items: <Widget>[
-                  for (SumOfTransactionModel m in model.expenses)
-                    _buildDay(m.weekday, m.amount.toDouble(), m.date)
-                ],
+    return Consumer<OverviewBloc>(
+      builder: (context, bloc, child) {
+        bloc.getLastWeekTransactions();
+        return StreamBuilder(
+          stream: bloc.lastWeekTransactions,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                heightFactor: 7,
+                child: Text(
+                  "Could not load last weeks transactions! Error: ${snapshot.error.toString()}",
+                  style: TextStyle(color: Colors.black54),
+                ),
               );
+            }
+            return !snapshot.hasData
+                ? const Center(
+                    heightFactor: 7,
+                    child: CircularProgressIndicator(),
+                  )
+                : Timeline(
+                    color: Colors.grey,
+                    selectionColor: Theme.of(context).colorScheme.secondary,
+                    items: <Widget>[
+                      for (SumOfTransactionModel m in snapshot.data)
+                        _buildDay(m.weekday, m.amount.toDouble(), m.date)
+                    ],
+                  );
+          },
+        );
       },
     );
   }

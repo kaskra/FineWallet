@@ -27,14 +27,10 @@ class TransactionBloc {
       StreamController<TransactionList>.broadcast();
   final _monthlyTransactionsController =
       StreamController<TransactionList>.broadcast();
-  final _lastWeekTransactionsController =
-      StreamController<List<SumOfTransactionModel>>.broadcast();
 
   get allTransactions => _allTransactionsController.stream;
 
   get monthlyTransactions => _monthlyTransactionsController.stream;
-
-  get lastWeekTransactions => _lastWeekTransactionsController.stream;
 
   void updateAllTransactions() {
     getAllTransactions();
@@ -43,7 +39,6 @@ class TransactionBloc {
   void dispose() {
     _allTransactionsController.close();
     _monthlyTransactionsController.close();
-    _lastWeekTransactionsController.close();
   }
 
   getAllTransactions() async {
@@ -55,34 +50,6 @@ class TransactionBloc {
     dateInMonth = dateInMonth ?? dayInMillis(DateTime.now());
     _monthlyTransactionsController.sink
         .add(await TransactionsProvider.db.getTransactionsOfMonth(dateInMonth));
-  }
-
-  getLastWeekTransactions() async {
-    List<SumOfTransactionModel> groupedExpenses = await TransactionsProvider.db
-        .getExpensesGroupedByDay(dayInMillis(DateTime.now()));
-
-    List<SumOfTransactionModel> resultingExpenses = [];
-
-    for (DateTime date in getLastWeekAsDates()) {
-      int index = groupedExpenses.indexWhere((s) => s.hasSameValue(date));
-
-      if (index < 0) {
-        resultingExpenses.add(
-          SumOfTransactionModel(
-            date: date,
-            amount: 0.0,
-          ),
-        );
-      } else {
-        resultingExpenses.add(
-          SumOfTransactionModel(
-            date: date,
-            amount: groupedExpenses[index].amount,
-          ),
-        );
-      }
-    }
-    _lastWeekTransactionsController.add(resultingExpenses);
   }
 
   add(TransactionModel tx) {
