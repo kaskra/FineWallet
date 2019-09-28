@@ -16,19 +16,10 @@ import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/utils.dart';
 
 class OverviewBloc {
-  OverviewBloc() {
-    // getSavings();
-    getMonthlyBudget();
-    getDailyBudget();
-  }
-
-  // final _savingsController = StreamController<double>.broadcast();
-  final _monthlyBudgetController = StreamController<double>.broadcast();
   final _dailyBudgetController = StreamController<double>.broadcast();
   final _lastWeekTransactionsController =
       StreamController<List<SumOfTransactionModel>>.broadcast();
-
-  // get savings => _savingsController.stream;
+  final _monthlyBudgetController = StreamController<double>.broadcast();
 
   get lastWeekTransactions => _lastWeekTransactionsController.stream;
 
@@ -37,15 +28,10 @@ class OverviewBloc {
   get monthlyBudget => _monthlyBudgetController.stream;
 
   void dispose() {
-    // _savingsController.close();
     _dailyBudgetController.close();
     _monthlyBudgetController.close();
     _lastWeekTransactionsController.close();
   }
-
-  // getSavings() async {
-  //   _savingsController.sink.add(await MonthProvider.db.getAllSavings());
-  // }
 
   getMonthlyBudget() async {
     TransactionList list = await TransactionsProvider.db
@@ -63,8 +49,7 @@ class OverviewBloc {
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
     double currentMaxBudget = currentMonth?.currentMaxBudget ?? 0;
 
-    int remainingDaysInMonth =
-        getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
+    int remainingDaysInMonth = getRemainingDaysInMonth();
 
     double monthlyExpenses = list.exceptDate(DateTime.now()).sumExpenses();
 

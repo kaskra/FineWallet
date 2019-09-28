@@ -6,7 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/src/overview_page/day_overview.dart';
 import 'package:FineWallet/src/overview_page/budget_overview.dart';
 import 'package:FineWallet/src/overview_page/week_overview.dart';
 import 'package:flutter/material.dart';
