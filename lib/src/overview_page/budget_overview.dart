@@ -36,9 +36,9 @@ class _BudgetOverviewState extends State<BudgetOverview> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            MonthlyBudgetView(),
+            MonthlyBudgetWidget(),
             Text(
-              "Available budget",
+              "Remaining monthly budget",
               style: TextStyle(
                   color: Theme.of(context).colorScheme.onPrimary, fontSize: 13),
             )
