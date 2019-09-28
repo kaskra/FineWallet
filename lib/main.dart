@@ -6,9 +6,12 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
+import 'package:FineWallet/src/statistics/monthly_overview.dart';
+import 'package:FineWallet/src/statistics/stats.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:FineWallet/src/history_page/history.dart';
@@ -16,7 +19,6 @@ import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/core/resources/db_initilization.dart';
-import 'package:FineWallet/src/statistics/monthly_overview.dart';
 import 'package:FineWallet/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -148,14 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ProfilePage(
         showAppBar: false,
       ),
-      const SizedBox(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(50.0),
-            child: Text("Wird noch überarbeitet, liebe Bille :P"),
-          ),
-        ),
-      ),
+      StatisticsPage(),
       // MonthlyOverview(
       //   initialMonth: DateTime.now(),
       //   showAppBar: false,
