@@ -9,15 +9,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FABBottomAppBarItem {
-  FABBottomAppBarItem({this.iconData, this.text: "", this.disabled: false});
+class FloatingActionButtonBottomAppBarItem {
+  FloatingActionButtonBottomAppBarItem({this.iconData, this.text: "", this.disabled: false});
   final IconData iconData;
   final String text;
   final bool disabled;
 }
 
-class FABBottomAppBar extends StatefulWidget {
-  FABBottomAppBar(
+class FloatingActionButtonBottomAppBar extends StatefulWidget {
+  FloatingActionButtonBottomAppBar(
       {@required this.items,
       @required this.onTabSelected,
       this.selectedIndex,
@@ -26,7 +26,7 @@ class FABBottomAppBar extends StatefulWidget {
       this.height: 50,
       this.iconSize: 24,
       this.isVisible});
-  final List<FABBottomAppBarItem> items;
+  final List<FloatingActionButtonBottomAppBarItem> items;
   final ValueChanged<int> onTabSelected;
   final int selectedIndex;
   final Color selectedColor;
@@ -36,10 +36,10 @@ class FABBottomAppBar extends StatefulWidget {
   final bool isVisible;
 
   @override
-  _FABBottomAppBarState createState() => _FABBottomAppBarState();
+  _FloatingActionButtonBottomAppBarState createState() => _FloatingActionButtonBottomAppBarState();
 }
 
-class _FABBottomAppBarState extends State<FABBottomAppBar> {
+class _FloatingActionButtonBottomAppBarState extends State<FloatingActionButtonBottomAppBar> {
   int _selectedIndex = 0;
 
   @override
@@ -58,7 +58,7 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
   }
 
   Widget _buildTabItem({
-    FABBottomAppBarItem item,
+    FloatingActionButtonBottomAppBarItem item,
     int index,
     ValueChanged<int> onPressed,
     bool isDisabled,

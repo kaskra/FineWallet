@@ -79,15 +79,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildBottomBar() {
-    return FABBottomAppBar(
+    return FloatingActionButtonBottomAppBar(
       color: Theme.of(context).colorScheme.onSurface,
       selectedColor: Theme.of(context).colorScheme.secondary,
       items: [
-        FABBottomAppBarItem(iconData: Icons.person, text: "Me"),
-        FABBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
-        FABBottomAppBarItem(disabled: true),
-        FABBottomAppBarItem(iconData: Icons.home, text: "Home"),
-        FABBottomAppBarItem(
+        FloatingActionButtonBottomAppBarItem(iconData: Icons.person, text: "Me"),
+        FloatingActionButtonBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
+        FloatingActionButtonBottomAppBarItem(disabled: true),
+        FloatingActionButtonBottomAppBarItem(iconData: Icons.home, text: "Home"),
+        FloatingActionButtonBottomAppBarItem(
           iconData: Icons.list,
           text: "History",
         ),
