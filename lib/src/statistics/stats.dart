@@ -51,23 +51,23 @@ class MonthCard extends StatelessWidget {
       widthRatio: 1,
       heightRatio: 1,
       margin: const EdgeInsets.all(5),
-      child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(10),
-        borderWidth: 0,
-        child: _buildContent(),
+      child: Stack(
+        children: <Widget>[
+          DecoratedCard(
+            borderColor: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.circular(10),
+            borderWidth: 0,
+            child: _buildContent(),
+          ),
+          _buildYearNumber(),
+        ],
       ),
     );
   }
 
   _buildContent() {
     return Container(
-      child: Stack(
-        children: <Widget>[
-          _buildYearNumber(),
-          _buildTitle(),
-        ],
-      ),
+      child: _buildTitle(),
     );
   }
 
@@ -79,21 +79,36 @@ class MonthCard extends StatelessWidget {
           Text(
             "${getMonthName(date.month)}",
             style: TextStyle(
-                fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
+                fontSize: 18,
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
 
-  Positioned _buildYearNumber() {
+  Widget _buildYearNumber() {
     return Positioned(
-      right: 0,
-      top: 0,
-      child: Text(
-        "${date.year}",
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.primary, fontSize: 22),
+      top: 5,
+      right: 5,
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).colorScheme.onSurface,
+              width: 0,
+            ),
+            left: BorderSide(
+                color: Theme.of(context).colorScheme.onSurface, width: 0),
+          ),
+        ),
+        child: Text(
+          "${date.year}",
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.primary, fontSize: 22),
+        ),
       ),
     );
   }
