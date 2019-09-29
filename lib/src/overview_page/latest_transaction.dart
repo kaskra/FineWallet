@@ -15,8 +15,8 @@ import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LastTransaction extends StatelessWidget {
-  const LastTransaction({Key key}) : super(key: key);
+class LatestTransaction extends StatelessWidget {
+  const LatestTransaction({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class LastTransaction extends StatelessWidget {
             children: <Widget>[
               _buildLastTransactionContent(),
               Text(
-                "Lastest transaction",
+                "Latest transaction",
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 13),
