@@ -88,7 +88,7 @@ class MonthCard extends StatelessWidget {
     );
   }
 
-  _buildContent() {
+  Widget _buildContent() {
     return Column(
       children: <Widget>[
         _buildTitle(),
@@ -139,7 +139,7 @@ class MonthCard extends StatelessWidget {
     );
   }
 
-  _buildRest() {
+  Widget _buildRest() {
     return Container(
       child: Text("\n " +
           date.toIso8601String() +
