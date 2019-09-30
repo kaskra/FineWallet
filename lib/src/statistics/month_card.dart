@@ -8,13 +8,20 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/month_model.dart';
+import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/core/resources/category_list.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
 import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
+import 'package:provider/provider.dart';
 
 class MonthCard extends StatelessWidget {
   final TransactionList transactions;
@@ -57,7 +64,11 @@ class MonthCard extends StatelessWidget {
         new UsedBudgetBar(model: model),
         Divider(),
         Expanded(
-          child: new CategoryListView(model: model,),
+          child: CategoryListView(
+            key: UniqueKey(),
+            context: context,
+            model: model,
+          ),
           flex: 10,
         ),
         Divider(),
@@ -196,31 +207,85 @@ class UsedBudgetBar extends StatelessWidget {
 class CategoryListView extends StatelessWidget {
   final DateTime date;
   final MonthModel model;
+  final BuildContext context;
 
-  CategoryListView({Key key, @required this.model})
+  CategoryListView({Key key, @required this.model, @required this.context})
       : this.date = DateTime.fromMillisecondsSinceEpoch(model.firstDayOfMonth),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // constraints: BoxConstraints(maxHeight: 250),
       child: Center(
-        child: _buildDebugText(), //Text("No categories found!"),
+        child: _buildCategoryListView(), //Text("No categories found!"),
       ),
     );
   }
 
-  Widget _buildDebugText() {
-    return Container(
-      child: Text("\n " +
-          date.toIso8601String() +
-          "\n Current max budget: " +
-          model.currentMaxBudget.toStringAsFixed(2) +
-          "\n Savings: " +
-          model.savings.toStringAsFixed(2) +
-          "\n Monthly expenses: " +
-          model.monthlyExpenses.toStringAsFixed(2)),
+  Widget _buildCategoryListView() {
+    return Consumer2<TransactionBloc, CategoryBloc>(
+      builder: (context, txBloc, categoryBloc, child) {
+        txBloc.getMonthlyTransactions(dateInMonth: model.firstDayOfMonth);
+        return StreamBuilder<TransactionList>(
+          stream: txBloc.monthlyTransactions,
+          builder:
+              (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
+            if (snapshot.hasData) {
+              List<int> ids = snapshot.data.expenses().getCategoryIds();
+
+              Map<int, double> amounts = Map.fromEntries(ids.map((id) =>
+                  MapEntry(id, snapshot.data.byCategory(id).sumExpenses())));
+               // TODO debug loading issue of page view
+              return ListView(
+                key: UniqueKey(),
+                children: <Widget>[
+                  for (int i = 0; i < amounts.length; i++)
+                    _buildCategoryListItem(amounts.keys.elementAt(i),
+                        amounts[amounts.keys.elementAt(i)], categoryBloc)
+                ],
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildCategoryListItem(int id, double amount, CategoryBloc bloc) {
+    bloc.getCategories(true);
+    return ListTile(
+      key: UniqueKey(),
+      leading: SizedBox(
+        height: 50,
+        width: 50,
+        child: IconWrapper(
+          padding: const EdgeInsets.all(0),
+          alignment: Alignment.centerLeft,
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            color: Theme.of(context).colorScheme.secondary,
+            child: Icon(
+              CategoryIcon(id - 1).data,
+              color: Theme.of(context).colorScheme.onSecondary,
+              size: 25,
+            ),
+          ),
+        ),
+      ),
+      trailing: Text(
+        "-${amount.toStringAsFixed(2)}€",
+        style: TextStyle(
+            color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
+      ),
+      title: StreamBuilder<CategoryList>(
+          stream: bloc.allCategories,
+          builder: (context, snapshot) {
+            return Text(
+              snapshot.hasData ? "${snapshot.data[id - 1].name}" : "---",
+            );
+          }),
     );
   }
 }

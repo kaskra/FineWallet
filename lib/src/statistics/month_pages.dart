@@ -13,8 +13,15 @@ import 'package:FineWallet/src/statistics/month_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class StatisticsPage extends StatelessWidget {
+class StatisticsPage extends StatefulWidget {
   const StatisticsPage({Key key}) : super(key: key);
+
+  @override
+  _StatisticsPageState createState() => _StatisticsPageState();
+}
+
+class _StatisticsPageState extends State<StatisticsPage> {
+  final PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,9 @@ class StatisticsPage extends StatelessWidget {
           stream: bloc.allMonths,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             return snapshot.hasData
+              // TODO page view bugs -- loading page next to it into own page (but only listview)
                 ? PageView(
+                    controller: _controller,
                     pageSnapping: true,
                     onPageChanged: (pageIndex) {
                       print(pageIndex);
@@ -35,6 +44,7 @@ class StatisticsPage extends StatelessWidget {
                     children: <Widget>[
                       for (MonthModel m in snapshot.data)
                         MonthCard(
+                          key: UniqueKey(),
                           context: context,
                           transactions: TransactionList(),
                           model: m,

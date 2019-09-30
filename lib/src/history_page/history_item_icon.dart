@@ -12,16 +12,17 @@ import 'package:flutter/material.dart';
 
 class IconWrapper extends StatelessWidget {
   const IconWrapper(
-      {Key key, @required this.child, this.alignment = Alignment.topLeft})
+      {Key key, @required this.child, this.alignment = Alignment.topLeft, this.padding = const EdgeInsets.only(right: 10)})
       : super(key: key);
 
   final Widget child;
   final Alignment alignment;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10),
+      padding: padding,
       child: Align(
         alignment: alignment,
         child: ClipRRect(
