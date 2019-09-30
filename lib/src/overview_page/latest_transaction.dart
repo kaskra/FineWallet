@@ -31,6 +31,7 @@ class LatestTransaction extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: Container(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _buildLastTransactionContent(),
               Text(
@@ -58,9 +59,7 @@ class LatestTransaction extends StatelessWidget {
           ),
           builder: (context, snapshot) {
             return !snapshot.hasData
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
+                ? _buildPlaceholder()
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -94,6 +93,21 @@ class LatestTransaction extends StatelessWidget {
         );
       },
     );
+  }
+
+  Center _buildPlaceholder() {
+    return const Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: Text(
+                      "---",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ), //CircularProgressIndicator(),
+                );
   }
 
   Widget _buildIcon(BuildContext context, IconData iconData) {
