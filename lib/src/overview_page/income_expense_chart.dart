@@ -1,0 +1,51 @@
+/*
+ * Project: FineWallet
+ * Last Modified: Monday, 30th September 2019 11:18:27 am
+ * Modified By: Lukas (luke.krauch@gmail.com>)
+ * -----
+ * Copyright 2019 - 2019 Sylu, Sylu
+ */
+
+import 'package:FineWallet/core/models/month_model.dart';
+import 'package:charts_flutter/flutter.dart';
+import 'package:flutter/material.dart';
+
+class IncomeExpenseChart extends StatelessWidget {
+  final List<Series> seriesList;
+
+  const IncomeExpenseChart({Key key, this.seriesList}) : super(key: key);
+
+  factory IncomeExpenseChart.withData(MonthModel m) {
+    return new IncomeExpenseChart(
+      seriesList: _createData(m),
+    );
+  }
+
+  static List<Series<double, int>> _createData(MonthModel m) {
+    double max = m.currentMaxBudget;
+    double curr = m.monthlyExpenses;
+    
+    double firstPart = curr / max;
+    double secondPart = 1 - firstPart;
+
+    Series<double, int> series = Series<double, int>(
+      data: [firstPart, secondPart],
+      domainFn: (_, i) => i,
+      measureFn: (d, _) => d,
+      colorFn: (d, i) => i == 0
+          ? Color.fromHex(code: "#FF9800")
+          : Color.fromHex(code: "#BBBBBB"),
+    );
+    return [series];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PieChart(
+      seriesList,
+      animate: true,
+      defaultRenderer: ArcRendererConfig(arcWidth: 5, strokeWidthPx: 0),
+      defaultInteractions: true,
+    );
+  }
+}

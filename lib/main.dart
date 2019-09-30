@@ -6,11 +6,9 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
-import 'package:FineWallet/src/statistics/monthly_overview.dart';
 import 'package:FineWallet/src/statistics/stats.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
@@ -83,10 +81,13 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Theme.of(context).colorScheme.onSurface,
       selectedColor: Theme.of(context).colorScheme.secondary,
       items: [
-        FloatingActionButtonBottomAppBarItem(iconData: Icons.person, text: "Me"),
-        FloatingActionButtonBottomAppBarItem(iconData: Icons.equalizer, text: "Statistics"),
+        FloatingActionButtonBottomAppBarItem(
+            iconData: Icons.person, text: "Me"),
+        FloatingActionButtonBottomAppBarItem(
+            iconData: Icons.equalizer, text: "Statistics"),
         FloatingActionButtonBottomAppBarItem(disabled: true),
-        FloatingActionButtonBottomAppBarItem(iconData: Icons.home, text: "Home"),
+        FloatingActionButtonBottomAppBarItem(
+            iconData: Icons.home, text: "Home"),
         FloatingActionButtonBottomAppBarItem(
           iconData: Icons.list,
           text: "History",
@@ -150,11 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ProfilePage(
         showAppBar: false,
       ),
-      StatisticsPage(),
-      // MonthlyOverview(
-      //   initialMonth: DateTime.now(),
-      //   showAppBar: false,
-      // ),
+      const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
       _buildHistory(),

@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
@@ -13,6 +14,8 @@ import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
+import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
 import 'package:provider/provider.dart';
 
 class StatisticsPage extends StatelessWidget {
@@ -93,6 +96,7 @@ class MonthCard extends StatelessWidget {
       children: <Widget>[
         _buildTitle(),
         _buildRest(),
+        _buildIncomeExpense(),
       ],
     );
   }
@@ -116,24 +120,24 @@ class MonthCard extends StatelessWidget {
 
   Widget _buildYearNumber() {
     return Positioned(
-      top: 5,
-      right: 5,
+      top: 4,
+      right: 4,
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary,
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: Colors.black38,
               width: 0,
             ),
-            left: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface, width: 0),
+            left: BorderSide(color: Colors.black38, width: 0),
           ),
         ),
         child: Text(
           "${date.year}",
           style: TextStyle(
-              color: Theme.of(context).colorScheme.primary, fontSize: 22),
+              color: Theme.of(context).colorScheme.onSecondary, fontSize: 22),
         ),
       ),
     );
@@ -149,6 +153,38 @@ class MonthCard extends StatelessWidget {
           model.savings.toStringAsFixed(2) +
           "\n Monthly expenses: " +
           model.monthlyExpenses.toStringAsFixed(2)),
+    );
+  }
+
+  Widget _buildIncomeExpense() {
+    double firstPart = 0;
+    if (model.currentMaxBudget != 0) {
+      firstPart = model.monthlyExpenses / model.currentMaxBudget * 100;
+    }
+
+    Color backgroundColor =
+        model.monthlyExpenses > 0 && model.currentMaxBudget == 0
+            ? Colors.redAccent
+            : Colors.black.withOpacity(0.05);
+    Color progressColor = model.monthlyExpenses > model.currentMaxBudget
+        ? Colors.redAccent
+        : Theme.of(context).colorScheme.secondary;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+      child: RoundedProgressBar(
+        style: RoundedProgressBarStyle(
+            borderWidth: 0,
+            widthShadow: 0,
+            colorProgress: progressColor,
+            colorProgressDark: progressColor,
+            backgroundProgress: backgroundColor),
+        percent: firstPart,
+        height: 25,
+        childCenter: Text(
+            "${model.monthlyExpenses.toStringAsFixed(2)} / ${model.currentMaxBudget.toStringAsFixed(2)} €", style: TextStyle(fontWeight: FontWeight.bold),),
+        borderRadius: BorderRadius.circular(CARD_RADIUS),
+      ),
     );
   }
 }
