@@ -26,7 +26,7 @@ class StatisticsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MonthBloc>(
       builder: (context, bloc, child) {
-        bloc.getMonths();
+        bloc.syncMonths();
         return StreamBuilder<List<MonthModel>>(
           stream: bloc.allMonths,
           builder: (BuildContext context, AsyncSnapshot snapshot) {

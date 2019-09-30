@@ -85,7 +85,7 @@ class MonthBloc {
           savings: 0,
           firstDayOfMonth: i,
         );
-        add(current);
+        DatabaseProvider.db.newMonth(current);
       }
     }
 

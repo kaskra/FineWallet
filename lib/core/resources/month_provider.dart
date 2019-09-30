@@ -37,7 +37,8 @@ class MonthProvider {
 
   Future<List<MonthModel>> getAllRecordedMonths() async {
     var db = await DatabaseProvider.db.database;
-    List<Map<String, dynamic>> res = await db.rawQuery("SELECT * FROM months");
+    List<Map<String, dynamic>> res =
+        await db.rawQuery("SELECT * FROM months ORDER BY firstOfMonth DESC");
     if (res.isEmpty) return [];
     List<MonthModel> list = res
         .map((Map<String, dynamic> json) => MonthModel.fromMap(json))
@@ -57,11 +58,11 @@ class MonthProvider {
   Future<double> getAllSavings() async {
     var db = await DatabaseProvider.db.database;
     int id = utils.getMonthId(DateTime.now());
-    List<Map<String, dynamic>> res = await db.rawQuery("SELECT SUM(savings) AS allSavings FROM MONTHS WHERE firstOfMonth != $id");
+    List<Map<String, dynamic>> res = await db.rawQuery(
+        "SELECT SUM(savings) AS allSavings FROM MONTHS WHERE firstOfMonth != $id");
     if (res.isEmpty) return 0;
     double savings = res.first["allSavings"];
     return savings;
-
   }
 
   updateCurrentMonth(
