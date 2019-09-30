@@ -95,8 +95,9 @@ class MonthCard extends StatelessWidget {
     return Column(
       children: <Widget>[
         _buildTitle(),
+        _buildUsedBudgetBar(),
+        Divider(),
         _buildRest(),
-        _buildIncomeExpense(),
       ],
     );
   }
@@ -156,7 +157,7 @@ class MonthCard extends StatelessWidget {
     );
   }
 
-  Widget _buildIncomeExpense() {
+  Widget _buildUsedBudgetBar() {
     double firstPart = 0;
     if (model.currentMaxBudget != 0) {
       firstPart = model.monthlyExpenses / model.currentMaxBudget * 100;
@@ -171,19 +172,40 @@ class MonthCard extends StatelessWidget {
         : Theme.of(context).colorScheme.secondary;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
-      child: RoundedProgressBar(
-        style: RoundedProgressBarStyle(
-            borderWidth: 0,
-            widthShadow: 0,
-            colorProgress: progressColor,
-            colorProgressDark: progressColor,
-            backgroundProgress: backgroundColor),
-        percent: firstPart,
-        height: 25,
-        childCenter: Text(
-            "${model.monthlyExpenses.toStringAsFixed(2)} / ${model.currentMaxBudget.toStringAsFixed(2)} €", style: TextStyle(fontWeight: FontWeight.bold),),
-        borderRadius: BorderRadius.circular(CARD_RADIUS),
+      padding: const EdgeInsets.fromLTRB(
+        10.0,
+        15.0,
+        10.0,
+        0.0,
+      ),
+      child: Column(
+        children: <Widget>[
+          RoundedProgressBar(
+            style: RoundedProgressBarStyle(
+                borderWidth: 0,
+                widthShadow: 0,
+                colorProgress: progressColor,
+                colorProgressDark: progressColor,
+                backgroundProgress: backgroundColor),
+            percent: firstPart,
+            height: 25,
+            childCenter: Text(
+              "${model.monthlyExpenses.toStringAsFixed(2)} / ${model.currentMaxBudget.toStringAsFixed(2)} €",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            borderRadius: BorderRadius.circular(CARD_RADIUS),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Text(
+              "Used budget",
+              style: TextStyle(
+                  fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
+            ),
+          ),
+        ],
       ),
     );
   }
