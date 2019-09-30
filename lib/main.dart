@@ -9,6 +9,7 @@
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
+import 'package:FineWallet/src/debug/database_page.dart';
 import 'package:FineWallet/src/statistics/stats.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
@@ -154,7 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
-      _buildHistory(),
+      // _buildHistory(),
+      DBPage(
+        child: _buildHistory(),
+      )
     ];
 
     return Scaffold(
