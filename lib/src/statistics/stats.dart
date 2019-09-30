@@ -97,7 +97,18 @@ class MonthCard extends StatelessWidget {
         _buildTitle(),
         _buildUsedBudgetBar(),
         Divider(),
-        _buildRest(),
+        _buildDebugText(),
+        // TODO remove
+        Spacer(),
+        Spacer(),
+        Spacer(),
+        Spacer(),
+        Spacer(),
+        Spacer(),
+        // TODO remove
+        Divider(),
+        _buildSavings(),
+        Spacer()
       ],
     );
   }
@@ -144,7 +155,7 @@ class MonthCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRest() {
+  Widget _buildDebugText() {
     return Container(
       child: Text("\n " +
           date.toIso8601String() +
@@ -182,11 +193,12 @@ class MonthCard extends StatelessWidget {
         children: <Widget>[
           RoundedProgressBar(
             style: RoundedProgressBarStyle(
-                borderWidth: 0,
-                widthShadow: 0,
-                colorProgress: progressColor,
-                colorProgressDark: progressColor,
-                backgroundProgress: backgroundColor),
+              borderWidth: 0,
+              widthShadow: 0,
+              colorProgress: progressColor,
+              colorProgressDark: progressColor,
+              backgroundProgress: backgroundColor,
+            ),
             percent: firstPart,
             height: 25,
             childCenter: Text(
@@ -207,6 +219,16 @@ class MonthCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSavings() {
+    return Text(
+      "You saved ${model.savings.toStringAsFixed(2)}€".toUpperCase(),
+      style: TextStyle(
+          fontSize: 20,
+          color: Theme.of(context).colorScheme.secondary,
+          fontWeight: FontWeight.bold),
     );
   }
 }
