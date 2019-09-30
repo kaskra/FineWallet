@@ -10,7 +10,7 @@ import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/src/debug/database_page.dart';
-import 'package:FineWallet/src/statistics/stats.dart';
+import 'package:FineWallet/src/statistics/month_pages.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:FineWallet/src/history_page/history.dart';

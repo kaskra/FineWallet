@@ -1,6 +1,6 @@
 /*
  * Project: FineWallet
- * Last Modified: Sunday, 29th September 2019 12:27:42 am
+ * Last Modified: Monday, 30th September 2019 4:54:04 pm
  * Modified By: Lukas (luke.krauch@gmail.com>)
  * -----
  * Copyright 2019 - 2019 Sylu, Sylu
@@ -8,7 +8,6 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/month_model.dart';
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -16,46 +15,6 @@ import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
 import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
-import 'package:provider/provider.dart';
-
-class StatisticsPage extends StatelessWidget {
-  const StatisticsPage({Key key}) : super(key: key);
-
-  // TODO if needed, add page controller
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<MonthBloc>(
-      builder: (context, bloc, child) {
-        bloc.syncMonths();
-        return StreamBuilder<List<MonthModel>>(
-          stream: bloc.allMonths,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            return snapshot.hasData
-                ? PageView(
-                    pageSnapping: true,
-                    onPageChanged: (pageIndex) {
-                      print(pageIndex);
-                    },
-                    scrollDirection: Axis.horizontal,
-                    reverse: true,
-                    children: <Widget>[
-                      for (MonthModel m in snapshot.data)
-                        MonthCard(
-                          context: context,
-                          transactions: TransactionList(),
-                          model: m,
-                        )
-                    ],
-                  )
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  );
-          },
-        );
-      },
-    );
-  }
-}
 
 class MonthCard extends StatelessWidget {
   final TransactionList transactions;
@@ -95,19 +54,17 @@ class MonthCard extends StatelessWidget {
     return Column(
       children: <Widget>[
         _buildTitle(),
-        _buildUsedBudgetBar(),
+        new UsedBudgetBar(model: model),
         Divider(),
-        _buildDebugText(),
-        // TODO remove
-        Spacer(),
-        Spacer(),
-        Spacer(),
-        Spacer(),
-        Spacer(),
-        Spacer(),
-        // TODO remove
+        Expanded(
+          child: new CategoryListView(model: model,),
+          flex: 10,
+        ),
         Divider(),
-        _buildSavings(),
+        Expanded(
+          flex: 0,
+          child: _buildSavings(),
+        ),
         Spacer()
       ],
     );
@@ -155,20 +112,33 @@ class MonthCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDebugText() {
-    return Container(
-      child: Text("\n " +
-          date.toIso8601String() +
-          "\n Current max budget: " +
-          model.currentMaxBudget.toStringAsFixed(2) +
-          "\n Savings: " +
-          model.savings.toStringAsFixed(2) +
-          "\n Monthly expenses: " +
-          model.monthlyExpenses.toStringAsFixed(2)),
+  Widget _buildSavings() {
+    String prefix = "You saved";
+    if (date.month == DateTime.now().month &&
+        date.year == DateTime.now().year) {
+      prefix = "You will save";
+    }
+
+    return Text(
+      "$prefix ${model.savings.toStringAsFixed(2)}€".toUpperCase(),
+      style: TextStyle(
+          fontSize: 20,
+          color: Theme.of(context).colorScheme.secondary,
+          fontWeight: FontWeight.bold),
     );
   }
+}
 
-  Widget _buildUsedBudgetBar() {
+class UsedBudgetBar extends StatelessWidget {
+  const UsedBudgetBar({
+    Key key,
+    @required this.model,
+  }) : super(key: key);
+
+  final MonthModel model;
+
+  @override
+  Widget build(BuildContext context) {
     double firstPart = 0;
     if (model.currentMaxBudget != 0) {
       firstPart = model.monthlyExpenses / model.currentMaxBudget * 100;
@@ -221,14 +191,36 @@ class MonthCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSavings() {
-    return Text(
-      "You saved ${model.savings.toStringAsFixed(2)}€".toUpperCase(),
-      style: TextStyle(
-          fontSize: 20,
-          color: Theme.of(context).colorScheme.secondary,
-          fontWeight: FontWeight.bold),
+class CategoryListView extends StatelessWidget {
+  final DateTime date;
+  final MonthModel model;
+
+  CategoryListView({Key key, @required this.model})
+      : this.date = DateTime.fromMillisecondsSinceEpoch(model.firstDayOfMonth),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // constraints: BoxConstraints(maxHeight: 250),
+      child: Center(
+        child: _buildDebugText(), //Text("No categories found!"),
+      ),
+    );
+  }
+
+  Widget _buildDebugText() {
+    return Container(
+      child: Text("\n " +
+          date.toIso8601String() +
+          "\n Current max budget: " +
+          model.currentMaxBudget.toStringAsFixed(2) +
+          "\n Savings: " +
+          model.savings.toStringAsFixed(2) +
+          "\n Monthly expenses: " +
+          model.monthlyExpenses.toStringAsFixed(2)),
     );
   }
 }
