@@ -55,6 +55,16 @@ class TransactionList extends ListBase<TransactionModel> {
     return this.where((TransactionModel tx) => tx.date == dayInMillis);
   }
 
+  /// Returns only the expenses.
+  TransactionList expenses() {
+    return this.where((TransactionModel tx) => tx.isExpense == 1);
+  }
+
+  /// Returns all unique category ids of the list.
+  List<int> getCategoryIds() {
+    return this.map((model) => model.category).toSet().toList();
+  }
+
   /// Returns transactions that are after [day].
   ///
   /// [day] is either [DateTime] or [int].
