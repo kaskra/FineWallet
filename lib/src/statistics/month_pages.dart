@@ -33,13 +33,26 @@ class _StatisticsPageState extends State<StatisticsPage> {
           stream: bloc.allMonths,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             return GestureDetector(
-              onTapUp: (details) {
-                if (details.localPosition.dx < context.size.width / 2) {
+              // onTapUp: (details) {
+              //   if (details.localPosition.dx < context.size.width / 2) {
+              //     _controller.nextPage(
+              //       curve: Curves.linear,
+              //       duration: Duration(milliseconds: 80),
+              //     );
+              //   } else if (details.localPosition.dx > context.size.width / 2) {
+              //     _controller.previousPage(
+              //       curve: Curves.linear,
+              //       duration: Duration(milliseconds: 80),
+              //     );
+              //   }
+              // },
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity > 0) {
                   _controller.nextPage(
                     curve: Curves.linear,
                     duration: Duration(milliseconds: 80),
                   );
-                } else if (details.localPosition.dx > context.size.width / 2) {
+                } else if (details.primaryVelocity < 0) {
                   _controller.previousPage(
                     curve: Curves.linear,
                     duration: Duration(milliseconds: 80),
