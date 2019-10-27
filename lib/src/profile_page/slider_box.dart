@@ -37,7 +37,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
   double _currentMaxMonthlyBudget = 0;
 
   /// The overall maximum budget, which depends on all incomes of the month.
-  /// 
+  ///
   /// Sum of all incomes of the current month.
   double _overallMaxBudget = 0;
 
@@ -50,14 +50,24 @@ class _BudgetSliderState extends State<BudgetSlider> {
     super.initState();
   }
 
-  /// Load the current month and set the overall maximum budget, 
-  /// the current maximum available budget, update the parent by 
+  /// Load the current month and set the overall maximum budget,
+  /// the current maximum available budget, update the parent by
   /// calling onChanged event callback.
   void _loadCurrentMonth() async {
     TransactionList monthlyTransactions = await TransactionsProvider.db
         .getTransactionsOfMonth(dayInMillis(DateTime.now()));
 
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+
+    if (currentMonth == null) {
+      currentMonth = new MonthModel(
+        currentMaxBudget: 0.0,
+        monthlyExpenses: 0.0,
+        savings: 0.0,
+        firstDayOfMonth: getFirstDateOfMonth(DateTime.now()),
+      );
+      Provider.of<MonthBloc>(context).add(currentMonth);
+    }
 
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
@@ -70,8 +80,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
   }
 
   /// Set the maximum available budget.
-  /// 
-  /// Clamp the value to [0, overall max budget], 
+  ///
+  /// Clamp the value to [0, overall max budget],
   /// update the parent by calling onChanged event callback.
   void _setMaxMonthlyBudget(double value) {
     if (value >= _overallMaxBudget) {
@@ -88,7 +98,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
     }
   }
 
-  /// Update the current month by updating the current monthly available budget in the entity. 
+  /// Update the current month by updating the current monthly available budget in the entity.
   ///
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
@@ -114,8 +124,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
   }
 
   /// Build the slider, which calls sets the current maximum budget when getting changed.
-  /// 
-  /// When the change ends, the database is updated. 
+  ///
+  /// When the change ends, the database is updated.
   /// When the change starts, a new focus node is set, to force the keyboard to be closed.
   Widget _buildSlider() {
     return Expanded(
@@ -137,8 +147,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
   }
 
   /// The dependend textfield shows the current value of the slider.
-  /// 
-  /// It can be changed by keyboard input to a custom value. 
+  ///
+  /// It can be changed by keyboard input to a custom value.
   /// That value is then shown on the slider.
   Widget _buildDependendTextField() {
     return Expanded(
