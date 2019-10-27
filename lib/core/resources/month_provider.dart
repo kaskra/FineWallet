@@ -31,7 +31,6 @@ class MonthProvider {
 
     var res = await DatabaseProvider.db.findMonth(dayInMillis);
 
-    print(res.first);
     if (res.isEmpty) return null;
     return MonthModel.fromMap(res.first);
   }

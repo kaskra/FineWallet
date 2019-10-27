@@ -9,6 +9,8 @@
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -58,37 +60,52 @@ class LatestTransaction extends StatelessWidget {
             isExpense: 1,
           ),
           builder: (context, snapshot) {
-            return !snapshot.hasData
-                ? _buildPlaceholder()
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Center(
-                        child: _buildIcon(
-                            context,
-                            snapshot.data.category != null
-                                ? CategoryIcon(snapshot.data.category - 1).data
-                                : Icons.autorenew),
-                      ),
-                      // Text(
-                      //   snapshot.data.subcategoryName ?? "",
-                      //   style: TextStyle(
-                      //     color: Theme.of(context).colorScheme.onSurface,
-                      //     fontSize: 18,
-                      //   ),
-                      // ),
-                      Text(
-                        "${snapshot.data.isExpense == 1 && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
-                        style: TextStyle(
-                          color: snapshot.data.isExpense == 1
-                              ? Colors.red
-                              : Colors.green,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+            return InkWell(
+              // onTap: () {
+              //   if (snapshot.hasData) {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => History(
+              //           selectedItems: toTransactionList([snapshot.data]),
+              //         ),
+              //       ),
+              //     );
+              //   }
+              // },
+              child: !snapshot.hasData
+                  ? _buildPlaceholder()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                          child: _buildIcon(
+                              context,
+                              snapshot.data.category != null
+                                  ? CategoryIcon(snapshot.data.category - 1)
+                                      .data
+                                  : Icons.autorenew),
                         ),
-                      )
-                    ],
-                  );
+                        // Text(
+                        //   snapshot.data.subcategoryName ?? "",
+                        //   style: TextStyle(
+                        //     color: Theme.of(context).colorScheme.onSurface,
+                        //     fontSize: 18,
+                        //   ),
+                        // ),
+                        Text(
+                          "${snapshot.data.isExpense == 1 && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
+                          style: TextStyle(
+                            color: snapshot.data.isExpense == 1
+                                ? Colors.red
+                                : Colors.green,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+            );
           },
         );
       },
@@ -97,17 +114,17 @@ class LatestTransaction extends StatelessWidget {
 
   Center _buildPlaceholder() {
     return const Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: Text(
-                      "---",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ), //CircularProgressIndicator(),
-                );
+      child: Padding(
+        padding: const EdgeInsets.only(top: 25.0),
+        child: Text(
+          "---",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ), //CircularProgressIndicator(),
+    );
   }
 
   Widget _buildIcon(BuildContext context, IconData iconData) {

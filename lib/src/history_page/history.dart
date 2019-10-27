@@ -22,17 +22,34 @@ import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class History extends StatefulWidget {
-  History({this.onChangeSelectionMode});
+  History({
+    this.onChangeSelectionMode,
+    this.selectedItems,
+  });
 
   @override
   _HistoryState createState() => _HistoryState();
 
   final void Function(bool) onChangeSelectionMode;
+  final TransactionList selectedItems;
 }
 
 class _HistoryState extends State<History> {
   Map<int, TransactionModel> _selectedItems = new Map();
   bool _selectionMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedItems != null) {
+      if (widget.selectedItems.length > 0) {
+        widget.selectedItems
+            .forEach((item) => _selectedItems.putIfAbsent(item.id, () => item));
+        _selectionMode = true;
+        _checkSelectionMode();
+      }
+    }
+  }
 
   Widget _customAppBar() {
     return SizedBox(
