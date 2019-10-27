@@ -49,20 +49,25 @@ class MonthBloc {
     _savingsController.sink.add(savings);
   }
 
-  add(MonthModel month) {
+  add(MonthModel month) async {
     DatabaseProvider.db.newMonth(month);
     syncMonths();
   }
 
-  updateMonth(MonthModel month) {
-    DatabaseProvider.db.updateMonth(month);
-    syncMonths();
+  updateMonth(MonthModel month) async {
+    await DatabaseProvider.db.updateMonth(month);
+    await syncMonths();
   }
 
   syncMonths() async {
     TransactionList transactions =
         await TransactionsProvider.db.getAllTrans(dayInMillis(DateTime.now()));
     List<int> ids = getAllMonthIds(transactions);
+
+    // add current month id, even if no transaction was done yet
+    if (!ids.contains(getFirstDateOfMonth(DateTime.now()))) {
+      ids.add(getFirstDateOfMonth(DateTime.now()));
+    }
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();
     List<int> recordedMonthIds =
