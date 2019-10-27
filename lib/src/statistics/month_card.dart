@@ -24,16 +24,11 @@ import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
 import 'package:provider/provider.dart';
 
 class MonthCard extends StatelessWidget {
-  final TransactionList transactions;
   final BuildContext context;
   final MonthModel model;
   final DateTime date;
 
-  MonthCard(
-      {Key key,
-      this.context,
-      @required this.transactions,
-      @required this.model})
+  MonthCard({Key key, this.context, @required this.model})
       : this.date = DateTime.fromMillisecondsSinceEpoch(model.firstDayOfMonth),
         super(key: key);
 
@@ -65,7 +60,6 @@ class MonthCard extends StatelessWidget {
         Divider(),
         Expanded(
           child: CategoryListView(
-            key: UniqueKey(),
             context: context,
             model: model,
           ),
@@ -235,9 +229,9 @@ class CategoryListView extends StatelessWidget {
 
               Map<int, double> amounts = Map.fromEntries(ids.map((id) =>
                   MapEntry(id, snapshot.data.byCategory(id).sumExpenses())));
-               // TODO debug loading issue of page view
+
+              categoryBloc.getCategories(true);
               return ListView(
-                key: UniqueKey(),
                 children: <Widget>[
                   for (int i = 0; i < amounts.length; i++)
                     _buildCategoryListItem(amounts.keys.elementAt(i),
@@ -254,9 +248,7 @@ class CategoryListView extends StatelessWidget {
   }
 
   Widget _buildCategoryListItem(int id, double amount, CategoryBloc bloc) {
-    bloc.getCategories(true);
     return ListTile(
-      key: UniqueKey(),
       leading: SizedBox(
         height: 50,
         width: 50,
