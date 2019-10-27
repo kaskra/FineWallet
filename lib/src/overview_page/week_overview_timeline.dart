@@ -26,7 +26,7 @@ class WeekOverviewTimeline extends StatelessWidget {
 
     TextStyle textStyle = TextStyle(
       color: isToday
-          ? Theme.of(context).colorScheme.secondary
+          ? Theme.of(context).colorScheme.primaryVariant
           : Theme.of(context).colorScheme.onSurface,
       fontSize: isToday ? 20 : 16,
       fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
@@ -34,7 +34,7 @@ class WeekOverviewTimeline extends StatelessWidget {
 
     TextStyle numberTextStyle = TextStyle(
       color: isToday
-          ? Theme.of(context).colorScheme.secondary
+          ? Theme.of(context).colorScheme.primaryVariant
           : Theme.of(context).colorScheme.onSurface,
       fontSize: isToday ? 20 : 16,
       fontWeight: FontWeight.bold,
