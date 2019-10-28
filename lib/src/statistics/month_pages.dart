@@ -60,6 +60,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
               child: snapshot.hasData
                   // FIXME  page view bugs -- loading page next to it into own page (but only listview)
                   // workaround by animation fast between pages
+                  // txBloc.getMonthlyTransactions(dateInMonth: model.firstDayOfMonth);
+                  // getMonthlyTransactions of TxBloc ... only get when card is fully in pic!
                   ? PageView(
                       physics: NeverScrollableScrollPhysics(),
                       controller: _controller,

@@ -274,7 +274,7 @@ class CategoryListView extends StatelessWidget {
           stream: bloc.allCategories,
           builder: (context, snapshot) {
             return Text(
-              snapshot.hasData ? "${snapshot.data[id - 1].name}" : "---",
+              snapshot.hasData ? "${snapshot.data[id - 1].name}" : "",
             );
           }),
     );
