@@ -129,7 +129,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: const Color(0xffd8e7ff),
       resizeToAvoidBottomInset: true,
       appBar: widget.showAppBar
           ? AppBar(

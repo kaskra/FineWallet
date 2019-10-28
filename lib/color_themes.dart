@@ -15,7 +15,7 @@ const _errorColor = Colors.red;
 const _onBackground = Colors.black;
 const _background = Colors.white;
 const _negBudget = Colors.red;
-const _overallBackground = Color(0xffd8e7ff);
+const _overallBackground = Colors.white; //Color(0xffd8e7ff);
 const _brightness = Brightness.light;
 
 final ThemeData normalTheme = ThemeData(
@@ -39,7 +39,7 @@ final ThemeData standardTheme = ThemeData(
   ),
   iconTheme: IconThemeData(color: _onMainColor),
   accentTextTheme: TextTheme(body1: TextStyle(color: _negBudget)),
-  scaffoldBackgroundColor: _overallBackground, // Colors.white,
+  scaffoldBackgroundColor: _overallBackground,
   canvasColor: _background,
   colorScheme: ColorScheme(
     primary: _primary,
