@@ -22,6 +22,9 @@ class SavingsBox extends StatelessWidget {
     return ExpandToWidth(
       ratio: screenWidthRatio,
       child: DecoratedCard(
+        borderColor: Theme.of(context).colorScheme.primary,
+        borderWidth: 0,
+        borderRadius: borderRadius,
         child: Column(
           children: <Widget>[
             Text(
@@ -36,7 +39,6 @@ class SavingsBox extends StatelessWidget {
             ),
           ],
         ),
-        borderRadius: borderRadius,
       ),
     );
   }

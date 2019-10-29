@@ -198,6 +198,9 @@ class _BudgetSliderState extends State<BudgetSlider> {
     return ExpandToWidth(
       ratio: widget.screenWidthRatio,
       child: DecoratedCard(
+        borderColor: Theme.of(context).colorScheme.primary,
+        borderWidth: 0,
+        borderRadius: widget.borderRadius,
         child: Column(
           children: <Widget>[
             Align(
@@ -222,13 +225,14 @@ class _BudgetSliderState extends State<BudgetSlider> {
               ),
               value: Text(
                 " ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             )
           ],
         ),
-        borderRadius: widget.borderRadius,
       ),
     );
   }
