@@ -45,7 +45,7 @@ class HistoryItem extends StatelessWidget {
           color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white,
           borderColor: isSelected
               ? Theme.of(context).colorScheme.secondary
-              : Colors.white,
+              : Theme.of(context).colorScheme.primary,
           borderWidth: isSelected ? 2 : 0,
           padding: 0,
           child: InkWell(
