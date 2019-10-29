@@ -1,10 +1,10 @@
 import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
@@ -118,16 +118,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
             "€ ",
             style: const TextStyle(fontSize: 16),
           ),
-          Column(
-            children: <Widget>[
-              _buildDependendTextField(),
-              Divider(
-                height: 1,
-                thickness: 0.5,
-              ),
-              _buildOverallBudget()
-            ],
-          )
+          _buildDependendTextField(),
         ],
       ),
     );
@@ -180,6 +171,28 @@ class _BudgetSliderState extends State<BudgetSlider> {
     );
   }
 
+  /// Show overall available budget (savings plus monthly available budget).
+  Widget _buildOverallBudget() {
+    return Consumer<MonthBloc>(
+      builder: (context, bloc, child) {
+        bloc.getSavings();
+        return StreamBuilder<double>(
+          stream: bloc.savings,
+          builder: (context, snapshot) {
+            double maxBudget = 0;
+            if (snapshot.hasData) {
+              maxBudget = snapshot.data + _currentMaxMonthlyBudget;
+            }
+            return Text(
+              "${maxBudget.toStringAsFixed(2)}€",
+              style: TextStyle(fontSize: 14),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpandToWidth(
@@ -195,34 +208,28 @@ class _BudgetSliderState extends State<BudgetSlider> {
               ),
             ),
             _buildSliderWithTextInput(),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                  "Expected savings: ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
-                  style: const TextStyle(fontSize: 14)),
+            new InformationRow(
+              text: Text(
+                "Overall available budget: ",
+                style: TextStyle(fontSize: 14),
+              ),
+              value: _buildOverallBudget(),
+            ),
+            new InformationRow(
+              text: Text(
+                "Expected savings: ",
+                style: TextStyle(fontSize: 14),
+              ),
+              value: Text(
+                " ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
             )
           ],
         ),
         borderRadius: widget.borderRadius,
       ),
-    );
-  }
-
-  Widget _buildOverallBudget() {
-    return Consumer<MonthBloc>(
-      builder: (context, bloc, child) {
-        bloc.getSavings();
-        return StreamBuilder<double>(
-          stream: bloc.savings,
-          builder: (context, snapshot) {
-            double maxBudget = 0;
-            if (snapshot.hasData) {
-              maxBudget = snapshot.data + _currentMaxMonthlyBudget;
-            }
-            return Text("${maxBudget.toStringAsFixed(2)}");
-          },
-        );
-      },
     );
   }
 }
