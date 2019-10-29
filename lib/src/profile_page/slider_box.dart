@@ -1,5 +1,6 @@
 import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
@@ -117,7 +118,16 @@ class _BudgetSliderState extends State<BudgetSlider> {
             "€ ",
             style: const TextStyle(fontSize: 16),
           ),
-          _buildDependendTextField()
+          Column(
+            children: <Widget>[
+              _buildDependendTextField(),
+              Divider(
+                height: 1,
+                thickness: 0.5,
+              ),
+              _buildOverallBudget()
+            ],
+          )
         ],
       ),
     );
@@ -195,6 +205,24 @@ class _BudgetSliderState extends State<BudgetSlider> {
         ),
         borderRadius: widget.borderRadius,
       ),
+    );
+  }
+
+  Widget _buildOverallBudget() {
+    return Consumer<MonthBloc>(
+      builder: (context, bloc, child) {
+        bloc.getSavings();
+        return StreamBuilder<double>(
+          stream: bloc.savings,
+          builder: (context, snapshot) {
+            double maxBudget = 0;
+            if (snapshot.hasData) {
+              maxBudget = snapshot.data + _currentMaxMonthlyBudget;
+            }
+            return Text("${maxBudget.toStringAsFixed(2)}");
+          },
+        );
+      },
     );
   }
 }
