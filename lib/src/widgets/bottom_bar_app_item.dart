@@ -10,7 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FloatingActionButtonBottomAppBarItem {
-  FloatingActionButtonBottomAppBarItem({this.iconData, this.text: "", this.disabled: false});
+  FloatingActionButtonBottomAppBarItem(
+      {this.iconData, this.text: "", this.disabled: false});
   final IconData iconData;
   final String text;
   final bool disabled;
@@ -36,10 +37,12 @@ class FloatingActionButtonBottomAppBar extends StatefulWidget {
   final bool isVisible;
 
   @override
-  _FloatingActionButtonBottomAppBarState createState() => _FloatingActionButtonBottomAppBarState();
+  _FloatingActionButtonBottomAppBarState createState() =>
+      _FloatingActionButtonBottomAppBarState();
 }
 
-class _FloatingActionButtonBottomAppBarState extends State<FloatingActionButtonBottomAppBar> {
+class _FloatingActionButtonBottomAppBarState
+    extends State<FloatingActionButtonBottomAppBar> {
   int _selectedIndex = 0;
 
   @override
@@ -54,6 +57,14 @@ class _FloatingActionButtonBottomAppBarState extends State<FloatingActionButtonB
     widget.onTabSelected(index);
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  @override
+  void didUpdateWidget(FloatingActionButtonBottomAppBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      _selectedIndex = widget.selectedIndex ?? oldWidget.selectedIndex;
     });
   }
 
@@ -105,7 +116,7 @@ class _FloatingActionButtonBottomAppBarState extends State<FloatingActionButtonB
 
     return BottomAppBar(
       elevation: 20,
-      shape: widget.isVisible? CircularNotchedRectangle() : null,
+      shape: widget.isVisible ? CircularNotchedRectangle() : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,

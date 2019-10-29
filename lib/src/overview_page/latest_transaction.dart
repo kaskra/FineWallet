@@ -9,6 +9,7 @@
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -59,18 +60,11 @@ class LatestTransaction extends StatelessWidget {
           ),
           builder: (context, snapshot) {
             return InkWell(
-              // onTap: () {
-              //   if (snapshot.hasData) {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => History(
-              //           selectedItems: toTransactionList([snapshot.data]),
-              //         ),
-              //       ),
-              //     );
-              //   }
-              // },
+              onTap: () {
+                if (snapshot.hasData) {
+                  Provider.of<NavigationNotifier>(context).setPage(4);
+                }
+              },
               child: !snapshot.hasData
                   ? _buildPlaceholder()
                   : Column(
