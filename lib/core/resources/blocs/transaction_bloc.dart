@@ -32,7 +32,7 @@ class TransactionBloc {
 
   get monthlyTransactions => _monthlyTransactionsController.stream;
 
-  void updateAllTransactions() {
+  void updateAllTransactions() async {
     getAllTransactions();
   }
 
@@ -52,17 +52,17 @@ class TransactionBloc {
         .add(await TransactionsProvider.db.getTransactionsOfMonth(dateInMonth));
   }
 
-  add(TransactionModel tx) {
+  add(TransactionModel tx) async {
     DatabaseProvider.db.newTransaction(tx);
     getAllTransactions();
   }
 
-  delete(int id) {
+  delete(int id) async {
     DatabaseProvider.db.deleteTransaction(id);
     getAllTransactions();
   }
 
-  updateTransaction(TransactionModel tx) {
+  updateTransaction(TransactionModel tx) async {
     DatabaseProvider.db.updateTransaction(tx);
     getAllTransactions();
   }
