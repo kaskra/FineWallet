@@ -179,10 +179,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
         return StreamBuilder<double>(
           stream: bloc.savings,
           builder: (context, snapshot) {
-            double maxBudget = 0;
-            if (snapshot.hasData) {
-              maxBudget = snapshot.data + _currentMaxMonthlyBudget;
-            }
+            double maxBudget = snapshot.data ?? 0;
+            maxBudget += _currentMaxMonthlyBudget;
             return Text(
               "${maxBudget.toStringAsFixed(2)}€",
               style: TextStyle(fontSize: 14),
