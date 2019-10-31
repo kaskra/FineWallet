@@ -53,17 +53,17 @@ class TransactionBloc {
   }
 
   add(TransactionModel tx) async {
-    DatabaseProvider.db.newTransaction(tx);
-    getAllTransactions();
+    await DatabaseProvider.db.newTransaction(tx);
+    await getAllTransactions();
   }
 
   delete(int id) async {
-    DatabaseProvider.db.deleteTransaction(id);
-    getAllTransactions();
+    await DatabaseProvider.db.deleteTransaction(id);
+    await getAllTransactions();
   }
 
   updateTransaction(TransactionModel tx) async {
-    DatabaseProvider.db.updateTransaction(tx);
-    getAllTransactions();
+    await DatabaseProvider.db.updateTransaction(tx);
+    await getAllTransactions();
   }
 }

@@ -146,7 +146,6 @@ class _ProfilePageState extends State<ProfilePage> {
             )
           : null,
       body: SingleChildScrollView(
-        // physics: NeverScrollableScrollPhysics(),
         child: Container(
           padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
           child: _buildBody(),

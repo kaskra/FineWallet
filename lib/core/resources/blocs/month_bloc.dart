@@ -50,8 +50,8 @@ class MonthBloc {
   }
 
   add(MonthModel month) async {
-    DatabaseProvider.db.newMonth(month);
-    syncMonths();
+    await DatabaseProvider.db.newMonth(month);
+    await syncMonths();
   }
 
   updateMonth(MonthModel month) async {
