@@ -64,7 +64,7 @@ class MonthBloc {
         await TransactionsProvider.db.getAllTrans(dayInMillis(DateTime.now()));
     List<int> ids = getAllMonthIds(transactions);
 
-    // add current month id, even if no transaction was done yet
+    // Add current month id, even if no transaction was done yet
     if (!ids.contains(getFirstDateOfMonth(DateTime.now()))) {
       ids.add(getFirstDateOfMonth(DateTime.now()));
     }
@@ -75,13 +75,25 @@ class MonthBloc {
 
     for (int i in ids) {
       if (recordedMonthIds.contains(i)) {
+
         MonthModel currentMonth =
             allMonths.firstWhere((m) => m.firstDayOfMonth == i);
+
         TransactionList transactionsOfMonth =
             await TransactionsProvider.db.getTransactionsOfMonth(i);
+        
+        // Update monthly expenses and savings.
         currentMonth.monthlyExpenses = transactionsOfMonth.sumExpenses();
         currentMonth.savings =
             transactionsOfMonth.sumIncomes() - currentMonth.monthlyExpenses;
+        
+        // Check whether max budget is below monthly incomes. 
+        // Set max budget to max budget possible.
+        if (transactionsOfMonth.sumIncomes() < currentMonth.currentMaxBudget){
+          currentMonth.currentMaxBudget = transactionsOfMonth.sumIncomes();
+        }
+
+        // Update month
         MonthProvider.db.updateMonth(currentMonth);
       } else {
         MonthModel current = new MonthModel(
