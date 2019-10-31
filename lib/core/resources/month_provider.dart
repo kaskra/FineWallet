@@ -52,7 +52,18 @@ class MonthProvider {
   }
 
   Future<MonthModel> getCurrentMonth() async {
-    return await getMonth(DateTime.now());
+    MonthModel month = await getMonth(DateTime.now());
+
+    if (month == null) {
+      month = new MonthModel(
+        currentMaxBudget: 0.0,
+        monthlyExpenses: 0.0,
+        savings: 0.0,
+        firstDayOfMonth: getFirstDateOfMonth(DateTime.now()),
+      );
+      await DatabaseProvider.db.newMonth(month);
+    }
+    return month;
   }
 
   Future<double> getAllSavings() async {

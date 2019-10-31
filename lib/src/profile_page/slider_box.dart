@@ -60,16 +60,6 @@ class _BudgetSliderState extends State<BudgetSlider> {
 
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
 
-    if (currentMonth == null) {
-      currentMonth = new MonthModel(
-        currentMaxBudget: 0.0,
-        monthlyExpenses: 0.0,
-        savings: 0.0,
-        firstDayOfMonth: getFirstDateOfMonth(DateTime.now()),
-      );
-      Provider.of<MonthBloc>(context).add(currentMonth);
-    }
-
     setState(() {
       _overallMaxBudget = monthlyTransactions.sumIncomes();
       _currentMaxMonthlyBudget = currentMonth.currentMaxBudget;

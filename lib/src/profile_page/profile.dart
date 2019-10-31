@@ -117,12 +117,13 @@ class _ProfilePageState extends State<ProfilePage> {
           borderRadius: radius,
         ),
         ExpandToWidth(
-            child: DecoratedCard(
-          child: _categoryBox(),
-          borderRadius: radius,
-          borderColor: Theme.of(context).colorScheme.primary,
-          borderWidth: 0,
-        )),
+          child: DecoratedCard(
+            child: _categoryBox(),
+            borderRadius: radius,
+            borderColor: Theme.of(context).colorScheme.primary,
+            borderWidth: 0,
+          ),
+        ),
         SavingsBox(
           borderRadius: radius,
         )
