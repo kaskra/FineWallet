@@ -114,8 +114,8 @@ class MonthBloc {
       MonthProvider.db.updateMonth(m);
     }
 
-    getCurrentMonth();
-    getMonths();
-    getSavings();
+    await getCurrentMonth();
+    await getMonths();
+    await getSavings();
   }
 }
