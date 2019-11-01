@@ -17,91 +17,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({this.showAppBar: true});
-
-  final bool showAppBar;
-
+  ProfilePage();
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _chartType = ProfileChart.MONTHLY_CHART;
   double _currentMaxMonthlyBudget = 0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _showPrediction = false;
-
-  Widget _categoryBox() {
-    return Stack(
-      children: <Widget>[
-        Column(children: <Widget>[
-          Text(
-            _showPrediction
-                ? "Spending prediction"
-                : "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Container(
-            height: 200,
-            padding: const EdgeInsets.all(15),
-            child: _showPrediction
-                ? SpendingPredictionChart(
-                    monthlyBudget: _currentMaxMonthlyBudget,
-                  )
-                : ProfileChart(
-                    type: _chartType,
-                  ),
-          ),
-        ]),
-        Align(
-          alignment: Alignment.topRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              !_showPrediction
-                  ? InkWell(
-                      child: Container(
-                          padding: const EdgeInsets.all(5),
-                          child: Icon(
-                            Icons.repeat,
-                            size: 16,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          )),
-                      onTap: () {
-                        setState(() {
-                          _chartType = _chartType == ProfileChart.MONTHLY_CHART
-                              ? ProfileChart.LIFE_CHART
-                              : ProfileChart.MONTHLY_CHART;
-                        });
-                      },
-                    )
-                  : Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Icon(
-                        Icons.repeat,
-                        size: 16,
-                        color: Colors.transparent,
-                      )),
-              InkWell(
-                  child: Container(
-                    margin: const EdgeInsets.all(5),
-                    child: Icon(
-                      Icons.show_chart,
-                      size: 16,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      _showPrediction = !_showPrediction;
-                    });
-                  }),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildBody() {
     BorderRadius radius = BorderRadius.circular(CARD_RADIUS);
@@ -116,13 +38,9 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           borderRadius: radius,
         ),
-        ExpandToWidth(
-          child: DecoratedCard(
-            child: _categoryBox(),
-            borderRadius: radius,
-            borderColor: Theme.of(context).colorScheme.primary,
-            borderWidth: 0,
-          ),
+        ProfileCharts(
+          radius: radius,
+          maxCurrentBudget: _currentMaxMonthlyBudget,
         ),
         SavingsBox(
           borderRadius: radius,
@@ -133,24 +51,123 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: true,
-      appBar: widget.showAppBar
-          ? AppBar(
-              iconTheme: Theme.of(context).iconTheme,
-              centerTitle: true,
-              title: Text(
-                "Profile",
-                style: TextStyle(color: Theme.of(context).accentColor),
-              ),
-            )
-          : null,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-          child: _buildBody(),
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+        child: _buildBody(),
+      ),
+    );
+  }
+}
+
+class ProfileCharts extends StatefulWidget {
+  const ProfileCharts({
+    Key key,
+    @required this.radius,
+    @required this.maxCurrentBudget,
+  }) : super(key: key);
+
+  final BorderRadius radius;
+  final double maxCurrentBudget;
+
+  @override
+  _ProfileChartsState createState() => _ProfileChartsState();
+}
+
+class _ProfileChartsState extends State<ProfileCharts> {
+  int _chartType = ProfileChart.MONTHLY_CHART;
+  bool _showPrediction = false;
+
+  Widget _buildCategoryBox() {
+    return Stack(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            _buildChartTitleText(),
+            Container(
+              height: 200,
+              padding: const EdgeInsets.all(15),
+              child: _showPrediction
+                  ? SpendingPredictionChart(
+                      monthlyBudget: widget.maxCurrentBudget,
+                    )
+                  : ProfileChart(
+                      type: _chartType,
+                    ),
+            ),
+          ],
         ),
+        _buildChartControls(),
+      ],
+    );
+  }
+
+  Text _buildChartTitleText() {
+    return Text(
+      _showPrediction
+          ? "Spending prediction"
+          : "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
+      style: TextStyle(fontWeight: FontWeight.bold),
+    );
+  }
+
+  Align _buildChartControls() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          !_showPrediction
+              ? InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(5),
+                      child: Icon(
+                        Icons.repeat,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      )),
+                  onTap: () {
+                    setState(() {
+                      _chartType = _chartType == ProfileChart.MONTHLY_CHART
+                          ? ProfileChart.LIFE_CHART
+                          : ProfileChart.MONTHLY_CHART;
+                    });
+                  },
+                )
+              : Container(
+                  padding: const EdgeInsets.all(5),
+                  child: Icon(
+                    Icons.repeat,
+                    size: 16,
+                    color: Colors.transparent,
+                  )),
+          InkWell(
+              child: Container(
+                margin: const EdgeInsets.all(5),
+                child: Icon(
+                  Icons.show_chart,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+              ),
+              onTap: () {
+                setState(() {
+                  _showPrediction = !_showPrediction;
+                });
+              }),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpandToWidth(
+      child: DecoratedCard(
+        child: _buildCategoryBox(),
+        borderRadius: widget.radius,
+        borderColor: Theme.of(context).colorScheme.primary,
+        borderWidth: 0,
       ),
     );
   }

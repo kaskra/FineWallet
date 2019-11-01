@@ -149,9 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
-      ProfilePage(
-        showAppBar: false,
-      ),
+      ProfilePage(),
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
@@ -165,13 +163,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
       bottomNavigationBar: _buildBottomBar(),
       body: children[Provider.of<NavigationNotifier>(context).page],
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: keyboardOpen
           ? SizedBox()
           : SlidingButtonMenu(
               onMenuFunction: _addTransaction,
               tapCallback: _navCallback,
             ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

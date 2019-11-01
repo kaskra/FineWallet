@@ -83,8 +83,10 @@ class _AddPageState extends State<AddPage> {
       _expense = widget.transaction.amount;
       _textEditingController.text = _expense.toStringAsFixed(2);
       _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
-      _subcategory = Category(CategoryIcon(widget.transaction.category - 1).data,
-          widget.transaction.subcategoryName, widget.transaction.subcategory,
+      _subcategory = Category(
+          CategoryIcon(widget.transaction.category - 1).data,
+          widget.transaction.subcategoryName,
+          widget.transaction.subcategory,
           selectedCategory: selectedCategory);
 
       if (widget.transaction.isRecurring == 1) {
