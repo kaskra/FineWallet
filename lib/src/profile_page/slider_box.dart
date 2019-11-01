@@ -201,7 +201,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
             _buildSliderWithTextInput(),
             new InformationRow(
               text: Text(
-                "Overall available budget: ",
+                "Total available budget: ",
                 style: TextStyle(fontSize: 14),
               ),
               value: _buildOverallBudget(),
