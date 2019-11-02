@@ -1,12 +1,11 @@
 import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
-import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,16 +30,11 @@ class BudgetSlider extends StatefulWidget {
 }
 
 class _BudgetSliderState extends State<BudgetSlider> {
-  /// Current month entity, holding the current available budget of the month.
-  MonthModel _currentMonth;
-
   /// The maximum available budget for the month.
   double _currentMaxMonthlyBudget = 0;
 
-  /// The overall maximum budget, which depends on all incomes of the month.
-  ///
-  /// Sum of all incomes of the current month.
-  double _overallMaxBudget = 0;
+  /// Current month entity, holding the current available budget of the month.
+  MonthModel _currentMonth;
 
   /// The text editor controller for the slider-dependend textfield.
   TextEditingController _textEditingController = TextEditingController();
@@ -55,37 +49,17 @@ class _BudgetSliderState extends State<BudgetSlider> {
   /// the current maximum available budget, update the parent by
   /// calling onChanged event callback.
   void _loadCurrentMonth() async {
-    TransactionList monthlyTransactions = await TransactionsProvider.db
-        .getTransactionsOfMonth(dayInMillis(DateTime.now()));
-
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
 
     setState(() {
-      _overallMaxBudget = monthlyTransactions.sumIncomes();
       _currentMaxMonthlyBudget = currentMonth.currentMaxBudget;
       _currentMonth = currentMonth;
     });
 
     _textEditingController.text = _currentMaxMonthlyBudget.toStringAsFixed(2);
-    _setMaxMonthlyBudget(_currentMaxMonthlyBudget);
-  }
-
-  /// Set the maximum available budget.
-  ///
-  /// Clamp the value to [0, overall max budget],
-  /// update the parent by calling onChanged event callback.
-  void _setMaxMonthlyBudget(double value) {
-    if (value >= _overallMaxBudget) {
-      value = _overallMaxBudget;
-    } else if (value < 0) {
-      value = 0;
-    }
-
-    _currentMaxMonthlyBudget = value;
-    _textEditingController.text = value.toStringAsFixed(2);
 
     if (widget.onChanged != null) {
-      widget.onChanged(value);
+      widget.onChanged(_currentMaxMonthlyBudget);
     }
   }
 
@@ -103,7 +77,19 @@ class _BudgetSliderState extends State<BudgetSlider> {
       alignment: Alignment.centerRight,
       child: Row(
         children: <Widget>[
-          _buildSlider(),
+          _ValueSlider(
+            onChangeEnd: (value) {
+              setState(() {
+                _currentMaxMonthlyBudget = value;
+              });
+              if (widget.onChanged != null) {
+                widget.onChanged(value);
+              }
+              _updateMonthModel();
+            },
+            onChange: (value) =>
+                _textEditingController.text = value.toStringAsFixed(2),
+          ),
           Text(
             "€ ",
             style: const TextStyle(fontSize: 16),
@@ -114,27 +100,23 @@ class _BudgetSliderState extends State<BudgetSlider> {
     );
   }
 
-  /// Build the slider, which calls sets the current maximum budget when getting changed.
+  /// Set the maximum available budget.
   ///
-  /// When the change ends, the database is updated.
-  /// When the change starts, a new focus node is set, to force the keyboard to be closed.
-  Widget _buildSlider() {
-    return Expanded(
-      flex: 3,
-      child: Slider(
-        onChangeEnd: (v) => _updateMonthModel(),
-        onChanged: (value) {
-          _setMaxMonthlyBudget(value);
-        },
-        onChangeStart: (value) {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
-        value: _currentMaxMonthlyBudget,
-        min: 0,
-        max: _overallMaxBudget,
-        divisions: 100,
-      ),
-    );
+  /// Clamp the value to [0, max] and
+  /// update the parent by calling onChanged event callback.
+  void _setMaxMonthlyBudget(double value, double max) {
+    if (value >= max) {
+      value = max;
+    } else if (value < 0) {
+      value = 0;
+    }
+
+    _currentMaxMonthlyBudget = value;
+    _textEditingController.text = value.toStringAsFixed(2);
+
+    if (widget.onChanged != null) {
+      widget.onChanged(value);
+    }
   }
 
   /// The dependend textfield shows the current value of the slider.
@@ -143,41 +125,100 @@ class _BudgetSliderState extends State<BudgetSlider> {
   /// That value is then shown on the slider.
   Widget _buildDependendTextField() {
     return Expanded(
-      child: TextField(
-        decoration: InputDecoration(border: InputBorder.none),
-        onSubmitted: (valueAsString) {
-          double value = double.parse(valueAsString);
-          _setMaxMonthlyBudget(value);
-          _updateMonthModel();
+      child: Consumer<TransactionBloc>(
+        builder: (context, bloc, _) {
+          bloc.getMonthlyTransactions();
+          return StreamBuilder<TransactionList>(
+            stream: bloc.monthlyTransactions,
+            builder: (context, snapshot) {
+              double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
+
+              return TextField(
+                decoration: InputDecoration(border: InputBorder.none),
+                onSubmitted: (valueAsString) {
+                  double value = double.parse(valueAsString);
+                  _setMaxMonthlyBudget(value, max);
+                  _updateMonthModel();
+                },
+                onTap: () {
+                  _textEditingController.selection = TextSelection(
+                      baseOffset: 0,
+                      extentOffset: _textEditingController.text.length);
+                },
+                controller: _textEditingController,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+              );
+            },
+          );
         },
-        onTap: () {
-          _textEditingController.selection = TextSelection(
-              baseOffset: 0, extentOffset: _textEditingController.text.length);
-        },
-        controller: _textEditingController,
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
       ),
     );
   }
 
-  /// Show overall available budget (savings plus monthly available budget).
-  Widget _buildOverallBudget() {
-    return Consumer<MonthBloc>(
-      builder: (context, bloc, child) {
-        bloc.getSavings();
-        return StreamBuilder<double>(
-          stream: bloc.savings,
-          builder: (context, snapshot) {
-            double maxBudget = snapshot.data ?? 0;
-            maxBudget += _currentMaxMonthlyBudget;
-            return Text(
-              "${maxBudget.toStringAsFixed(2)}€",
-              style: TextStyle(fontSize: 14),
-            );
-          },
-        );
-      },
+  /// Build the information row for total available budget (savings plus monthly available budget).
+  Widget _buildAvailableBudget() {
+    return new InformationRow(
+      text: Text(
+        "Total available budget: ",
+        style: TextStyle(fontSize: 14),
+      ),
+      value: Consumer<MonthBloc>(
+        builder: (context, bloc, child) {
+          bloc.getSavings();
+          return StreamBuilder<double>(
+            stream: bloc.savings,
+            builder: (context, snapshot) {
+              double maxBudget = snapshot.data ?? 0;
+              maxBudget += _currentMaxMonthlyBudget;
+              return Text(
+                "${maxBudget.toStringAsFixed(2)}€",
+                style: TextStyle(fontSize: 14),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  /// Build slider title text
+  Widget _buildTitle() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Text(
+        "Monthly available budget",
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  /// Build expected savings for current month.
+  Widget _buildExpectedSavings() {
+    return new InformationRow(
+      text: Text(
+        "Expected savings: ",
+        style: TextStyle(fontSize: 14),
+      ),
+      value: Consumer<TransactionBloc>(
+        builder: (context, bloc, _) {
+          bloc.getMonthlyTransactions();
+          return StreamBuilder<TransactionList>(
+            stream: bloc.monthlyTransactions,
+            builder: (context, snapshot) {
+              double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
+
+              return Text(
+                " ${(max - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -191,36 +232,89 @@ class _BudgetSliderState extends State<BudgetSlider> {
         borderRadius: widget.borderRadius,
         child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topCenter,
-              child: Text(
-                "Monthly available budget",
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
+            _buildTitle(),
             _buildSliderWithTextInput(),
-            new InformationRow(
-              text: Text(
-                "Total available budget: ",
-                style: TextStyle(fontSize: 14),
-              ),
-              value: _buildOverallBudget(),
-            ),
-            new InformationRow(
-              text: Text(
-                "Expected savings: ",
-                style: TextStyle(fontSize: 14),
-              ),
-              value: Text(
-                " ${(_overallMaxBudget - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
+            _buildAvailableBudget(),
+            _buildExpectedSavings()
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ValueSlider extends StatefulWidget {
+  _ValueSlider({this.onChangeEnd, this.onChange});
+
+  @override
+  __ValueSliderState createState() => __ValueSliderState();
+
+  final Function(double value) onChangeEnd;
+
+  final Function(double value) onChange;
+}
+
+class __ValueSliderState extends State<_ValueSlider> {
+  double _value = 0;
+
+  @override
+  void initState() {
+    _loadCurrentBudget();
+    super.initState();
+  }
+
+  /// Load current maximum budget from current month.
+  _loadCurrentBudget() async {
+    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
+
+    setState(() {
+      _value = currentMonth.currentMaxBudget;
+    });
+  }
+
+  /// Build the slider, which calls sets the current maximum budget when getting changed.
+  ///
+  /// When the change ends, the database is updated.
+  /// When the change starts, a new focus node is set, to force the keyboard to be closed.
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 3,
+      child: Consumer<TransactionBloc>(
+        builder: (context, bloc, _) {
+          bloc.getMonthlyTransactions();
+          return StreamBuilder<TransactionList>(
+            stream: bloc.monthlyTransactions,
+            builder: (context, snapshot) {
+              double max = 1;
+              if (snapshot.hasData) {
+                max = snapshot.data.sumIncomes();
+              }
+              return Slider(
+                onChangeEnd: (value) {
+                  if (widget.onChangeEnd != null) {
+                    widget.onChangeEnd(value);
+                  }
+                },
+                onChanged: (value) {
+                  setState(() {
+                    _value = value;
+                  });
+                  if (widget.onChange != null) {
+                    widget.onChange(value);
+                  }
+                },
+                onChangeStart: (value) {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
+                value: _value,
+                min: 0,
+                max: max,
+                divisions: 100,
+              );
+            },
+          );
+        },
       ),
     );
   }
