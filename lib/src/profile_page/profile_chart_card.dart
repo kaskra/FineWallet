@@ -11,16 +11,17 @@ import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'budget_notifier.dart';
 
 class ProfileChartCard extends StatefulWidget {
   const ProfileChartCard({
     Key key,
     @required this.radius,
-    @required this.maxCurrentBudget,
   }) : super(key: key);
 
   final BorderRadius radius;
-  final double maxCurrentBudget;
 
   @override
   _ProfileChartCardState createState() => _ProfileChartCardState();
@@ -41,7 +42,8 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
               padding: const EdgeInsets.all(15),
               child: _showPrediction
                   ? SpendingPredictionChart(
-                      monthlyBudget: widget.maxCurrentBudget,
+                      monthlyBudget:
+                          Provider.of<BudgetNotifier>(context).budget,
                     )
                   : ProfileChart(
                       type: _chartType,

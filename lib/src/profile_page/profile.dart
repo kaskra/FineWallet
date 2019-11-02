@@ -20,24 +20,16 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  double _currentMaxMonthlyBudget = 0;
-
   Widget _buildBody() {
     BorderRadius radius = BorderRadius.circular(CARD_RADIUS);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         BudgetSlider(
-          onChanged: (value) => {
-            setState(() {
-              _currentMaxMonthlyBudget = value;
-            }),
-          },
           borderRadius: radius,
         ),
         ProfileChartCard(
           radius: radius,
-          maxCurrentBudget: _currentMaxMonthlyBudget,
         ),
         SavingsBox(
           borderRadius: radius,

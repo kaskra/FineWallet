@@ -3,6 +3,7 @@ import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -15,24 +16,17 @@ import 'package:provider/provider.dart';
 /// The slider box is rendered to screen width with an optional ratio.
 class BudgetSlider extends StatefulWidget {
   BudgetSlider(
-      {Key key,
-      this.onChanged,
-      this.borderRadius = BorderRadius.zero,
-      double widthRatio = 1})
+      {Key key, this.borderRadius = BorderRadius.zero, double widthRatio = 1})
       : this.screenWidthRatio = widthRatio,
         super(key: key);
 
   final BorderRadius borderRadius;
-  final Function(double budget) onChanged;
   final double screenWidthRatio;
 
   _BudgetSliderState createState() => _BudgetSliderState();
 }
 
 class _BudgetSliderState extends State<BudgetSlider> {
-  /// The maximum available budget for the month.
-  double _currentMaxMonthlyBudget = 0;
-
   /// Current month entity, holding the current available budget of the month.
   MonthModel _currentMonth;
 
@@ -51,23 +45,23 @@ class _BudgetSliderState extends State<BudgetSlider> {
   void _loadCurrentMonth() async {
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
 
+    Provider.of<BudgetNotifier>(context)
+        .setBudget(currentMonth.currentMaxBudget);
+
     setState(() {
-      _currentMaxMonthlyBudget = currentMonth.currentMaxBudget;
       _currentMonth = currentMonth;
     });
 
-    _textEditingController.text = _currentMaxMonthlyBudget.toStringAsFixed(2);
-
-    if (widget.onChanged != null) {
-      widget.onChanged(_currentMaxMonthlyBudget);
-    }
+    _textEditingController.text =
+        currentMonth.currentMaxBudget.toStringAsFixed(2);
   }
 
   /// Update the current month by updating the current monthly available budget in the entity.
   ///
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
-    _currentMonth?.currentMaxBudget = _currentMaxMonthlyBudget;
+    _currentMonth?.currentMaxBudget =
+        Provider.of<BudgetNotifier>(context).budget;
     Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
   }
 
@@ -77,19 +71,13 @@ class _BudgetSliderState extends State<BudgetSlider> {
       alignment: Alignment.centerRight,
       child: Row(
         children: <Widget>[
-          _ValueSlider(
-            onChangeEnd: (value) {
-              setState(() {
-                _currentMaxMonthlyBudget = value;
-              });
-              if (widget.onChanged != null) {
-                widget.onChanged(value);
-              }
-              _updateMonthModel();
-            },
-            onChange: (value) =>
-                _textEditingController.text = value.toStringAsFixed(2),
-          ),
+          _ValueSlider(onChangeEnd: (value) {
+            Provider.of<BudgetNotifier>(context).setBudget(value);
+            _updateMonthModel();
+          }, onChange: (value) {
+            _textEditingController.text = value.toStringAsFixed(2);
+            Provider.of<BudgetNotifier>(context).setBudget(value);
+          }),
           Text(
             "€ ",
             style: const TextStyle(fontSize: 16),
@@ -111,12 +99,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
       value = 0;
     }
 
-    _currentMaxMonthlyBudget = value;
     _textEditingController.text = value.toStringAsFixed(2);
-
-    if (widget.onChanged != null) {
-      widget.onChanged(value);
-    }
+    Provider.of<BudgetNotifier>(context).setBudget(value);
   }
 
   /// The dependend textfield shows the current value of the slider.
@@ -139,6 +123,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
                   double value = double.parse(valueAsString);
                   _setMaxMonthlyBudget(value, max);
                   _updateMonthModel();
+                  // TODO does not update slider
                 },
                 onTap: () {
                   _textEditingController.selection = TextSelection(
@@ -170,7 +155,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
             stream: bloc.savings,
             builder: (context, snapshot) {
               double maxBudget = snapshot.data ?? 0;
-              maxBudget += _currentMaxMonthlyBudget;
+              maxBudget += Provider.of<BudgetNotifier>(context).budget;
               return Text(
                 "${maxBudget.toStringAsFixed(2)}€",
                 style: TextStyle(fontSize: 14),
@@ -207,9 +192,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
             stream: bloc.monthlyTransactions,
             builder: (context, snapshot) {
               double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
-
               return Text(
-                " ${(max - _currentMaxMonthlyBudget).toStringAsFixed(2)}€",
+                " ${(max - Provider.of<BudgetNotifier>(context).budget).toStringAsFixed(2)}€",
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -286,10 +270,7 @@ class __ValueSliderState extends State<_ValueSlider> {
           return StreamBuilder<TransactionList>(
             stream: bloc.monthlyTransactions,
             builder: (context, snapshot) {
-              double max = 1;
-              if (snapshot.hasData) {
-                max = snapshot.data.sumIncomes();
-              }
+              double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
               return Slider(
                 onChangeEnd: (value) {
                   if (widget.onChangeEnd != null) {
