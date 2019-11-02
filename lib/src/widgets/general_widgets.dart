@@ -43,6 +43,6 @@ Future<bool> showConfirmDialog(
           ],
         );
       }).then((v) {
-    return v;
+    return v ?? false;
   });
 }
