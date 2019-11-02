@@ -152,7 +152,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
             stream: bloc.savings,
             builder: (context, snapshot) {
               double maxBudget = snapshot.data ?? 0;
-              maxBudget += Provider.of<BudgetNotifier>(context).budget;
+              maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
               return Text(
                 "${maxBudget.toStringAsFixed(2)}€",
                 style: TextStyle(fontSize: 14),
@@ -190,7 +190,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
             builder: (context, snapshot) {
               double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
               return Text(
-                " ${(max - Provider.of<BudgetNotifier>(context).budget).toStringAsFixed(2)}€",
+                " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}€",
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -267,7 +267,7 @@ class __ValueSliderState extends State<_ValueSlider> {
               // Make sure that max is not smaller than the value to be displayed.
               // Happens while loading the monthly transactions.
               double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
-              if (max < Provider.of<BudgetNotifier>(context).budget) {
+              if (max < (Provider.of<BudgetNotifier>(context)?.budget ?? 0)) {
                 max = Provider.of<BudgetNotifier>(context).budget;
               }
 
@@ -287,7 +287,7 @@ class __ValueSliderState extends State<_ValueSlider> {
                 onChangeStart: (value) {
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
-                value: Provider.of<BudgetNotifier>(context).budget,
+                value: Provider.of<BudgetNotifier>(context)?.budget ?? 0,
                 min: 0,
                 max: max,
                 divisions: 100,
