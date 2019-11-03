@@ -29,31 +29,13 @@ class ProfileChart extends StatefulWidget {
 }
 
 class _ProfileChartState extends State<ProfileChart> {
-  DateTime today;
-
-  Widget _buildChartByType(int type) {
-    return Consumer2<TransactionBloc, CategoryBloc>(
-      builder: (_, transactionBloc, categoryBloc, child) {
-        categoryBloc.getCategories(true);
-        Stream stream;
-        if (type == ProfileChart.MONTHLY_CHART) {
-          transactionBloc.getMonthlyTransactions();
-          stream = transactionBloc.monthlyTransactions;
-        } else {
-          transactionBloc.getAllTransactions();
-          stream = transactionBloc.allTransactions;
-        }
-        return _addCategories(categoryBloc, stream);
-      },
-    );
-  }
-
-  StreamBuilder<CategoryList> _addCategories(CategoryBloc categoryBloc, Stream stream) {
+  StreamBuilder<CategoryList> _addCategories(
+      CategoryBloc categoryBloc, TransactionBloc transactionBloc) {
     return StreamBuilder<CategoryList>(
       stream: categoryBloc.allCategories,
       builder: (context, AsyncSnapshot<CategoryList> categorySnapshot) {
         if (categorySnapshot.hasData) {
-          return _addTransactions(stream, categorySnapshot);
+          return _addTransactions(transactionBloc, categorySnapshot);
         } else {
           return Center(child: CircularProgressIndicator());
         }
@@ -62,22 +44,36 @@ class _ProfileChartState extends State<ProfileChart> {
   }
 
   StreamBuilder<TransactionList> _addTransactions(
-      Stream stream, AsyncSnapshot<CategoryList> categorySnapshot) {
+      TransactionBloc bloc, AsyncSnapshot<CategoryList> categorySnapshot) {
+    // Check which chart should be displayed and load the correct data for it.
+    if (widget.type == ProfileChart.MONTHLY_CHART) {
+      bloc.getMonthlyTransactions();
+    } else {
+      bloc.getAllTransactions();
+    }
+
     return StreamBuilder<TransactionList>(
-      stream: stream,
+      stream: widget.type == ProfileChart.MONTHLY_CHART
+          ? bloc.monthlyTransactions
+          : bloc.allTransactions,
       builder: (context, AsyncSnapshot<TransactionList> transactionSnapshot) {
         return _buildChart(transactionSnapshot, categorySnapshot);
       },
     );
   }
 
-  Widget _buildChart(AsyncSnapshot<TransactionList> transactionSnapshot, AsyncSnapshot<CategoryList> categorySnapshot) {
+  Widget _buildChart(AsyncSnapshot<TransactionList> transactionSnapshot,
+      AsyncSnapshot<CategoryList> categorySnapshot) {
     if (transactionSnapshot.hasData && categorySnapshot.data.ids() != null) {
+      // Get the summed up expenses for each category.
       List<double> expenses = [
-        for (int c in categorySnapshot.data.ids()) transactionSnapshot.data.byCategory(c).sumExpenses()
+        for (int c in categorySnapshot.data.ids())
+          transactionSnapshot.data.byCategory(c).sumExpenses()
       ];
-      return CircularProfileChart.withTransactions(expenses,
-          categorySnapshot.data.ids(), categorySnapshot.data.names());
+
+      // Create the chart with expenses per category and category names.
+      return CircularProfileChart.withTransactions(
+          expenses, categorySnapshot.data.ids(), categorySnapshot.data.names());
     }
     return Center(child: CircularProgressIndicator());
   }
@@ -86,7 +82,12 @@ class _ProfileChartState extends State<ProfileChart> {
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: _buildChartByType(widget.type),
+        child: Consumer2<TransactionBloc, CategoryBloc>(
+          builder: (_, transactionBloc, categoryBloc, child) {
+            categoryBloc.getCategories(true);
+            return _addCategories(categoryBloc, transactionBloc);
+          },
+        ),
       ),
     );
   }
