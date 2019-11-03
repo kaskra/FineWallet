@@ -145,7 +145,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
         "Total available budget: ",
         style: TextStyle(fontSize: 14),
       ),
-      value: Consumer<MonthBloc>(
+      value: Consumer<TransactionBloc>(
         builder: (context, bloc, child) {
           bloc.getSavings();
           return StreamBuilder<double>(

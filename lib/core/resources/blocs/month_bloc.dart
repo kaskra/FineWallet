@@ -22,18 +22,14 @@ class MonthBloc {
 
   final _allMonthController = StreamController<List<MonthModel>>.broadcast();
   final _currentMonthController = StreamController<MonthModel>.broadcast();
-  final _savingsController = StreamController<double>.broadcast();
 
   get currentMonth => _currentMonthController.stream;
 
   get allMonths => _allMonthController.stream;
 
-  get savings => _savingsController.stream;
-
   void dispose() {
     _currentMonthController.close();
     _allMonthController.close();
-    _savingsController.close();
   }
 
   getCurrentMonth() async {
@@ -42,11 +38,6 @@ class MonthBloc {
 
   getMonths() async {
     _allMonthController.sink.add(await MonthProvider.db.getAllRecordedMonths());
-  }
-
-  getSavings() async {
-    double savings = await MonthProvider.db.getAllSavings();
-    _savingsController.sink.add(savings);
   }
 
   add(MonthModel month) async {
@@ -75,21 +66,20 @@ class MonthBloc {
 
     for (int i in ids) {
       if (recordedMonthIds.contains(i)) {
-
         MonthModel currentMonth =
             allMonths.firstWhere((m) => m.firstDayOfMonth == i);
 
         TransactionList transactionsOfMonth =
             await TransactionsProvider.db.getTransactionsOfMonth(i);
-        
+
         // Update monthly expenses and savings.
         currentMonth.monthlyExpenses = transactionsOfMonth.sumExpenses();
         currentMonth.savings =
             transactionsOfMonth.sumIncomes() - currentMonth.monthlyExpenses;
-        
-        // Check whether max budget is below monthly incomes. 
+
+        // Check whether max budget is below monthly incomes.
         // Set max budget to max budget possible.
-        if (transactionsOfMonth.sumIncomes() < currentMonth.currentMaxBudget){
+        if (transactionsOfMonth.sumIncomes() < currentMonth.currentMaxBudget) {
           currentMonth.currentMaxBudget = transactionsOfMonth.sumIncomes();
         }
 
@@ -116,6 +106,5 @@ class MonthBloc {
 
     await getCurrentMonth();
     await getMonths();
-    await getSavings();
   }
 }

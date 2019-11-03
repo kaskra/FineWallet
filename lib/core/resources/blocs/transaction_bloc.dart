@@ -10,6 +10,7 @@ import 'dart:async';
 
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/db_provider.dart';
+import 'package:FineWallet/core/resources/month_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/utils.dart';
@@ -27,10 +28,13 @@ class TransactionBloc {
       StreamController<TransactionList>.broadcast();
   final _monthlyTransactionsController =
       StreamController<TransactionList>.broadcast();
+  final _savingsController = StreamController<double>.broadcast();
 
   get allTransactions => _allTransactionsController.stream;
 
   get monthlyTransactions => _monthlyTransactionsController.stream;
+
+  get savings => _savingsController.stream;
 
   void updateAllTransactions() async {
     getAllTransactions();
@@ -39,6 +43,7 @@ class TransactionBloc {
   void dispose() {
     _allTransactionsController.close();
     _monthlyTransactionsController.close();
+    _savingsController.close();
   }
 
   getAllTransactions() async {
@@ -65,5 +70,15 @@ class TransactionBloc {
   updateTransaction(TransactionModel tx) async {
     await DatabaseProvider.db.updateTransaction(tx);
     await getAllTransactions();
+  }
+
+  getSavings() async {
+    TransactionList transactions =
+        await TransactionsProvider.db.getAllTrans(dayInMillis(DateTime.now()));
+    transactions.retainWhere((tx) =>
+        getFirstDateOfMonth(DateTime.fromMillisecondsSinceEpoch(tx.date)) !=
+        getFirstDateOfMonth(DateTime.now()));
+    double savings = transactions.sumIncomes() - transactions.sumExpenses();
+    _savingsController.sink.add(savings);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class SavingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MonthBloc>(
+    return Consumer<TransactionBloc>(
       builder: (context, bloc, child) {
         bloc.getSavings();
         return StreamBuilder(
