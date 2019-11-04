@@ -56,7 +56,7 @@ class OverviewBloc {
 
     int remainingDaysInMonth = getRemainingDaysInMonth();
 
-    // TODO test to make sure that it is correct
+    // Retain every transaction that is a daily transaction or not recurring at all.
     list = list.where((tx) => tx.replayType == 0 || tx.isRecurring == 0);
 
     double monthlyExpenses = list.exceptDate(DateTime.now()).sumExpenses();
