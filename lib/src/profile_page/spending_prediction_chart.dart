@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/src/statistics/chart_data.dart';
@@ -53,19 +54,29 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
           stream: bloc.monthlyTransactions,
           builder: (context, AsyncSnapshot<TransactionList> snapshot) {
             if (snapshot.hasData) {
-              // Decide between using DateTime and int as index.
-
-              // return PredictionChart.withTransactions(
-              //     _calcDataPoints(snapshot), widget.monthlyBudget);
-
-              return PredictionDateChart.withTransactions(
-                  _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
+              return _buildChartByDataType(snapshot);
             }
             return Center(child: CircularProgressIndicator());
           },
         );
       },
     );
+  }
+
+  /// Build prediction chart using either DateTime's or int's as domain axis values.
+  ///
+  /// - The **DateTime**-domain chart shows a tick every 3 days.
+  /// - The **int**-domain chart shows some specific hardcoded ticks.
+  ///
+  /// Which chart to choose is decided by constant [USE_DATETIME_CHART].
+  Widget _buildChartByDataType(AsyncSnapshot<TransactionList> snapshot) {
+    if (USE_DATETIME_CHART) {
+      return PredictionDateChart.withTransactions(
+          _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
+    } else {
+      return PredictionChart.withTransactions(
+          _calcDataPoints(snapshot), widget.monthlyBudget);
+    }
   }
 
   List<PredictionPoint> _calcDataPoints(
