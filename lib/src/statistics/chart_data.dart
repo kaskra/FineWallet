@@ -29,3 +29,12 @@ class PredictionPoint {
   PredictionPoint(
       this.timestamp, this.amount, this.isPrediction, this.isAboveMax);
 }
+
+class PredictionPointDate {
+  final DateTime timestamp;
+  final double amount;
+  final bool isPrediction;
+  final bool isAboveMax;
+  PredictionPointDate(
+      this.timestamp, this.amount, this.isPrediction, this.isAboveMax);
+}
