@@ -34,7 +34,7 @@ final ThemeData standardTheme = ThemeData(
   accentColor: _secondary,
   buttonColor: _secondary,
   textTheme: TextTheme(
-    body1: TextStyle(color: _onBackground.withOpacity(0.87)),
+    body1: TextStyle(color: _onBackground.withOpacity(0.87), fontFamily: "roboto"),
     button: TextStyle(color: _onMainColor),
   ),
   iconTheme: IconThemeData(color: _onMainColor),
