@@ -8,6 +8,7 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/models/month_model.dart';
+import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
@@ -15,11 +16,13 @@ import 'package:FineWallet/core/resources/category_list.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
 import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MonthCard extends StatelessWidget {
@@ -117,18 +120,21 @@ class MonthCard extends StatelessWidget {
   }
 
   Widget _buildSavings() {
-    String prefix = "You saved";
+    String prefix = "You have saved";
     if (date.month == DateTime.now().month &&
         date.year == DateTime.now().year) {
       prefix = "You will save";
     }
 
-    return Text(
-      "$prefix ${model.savings.toStringAsFixed(2)}€".toUpperCase(),
-      style: TextStyle(
-          fontSize: 20,
-          color: Theme.of(context).colorScheme.secondary,
-          fontWeight: FontWeight.bold),
+    return FittedBox(
+      fit: BoxFit.contain,
+      child: Text(
+        "$prefix ${model.savings.toStringAsFixed(2)}€".toUpperCase(),
+        style: TextStyle(
+            fontSize: 20,
+            color: Theme.of(context).colorScheme.secondary,
+            fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
@@ -246,8 +252,159 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
+  void _showTransactionsOfCategory(int id, CategoryBloc bloc) {
+    showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: Container(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height * 0.8,
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  _buildDialogHeader(id, bloc),
+                  _buildDialogTransactionList(id),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: FlatButton(
+                  child: Text(
+                    "OK",
+                  ),
+                  textColor: Theme.of(context).colorScheme.secondary,
+                  onPressed: () {
+                    print("Pressed!");
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogHeader(int id, CategoryBloc bloc) {
+    return Container(
+      color: Theme.of(context).colorScheme.primary,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        children: <Widget>[
+          IconWrapper(
+            clipRadius: 45,
+            padding: const EdgeInsets.all(0),
+            alignment: Alignment.centerLeft,
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              color: Theme.of(context).colorScheme.primary,
+              child: Icon(
+                CategoryIcon(id - 1).data,
+                color: Theme.of(context).colorScheme.onSecondary,
+                size: 45,
+              ),
+            ),
+          ),
+          StreamBuilder<CategoryList>(
+            stream: bloc.allCategories,
+            builder: (context, snapshot) {
+              return Text(
+                snapshot.hasData ? "${snapshot.data[id - 1].name}" : "",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  decoration: TextDecoration.none,
+                  fontSize: 18,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: "roboto",
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDialogTransactionList(int id) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      child: Consumer<TransactionBloc>(
+        builder: (context, bloc, __) {
+          bloc.getMonthlyTransactions(dateInMonth: model.firstDayOfMonth);
+          return StreamBuilder(
+            stream: bloc.monthlyTransactions,
+            builder: (context, snapshot) {
+              // Load transactions of month and filter to only get category of certain id.
+              TransactionList transactionOfCategory =
+                  snapshot.hasData ? snapshot.data : TransactionList();
+              transactionOfCategory = transactionOfCategory.byCategory(id);
+
+              return ListView(
+                primary: true,
+                shrinkWrap: true,
+                children: <Widget>[
+                  for (var tx in transactionOfCategory)
+                    _buildTransactionRow(tx),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  InformationRow _buildTransactionRow(TransactionModel tx) {
+    // Initialize date formatter for timestamp
+    var formatter = new DateFormat('E, dd.MM.yy');
+
+    return InformationRow(
+      padding: const EdgeInsets.all(5),
+      text: Expanded(
+        child: Text.rich(
+          TextSpan(
+            text: "${tx.subcategoryName}",
+            children: [
+              TextSpan(
+                text:
+                    "\n${formatter.format(DateTime.fromMillisecondsSinceEpoch(tx.date))}",
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              )
+            ],
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              decoration: TextDecoration.none,
+              fontSize: 18,
+              fontWeight: FontWeight.normal,
+              fontFamily: "roboto",
+            ),
+          ),
+        ),
+      ),
+      value: Text(
+        "-${tx.amount.toStringAsFixed(2)}€",
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.error,
+          decoration: TextDecoration.none,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          fontFamily: "roboto",
+        ),
+      ),
+    );
+  }
+
   Widget _buildCategoryListItem(int id, double amount, CategoryBloc bloc) {
     return ListTile(
+      onTap: () {
+        _showTransactionsOfCategory(id, bloc);
+      },
       leading: SizedBox(
         height: 50,
         width: 50,

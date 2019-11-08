@@ -85,14 +85,17 @@ class LatestTransaction extends StatelessWidget {
                         //     fontSize: 18,
                         //   ),
                         // ),
-                        Text(
-                          "${snapshot.data.isExpense == 1 && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
-                          style: TextStyle(
-                            color: snapshot.data.isExpense == 1
-                                ? Colors.red
-                                : Colors.green,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Text(
+                            "${snapshot.data.isExpense == 1 && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
+                            style: TextStyle(
+                              color: snapshot.data.isExpense == 1
+                                  ? Colors.red
+                                  : Colors.green,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         )
                       ],
