@@ -257,26 +257,25 @@ class CategoryListView extends StatelessWidget {
       context: context,
       builder: (context) => Center(
         child: Container(
-          color: Colors.white,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(CARD_RADIUS)),
           height: MediaQuery.of(context).size.height * 0.8,
           width: MediaQuery.of(context).size.width * 0.8,
-          child: Stack(
+          child: Column(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  _buildDialogHeader(id, bloc),
-                  _buildDialogTransactionList(id),
-                ],
-              ),
+              _buildDialogHeader(id, bloc),
+              Expanded(child: _buildDialogTransactionList(id)),
               Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
                   child: Text(
                     "OK",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  textColor: Theme.of(context).colorScheme.secondary,
+                  padding: const EdgeInsets.all(5),
+                  textColor: Theme.of(context).colorScheme.primary,
                   onPressed: () {
-                    print("Pressed!");
                     Navigator.of(context).pop(true);
                   },
                 ),
@@ -290,7 +289,13 @@ class CategoryListView extends StatelessWidget {
 
   Widget _buildDialogHeader(int id, CategoryBloc bloc) {
     return Container(
-      color: Theme.of(context).colorScheme.primary,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(CARD_RADIUS),
+          topRight: Radius.circular(CARD_RADIUS),
+        ),
+      ),
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         children: <Widget>[
@@ -344,7 +349,6 @@ class CategoryListView extends StatelessWidget {
               transactionOfCategory = transactionOfCategory.byCategory(id);
 
               return ListView(
-                primary: true,
                 shrinkWrap: true,
                 children: <Widget>[
                   for (var tx in transactionOfCategory)
@@ -372,16 +376,14 @@ class CategoryListView extends StatelessWidget {
               TextSpan(
                 text:
                     "\n${formatter.format(DateTime.fromMillisecondsSinceEpoch(tx.date))}",
-                style: TextStyle(
-                  fontSize: 12,
-                ),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               )
             ],
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
               decoration: TextDecoration.none,
               fontSize: 18,
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.w500,
               fontFamily: "roboto",
             ),
           ),
