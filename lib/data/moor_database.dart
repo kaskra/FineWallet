@@ -6,6 +6,9 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/data/category_dao.dart';
+import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/data/subcategory_dao.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
@@ -47,7 +50,7 @@ class Months extends Table {
 
 @UseMoor(
     tables: [Transactions, Categories, Subcategories, Months],
-    daos: [TransactionDao])
+    daos: [TransactionDao, CategoryDao, SubcategoryDao, MonthDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super((FlutterQueryExecutor.inDatabaseFolder(

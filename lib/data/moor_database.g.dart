@@ -1135,6 +1135,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   TransactionDao _transactionDao;
   TransactionDao get transactionDao =>
       _transactionDao ??= TransactionDao(this as AppDatabase);
+  CategoryDao _categoryDao;
+  CategoryDao get categoryDao =>
+      _categoryDao ??= CategoryDao(this as AppDatabase);
+  SubcategoryDao _subcategoryDao;
+  SubcategoryDao get subcategoryDao =>
+      _subcategoryDao ??= SubcategoryDao(this as AppDatabase);
+  MonthDao _monthDao;
+  MonthDao get monthDao => _monthDao ??= MonthDao(this as AppDatabase);
   @override
   List<TableInfo> get allTables =>
       [transactions, categories, subcategories, months];
