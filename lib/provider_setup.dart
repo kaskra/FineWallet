@@ -10,6 +10,7 @@ import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,10 @@ List<SingleChildCloneableWidget> providers = [
 ];
 
 List<SingleChildCloneableWidget> independentServices = [
+  Provider<AppDatabase>(
+    builder: (_) => AppDatabase(),
+    dispose: (_, db) => db.close(),
+  ),
   Provider(
     dispose: (context, bloc) => bloc.dispose(),
     builder: (context) => TransactionBloc(),

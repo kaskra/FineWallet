@@ -377,7 +377,7 @@ class $TransactionsTable extends Transactions
       const VerificationMeta('recurringUnitl');
   GeneratedIntColumn _recurringUnitl;
   @override
-  GeneratedIntColumn get recurringUnitl =>
+  GeneratedIntColumn get recurringUntil =>
       _recurringUnitl ??= _constructRecurringUnitl();
   GeneratedIntColumn _constructRecurringUnitl() {
     return GeneratedIntColumn(
@@ -398,7 +398,7 @@ class $TransactionsTable extends Transactions
         isExpense,
         isRecurring,
         recurringType,
-        recurringUnitl
+        recurringUntil
       ];
   @override
   $TransactionsTable get asDslTable => this;
@@ -470,9 +470,9 @@ class $TransactionsTable extends Transactions
     if (d.recurringUnitl.present) {
       context.handle(
           _recurringUnitlMeta,
-          recurringUnitl.isAcceptableValue(
+          recurringUntil.isAcceptableValue(
               d.recurringUnitl.value, _recurringUnitlMeta));
-    } else if (recurringUnitl.isRequired && isInserting) {
+    } else if (recurringUntil.isRequired && isInserting) {
       context.missing(_recurringUnitlMeta);
     }
     return context;

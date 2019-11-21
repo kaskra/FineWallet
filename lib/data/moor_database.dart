@@ -24,7 +24,7 @@ class Transactions extends Table {
   BoolColumn get isExpense => boolean()();
   BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
   IntColumn get recurringType => integer().nullable()();
-  IntColumn get recurringUnitl => integer().nullable()();
+  IntColumn get recurringUntil => integer().nullable()();
 }
 
 @DataClassName('Category')
