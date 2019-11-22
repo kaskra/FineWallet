@@ -11,7 +11,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final int id;
   final double amount;
   final int subcategoryId;
-  final int categoryId;
   final int monthId;
   final int date;
   final bool isExpense;
@@ -22,7 +21,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       {@required this.id,
       @required this.amount,
       @required this.subcategoryId,
-      @required this.categoryId,
       @required this.monthId,
       @required this.date,
       @required this.isExpense,
@@ -41,8 +39,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}amount']),
       subcategoryId: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}subcategory_id']),
-      categoryId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}category_id']),
       monthId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}month_id']),
       date: intType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
@@ -62,7 +58,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
       subcategoryId: serializer.fromJson<int>(json['subcategoryId']),
-      categoryId: serializer.fromJson<int>(json['categoryId']),
       monthId: serializer.fromJson<int>(json['monthId']),
       date: serializer.fromJson<int>(json['date']),
       isExpense: serializer.fromJson<bool>(json['isExpense']),
@@ -78,7 +73,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
       'subcategoryId': serializer.toJson<int>(subcategoryId),
-      'categoryId': serializer.toJson<int>(categoryId),
       'monthId': serializer.toJson<int>(monthId),
       'date': serializer.toJson<int>(date),
       'isExpense': serializer.toJson<bool>(isExpense),
@@ -97,9 +91,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       subcategoryId: subcategoryId == null && nullToAbsent
           ? const Value.absent()
           : Value(subcategoryId),
-      categoryId: categoryId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(categoryId),
       monthId: monthId == null && nullToAbsent
           ? const Value.absent()
           : Value(monthId),
@@ -123,7 +114,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           {int id,
           double amount,
           int subcategoryId,
-          int categoryId,
           int monthId,
           int date,
           bool isExpense,
@@ -134,7 +124,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         id: id ?? this.id,
         amount: amount ?? this.amount,
         subcategoryId: subcategoryId ?? this.subcategoryId,
-        categoryId: categoryId ?? this.categoryId,
         monthId: monthId ?? this.monthId,
         date: date ?? this.date,
         isExpense: isExpense ?? this.isExpense,
@@ -148,7 +137,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('subcategoryId: $subcategoryId, ')
-          ..write('categoryId: $categoryId, ')
           ..write('monthId: $monthId, ')
           ..write('date: $date, ')
           ..write('isExpense: $isExpense, ')
@@ -167,17 +155,15 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           $mrjc(
               subcategoryId.hashCode,
               $mrjc(
-                  categoryId.hashCode,
+                  monthId.hashCode,
                   $mrjc(
-                      monthId.hashCode,
+                      date.hashCode,
                       $mrjc(
-                          date.hashCode,
+                          isExpense.hashCode,
                           $mrjc(
-                              isExpense.hashCode,
-                              $mrjc(
-                                  isRecurring.hashCode,
-                                  $mrjc(recurringType.hashCode,
-                                      recurringUntil.hashCode))))))))));
+                              isRecurring.hashCode,
+                              $mrjc(recurringType.hashCode,
+                                  recurringUntil.hashCode)))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -185,7 +171,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.id == this.id &&
           other.amount == this.amount &&
           other.subcategoryId == this.subcategoryId &&
-          other.categoryId == this.categoryId &&
           other.monthId == this.monthId &&
           other.date == this.date &&
           other.isExpense == this.isExpense &&
@@ -198,7 +183,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int> id;
   final Value<double> amount;
   final Value<int> subcategoryId;
-  final Value<int> categoryId;
   final Value<int> monthId;
   final Value<int> date;
   final Value<bool> isExpense;
@@ -209,7 +193,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
     this.subcategoryId = const Value.absent(),
-    this.categoryId = const Value.absent(),
     this.monthId = const Value.absent(),
     this.date = const Value.absent(),
     this.isExpense = const Value.absent(),
@@ -221,7 +204,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.id = const Value.absent(),
     @required double amount,
     @required int subcategoryId,
-    @required int categoryId,
     @required int monthId,
     @required int date,
     @required bool isExpense,
@@ -230,7 +212,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.recurringUntil = const Value.absent(),
   })  : amount = Value(amount),
         subcategoryId = Value(subcategoryId),
-        categoryId = Value(categoryId),
         monthId = Value(monthId),
         date = Value(date),
         isExpense = Value(isExpense);
@@ -238,7 +219,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       {Value<int> id,
       Value<double> amount,
       Value<int> subcategoryId,
-      Value<int> categoryId,
       Value<int> monthId,
       Value<int> date,
       Value<bool> isExpense,
@@ -249,7 +229,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       id: id ?? this.id,
       amount: amount ?? this.amount,
       subcategoryId: subcategoryId ?? this.subcategoryId,
-      categoryId: categoryId ?? this.categoryId,
       monthId: monthId ?? this.monthId,
       date: date ?? this.date,
       isExpense: isExpense ?? this.isExpense,
@@ -279,11 +258,8 @@ class $TransactionsTable extends Transactions
   @override
   GeneratedRealColumn get amount => _amount ??= _constructAmount();
   GeneratedRealColumn _constructAmount() {
-    return GeneratedRealColumn(
-      'amount',
-      $tableName,
-      false,
-    );
+    return GeneratedRealColumn('amount', $tableName, false,
+        $customConstraints: 'CHECK (amount > 0)');
   }
 
   final VerificationMeta _subcategoryIdMeta =
@@ -293,23 +269,8 @@ class $TransactionsTable extends Transactions
   GeneratedIntColumn get subcategoryId =>
       _subcategoryId ??= _constructSubcategoryId();
   GeneratedIntColumn _constructSubcategoryId() {
-    return GeneratedIntColumn(
-      'subcategory_id',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _categoryIdMeta = const VerificationMeta('categoryId');
-  GeneratedIntColumn _categoryId;
-  @override
-  GeneratedIntColumn get categoryId => _categoryId ??= _constructCategoryId();
-  GeneratedIntColumn _constructCategoryId() {
-    return GeneratedIntColumn(
-      'category_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('subcategory_id', $tableName, false,
+        $customConstraints: 'REFERENCES subcategories(id)');
   }
 
   final VerificationMeta _monthIdMeta = const VerificationMeta('monthId');
@@ -317,11 +278,8 @@ class $TransactionsTable extends Transactions
   @override
   GeneratedIntColumn get monthId => _monthId ??= _constructMonthId();
   GeneratedIntColumn _constructMonthId() {
-    return GeneratedIntColumn(
-      'month_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('month_id', $tableName, false,
+        $customConstraints: 'REFERENCES months(id)');
   }
 
   final VerificationMeta _dateMeta = const VerificationMeta('date');
@@ -392,7 +350,6 @@ class $TransactionsTable extends Transactions
         id,
         amount,
         subcategoryId,
-        categoryId,
         monthId,
         date,
         isExpense,
@@ -428,12 +385,6 @@ class $TransactionsTable extends Transactions
               d.subcategoryId.value, _subcategoryIdMeta));
     } else if (subcategoryId.isRequired && isInserting) {
       context.missing(_subcategoryIdMeta);
-    }
-    if (d.categoryId.present) {
-      context.handle(_categoryIdMeta,
-          categoryId.isAcceptableValue(d.categoryId.value, _categoryIdMeta));
-    } else if (categoryId.isRequired && isInserting) {
-      context.missing(_categoryIdMeta);
     }
     if (d.monthId.present) {
       context.handle(_monthIdMeta,
@@ -497,9 +448,6 @@ class $TransactionsTable extends Transactions
     }
     if (d.subcategoryId.present) {
       map['subcategory_id'] = Variable<int, IntType>(d.subcategoryId.value);
-    }
-    if (d.categoryId.present) {
-      map['category_id'] = Variable<int, IntType>(d.categoryId.value);
     }
     if (d.monthId.present) {
       map['month_id'] = Variable<int, IntType>(d.monthId.value);
@@ -808,11 +756,8 @@ class $SubcategoriesTable extends Subcategories
   @override
   GeneratedIntColumn get categoryId => _categoryId ??= _constructCategoryId();
   GeneratedIntColumn _constructCategoryId() {
-    return GeneratedIntColumn(
-      'category_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('category_id', $tableName, false,
+        $customConstraints: 'REFERENCES categories(id)');
   }
 
   @override
@@ -1138,9 +1083,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   CategoryDao _categoryDao;
   CategoryDao get categoryDao =>
       _categoryDao ??= CategoryDao(this as AppDatabase);
-  SubcategoryDao _subcategoryDao;
-  SubcategoryDao get subcategoryDao =>
-      _subcategoryDao ??= SubcategoryDao(this as AppDatabase);
   MonthDao _monthDao;
   MonthDao get monthDao => _monthDao ??= MonthDao(this as AppDatabase);
   @override

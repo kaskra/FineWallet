@@ -8,4 +8,5 @@ part of 'category_dao.dart';
 
 mixin _$CategoryDaoMixin on DatabaseAccessor<AppDatabase> {
   $CategoriesTable get categories => db.categories;
+  $SubcategoriesTable get subcategories => db.subcategories;
 }

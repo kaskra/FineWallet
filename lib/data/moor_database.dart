@@ -8,7 +8,6 @@
 
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/data/subcategory_dao.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
@@ -16,41 +15,57 @@ part 'moor_database.g.dart';
 
 class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();
-  RealColumn get amount => real()();
-  IntColumn get subcategoryId => integer()();
-  IntColumn get categoryId => integer()();
-  IntColumn get monthId => integer()();
+
+  RealColumn get amount => real().customConstraint("CHECK (amount > 0)")();
+
+  IntColumn get subcategoryId =>
+      integer().customConstraint("REFERENCES subcategories(id)")();
+
+  IntColumn get monthId =>
+      integer().customConstraint("REFERENCES months(id)")();
+
   IntColumn get date => integer()();
+
   BoolColumn get isExpense => boolean()();
+
   BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
+
   IntColumn get recurringType => integer().nullable()();
+
   IntColumn get recurringUntil => integer().nullable()();
 }
 
 @DataClassName('Category')
 class Categories extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   TextColumn get name => text().withLength(min: 1, max: 20)();
 }
 
 @DataClassName('Subcategory')
 class Subcategories extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   TextColumn get name => text().withLength(min: 1, max: 30)();
-  IntColumn get categoryId => integer()();
+
+  IntColumn get categoryId =>
+      integer().customConstraint("REFERENCES categories(id)")();
 }
 
 @DataClassName('Month')
 class Months extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   RealColumn get maxBudget => real()();
+
   IntColumn get firstDate => integer()();
+
   IntColumn get lastDate => integer()();
 }
 
 @UseMoor(
     tables: [Transactions, Categories, Subcategories, Months],
-    daos: [TransactionDao, CategoryDao, SubcategoryDao, MonthDao])
+    daos: [TransactionDao, CategoryDao, MonthDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super((FlutterQueryExecutor.inDatabaseFolder(
@@ -58,4 +73,15 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (_) {
+          // TODO insert first entries with batch insert
+          return;
+        },
+        beforeOpen: (details) async {
+          await customStatement("PRAGMA foreign_keys = ON");
+        },
+      );
 }
