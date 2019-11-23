@@ -100,19 +100,18 @@ class AppDatabase extends _$AppDatabase {
               await into(subcategories)
                   .insertAll(catWithSubs.subcategories, orReplace: true);
             }
+
+            // TODO remove when done testing
+
+            var tx1 = TransactionsCompanion.insert(amount: 15, subcategoryId: 1, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
+            var tx2 = TransactionsCompanion.insert(amount: 10, subcategoryId: 5, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
+            var tx3 = TransactionsCompanion.insert(amount: 5, subcategoryId: 2, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
+            var tx4 = TransactionsCompanion.insert(amount: 50, subcategoryId: 68, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: false);
+            var tx5 = TransactionsCompanion.insert(amount: 100, subcategoryId: 68, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: false);
+
+            await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
+
           }
-
-          // TODO remove when done testing
-
-          var tx1 = TransactionsCompanion.insert(amount: 15, subcategoryId: 1, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
-          var tx2 = TransactionsCompanion.insert(amount: 10, subcategoryId: 5, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
-          var tx3 = TransactionsCompanion.insert(amount: 5, subcategoryId: 2, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
-          var tx4 = TransactionsCompanion.insert(amount: 50, subcategoryId: 68, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: false);
-          var tx5 = TransactionsCompanion.insert(amount: 100, subcategoryId: 68, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: false);
-
-          await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx4, tx5]);
-
-
 
           // TODO check if in new month and update accordingly
         },

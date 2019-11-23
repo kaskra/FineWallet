@@ -55,9 +55,15 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future deleteTransaction(Insertable<db_file.Transaction> transaction) =>
       delete(transactions).delete(transaction);
 
-  Stream<double> watchAllSavings() {
-    final savings =
-        customSelectQuery("SELECT () - () ", readsFrom: {transactions}).watch();
+  Stream<double> watchTotalSavings() {
+    final savings = customSelectQuery(
+        "SELECT (SELECT SUM(amount) FROM transactions WHERE is_expense = 0) - "
+        "(SELECT SUM(amount) FROM transactions WHERE is_expense = 1) AS savings",
+        readsFrom: {
+          transactions
+        }).watchSingle().map((row) => row.readDouble("savings"));
+
+    return savings;
   }
 
   Stream<List<TransactionsWithCategory>> watchTransactionsOfCategory(
