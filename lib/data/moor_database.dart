@@ -60,7 +60,7 @@ class Subcategories extends Table {
 class Months extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  RealColumn get maxBudget => real()();
+  RealColumn get maxBudget => real().customConstraint("CHECK (max_budget >= 0)")();
 
   IntColumn get firstDate => integer()();
 
@@ -68,8 +68,12 @@ class Months extends Table {
 }
 
 @UseMoor(
-    tables: [Transactions, Categories, Subcategories, Months],
-    daos: [TransactionDao, CategoryDao, MonthDao])
+  tables: [Transactions, Categories, Subcategories, Months],
+  daos: [TransactionDao, CategoryDao, MonthDao],
+  queries: {
+    "getTimestamp": "SELECT strftime('%s','now', 'localtime') AS timestamp"
+  },
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super((FlutterQueryExecutor.inDatabaseFolder(
@@ -90,17 +94,14 @@ class AppDatabase extends _$AppDatabase {
             await into(months).insert(moor_init.currentMonth);
 
             for (var catWithSubs in moor_init.categories) {
-              await transaction(() async {
-                await into(categories)
-                    .insert(catWithSubs.category, orReplace: true);
-                await into(subcategories)
-                    .insertAll(catWithSubs.subcategories, orReplace: true);
-              });
+              await into(categories)
+                  .insert(catWithSubs.category, orReplace: true);
+              await into(subcategories)
+                  .insertAll(catWithSubs.subcategories, orReplace: true);
             }
           }
 
           // TODO check if in new month and update accordingly
-
         },
       );
 }

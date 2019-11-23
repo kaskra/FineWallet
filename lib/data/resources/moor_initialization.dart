@@ -118,6 +118,7 @@ var categories = [
   CategoryWithSubs(_cat2, _subcategories2),
   CategoryWithSubs(_cat3, _subcategories3),
   CategoryWithSubs(_cat4, _subcategories4),
+  CategoryWithSubs(_cat5, _subcategories5),
   CategoryWithSubs(_cat6, _subcategories6),
   CategoryWithSubs(_cat7, _subcategories7),
   CategoryWithSubs(_cat8, _subcategories8),
@@ -128,4 +129,4 @@ var categories = [
 var currentMonth = MonthsCompanion.insert(
     maxBudget: 0,
     firstDate: getFirstDateOfMonth(DateTime.now()),
-    lastDate: getLastDayOfMonth(DateTime.now()));
+    lastDate: getLastDateOfMonth(DateTime.now()).millisecondsSinceEpoch);

@@ -1002,11 +1002,8 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   @override
   GeneratedRealColumn get maxBudget => _maxBudget ??= _constructMaxBudget();
   GeneratedRealColumn _constructMaxBudget() {
-    return GeneratedRealColumn(
-      'max_budget',
-      $tableName,
-      false,
-    );
+    return GeneratedRealColumn('max_budget', $tableName, false,
+        $customConstraints: 'CHECK (max_budget >= 0)');
   }
 
   final VerificationMeta _firstDateMeta = const VerificationMeta('firstDate');
@@ -1123,6 +1120,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       _categoryDao ??= CategoryDao(this as AppDatabase);
   MonthDao _monthDao;
   MonthDao get monthDao => _monthDao ??= MonthDao(this as AppDatabase);
+  Selectable<String> getTimestampQuery() {
+    return customSelectQuery(
+        'SELECT strftime(\'%s\',\'now\', \'localtime\') AS timestamp',
+        variables: [],
+        readsFrom: {}).map((QueryRow row) => row.readString('timestamp'));
+  }
+
+  Future<List<String>> getTimestamp() {
+    return getTimestampQuery().get();
+  }
+
+  Stream<List<String>> watchGetTimestamp() {
+    return getTimestampQuery().watch();
+  }
+
   @override
   List<TableInfo> get allTables =>
       [transactions, categories, subcategories, months];

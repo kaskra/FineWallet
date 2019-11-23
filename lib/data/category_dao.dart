@@ -26,26 +26,33 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   CategoryDao(this.db) : super(db);
 
   Future<List<Category>> getAllCategories() => select(categories).get();
+
   Future insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
+
   Future updateCategory(Insertable<Category> category) =>
       update(categories).replace(category);
+
   Future deleteCategory(Insertable<Category> category) =>
       delete(categories).delete(category);
 
-  Future<List<Subcategory>> get getAllSubcategories =>
+  Future<List<Subcategory>> getAllSubcategories() =>
       select(subcategories).get();
+
   Future insertSubcategory(Insertable<Subcategory> subcategory) =>
       into(subcategories).insert(subcategory);
+
   Future updateSubcategory(Insertable<Subcategory> subcategory) =>
       update(subcategories).replace(subcategory);
+
   Future deleteSubcategory(Insertable<Subcategory> subcategory) =>
       delete(subcategories).delete(subcategory);
 
   Future<void> insertCategoryWithSubs(CategoryWithSubs catWithSubs) {
     return transaction(() async {
       await into(categories).insert(catWithSubs.category, orReplace: true);
-      await into(subcategories).insertAll(catWithSubs.subcategories, orReplace: true);
+      await into(subcategories)
+          .insertAll(catWithSubs.subcategories, orReplace: true);
     });
   }
 }

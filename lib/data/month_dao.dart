@@ -17,10 +17,17 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   MonthDao(this.db) : super(db);
 
-  Future<List<Month>> getAllCategories() => select(months).get();
-  Future insertCategory(Insertable<Month> month) => into(months).insert(month);
-  Future updateCategory(Insertable<Month> month) =>
-      update(months).replace(month);
-  Future deleteCategory(Insertable<Month> month) =>
-      delete(months).delete(month);
+  Future<List<Month>> getAllMonths() => select(months).get();
+
+  Future insertMonth(Insertable<Month> month) => into(months).insert(month);
+
+  Future updateMonth(Insertable<Month> month) => update(months).replace(month);
+
+  Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
+
+  Stream<Month> getCurrentMonth() {
+    const inMonth = CustomExpression<bool, BoolType>(
+        "first_date <= strftime('%s','now', 'localtime') * 1000 AND last_date >= strftime('%s','now', 'localtime') * 1000");
+    return (select(months)..where((month) => inMonth)).watchSingle();
+  }
 }
