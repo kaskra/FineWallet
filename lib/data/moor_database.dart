@@ -71,7 +71,7 @@ class Months extends Table {
   tables: [Transactions, Categories, Subcategories, Months],
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
-    "getTimestamp": "SELECT strftime('%s','now', 'localtime') AS timestamp"
+    "getTimestamp": "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
   },
 )
 class AppDatabase extends _$AppDatabase {

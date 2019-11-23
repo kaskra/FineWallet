@@ -1122,7 +1122,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   MonthDao get monthDao => _monthDao ??= MonthDao(this as AppDatabase);
   Selectable<String> getTimestampQuery() {
     return customSelectQuery(
-        'SELECT strftime(\'%s\',\'now\', \'localtime\') AS timestamp',
+        'SELECT strftime(\'%s\',\'now\', \'localtime\') * 1000 AS timestamp',
         variables: [],
         readsFrom: {}).map((QueryRow row) => row.readString('timestamp'));
   }
