@@ -8,6 +8,8 @@
 
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/data/resources/moor_initialization.dart'
+    as moor_init;
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
@@ -40,6 +42,8 @@ class Categories extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   TextColumn get name => text().withLength(min: 1, max: 20)();
+
+  BoolColumn get isExpense => boolean().withDefault(const Constant(true))();
 }
 
 @DataClassName('Subcategory')
@@ -76,12 +80,24 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (_) {
-          // TODO insert first entries with batch insert
-          return;
+        onCreate: (Migrator m) {
+          return m.createAllTables();
         },
         beforeOpen: (details) async {
           await customStatement("PRAGMA foreign_keys = ON");
+
+          if (details.wasCreated) {
+            await into(months).insert(moor_init.currentMonth);
+
+            for (var catWithSubs in moor_init.categories) {
+              await transaction(() async {
+                await into(categories)
+                    .insert(catWithSubs.category, orReplace: true);
+                await into(subcategories)
+                    .insertAll(catWithSubs.subcategories, orReplace: true);
+              });
+            }
+          }
         },
       );
 }

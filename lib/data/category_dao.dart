@@ -11,6 +11,13 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 part 'category_dao.g.dart';
 
+class CategoryWithSubs {
+  final Insertable<Category> category;
+  final List<Insertable<Subcategory>> subcategories;
+
+  CategoryWithSubs(this.category, this.subcategories);
+}
+
 @UseDao(tables: [Categories, Subcategories])
 class CategoryDao extends DatabaseAccessor<AppDatabase>
     with _$CategoryDaoMixin {
@@ -34,4 +41,11 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
       update(subcategories).replace(subcategory);
   Future deleteSubcategory(Insertable<Subcategory> subcategory) =>
       delete(subcategories).delete(subcategory);
+
+  Future<void> insertCategoryWithSubs(CategoryWithSubs catWithSubs) {
+    return transaction(() async {
+      await into(categories).insert(catWithSubs.category, orReplace: true);
+      await into(subcategories).insertAll(catWithSubs.subcategories, orReplace: true);
+    });
+  }
 }

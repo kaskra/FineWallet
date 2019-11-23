@@ -479,15 +479,19 @@ class $TransactionsTable extends Transactions
 class Category extends DataClass implements Insertable<Category> {
   final int id;
   final String name;
-  Category({@required this.id, @required this.name});
+  final bool isExpense;
+  Category({@required this.id, @required this.name, @required this.isExpense});
   factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
     return Category(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      isExpense: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_expense']),
     );
   }
   factory Category.fromJson(Map<String, dynamic> json,
@@ -495,6 +499,7 @@ class Category extends DataClass implements Insertable<Category> {
     return Category(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      isExpense: serializer.fromJson<bool>(json['isExpense']),
     );
   }
   @override
@@ -503,6 +508,7 @@ class Category extends DataClass implements Insertable<Category> {
     return {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'isExpense': serializer.toJson<bool>(isExpense),
     };
   }
 
@@ -511,45 +517,59 @@ class Category extends DataClass implements Insertable<Category> {
     return CategoriesCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      isExpense: isExpense == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isExpense),
     );
   }
 
-  Category copyWith({int id, String name}) => Category(
+  Category copyWith({int id, String name, bool isExpense}) => Category(
         id: id ?? this.id,
         name: name ?? this.name,
+        isExpense: isExpense ?? this.isExpense,
       );
   @override
   String toString() {
     return (StringBuffer('Category(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('isExpense: $isExpense')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, name.hashCode));
+  int get hashCode =>
+      $mrjf($mrjc(id.hashCode, $mrjc(name.hashCode, isExpense.hashCode)));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
-      (other is Category && other.id == this.id && other.name == this.name);
+      (other is Category &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.isExpense == this.isExpense);
 }
 
 class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<int> id;
   final Value<String> name;
+  final Value<bool> isExpense;
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.isExpense = const Value.absent(),
   });
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
+    this.isExpense = const Value.absent(),
   }) : name = Value(name);
-  CategoriesCompanion copyWith({Value<int> id, Value<String> name}) {
+  CategoriesCompanion copyWith(
+      {Value<int> id, Value<String> name, Value<bool> isExpense}) {
     return CategoriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      isExpense: isExpense ?? this.isExpense,
     );
   }
 }
@@ -577,8 +597,17 @@ class $CategoriesTable extends Categories
         minTextLength: 1, maxTextLength: 20);
   }
 
+  final VerificationMeta _isExpenseMeta = const VerificationMeta('isExpense');
+  GeneratedBoolColumn _isExpense;
   @override
-  List<GeneratedColumn> get $columns => [id, name];
+  GeneratedBoolColumn get isExpense => _isExpense ??= _constructIsExpense();
+  GeneratedBoolColumn _constructIsExpense() {
+    return GeneratedBoolColumn('is_expense', $tableName, false,
+        defaultValue: const Constant(true));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, name, isExpense];
   @override
   $CategoriesTable get asDslTable => this;
   @override
@@ -600,6 +629,12 @@ class $CategoriesTable extends Categories
     } else if (name.isRequired && isInserting) {
       context.missing(_nameMeta);
     }
+    if (d.isExpense.present) {
+      context.handle(_isExpenseMeta,
+          isExpense.isAcceptableValue(d.isExpense.value, _isExpenseMeta));
+    } else if (isExpense.isRequired && isInserting) {
+      context.missing(_isExpenseMeta);
+    }
     return context;
   }
 
@@ -619,6 +654,9 @@ class $CategoriesTable extends Categories
     }
     if (d.name.present) {
       map['name'] = Variable<String, StringType>(d.name.value);
+    }
+    if (d.isExpense.present) {
+      map['is_expense'] = Variable<bool, BoolType>(d.isExpense.value);
     }
     return map;
   }
