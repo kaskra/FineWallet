@@ -7,9 +7,17 @@
  */
 
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'month_dao.g.dart';
+
+class MonthWithTransactions {
+  final Month month;
+  final List<db_file.Transaction> transactions;
+
+  MonthWithTransactions(this.month, this.transactions);
+}
 
 @UseDao(tables: [Months])
 class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
@@ -25,9 +33,15 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
-  Stream<Month> getCurrentMonth() {
+  Stream<Month> watchCurrentMonth() {
     const inMonth = CustomExpression<bool, BoolType>(
         "first_date <= strftime('%s','now', 'localtime') * 1000 AND last_date >= strftime('%s','now', 'localtime') * 1000");
     return (select(months)..where((month) => inMonth)).watchSingle();
   }
+
+  Stream<List<Month>> watchAllMonths() => (select(months)
+        ..orderBy([
+          (m) => OrderingTerm(expression: m.firstDate, mode: OrderingMode.asc)
+        ]))
+      .watch();
 }

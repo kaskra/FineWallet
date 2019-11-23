@@ -1,48 +1,35 @@
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MoorTestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Provider.of<AppDatabase>(context).getTimestamp();
+
     return Container(
       child: Center(
-        child: StreamBuilder<Month>(
-          stream: Provider.of<AppDatabase>(context).monthDao.getCurrentMonth(),
+        child: StreamBuilder<List<TransactionsWithCategory>>(
+          stream: Provider.of<AppDatabase>(context)
+              .transactionDao
+              .watchTransactionsOfCategory(1),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               String t = "";
-              t += snapshot.data.id.toString() + " \n";
-              t += snapshot.data.maxBudget.toStringAsFixed(2) + " \n";
-              t += snapshot.data.firstDate.toString() + " \n";
-              t += snapshot.data.lastDate.toString();
-              return Column(
-                children: <Widget>[
-                  Text(t),
-                  FlatButton(
-                    onPressed: () {
-                      var updatedMonth = snapshot.data
-                          .copyWith(maxBudget: snapshot.data.maxBudget + 50);
-                      Provider.of<AppDatabase>(context)
-                          .monthDao
-                          .updateMonth(updatedMonth);
-                    },
-                    child: Text("Increase budget"),
-                    color: Colors.green,
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      var updatedMonth = snapshot.data
-                          .copyWith(maxBudget: snapshot.data.maxBudget - 50);
-                      Provider.of<AppDatabase>(context)
-                          .monthDao
-                          .updateMonth(updatedMonth);
-                    },
-                    child: Text("Decrease budget"),
-                    color: Colors.red,
-                  )
-                ],
-              );
+              for (var tx in snapshot.data) {
+                t += tx.amount.toString() + " \t";
+                t += tx.subcategoryId.toString() + " \t";
+                t += tx.subcategoryName.toString() + " \t";
+                t += tx.categoryId.toStringAsFixed(2) + " \t";
+                t += tx.isExpense.toString() + " \t";
+                t += tx.recurringType.toString() + " \t";
+                t += tx.recurringUntil.toString() + " \t";
+                t += tx.date.toString() + " \t";
+                t += tx.isRecurring.toString() + "\n";
+              }
+
+              return Text(t);
             }
             return SizedBox();
           },
