@@ -98,6 +98,9 @@ class AppDatabase extends _$AppDatabase {
               });
             }
           }
+
+          // TODO check if in new month and update accordingly
+
         },
       );
 }
