@@ -33,7 +33,9 @@ class Transactions extends Table {
 
   BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
 
-  IntColumn get recurringType => integer().nullable()();
+  IntColumn get recurringType => integer()
+      .nullable()
+      .customConstraint("NULL REFERENCES recurrences(type)")();
 
   IntColumn get recurringUntil => integer().nullable()();
 }
@@ -61,18 +63,27 @@ class Subcategories extends Table {
 class Months extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  RealColumn get maxBudget => real().customConstraint("CHECK (max_budget >= 0)")();
+  RealColumn get maxBudget =>
+      real().customConstraint("CHECK (max_budget >= 0)")();
 
   IntColumn get firstDate => integer()();
 
   IntColumn get lastDate => integer()();
 }
 
+@DataClassName('Recurrency')
+class Recurrences extends Table {
+  IntColumn get type => integer().autoIncrement()();
+
+  TextColumn get name => text().withLength(max: 40, min: 2)();
+}
+
 @UseMoor(
-  tables: [Transactions, Categories, Subcategories, Months],
+  tables: [Transactions, Categories, Subcategories, Months, Recurrences],
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
-    "getTimestamp": "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
+    "getTimestamp":
+        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
   },
 )
 class AppDatabase extends _$AppDatabase {
@@ -94,6 +105,8 @@ class AppDatabase extends _$AppDatabase {
           if (details.wasCreated) {
             await into(months).insert(moor_init.currentMonth);
 
+            await into(recurrences).insertAll(moor_init.recurrences);
+
             for (var catWithSubs in moor_init.categories) {
               await into(categories)
                   .insert(catWithSubs.category, orReplace: true);
@@ -103,14 +116,38 @@ class AppDatabase extends _$AppDatabase {
 
             // TODO remove when done testing
 
-            var tx1 = TransactionsCompanion.insert(amount: 15, subcategoryId: 1, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
-            var tx2 = TransactionsCompanion.insert(amount: 10, subcategoryId: 5, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
-            var tx3 = TransactionsCompanion.insert(amount: 5, subcategoryId: 2, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: true);
-            var tx4 = TransactionsCompanion.insert(amount: 50, subcategoryId: 68, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: false);
-            var tx5 = TransactionsCompanion.insert(amount: 100, subcategoryId: 68, monthId: 1, date: dayInMillis(DateTime.now()), isExpense: false);
+            var tx1 = TransactionsCompanion.insert(
+                amount: 15,
+                subcategoryId: 1,
+                monthId: 1,
+                date: dayInMillis(DateTime.now()),
+                isExpense: true);
+            var tx2 = TransactionsCompanion.insert(
+                amount: 10,
+                subcategoryId: 5,
+                monthId: 1,
+                date: dayInMillis(DateTime.now()),
+                isExpense: true);
+            var tx3 = TransactionsCompanion.insert(
+                amount: 5,
+                subcategoryId: 2,
+                monthId: 1,
+                date: dayInMillis(DateTime.now()),
+                isExpense: true);
+            var tx4 = TransactionsCompanion.insert(
+                amount: 50,
+                subcategoryId: 68,
+                monthId: 1,
+                date: dayInMillis(DateTime.now()),
+                isExpense: false);
+            var tx5 = TransactionsCompanion.insert(
+                amount: 100,
+                subcategoryId: 68,
+                monthId: 1,
+                date: dayInMillis(DateTime.now()),
+                isExpense: false);
 
             await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
-
           }
 
           // TODO check if in new month and update accordingly

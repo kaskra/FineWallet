@@ -324,11 +324,8 @@ class $TransactionsTable extends Transactions
   GeneratedIntColumn get recurringType =>
       _recurringType ??= _constructRecurringType();
   GeneratedIntColumn _constructRecurringType() {
-    return GeneratedIntColumn(
-      'recurring_type',
-      $tableName,
-      true,
-    );
+    return GeneratedIntColumn('recurring_type', $tableName, true,
+        $customConstraints: 'NULL REFERENCES recurrences(type)');
   }
 
   final VerificationMeta _recurringUntilMeta =
@@ -1100,6 +1097,162 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   }
 }
 
+class Recurrency extends DataClass implements Insertable<Recurrency> {
+  final int type;
+  final String name;
+  Recurrency({@required this.type, @required this.name});
+  factory Recurrency.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return Recurrency(
+      type: intType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+    );
+  }
+  factory Recurrency.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return Recurrency(
+      type: serializer.fromJson<int>(json['type']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson(
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return {
+      'type': serializer.toJson<int>(type),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  @override
+  RecurrencesCompanion createCompanion(bool nullToAbsent) {
+    return RecurrencesCompanion(
+      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+    );
+  }
+
+  Recurrency copyWith({int type, String name}) => Recurrency(
+        type: type ?? this.type,
+        name: name ?? this.name,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Recurrency(')
+          ..write('type: $type, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(type.hashCode, name.hashCode));
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is Recurrency &&
+          other.type == this.type &&
+          other.name == this.name);
+}
+
+class RecurrencesCompanion extends UpdateCompanion<Recurrency> {
+  final Value<int> type;
+  final Value<String> name;
+  const RecurrencesCompanion({
+    this.type = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  RecurrencesCompanion.insert({
+    this.type = const Value.absent(),
+    @required String name,
+  }) : name = Value(name);
+  RecurrencesCompanion copyWith({Value<int> type, Value<String> name}) {
+    return RecurrencesCompanion(
+      type: type ?? this.type,
+      name: name ?? this.name,
+    );
+  }
+}
+
+class $RecurrencesTable extends Recurrences
+    with TableInfo<$RecurrencesTable, Recurrency> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $RecurrencesTable(this._db, [this._alias]);
+  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  GeneratedIntColumn _type;
+  @override
+  GeneratedIntColumn get type => _type ??= _constructType();
+  GeneratedIntColumn _constructType() {
+    return GeneratedIntColumn('type', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn('name', $tableName, false,
+        minTextLength: 2, maxTextLength: 40);
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [type, name];
+  @override
+  $RecurrencesTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'recurrences';
+  @override
+  final String actualTableName = 'recurrences';
+  @override
+  VerificationContext validateIntegrity(RecurrencesCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.type.present) {
+      context.handle(
+          _typeMeta, type.isAcceptableValue(d.type.value, _typeMeta));
+    } else if (type.isRequired && isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (d.name.present) {
+      context.handle(
+          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+    } else if (name.isRequired && isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {type};
+  @override
+  Recurrency map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Recurrency.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(RecurrencesCompanion d) {
+    final map = <String, Variable>{};
+    if (d.type.present) {
+      map['type'] = Variable<int, IntType>(d.type.value);
+    }
+    if (d.name.present) {
+      map['name'] = Variable<String, StringType>(d.name.value);
+    }
+    return map;
+  }
+
+  @override
+  $RecurrencesTable createAlias(String alias) {
+    return $RecurrencesTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $TransactionsTable _transactions;
@@ -1112,6 +1265,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       _subcategories ??= $SubcategoriesTable(this);
   $MonthsTable _months;
   $MonthsTable get months => _months ??= $MonthsTable(this);
+  $RecurrencesTable _recurrences;
+  $RecurrencesTable get recurrences => _recurrences ??= $RecurrencesTable(this);
   TransactionDao _transactionDao;
   TransactionDao get transactionDao =>
       _transactionDao ??= TransactionDao(this as AppDatabase);
@@ -1137,5 +1292,5 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
   @override
   List<TableInfo> get allTables =>
-      [transactions, categories, subcategories, months];
+      [transactions, categories, subcategories, months, recurrences];
 }

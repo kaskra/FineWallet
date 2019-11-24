@@ -130,3 +130,10 @@ var currentMonth = MonthsCompanion.insert(
     maxBudget: 0,
     firstDate: getFirstDateOfMonth(DateTime.now()),
     lastDate: getLastDateOfMonth(DateTime.now()).millisecondsSinceEpoch);
+
+var recurrences = [
+  RecurrencesCompanion.insert(name: "Daily"),
+  RecurrencesCompanion.insert(name: "Weekly"),
+  RecurrencesCompanion.insert(name: "Monthly"),
+  RecurrencesCompanion.insert(name: "Yearly"),
+];
