@@ -56,9 +56,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       delete(transactions).delete(transaction);
 
   Stream<double> watchTotalSavings() {
+
     final savings = customSelectQuery(
-        "SELECT (SELECT SUM(amount) FROM transactions WHERE is_expense = 0) - "
-        "(SELECT SUM(amount) FROM transactions WHERE is_expense = 1) AS savings",
+        "SELECT (SELECT SUM(amount) FROM incomes) - "
+        "(SELECT SUM(amount) FROM expenses) AS savings",
         readsFrom: {
           transactions
         }).watchSingle().map((row) => row.readDouble("savings"));
@@ -70,10 +71,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       int categoryId) {
     // TODO implement database method to apply recurring txs
     final query2 = customSelectQuery(
-        "SELECT * FROM transactions t "
-        "INNER JOIN subcategories s "
-        "ON s.id = t.subcategory_id "
-        "WHERE s.category_id == ?",
+        "SELECT * FROM transactions_with_categories "
+        "WHERE category_id == ?",
         variables: [Variable.withInt(categoryId)],
         readsFrom: {transactions, subcategories});
 

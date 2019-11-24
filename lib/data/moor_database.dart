@@ -148,6 +148,15 @@ class AppDatabase extends _$AppDatabase {
                 isExpense: false);
 
             await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
+
+            await customStatement("CREATE VIEW expenses "
+                "AS SELECT * FROM transactions WHERE is_expense = 1");
+            await customStatement("CREATE VIEW incomes "
+                "AS SELECT * FROM transactions WHERE is_expense = 0");
+            await customStatement("CREATE VIEW transactions_with_categories "
+                "AS SELECT * FROM transactions t "
+                "INNER JOIN subcategories s "
+                "ON s.id = t.subcategory_id ");
           }
 
           // TODO check if in new month and update accordingly
