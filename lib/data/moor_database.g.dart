@@ -17,6 +17,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final bool isRecurring;
   final int recurringType;
   final int recurringUntil;
+  final int originalId;
   Transaction(
       {@required this.id,
       @required this.amount,
@@ -26,7 +27,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       @required this.isExpense,
       @required this.isRecurring,
       this.recurringType,
-      this.recurringUntil});
+      this.recurringUntil,
+      @required this.originalId});
   factory Transaction.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -50,6 +52,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           .mapFromDatabaseResponse(data['${effectivePrefix}recurring_type']),
       recurringUntil: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}recurring_until']),
+      originalId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}original_id']),
     );
   }
   factory Transaction.fromJson(Map<String, dynamic> json,
@@ -64,6 +68,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       isRecurring: serializer.fromJson<bool>(json['isRecurring']),
       recurringType: serializer.fromJson<int>(json['recurringType']),
       recurringUntil: serializer.fromJson<int>(json['recurringUntil']),
+      originalId: serializer.fromJson<int>(json['originalId']),
     );
   }
   @override
@@ -79,6 +84,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'isRecurring': serializer.toJson<bool>(isRecurring),
       'recurringType': serializer.toJson<int>(recurringType),
       'recurringUntil': serializer.toJson<int>(recurringUntil),
+      'originalId': serializer.toJson<int>(originalId),
     };
   }
 
@@ -107,6 +113,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       recurringUntil: recurringUntil == null && nullToAbsent
           ? const Value.absent()
           : Value(recurringUntil),
+      originalId: originalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalId),
     );
   }
 
@@ -119,7 +128,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           bool isExpense,
           bool isRecurring,
           int recurringType,
-          int recurringUntil}) =>
+          int recurringUntil,
+          int originalId}) =>
       Transaction(
         id: id ?? this.id,
         amount: amount ?? this.amount,
@@ -130,6 +140,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         isRecurring: isRecurring ?? this.isRecurring,
         recurringType: recurringType ?? this.recurringType,
         recurringUntil: recurringUntil ?? this.recurringUntil,
+        originalId: originalId ?? this.originalId,
       );
   @override
   String toString() {
@@ -142,7 +153,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('isExpense: $isExpense, ')
           ..write('isRecurring: $isRecurring, ')
           ..write('recurringType: $recurringType, ')
-          ..write('recurringUntil: $recurringUntil')
+          ..write('recurringUntil: $recurringUntil, ')
+          ..write('originalId: $originalId')
           ..write(')'))
         .toString();
   }
@@ -162,8 +174,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
                           isExpense.hashCode,
                           $mrjc(
                               isRecurring.hashCode,
-                              $mrjc(recurringType.hashCode,
-                                  recurringUntil.hashCode)))))))));
+                              $mrjc(
+                                  recurringType.hashCode,
+                                  $mrjc(recurringUntil.hashCode,
+                                      originalId.hashCode))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -176,7 +190,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.isExpense == this.isExpense &&
           other.isRecurring == this.isRecurring &&
           other.recurringType == this.recurringType &&
-          other.recurringUntil == this.recurringUntil);
+          other.recurringUntil == this.recurringUntil &&
+          other.originalId == this.originalId);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -189,6 +204,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<bool> isRecurring;
   final Value<int> recurringType;
   final Value<int> recurringUntil;
+  final Value<int> originalId;
   const TransactionsCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
@@ -199,6 +215,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.isRecurring = const Value.absent(),
     this.recurringType = const Value.absent(),
     this.recurringUntil = const Value.absent(),
+    this.originalId = const Value.absent(),
   });
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
@@ -210,11 +227,13 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.isRecurring = const Value.absent(),
     this.recurringType = const Value.absent(),
     this.recurringUntil = const Value.absent(),
+    @required int originalId,
   })  : amount = Value(amount),
         subcategoryId = Value(subcategoryId),
         monthId = Value(monthId),
         date = Value(date),
-        isExpense = Value(isExpense);
+        isExpense = Value(isExpense),
+        originalId = Value(originalId);
   TransactionsCompanion copyWith(
       {Value<int> id,
       Value<double> amount,
@@ -224,7 +243,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<bool> isExpense,
       Value<bool> isRecurring,
       Value<int> recurringType,
-      Value<int> recurringUntil}) {
+      Value<int> recurringUntil,
+      Value<int> originalId}) {
     return TransactionsCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
@@ -235,6 +255,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       isRecurring: isRecurring ?? this.isRecurring,
       recurringType: recurringType ?? this.recurringType,
       recurringUntil: recurringUntil ?? this.recurringUntil,
+      originalId: originalId ?? this.originalId,
     );
   }
 }
@@ -342,6 +363,15 @@ class $TransactionsTable extends Transactions
     );
   }
 
+  final VerificationMeta _originalIdMeta = const VerificationMeta('originalId');
+  GeneratedIntColumn _originalId;
+  @override
+  GeneratedIntColumn get originalId => _originalId ??= _constructOriginalId();
+  GeneratedIntColumn _constructOriginalId() {
+    return GeneratedIntColumn('original_id', $tableName, false,
+        $customConstraints: 'REFERENCES transactions(id)');
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -352,7 +382,8 @@ class $TransactionsTable extends Transactions
         isExpense,
         isRecurring,
         recurringType,
-        recurringUntil
+        recurringUntil,
+        originalId
       ];
   @override
   $TransactionsTable get asDslTable => this;
@@ -423,6 +454,12 @@ class $TransactionsTable extends Transactions
     } else if (recurringUntil.isRequired && isInserting) {
       context.missing(_recurringUntilMeta);
     }
+    if (d.originalId.present) {
+      context.handle(_originalIdMeta,
+          originalId.isAcceptableValue(d.originalId.value, _originalIdMeta));
+    } else if (originalId.isRequired && isInserting) {
+      context.missing(_originalIdMeta);
+    }
     return context;
   }
 
@@ -463,6 +500,9 @@ class $TransactionsTable extends Transactions
     }
     if (d.recurringUntil.present) {
       map['recurring_until'] = Variable<int, IntType>(d.recurringUntil.value);
+    }
+    if (d.originalId.present) {
+      map['original_id'] = Variable<int, IntType>(d.originalId.value);
     }
     return map;
   }
