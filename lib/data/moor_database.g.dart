@@ -28,7 +28,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       @required this.isRecurring,
       this.recurringType,
       this.recurringUntil,
-      @required this.originalId});
+      this.originalId});
   factory Transaction.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -227,13 +227,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.isRecurring = const Value.absent(),
     this.recurringType = const Value.absent(),
     this.recurringUntil = const Value.absent(),
-    @required int originalId,
+    this.originalId = const Value.absent(),
   })  : amount = Value(amount),
         subcategoryId = Value(subcategoryId),
         monthId = Value(monthId),
         date = Value(date),
-        isExpense = Value(isExpense),
-        originalId = Value(originalId);
+        isExpense = Value(isExpense);
   TransactionsCompanion copyWith(
       {Value<int> id,
       Value<double> amount,
@@ -368,8 +367,8 @@ class $TransactionsTable extends Transactions
   @override
   GeneratedIntColumn get originalId => _originalId ??= _constructOriginalId();
   GeneratedIntColumn _constructOriginalId() {
-    return GeneratedIntColumn('original_id', $tableName, false,
-        $customConstraints: 'REFERENCES transactions(id)');
+    return GeneratedIntColumn('original_id', $tableName, true,
+        $customConstraints: 'NULL REFERENCES transactions(id)');
   }
 
   @override
@@ -1137,23 +1136,23 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   }
 }
 
-class Recurrency extends DataClass implements Insertable<Recurrency> {
+class Recurrence extends DataClass implements Insertable<Recurrence> {
   final int type;
   final String name;
-  Recurrency({@required this.type, @required this.name});
-  factory Recurrency.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  Recurrence({@required this.type, @required this.name});
+  factory Recurrence.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    return Recurrency(
+    return Recurrence(
       type: intType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
     );
   }
-  factory Recurrency.fromJson(Map<String, dynamic> json,
+  factory Recurrence.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return Recurrency(
+    return Recurrence(
       type: serializer.fromJson<int>(json['type']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -1175,13 +1174,13 @@ class Recurrency extends DataClass implements Insertable<Recurrency> {
     );
   }
 
-  Recurrency copyWith({int type, String name}) => Recurrency(
+  Recurrence copyWith({int type, String name}) => Recurrence(
         type: type ?? this.type,
         name: name ?? this.name,
       );
   @override
   String toString() {
-    return (StringBuffer('Recurrency(')
+    return (StringBuffer('Recurrence(')
           ..write('type: $type, ')
           ..write('name: $name')
           ..write(')'))
@@ -1193,12 +1192,12 @@ class Recurrency extends DataClass implements Insertable<Recurrency> {
   @override
   bool operator ==(other) =>
       identical(this, other) ||
-      (other is Recurrency &&
+      (other is Recurrence &&
           other.type == this.type &&
           other.name == this.name);
 }
 
-class RecurrencesCompanion extends UpdateCompanion<Recurrency> {
+class RecurrencesCompanion extends UpdateCompanion<Recurrence> {
   final Value<int> type;
   final Value<String> name;
   const RecurrencesCompanion({
@@ -1218,7 +1217,7 @@ class RecurrencesCompanion extends UpdateCompanion<Recurrency> {
 }
 
 class $RecurrencesTable extends Recurrences
-    with TableInfo<$RecurrencesTable, Recurrency> {
+    with TableInfo<$RecurrencesTable, Recurrence> {
   final GeneratedDatabase _db;
   final String _alias;
   $RecurrencesTable(this._db, [this._alias]);
@@ -1270,9 +1269,9 @@ class $RecurrencesTable extends Recurrences
   @override
   Set<GeneratedColumn> get $primaryKey => {type};
   @override
-  Recurrency map(Map<String, dynamic> data, {String tablePrefix}) {
+  Recurrence map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Recurrency.fromData(data, _db, prefix: effectivePrefix);
+    return Recurrence.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override

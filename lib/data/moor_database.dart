@@ -37,9 +37,12 @@ class Transactions extends Table {
       .nullable()
       .customConstraint("NULL REFERENCES recurrences(type)")();
 
-  IntColumn get recurringUntil => integer().nullable()(); // TODO remove nullable if not used anymore
+  IntColumn get recurringUntil =>
+      integer().nullable()(); // TODO remove nullable if not used anymore
 
-  IntColumn get originalId => integer().customConstraint("REFERENCES transactions(id)")();
+  IntColumn get originalId => integer()
+      .nullable()
+      .customConstraint("NULL REFERENCES transactions(id)")();
 }
 
 @DataClassName('Category')
@@ -73,7 +76,7 @@ class Months extends Table {
   IntColumn get lastDate => integer()();
 }
 
-@DataClassName('Recurrency')
+@DataClassName('Recurrence')
 class Recurrences extends Table {
   IntColumn get type => integer().autoIncrement()();
 
@@ -155,10 +158,15 @@ class AppDatabase extends _$AppDatabase {
                 "AS SELECT * FROM transactions WHERE is_expense = 1");
             await customStatement("CREATE VIEW IF NOT EXISTS incomes "
                 "AS SELECT * FROM transactions WHERE is_expense = 0");
-            await customStatement("CREATE VIEW IF NOT EXISTS transactions_with_categories "
+            await customStatement(
+                "CREATE VIEW IF NOT EXISTS transactions_with_categories "
                 "AS SELECT * FROM transactions t "
                 "INNER JOIN subcategories s "
-                "ON s.id = t.subcategory_id ");
+                "ON s.id = t.subcategory_id");
+            await customStatement("CREATE VIEW IF NOT EXISTS transactions_with_months "
+                "AS SELECT * FROM transactions t "
+                "INNER JOIN months m "
+                "ON t.month_id = m.id");
           }
 
           // TODO check if in new month and update accordingly

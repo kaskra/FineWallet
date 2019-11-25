@@ -21,7 +21,6 @@ class MoorTestPage extends StatelessWidget {
                 t += tx.subcategoryName.toString() + " \t";
                 t += tx.categoryId.toStringAsFixed(2) + " \t";
                 t += tx.isExpense.toString() + " \t";
-                t += tx.recurringType.toString() + " \t";
                 t += tx.recurringUntil.toString() + " \t";
                 t += tx.date.toString() + " \t";
                 t += tx.isRecurring.toString() + "\n";
