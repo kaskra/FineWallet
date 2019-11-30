@@ -43,6 +43,13 @@ class Transactions extends Table {
   IntColumn get originalId => integer()
       .nullable()
       .customConstraint("NULL REFERENCES transactions(id)")();
+
+  @override
+  List<String> get customConstraints => [
+        "CHECK (is_recurring == 0 OR (recurring_until NOT NULL AND "
+            "recurring_type NOT NULL AND "
+            "original_id NOT NULL))"
+      ];
 }
 
 @DataClassName('Category')
@@ -88,7 +95,8 @@ class Recurrences extends Table {
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
     "getTimestamp":
-        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
+        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
+    "numTransactions": "SELECT COUNT(*) FROM transactions"
   },
 )
 class AppDatabase extends _$AppDatabase {
@@ -108,6 +116,7 @@ class AppDatabase extends _$AppDatabase {
           await customStatement("PRAGMA foreign_keys = ON");
 
           if (details.wasCreated) {
+            // When changing sth in here reinstall the app
             await into(months).insert(moor_init.currentMonth);
 
             await into(recurrences).insertAll(moor_init.recurrences);
@@ -152,7 +161,7 @@ class AppDatabase extends _$AppDatabase {
                 date: dayInMillis(DateTime.now()),
                 isExpense: false);
 
-            await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
+//            await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
 
             await customStatement("CREATE VIEW IF NOT EXISTS expenses "
                 "AS SELECT * FROM transactions WHERE is_expense = 1");
@@ -163,12 +172,12 @@ class AppDatabase extends _$AppDatabase {
                 "AS SELECT * FROM transactions t "
                 "INNER JOIN subcategories s "
                 "ON s.id = t.subcategory_id");
-            await customStatement("CREATE VIEW IF NOT EXISTS transactions_with_months "
+            await customStatement(
+                "CREATE VIEW IF NOT EXISTS transactions_with_months "
                 "AS SELECT * FROM transactions t "
                 "INNER JOIN months m "
                 "ON t.month_id = m.id");
           }
-
           // TODO check if in new month and update accordingly
         },
       );

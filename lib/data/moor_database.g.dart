@@ -1329,6 +1329,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     return getTimestampQuery().watch();
   }
 
+  Selectable<int> numTransactionsQuery() {
+    return customSelectQuery('SELECT COUNT(*) FROM transactions',
+            variables: [], readsFrom: {transactions})
+        .map((QueryRow row) => row.readInt('COUNT(*)'));
+  }
+
+  Future<List<int>> numTransactions() {
+    return numTransactionsQuery().get();
+  }
+
+  Stream<List<int>> watchNumTransactions() {
+    return numTransactionsQuery().watch();
+  }
+
   @override
   List<TableInfo> get allTables =>
       [transactions, categories, subcategories, months, recurrences];
