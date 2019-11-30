@@ -9,6 +9,8 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/resources/moor_queries.dart' as moor_queries;
+import 'package:FineWallet/data/structures/filter_parser.dart';
+import 'package:FineWallet/data/structures/filter_settings.dart';
 import 'package:FineWallet/data/utils/recurrence_utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
@@ -49,7 +51,6 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future<List<db_file.Transaction>> getAllTransactions() =>
       select(transactions).get();
 
-  // TODO rework insertion to account for recurring txs
   Future insertTransaction(db_file.Transaction tx) async {
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
@@ -95,11 +96,37 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<TransactionsWithCategory>> watchTransactionsOfCategory(
       int categoryId) {
-    // TODO test new impl
     final query2 = customSelectQuery(
         "SELECT * FROM transactions_with_categories t "
         "WHERE ${moor_queries.ofCategory("t", categoryId)}",
         //variables: [Variable.withInt(categoryId)],
+        readsFrom: {transactions, subcategories});
+
+    return query2.watch().map((rows) => rows
+        .map((row) => TransactionsWithCategory(
+            id: row.readInt("id"),
+            isExpense: row.readBool("is_expense"),
+            subcategoryId: row.readInt("subcategory_id"),
+            categoryId: row.readInt("category_id"),
+            subcategoryName: row.readString("name"),
+            amount: row.readDouble("amount"),
+            isRecurring: row.readBool("is_recurring"),
+            recurringUntil: row.readInt("recurring_until"),
+            originalId: row.readInt("original_id"),
+            date: row.readInt("date")))
+        .toList());
+  }
+
+  Stream<List<TransactionsWithCategory>> watchTransactionsWithFilter(
+      TransactionFilterSettings settings) {
+    FilterParser txParser = new TransactionFilterParser(settings);
+
+//    print("SELECT * FROM transactions_with_categories "
+//        "${txParser.parse()}");
+
+    final query2 = customSelectQuery(
+        "SELECT * FROM transactions_with_categories "
+        "${txParser.parse()}",
         readsFrom: {transactions, subcategories});
 
     return query2.watch().map((rows) => rows
