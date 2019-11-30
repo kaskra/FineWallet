@@ -39,6 +39,10 @@ class TransactionFilterParser
       queue.add("date = ${settings.day}");
     }
 
+    if (settings.before != null) {
+      queue.add("date <= ${settings.before}");
+    }
+
     if (settings.expenses != null) {
       queue.add("is_expense = ${settings.expenses ? 1 : 0}");
     }

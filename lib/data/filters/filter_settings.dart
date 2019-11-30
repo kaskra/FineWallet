@@ -1,3 +1,5 @@
+import 'package:FineWallet/utils.dart';
+
 /// This abstract class is only used to be a parent of a generic type.
 abstract class FilterSettings {}
 
@@ -10,6 +12,7 @@ class TransactionFilterSettings extends FilterSettings {
   final int day;
   final bool expenses;
   final bool incomes;
+  final int before;
 
   TransactionFilterSettings({
     this.category,
@@ -18,6 +21,7 @@ class TransactionFilterSettings extends FilterSettings {
     this.day,
     this.expenses,
     this.incomes,
+    this.before,
   });
 
   factory TransactionFilterSettings.byCategory(int categoryId) =>
@@ -37,4 +41,7 @@ class TransactionFilterSettings extends FilterSettings {
 
   factory TransactionFilterSettings.byIncome(bool isIncome) =>
       TransactionFilterSettings(incomes: isIncome);
+
+  factory TransactionFilterSettings.beforeDate(DateTime date) =>
+      TransactionFilterSettings(before: dayInMillis(date));
 }
