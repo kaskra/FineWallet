@@ -72,7 +72,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     // TODO test new impl
     final query2 = customSelectQuery(
-        "SELECT * FROM transactions_with_categories t"
+        "SELECT * FROM transactions_with_categories t "
         "WHERE ${moor_queries.ofCategory("t", categoryId)}",
         //variables: [Variable.withInt(categoryId)],
         readsFrom: {transactions, subcategories});
