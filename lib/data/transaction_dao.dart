@@ -53,12 +53,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future insertTransaction(db_file.Transaction tx) async {
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
-    List<int> countTransactions = await db.numTransactions();
-    int nextId = countTransactions.first + 1;
+    List<int> countTransactions = await db.maxTransactionId();
+    int nextId = (countTransactions?.first ?? 0) + 1;
     tx = tx.copyWith(originalId: nextId);
 
     return transaction(() async {
-      await into(transactions).insert(tx.createCompanion(true));
+      await into(transactions)
+          .insert(tx.createCompanion(true).copyWith(id: Value(nextId)));
 
       if (tx.isRecurring) {
         await into(transactions).insertAll(generateRecurrences(tx));
@@ -73,6 +74,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   // TODO update month max budget, when sum of income is < max budget -> set to sum of income
   Future deleteTransaction(Insertable<db_file.Transaction> transaction) =>
       delete(transactions).delete(transaction);
+
+  // TODO update month max budget, when sum of income is < max budget -> set to sum of income
+  Future deleteTransactionById(int id) {
+    return transaction(() async {
+      await (delete(transactions)..where((t) => t.originalId.equals(id))).go();
+    });
+  }
 
   Stream<double> watchTotalSavings() {
     final savings = customSelectQuery(

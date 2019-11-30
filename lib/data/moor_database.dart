@@ -37,8 +37,7 @@ class Transactions extends Table {
       .nullable()
       .customConstraint("NULL REFERENCES recurrences(type)")();
 
-  IntColumn get recurringUntil =>
-      integer().nullable()(); // TODO remove nullable if not used anymore
+  IntColumn get recurringUntil => integer().nullable()();
 
   IntColumn get originalId => integer()
       .nullable()
@@ -46,7 +45,7 @@ class Transactions extends Table {
 
   @override
   List<String> get customConstraints => [
-        "CHECK (is_recurring == 0 OR (recurring_until NOT NULL AND "
+        "CHECK (is_recurring = 0 OR (recurring_until NOT NULL AND "
             "recurring_type NOT NULL AND "
             "original_id NOT NULL))"
       ];
@@ -96,7 +95,7 @@ class Recurrences extends Table {
   queries: {
     "getTimestamp":
         "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
-    "numTransactions": "SELECT COUNT(*) FROM transactions"
+    "maxTransactionId": "SELECT MAX(id) FROM transactions"
   },
 )
 class AppDatabase extends _$AppDatabase {

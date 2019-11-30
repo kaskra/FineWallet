@@ -1329,18 +1329,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     return getTimestampQuery().watch();
   }
 
-  Selectable<int> numTransactionsQuery() {
-    return customSelectQuery('SELECT COUNT(*) FROM transactions',
+  Selectable<int> maxTransactionIdQuery() {
+    return customSelectQuery('SELECT MAX(id) FROM transactions',
             variables: [], readsFrom: {transactions})
-        .map((QueryRow row) => row.readInt('COUNT(*)'));
+        .map((QueryRow row) => row.readInt('MAX(id)'));
   }
 
-  Future<List<int>> numTransactions() {
-    return numTransactionsQuery().get();
+  Future<List<int>> maxTransactionId() {
+    return maxTransactionIdQuery().get();
   }
 
-  Stream<List<int>> watchNumTransactions() {
-    return numTransactionsQuery().watch();
+  Stream<List<int>> watchMaxTransactionId() {
+    return maxTransactionIdQuery().watch();
   }
 
   @override
