@@ -74,8 +74,18 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  Future updateTransaction(Insertable<db_file.Transaction> transaction) async {
-    await update(transactions).replace(transaction);
+  Future updateTransaction(db_file.Transaction transaction) async {
+    print(transaction);
+    // Fill in month id
+    if (transaction.monthId == null) {
+      int id = await db.monthDao.getMonthByDate(transaction.date);
+      transaction = transaction.copyWith(monthId: id);
+    }
+//    await update(transactions).replace(transaction.createCompanion(true));
+    // TODO Revisit as soon as history is done
+    await (update(transactions)
+          ..where((t) => t.originalId.equals(transaction.originalId)))
+        .write(transaction);
     await db.monthDao.syncMonths();
   }
 

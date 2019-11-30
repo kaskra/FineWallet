@@ -14,8 +14,6 @@ import 'package:FineWallet/core/datatypes/repeat_type.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
-import 'package:FineWallet/core/resources/category_list.dart';
-import 'package:FineWallet/core/resources/category_provider.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/data/moor_database.dart' as db;
@@ -64,13 +62,16 @@ class _AddPageState extends State<AddPage> {
     super.initState();
 
     _date = DateTime.now();
-    checkForEditMode();
+//    checkForEditMode();
   }
 
   // TODO rework this!!
   void checkForEditMode() async {
     if (widget.transaction != null) {
-      CategoryList categories = await CategoryProvider.db.getAllCategories();
+//      CategoryList categories = await CategoryProvider.db.getAllCategories();
+      List<db.Category> categories = await Provider.of<db.AppDatabase>(context)
+          .categoryDao
+          .getAllCategories();
       int selectedCategory = widget.transaction.category;
       if (widget.transaction.isExpense != 1) {
         selectedCategory -= categories.length;
@@ -458,6 +459,8 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isEditMode) checkForEditMode();
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
