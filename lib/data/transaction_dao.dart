@@ -59,7 +59,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     // Fill in month id
     if (tx.monthId == null) {
-      int id = await db.monthDao.getMonth(tx.date);
+      int id = await db.monthDao.getMonthByDate(tx.date);
       tx = tx.copyWith(monthId: id);
     }
 
@@ -74,19 +74,19 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  // TODO update month max budget, when sum of income is < max budget -> set to sum of income
-  Future updateTransaction(Insertable<db_file.Transaction> transaction) =>
-      update(transactions).replace(transaction);
+  Future updateTransaction(Insertable<db_file.Transaction> transaction) async {
+    await update(transactions).replace(transaction);
+    await db.monthDao.syncMonths();
+  }
 
-  // TODO update month max budget, when sum of income is < max budget -> set to sum of income
-  Future deleteTransaction(Insertable<db_file.Transaction> transaction) =>
-      delete(transactions).delete(transaction);
+  Future deleteTransaction(db_file.Transaction transaction) async {
+    await delete(transactions).delete(transaction.createCompanion(true));
+    await db.monthDao.syncMonths();
+  }
 
-  // TODO update month max budget, when sum of income is < max budget -> set to sum of income
-  Future deleteTransactionById(int id) {
-    return transaction(() async {
-      await (delete(transactions)..where((t) => t.originalId.equals(id))).go();
-    });
+  Future deleteTransactionById(int id) async {
+    await (delete(transactions)..where((t) => t.originalId.equals(id))).go();
+    await db.monthDao.syncMonths();
   }
 
   Stream<double> watchTotalSavings() {

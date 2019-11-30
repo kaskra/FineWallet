@@ -8,4 +8,5 @@ part of 'month_dao.dart';
 
 mixin _$MonthDaoMixin on DatabaseAccessor<AppDatabase> {
   $MonthsTable get months => db.months;
+  $TransactionsTable get transactions => db.transactions;
 }

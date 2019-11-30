@@ -25,8 +25,6 @@ int getFirstDateOfMonth(DateTime date) {
   return dayInMillis(DateTime.utc(date.year, date.month, 1));
 }
 
-//int getLastDateOfMonth
-
 DateTime getLastDateOfMonth(DateTime date) {
   return (date.month < 12)
       ? new DateTime.utc(date.year, date.month + 1, 0, 23, 59, 59)

@@ -19,7 +19,7 @@ class MonthWithTransactions {
   MonthWithTransactions(this.month, this.transactions);
 }
 
-@UseDao(tables: [Months])
+@UseDao(tables: [Months, Transactions])
 class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   final AppDatabase db;
 
@@ -33,13 +33,16 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
-  Future<int> getMonth(int dateInMillis) async {
+  Future<int> getMonthByDate(int dateInMillis) async {
     Month m = await (select(months)
           ..where((m) => m.firstDate.isSmallerOrEqualValue(dateInMillis))
           ..where((m) => m.lastDate.isBiggerOrEqualValue(dateInMillis)))
         .getSingle();
     return m?.id;
   }
+
+  Future<Month> getMonthById(int id) =>
+      (select(months)..where((m) => m.id.equals(id))).getSingle();
 
   Stream<Month> watchCurrentMonth() {
     const inMonth = CustomExpression<bool, BoolType>(
@@ -52,4 +55,25 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
           (m) => OrderingTerm(expression: m.firstDate, mode: OrderingMode.asc)
         ]))
       .watch();
+
+  Future syncSingleMonth(int id) async {
+    List<db_file.Transaction> txs = await (select(transactions)
+          ..where((t) => t.monthId.equals(id))
+          ..where((t) => t.isExpense.equals(false)))
+        .get();
+
+    double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
+    Month m = await getMonthById(id);
+
+    if (sumIncomes < m.maxBudget) {
+      m.copyWith(maxBudget: sumIncomes);
+      updateMonth(m.createCompanion(true));
+    }
+  }
+
+  Future syncMonths() async {
+    List<Month> months = await getAllMonths();
+
+    for (Month m in months) await syncSingleMonth(m.id);
+  }
 }
