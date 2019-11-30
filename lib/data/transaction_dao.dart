@@ -6,11 +6,11 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/data/filters/filter_parser.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/resources/moor_queries.dart' as moor_queries;
-import 'package:FineWallet/data/structures/filter_parser.dart';
-import 'package:FineWallet/data/structures/filter_settings.dart';
 import 'package:FineWallet/data/utils/recurrence_utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 

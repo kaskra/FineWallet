@@ -1,5 +1,5 @@
+import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/structures/filter_settings.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:FineWallet/data/structures/filter_settings.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
 
 /// This abstract class holds the structure for all filter parsers.
 /// [E] is an [FilterSettings] and [K] any parsed output type.
@@ -20,6 +20,7 @@ class TransactionFilterParser
     extends FilterParser<TransactionFilterSettings, String> {
   TransactionFilterParser(TransactionFilterSettings settings) : super(settings);
 
+  /// Parse the input to singular WHERE expressions.
   Queue _getQueueOfArguments() {
     Queue queue = new Queue();
     if (settings.category != null) {
@@ -48,6 +49,8 @@ class TransactionFilterParser
     return queue;
   }
 
+  /// Parse the whole [TransactionFilterSettings] object
+  /// into one WHERE-clause.
   @override
   String parse() {
     Queue args = _getQueueOfArguments();
