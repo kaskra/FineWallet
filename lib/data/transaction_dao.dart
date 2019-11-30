@@ -40,7 +40,7 @@ class TransactionsWithCategory {
       this.categoryId});
 }
 
-@UseDao(tables: [Transactions, Subcategories])
+@UseDao(tables: [Transactions, Subcategories, Months])
 class TransactionDao extends DatabaseAccessor<AppDatabase>
     with _$TransactionDaoMixin {
   final AppDatabase db;
@@ -57,9 +57,16 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     int nextId = (countTransactions?.first ?? 0) + 1;
     tx = tx.copyWith(originalId: nextId);
 
+    // Fill in month id
+    if (tx.monthId == null) {
+      int id = await db.monthDao.getMonth(tx.date);
+      tx = tx.copyWith(monthId: id);
+    }
+
     return transaction(() async {
       await into(transactions)
           .insert(tx.createCompanion(true).copyWith(id: Value(nextId)));
+      print(tx.copyWith(id: nextId));
 
       if (tx.isRecurring) {
         await into(transactions).insertAll(generateRecurrences(tx));

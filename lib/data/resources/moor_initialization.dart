@@ -127,9 +127,10 @@ var categories = [
 ];
 
 var currentMonth = MonthsCompanion.insert(
-    maxBudget: 0,
-    firstDate: getFirstDateOfMonth(DateTime.now()),
-    lastDate: getLastDateOfMonth(DateTime.now()).millisecondsSinceEpoch);
+  maxBudget: 0,
+  firstDate: getFirstDateOfMonth(DateTime.now()),
+  lastDate: getLastDateOfMonth(DateTime.now()).millisecondsSinceEpoch,
+);
 
 var recurrences = [
   RecurrencesCompanion.insert(name: "Daily"),

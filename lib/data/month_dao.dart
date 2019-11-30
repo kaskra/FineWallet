@@ -33,6 +33,14 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
+  Future<int> getMonth(int dateInMillis) async {
+    Month m = await (select(months)
+          ..where((m) => m.firstDate.isSmallerOrEqualValue(dateInMillis))
+          ..where((m) => m.lastDate.isBiggerOrEqualValue(dateInMillis)))
+        .getSingle();
+    return m?.id;
+  }
+
   Stream<Month> watchCurrentMonth() {
     const inMonth = CustomExpression<bool, BoolType>(
         "first_date <= strftime('%s','now', 'localtime') * 1000 AND last_date >= strftime('%s','now', 'localtime') * 1000");

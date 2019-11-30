@@ -8,20 +8,21 @@
 
 import 'dart:async';
 
-import 'package:FineWallet/src/add_page/bottom_sheets.dart';
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/datatypes/repeat_type.dart';
-import 'package:FineWallet/src/widgets/corner_triangle.dart';
-import 'package:FineWallet/src/widgets/general_widgets.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/core/resources/category_list.dart';
 import 'package:FineWallet/core/resources/category_provider.dart';
-import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
+import 'package:FineWallet/data/moor_database.dart' as db;
+import 'package:FineWallet/src/add_page/bottom_sheets.dart';
+import 'package:FineWallet/src/widgets/corner_triangle.dart';
+import 'package:FineWallet/src/widgets/general_widgets.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -388,18 +389,21 @@ class _AddPageState extends State<AddPage> {
             value: _typeIndex,
             items: [
               DropdownMenuItem(
-                value: 0,
+                value: 1,
                 child: Text(RepeatType.daily),
               ),
               DropdownMenuItem(
-                value: 1,
+                value: 2,
                 child: Text(RepeatType.weekly),
               ),
               DropdownMenuItem(
-                value: 2,
+                value: 3,
                 child: Text(RepeatType.monthly),
               ),
-              DropdownMenuItem(value: 3, child: Text(RepeatType.yearly)),
+              DropdownMenuItem(
+                value: 4,
+                child: Text(RepeatType.yearly),
+              ),
             ],
             onChanged: (v) {
               setState(() {
@@ -502,7 +506,7 @@ class _AddPageState extends State<AddPage> {
           Icons.save,
           color: Theme.of(context).colorScheme.onSecondary,
         ),
-        onPressed: () {
+        onPressed: () async {
           if (_expense != null &&
               _date != null &&
               _subcategory != null &&
@@ -519,6 +523,18 @@ class _AddPageState extends State<AddPage> {
                     "Your recurrence type does not fit inside the time frame.");
             }
 
+            db.Transaction newTx = new db.Transaction(
+                id: null,
+                amount: _expense,
+                subcategoryId: _subcategory.index,
+                monthId: null,
+                date: dayInMillis(_date),
+                isExpense: widget.isExpense == 1,
+                isRecurring: _isExpanded,
+                recurringType: _typeIndex,
+                recurringUntil:
+                    _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
+
             TransactionModel tx = new TransactionModel(
                 amount: _expense,
                 isExpense: widget.isExpense,
@@ -532,8 +548,15 @@ class _AddPageState extends State<AddPage> {
             if (_isEditMode) {
               tx.id = _editTxId;
               Provider.of<TransactionBloc>(context).updateTransaction(tx);
+              // TODO rework update
+              Provider.of<db.AppDatabase>(context)
+                  .transactionDao
+                  .updateTransaction(newTx);
             } else {
               Provider.of<TransactionBloc>(context).add(tx);
+              Provider.of<db.AppDatabase>(context)
+                  .transactionDao
+                  .insertTransaction(newTx);
             }
             Provider.of<MonthBloc>(context).syncMonths();
             Navigator.pop(context);

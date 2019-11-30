@@ -160,7 +160,7 @@ class AppDatabase extends _$AppDatabase {
                 date: dayInMillis(DateTime.now()),
                 isExpense: false);
 
-//            await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
+            await into(transactions).insertAll([tx1, tx2, tx3, tx4, tx5]);
 
             await customStatement("CREATE VIEW IF NOT EXISTS expenses "
                 "AS SELECT * FROM transactions WHERE is_expense = 1");
