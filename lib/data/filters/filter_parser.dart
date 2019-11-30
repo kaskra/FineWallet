@@ -62,10 +62,11 @@ class TransactionFilterParser
       if (index > 0) {
         whereQuery += " AND ";
       }
-      whereQuery += query + " ";
+      whereQuery += query;
       index++;
     }
 
+    whereQuery = whereQuery.split(" ").join(" ");
     return whereQuery;
   }
 }
