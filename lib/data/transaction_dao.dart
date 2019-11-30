@@ -9,11 +9,13 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/resources/moor_queries.dart' as moor_queries;
+import 'package:FineWallet/data/utils/recurrence_utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'transaction_dao.g.dart';
 
 class TransactionsWithCategory {
+  final int id;
   final double amount;
   final int date;
   final bool isExpense;
@@ -25,7 +27,8 @@ class TransactionsWithCategory {
   final int originalId;
 
   TransactionsWithCategory(
-      {this.amount,
+      {this.id,
+      this.amount,
       this.date,
       this.isExpense,
       this.isRecurring,
@@ -47,12 +50,27 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       select(transactions).get();
 
   // TODO rework insertion to account for recurring txs
-  Future insertTransaction(Insertable<db_file.Transaction> transaction) =>
-      into(transactions).insert(transaction);
+  Future insertTransaction(db_file.Transaction tx) async {
+    // Setup: Get next id set original id to that.
+    // Prevents SELECT in SQL-transaction.
+    List<int> countTransactions = await db.numTransactions();
+    int nextId = countTransactions.first + 1;
+    tx = tx.copyWith(originalId: nextId);
 
+    return transaction(() async {
+      await into(transactions).insert(tx.createCompanion(true));
+
+      if (tx.isRecurring) {
+        await into(transactions).insertAll(generateRecurrences(tx));
+      }
+    });
+  }
+
+  // TODO update month max budget, when sum of income is < max budget -> set to sum of income
   Future updateTransaction(Insertable<db_file.Transaction> transaction) =>
       update(transactions).replace(transaction);
 
+  // TODO update month max budget, when sum of income is < max budget -> set to sum of income
   Future deleteTransaction(Insertable<db_file.Transaction> transaction) =>
       delete(transactions).delete(transaction);
 
@@ -69,7 +87,6 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<TransactionsWithCategory>> watchTransactionsOfCategory(
       int categoryId) {
-
     // TODO test new impl
     final query2 = customSelectQuery(
         "SELECT * FROM transactions_with_categories t "
@@ -79,6 +96,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     return query2.watch().map((rows) => rows
         .map((row) => TransactionsWithCategory(
+            id: row.readInt("id"),
             isExpense: row.readBool("is_expense"),
             subcategoryId: row.readInt("subcategory_id"),
             categoryId: row.readInt("category_id"),
