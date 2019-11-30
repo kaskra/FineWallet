@@ -25,13 +25,15 @@ int getFirstDateOfMonth(DateTime date) {
   return dayInMillis(DateTime.utc(date.year, date.month, 1));
 }
 
+//int getLastDateOfMonth
+
 DateTime getLastDateOfMonth(DateTime date) {
   return (date.month < 12)
-      ? new DateTime.utc(date.year, date.month + 1, 0)
-      : new DateTime.utc(date.year + 1, 1, 0);
+      ? new DateTime.utc(date.year, date.month + 1, 0, 23, 59, 59)
+      : new DateTime.utc(date.year + 1, 1, 0, 23, 59, 59);
 }
 
-int getMonthId(DateTime time){
+int getMonthId(DateTime time) {
   return getFirstDateOfMonth(time);
 }
 
@@ -85,7 +87,8 @@ String getMonthName(int month, {bool abbrev = false}) {
   return abbrev ? monthName.substring(0, 3) : monthName;
 }
 
-int getRemainingDaysInMonth() => getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
+int getRemainingDaysInMonth() =>
+    getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
 
 List<DateTime> getLastWeekAsDates() {
   List<DateTime> days = List();
@@ -142,28 +145,27 @@ int isRecurrencePossible(
   return -1;
 }
 
+List<int> getAllMonthIds(TransactionList list) {
+  List<int> ids = [];
 
-  List<int> getAllMonthIds(TransactionList list) {
-    List<int> ids = [];
+  if (list.isEmpty) return [];
 
-    if (list.isEmpty) return [];
-
-    void addToIdList(int id){
-      if (!ids.contains(id)) {
-        ids.add(id);
-      }
+  void addToIdList(int id) {
+    if (!ids.contains(id)) {
+      ids.add(id);
     }
-    
-    DateTime current = DateTime.fromMillisecondsSinceEpoch(list.last.date);
-    addToIdList(getMonthId(current));
-    DateTime last = DateTime.fromMillisecondsSinceEpoch(list.first.date);
-    addToIdList(getMonthId(last));
-
-    while(current.isBefore(last)){
-      int id = getMonthId(current);
-      addToIdList(id);
-      current = getFirstDateOfNextMonth(current);
-    }
-
-    return ids;
   }
+
+  DateTime current = DateTime.fromMillisecondsSinceEpoch(list.last.date);
+  addToIdList(getMonthId(current));
+  DateTime last = DateTime.fromMillisecondsSinceEpoch(list.first.date);
+  addToIdList(getMonthId(last));
+
+  while (current.isBefore(last)) {
+    int id = getMonthId(current);
+    addToIdList(id);
+    current = getFirstDateOfNextMonth(current);
+  }
+
+  return ids;
+}
