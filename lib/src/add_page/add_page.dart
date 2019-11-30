@@ -13,7 +13,6 @@ import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/datatypes/repeat_type.dart';
 import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/core/resources/category_list.dart';
 import 'package:FineWallet/core/resources/category_provider.dart';
@@ -68,7 +67,7 @@ class _AddPageState extends State<AddPage> {
     checkForEditMode();
   }
 
-  // TODO rework this
+  // TODO rework this!!
   void checkForEditMode() async {
     if (widget.transaction != null) {
       CategoryList categories = await CategoryProvider.db.getAllCategories();
@@ -100,6 +99,7 @@ class _AddPageState extends State<AddPage> {
 
         // If recurring, set the date to the first of the recurrence.
         // With that every recurring instance is changed
+        // TODO change to moor
         TransactionList txs = await TransactionsProvider.db
             .getAllTrans(dayInMillis(DateTime.now()));
         txs = txs.where((tx) => tx.id == _editTxId);
@@ -388,6 +388,7 @@ class _AddPageState extends State<AddPage> {
                 color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
             value: _typeIndex,
             items: [
+              // TODO get from recurrences database table
               DropdownMenuItem(
                 value: 1,
                 child: Text(RepeatType.daily),
@@ -535,29 +536,18 @@ class _AddPageState extends State<AddPage> {
                 recurringUntil:
                     _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
 
-            TransactionModel tx = new TransactionModel(
-                amount: _expense,
-                isExpense: widget.isExpense,
-                date: dayInMillis(_date),
-                subcategory: _subcategory.index,
-                isRecurring: _isExpanded ? 1 : 0,
-                replayType: _typeIndex,
-                replayUntil:
-                    _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
-
             if (_isEditMode) {
-              tx.id = _editTxId;
-              Provider.of<TransactionBloc>(context).updateTransaction(tx);
-              // TODO rework update
+              // TODO rework update, because id is not right
+              newTx = newTx.copyWith(id: _editTxId);
               Provider.of<db.AppDatabase>(context)
                   .transactionDao
                   .updateTransaction(newTx);
             } else {
-              Provider.of<TransactionBloc>(context).add(tx);
               Provider.of<db.AppDatabase>(context)
                   .transactionDao
                   .insertTransaction(newTx);
             }
+            // TODO REMOVE
             Provider.of<MonthBloc>(context).syncMonths();
             Navigator.pop(context);
           } else {
