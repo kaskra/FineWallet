@@ -156,7 +156,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 //    print("SELECT * FROM transactions_with_categories "
 //        "${txParser.parse()}");
 
-    // TODO order by date
+    // TODO order by date is not quite correct yet!
     final query2 = customSelectQuery(
         "SELECT * FROM transactions_with_categories "
         "${txParser.parse()} ORDER BY date DESC",

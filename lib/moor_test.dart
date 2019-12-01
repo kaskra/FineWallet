@@ -12,7 +12,7 @@ class MoorTestPage extends StatefulWidget {
 
 class _MoorTestPageState extends State<MoorTestPage> {
   bool isExpense = false;
-  int day = 1575115200000;
+  int day = 1575288000000;
 
   @override
   Widget build(BuildContext context) {
