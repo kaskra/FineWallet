@@ -40,6 +40,11 @@ class TransactionsWithCategory {
       this.originalId,
       this.recurringType,
       this.categoryId});
+
+  @override
+  String toString() {
+    return 'TransactionsWithCategory{id: $id, amount: $amount, date: $date, isExpense: $isExpense, isRecurring: $isRecurring, recurringUntil: $recurringUntil, subcategoryId: $subcategoryId, subcategoryName: $subcategoryName, categoryId: $categoryId, originalId: $originalId, recurringType: $recurringType}';
+  }
 }
 
 @UseDao(tables: [Transactions, Subcategories, Months])
@@ -83,7 +88,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     // Make sure that every transaction has its correct month id assigned.
     List<Insertable<db_file.Transaction>> txs = [];
     if (tx.isRecurring) {
-      var recurrences = generateRecurrences(tx);
+      List<db_file.Transaction> recurrences = generateRecurrences(tx);
       for (var t in recurrences) {
         int id = await db.monthDao.createOrGetMonth(t.date);
         txs.add(t.copyWith(monthId: id ?? t.monthId).createCompanion(true));
