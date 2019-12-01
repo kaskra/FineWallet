@@ -6,15 +6,16 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/models/transaction_model.dart';
+import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
+import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
-import 'package:FineWallet/src/widgets/general_widgets.dart';
-import 'package:FineWallet/src/widgets/selection_appbar.dart';
 import 'package:FineWallet/src/history_page/date_separator.dart';
 import 'package:FineWallet/src/history_page/history_item.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/src/widgets/general_widgets.dart';
+import 'package:FineWallet/src/widgets/selection_appbar.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +32,11 @@ class History extends StatefulWidget {
   _HistoryState createState() => _HistoryState();
 
   final void Function(bool) onChangeSelectionMode;
-  final TransactionList selectedItems;
+  final List<TransactionsWithCategory> selectedItems;
 }
 
 class _HistoryState extends State<History> {
-  Map<int, TransactionModel> _selectedItems = new Map();
+  Map<int, TransactionsWithCategory> _selectedItems = new Map();
   bool _selectionMode = false;
 
   @override
@@ -68,7 +69,8 @@ class _HistoryState extends State<History> {
   void _deleteItems() async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
-      for (TransactionModel tx in _selectedItems.values) {
+      for (TransactionsWithCategory tx in _selectedItems.values) {
+        // TODO change to new
         Provider.of<TransactionBloc>(context).delete(tx.id);
         Provider.of<MonthBloc>(context).syncMonths();
       }
@@ -77,9 +79,9 @@ class _HistoryState extends State<History> {
   }
 
   /// Edit an item on the add page. Close selection mode afterwards.
-  void _editItem(TransactionModel tx) {
-    int isExpense = tx.isExpense;
-    String title = tx.isExpense == 1 ? "Expense" : "Income";
+  void _editItem(TransactionsWithCategory tx) {
+    int isExpense = tx.isExpense ? 1 : 0;
+    String title = tx.isExpense ? "Expense" : "Income";
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -109,11 +111,15 @@ class _HistoryState extends State<History> {
   Widget _buildBody() {
     return Consumer<TransactionBloc>(
       builder: (_, bloc, child) {
-        bloc.updateAllTransactions();
-        return StreamBuilder<TransactionList>(
-          stream: bloc.allTransactions,
-          builder:
-              (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
+//        bloc.updateAllTransactions();
+        return StreamBuilder<List<TransactionsWithCategory>>(
+//          stream: bloc.allTransactions,
+          stream: Provider.of<AppDatabase>(context)
+              .transactionDao
+              .watchTransactionsWithFilter(
+                  TransactionFilterSettings.beforeDate(DateTime.now())),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<TransactionsWithCategory>> snapshot) {
             if (snapshot.hasData) {
               List<List<Widget>> listOfLists = _buildLists(snapshot);
               return ListView.builder(
@@ -143,7 +149,8 @@ class _HistoryState extends State<History> {
     );
   }
 
-  List<List<Widget>> _buildLists(AsyncSnapshot<TransactionList> snapshot) {
+  List<List<Widget>> _buildLists(
+      AsyncSnapshot<List<TransactionsWithCategory>> snapshot) {
     List<List<Widget>> listOfLists = List();
     List<Widget> l = List();
     int prevDate = -1;
@@ -177,7 +184,7 @@ class _HistoryState extends State<History> {
     return listOfLists;
   }
 
-  void _toggleSelectionMode(bool selected, TransactionModel data) {
+  void _toggleSelectionMode(bool selected, TransactionsWithCategory data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.id)) {
         _selectedItems.putIfAbsent(data.id, () => data);

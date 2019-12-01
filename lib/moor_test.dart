@@ -40,7 +40,9 @@ class _MoorTestPageState extends State<MoorTestPage> {
               stream: Provider.of<AppDatabase>(context)
                   .transactionDao
                   .watchTransactionsWithFilter(TransactionFilterSettings(
-                      expenses: isExpense, before: day)),
+                    expenses: isExpense,
+                    before: day,
+                  )),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   String t = "";

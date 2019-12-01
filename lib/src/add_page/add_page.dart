@@ -11,12 +11,12 @@ import 'dart:async';
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/datatypes/repeat_type.dart';
-import 'package:FineWallet/core/models/transaction_model.dart';
 import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/core/resources/transaction_list.dart';
 import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/data/moor_database.dart' as db;
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page/bottom_sheets.dart';
 import 'package:FineWallet/src/widgets/corner_triangle.dart';
 import 'package:FineWallet/src/widgets/general_widgets.dart';
@@ -32,7 +32,7 @@ class AddPage extends StatefulWidget {
 
   final String title;
   final int isExpense;
-  final TransactionModel transaction;
+  final TransactionsWithCategory transaction;
 
   _AddPageState createState() => _AddPageState();
 }
@@ -72,8 +72,8 @@ class _AddPageState extends State<AddPage> {
       List<db.Category> categories = await Provider.of<db.AppDatabase>(context)
           .categoryDao
           .getAllCategories();
-      int selectedCategory = widget.transaction.category;
-      if (widget.transaction.isExpense != 1) {
+      int selectedCategory = widget.transaction.categoryId;
+      if (!widget.transaction.isExpense) {
         selectedCategory -= categories.length;
       } else {
         selectedCategory -= 1;
@@ -85,18 +85,18 @@ class _AddPageState extends State<AddPage> {
       _textEditingController.text = _expense.toStringAsFixed(2);
       _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
       _subcategory = Category(
-          CategoryIcon(widget.transaction.category - 1).data,
+          CategoryIcon(widget.transaction.categoryId - 1).data,
           widget.transaction.subcategoryName,
-          widget.transaction.subcategory,
+          widget.transaction.subcategoryId,
           selectedCategory: selectedCategory);
 
-      if (widget.transaction.isRecurring == 1) {
-        if (widget.transaction.replayUntil != null) {
+      if (widget.transaction.isRecurring) {
+        if (widget.transaction.recurringUntil != null) {
           _repeatUntil = DateTime.fromMillisecondsSinceEpoch(
-              widget.transaction.replayUntil);
+              widget.transaction.recurringUntil);
         }
-        _typeIndex = widget.transaction.replayType;
-        _isExpanded = widget.transaction.isRecurring == 1;
+        _typeIndex = widget.transaction.recurringType;
+        _isExpanded = widget.transaction.isRecurring;
 
         // If recurring, set the date to the first of the recurrence.
         // With that every recurring instance is changed

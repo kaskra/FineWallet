@@ -26,6 +26,7 @@ class TransactionsWithCategory {
   final String subcategoryName;
   final int categoryId;
   final int originalId;
+  final int recurringType;
 
   TransactionsWithCategory(
       {this.id,
@@ -37,6 +38,7 @@ class TransactionsWithCategory {
       this.subcategoryId,
       this.subcategoryName,
       this.originalId,
+      this.recurringType,
       this.categoryId});
 }
 
@@ -60,6 +62,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     // Fill in month id
     if (tx.monthId == null) {
       int id = await db.monthDao.getMonthByDate(tx.date);
+      if (id == null) {
+        // TODO create new month or sth
+      }
+
       tx = tx.copyWith(monthId: id);
     }
 
@@ -79,6 +85,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     // Fill in month id
     if (transaction.monthId == null) {
       int id = await db.monthDao.getMonthByDate(transaction.date);
+      if (id == null) {
+        // TODO create new month or sth
+      }
       transaction = transaction.copyWith(monthId: id);
     }
 //    await update(transactions).replace(transaction.createCompanion(true));
@@ -133,6 +142,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
             isRecurring: row.readBool("is_recurring"),
             recurringUntil: row.readInt("recurring_until"),
             originalId: row.readInt("original_id"),
+            recurringType: row.readInt("recurring_type"),
             date: row.readInt("date")))
         .toList());
   }
