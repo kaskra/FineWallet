@@ -57,7 +57,7 @@ class MonthBloc {
 
     // Add current month id, even if no transaction was done yet
     if (!ids.contains(getFirstDateOfMonth(DateTime.now()))) {
-      ids.add(getFirstDateOfMonth(DateTime.now()));
+      ids.add(getFirstDateOfMonthInMillis(DateTime.now()));
     }
 
     List<MonthModel> allMonths = await MonthProvider.db.getAllRecordedMonths();

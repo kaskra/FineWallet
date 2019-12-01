@@ -196,7 +196,7 @@ void initDB() async {
   if (numRecordedMonths == 0) {
     DatabaseProvider.db.newMonth(
       MonthModel(
-          firstDayOfMonth: getFirstDateOfMonth(DateTime.now()),
+          firstDayOfMonth: getFirstDateOfMonthInMillis(DateTime.now()),
           currentMaxBudget: 0.0,
           savings: 0.0,
           monthlyExpenses: 0.0),

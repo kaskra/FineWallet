@@ -18,11 +18,16 @@ int getLastDayOfMonth(DateTime date) {
 }
 
 DateTime getFirstDateOfNextMonth(DateTime date) {
-  return getLastDateOfMonth(date).add(Duration(days: 1, hours: 12));
+  DateTime d = getLastDateOfMonth(date).add(Duration(days: 1));
+  return DateTime.utc(d.year, d.month, 1);
 }
 
-int getFirstDateOfMonth(DateTime date) {
+int getFirstDateOfMonthInMillis(DateTime date) {
   return dayInMillis(DateTime.utc(date.year, date.month, 1));
+}
+
+DateTime getFirstDateOfMonth(DateTime date) {
+  return DateTime.utc(date.year, date.month, 1);
 }
 
 DateTime getLastDateOfMonth(DateTime date) {
@@ -31,8 +36,12 @@ DateTime getLastDateOfMonth(DateTime date) {
       : new DateTime.utc(date.year + 1, 1, 0, 23, 59, 59);
 }
 
+int getLastDateOfMonthInMillis(DateTime date) {
+  return getLastDateOfMonth(date).millisecondsSinceEpoch;
+}
+
 int getMonthId(DateTime time) {
-  return getFirstDateOfMonth(time);
+  return getFirstDateOfMonthInMillis(time);
 }
 
 List<double> getListOfMonthDays(DateTime month) {

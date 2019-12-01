@@ -8,6 +8,8 @@
 
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
+import 'package:FineWallet/data/utils/month_utils.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'month_dao.g.dart';
@@ -75,5 +77,30 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     List<Month> months = await getAllMonths();
 
     for (Month m in months) await syncSingleMonth(m.id);
+  }
+
+  /// Check months after last recorded month to see whether any are missing.
+  Future checkLatestMonths() async {
+    Month lastRecordedMonth = await (select(months)
+          ..orderBy([
+            (m) => OrderingTerm(expression: m.lastDate, mode: OrderingMode.desc)
+          ])
+          ..limit(1))
+        .getSingle();
+
+    List missingMonths = getMissingMonths(lastRecordedMonth);
+    List<Insertable<Month>> newMonths = [];
+
+    // TODO rework dates to be only year, month, day --> without any hours
+    for (DateTime m in missingMonths) {
+      int first = getFirstDateOfMonthInMillis(m);
+      int last = getLastDateOfMonthInMillis(m);
+      newMonths.add(MonthsCompanion.insert(
+          maxBudget: 0, firstDate: first, lastDate: last));
+    }
+
+    if (newMonths.length > 0) {
+      await into(months).insertAll(newMonths);
+    }
   }
 }

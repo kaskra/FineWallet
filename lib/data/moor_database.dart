@@ -177,7 +177,9 @@ class AppDatabase extends _$AppDatabase {
                 "INNER JOIN months m "
                 "ON t.month_id = m.id");
           }
-          // TODO check if in new month and update accordingly
+
+          // Check if in new month and update accordingly
+          await monthDao.checkLatestMonths();
         },
       );
 }

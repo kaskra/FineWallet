@@ -63,7 +63,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     if (tx.monthId == null) {
       int id = await db.monthDao.getMonthByDate(tx.date);
       if (id == null) {
-        // TODO create new month or sth
+        await db.monthDao.checkLatestMonths();
+        id = await db.monthDao.getMonthByDate(tx.date);
       }
 
       tx = tx.copyWith(monthId: id);
@@ -86,7 +87,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     if (transaction.monthId == null) {
       int id = await db.monthDao.getMonthByDate(transaction.date);
       if (id == null) {
-        // TODO create new month or sth
+        db.monthDao.checkLatestMonths();
       }
       transaction = transaction.copyWith(monthId: id);
     }
@@ -126,9 +127,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 //    print("SELECT * FROM transactions_with_categories "
 //        "${txParser.parse()}");
 
+    // TODO order by date
     final query2 = customSelectQuery(
         "SELECT * FROM transactions_with_categories "
-        "${txParser.parse()}",
+        "${txParser.parse()} ORDER BY date DESC",
         readsFrom: {transactions, subcategories});
 
     return query2.watch().map((rows) => rows

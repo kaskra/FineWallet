@@ -128,8 +128,8 @@ var categories = [
 
 var currentMonth = MonthsCompanion.insert(
   maxBudget: 0,
-  firstDate: getFirstDateOfMonth(DateTime.now()),
-  lastDate: getLastDateOfMonth(DateTime.now()).millisecondsSinceEpoch,
+  firstDate: getFirstDateOfMonthInMillis(DateTime.now()),
+  lastDate: getLastDateOfMonthInMillis(DateTime.now()),
 );
 
 var recurrences = [
