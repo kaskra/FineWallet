@@ -81,6 +81,7 @@ class _HistoryState extends State<History> {
   /// Edit an item on the add page. Close selection mode afterwards.
   void _editItem(TransactionsWithCategory tx) {
     int isExpense = tx.isExpense ? 1 : 0;
+    print(tx);
     String title = tx.isExpense ? "Expense" : "Income";
     Navigator.push(
         context,
@@ -108,43 +109,38 @@ class _HistoryState extends State<History> {
     }
   }
 
+  // TODO rework header and sub-lists etc.
   Widget _buildBody() {
-    return Consumer<TransactionBloc>(
-      builder: (_, bloc, child) {
-//        bloc.updateAllTransactions();
-        return StreamBuilder<List<TransactionsWithCategory>>(
-//          stream: bloc.allTransactions,
-          stream: Provider.of<AppDatabase>(context)
-              .transactionDao
-              .watchTransactionsWithFilter(
-                  TransactionFilterSettings.beforeDate(DateTime.now())),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<TransactionsWithCategory>> snapshot) {
-            if (snapshot.hasData) {
-              List<List<Widget>> listOfLists = _buildLists(snapshot);
-              return ListView.builder(
-                padding: const EdgeInsets.only(bottom: 50),
-                itemCount: listOfLists.length,
-                itemBuilder: (context, index) {
-                  if (listOfLists[index].length > 0) {
-                    return StickyHeader(
-                      header: listOfLists[index][0],
-                      content: Column(
-                        children: listOfLists[index]
-                            .getRange(1, listOfLists[index].length)
-                            .toList(),
-                      ),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
-        );
+    return StreamBuilder<List<TransactionsWithCategory>>(
+      stream: Provider.of<AppDatabase>(context)
+          .transactionDao
+          .watchTransactionsWithFilter(
+              TransactionFilterSettings.beforeDate(DateTime.now())),
+      builder: (BuildContext context,
+          AsyncSnapshot<List<TransactionsWithCategory>> snapshot) {
+        if (snapshot.hasData) {
+          List<List<Widget>> listOfLists = _buildLists(snapshot);
+          return ListView.builder(
+            padding: const EdgeInsets.only(bottom: 50),
+            itemCount: listOfLists.length,
+            itemBuilder: (context, index) {
+              if (listOfLists[index].length > 0) {
+                return StickyHeader(
+                  header: listOfLists[index][0],
+                  content: Column(
+                    children: listOfLists[index]
+                        .getRange(1, listOfLists[index].length)
+                        .toList(),
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          );
+        } else {
+          return const SizedBox();
+        }
       },
     );
   }

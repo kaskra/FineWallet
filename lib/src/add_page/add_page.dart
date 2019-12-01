@@ -11,10 +11,7 @@ import 'dart:async';
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/datatypes/repeat_type.dart';
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
-import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/data/moor_database.dart' as db;
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page/bottom_sheets.dart';
@@ -56,19 +53,17 @@ class _AddPageState extends State<AddPage> {
   int _typeIndex = 2;
   bool _isEditMode = false;
   int _editTxId = -1;
+  int _originalId = -1;
 
   @override
   void initState() {
     super.initState();
-
     _date = DateTime.now();
-//    checkForEditMode();
   }
 
   // TODO rework this!!
   void checkForEditMode() async {
     if (widget.transaction != null) {
-//      CategoryList categories = await CategoryProvider.db.getAllCategories();
       List<db.Category> categories = await Provider.of<db.AppDatabase>(context)
           .categoryDao
           .getAllCategories();
@@ -80,6 +75,7 @@ class _AddPageState extends State<AddPage> {
       }
 
       _editTxId = widget.transaction.id;
+      _originalId = widget.transaction.originalId;
       _isEditMode = true;
       _expense = widget.transaction.amount;
       _textEditingController.text = _expense.toStringAsFixed(2);
@@ -100,10 +96,12 @@ class _AddPageState extends State<AddPage> {
 
         // If recurring, set the date to the first of the recurrence.
         // With that every recurring instance is changed
-        // TODO change to moor
-        TransactionList txs = await TransactionsProvider.db
-            .getAllTrans(dayInMillis(DateTime.now()));
-        txs = txs.where((tx) => tx.id == _editTxId);
+        List<db.Transaction> txs = await Provider.of<db.AppDatabase>(context)
+            .transactionDao
+            .getAllTransactions();
+        txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
+
+        txs = txs.where((tx) => tx.id == _editTxId).toList();
         _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
       }
       setState(() {});
@@ -520,15 +518,18 @@ class _AddPageState extends State<AddPage> {
                 return _showMissingValueSnackBar(context,
                     "Please choose a date that is after the current date.");
 
-              if (isRecurrencePossible(dayInMillis(_date),
-                      dayInMillis(_repeatUntil), _typeIndex) ==
-                  -1)
-                return _showMissingValueSnackBar(context,
-                    "Your recurrence type does not fit inside the time frame.");
+              // TODO implement later
+//              if (isRecurrencePossible(dayInMillis(_date),
+//                      dayInMillis(_repeatUntil), _typeIndex) ==
+//                  -1)
+//                return _showMissingValueSnackBar(context,
+//                    "Your recurrence type does not fit inside the time frame.");
             }
 
+            print(_isExpanded);
             db.Transaction newTx = new db.Transaction(
                 id: null,
+                originalId: _originalId,
                 amount: _expense,
                 subcategoryId: _subcategory.index,
                 monthId: null,
@@ -550,8 +551,6 @@ class _AddPageState extends State<AddPage> {
                   .transactionDao
                   .insertTransaction(newTx);
             }
-            // TODO REMOVE
-            Provider.of<MonthBloc>(context).syncMonths();
             Navigator.pop(context);
           } else {
             return _showMissingValueSnackBar(context);
