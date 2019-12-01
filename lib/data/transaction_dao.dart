@@ -49,9 +49,24 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
   TransactionDao(this.db) : super(db);
 
+  /// Returns every transaction unfiltered from the transactions table.
+  ///
+  /// Should use [watchTransactionsWithFilter] instead, when needed to
+  /// display transactions.
   Future<List<db_file.Transaction>> getAllTransactions() =>
       select(transactions).get();
 
+  /// Inserts a [db_file.Transaction] into the transactions table.
+  ///
+  /// While inserting, it makes sure that the month id exists, if not
+  /// it creates a new month that fits. It generates all recurrences according
+  /// to the recurring type passed in by the transaction. At last, it
+  /// bulk inserts every created transaction.
+  ///
+  /// Input
+  /// -----
+  /// - [db_file.Transaction] that should be inserted.
+  ///
   Future insertTransaction(db_file.Transaction tx) async {
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
@@ -61,22 +76,28 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     // Fill in month id
     if (tx.monthId == null) {
-      int id = await db.monthDao.getMonthByDate(tx.date);
-      if (id == null) {
-        await db.monthDao.checkLatestMonths();
-        id = await db.monthDao.getMonthByDate(tx.date);
-      }
-
+      int id = await db.monthDao.createOrGetMonth(tx.date);
       tx = tx.copyWith(monthId: id);
     }
 
+    // Make sure that every transaction has its correct month id assigned.
+    List<Insertable<db_file.Transaction>> txs = [];
+    if (tx.isRecurring) {
+      var recurrences = generateRecurrences(tx);
+      for (var t in recurrences) {
+        int id = await db.monthDao.createOrGetMonth(t.date);
+        txs.add(t.copyWith(monthId: id ?? t.monthId).createCompanion(true));
+      }
+    }
+
+    // Add all transactions to database in SQL-transaction.
     return transaction(() async {
-      await into(transactions)
-          .insert(tx.createCompanion(true).copyWith(id: Value(nextId)));
-      print(tx.copyWith(id: nextId));
+      await into(transactions).insert(
+        tx.createCompanion(true).copyWith(id: Value(nextId)),
+      );
 
       if (tx.isRecurring) {
-        await into(transactions).insertAll(generateRecurrences(tx));
+        await into(transactions).insertAll(txs);
       }
     });
   }
@@ -85,12 +106,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     print(transaction);
     // Fill in month id
     if (transaction.monthId == null) {
-      int id = await db.monthDao.getMonthByDate(transaction.date);
-      if (id == null) {
-        db.monthDao.checkLatestMonths();
-      }
+      int id = await db.monthDao.createOrGetMonth(transaction.date);
       transaction = transaction.copyWith(monthId: id);
     }
+
 //    await update(transactions).replace(transaction.createCompanion(true));
     // TODO Revisit as soon as history is done
     await (update(transactions)
@@ -109,6 +128,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     await db.monthDao.syncMonths();
   }
 
+  /// Returns a [Stream] that watches the database table. The stream is updated
+  /// every time the database is changed.
   Stream<double> watchTotalSavings() {
     final savings = customSelectQuery(
             "SELECT (SELECT SUM(amount) FROM incomes) - "
@@ -120,6 +141,14 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return savings;
   }
 
+  /// Returns a [Stream] that watches the transactions table.
+  ///
+  /// The stream is updated when ever the table changes.
+  ///
+  /// Input
+  /// -----
+  ///  - [TransactionFilterSettings] to filter the query results.
+  ///
   Stream<List<TransactionsWithCategory>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     FilterParser txParser = new TransactionFilterParser(settings);

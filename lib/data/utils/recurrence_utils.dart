@@ -35,17 +35,18 @@ int _replayTypeToMillis(int replayType, int transactionDate) {
   return -1;
 }
 
-List<Insertable<db_file.Transaction>> generateRecurrences(
-    db_file.Transaction tx) {
+List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
   List<Insertable<db_file.Transaction>> recurrences = [];
 
   int currentDate = tx.date;
   int interval = _replayTypeToMillis(tx.recurringType, currentDate);
+
   while (currentDate + interval <= tx.recurringUntil) {
     interval = _replayTypeToMillis(tx.recurringType, currentDate);
     if (interval != -1) {
       currentDate += interval;
-      recurrences.add(tx.copyWith(date: currentDate).createCompanion(true));
+
+      recurrences.add(tx.copyWith(date: currentDate));
     } else {
       print(
           "ERROR: Recurrence type is not in range. Got value: ${tx.recurringType}");

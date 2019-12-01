@@ -91,7 +91,10 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     List missingMonths = getMissingMonths(lastRecordedMonth);
     List<Insertable<Month>> newMonths = [];
 
-    // TODO rework dates to be only year, month, day --> without any hours
+    /* TODO rework dates to be only year, month, day --> without
+        any hours. Currently the month begins on 1st 12am and ends at
+        1st 0:59 am next month.
+    */
     for (DateTime m in missingMonths) {
       int first = getFirstDateOfMonthInMillis(m);
       int last = getLastDateOfMonthInMillis(m);
@@ -102,5 +105,29 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     if (newMonths.length > 0) {
       await into(months).insertAll(newMonths);
     }
+  }
+
+  Future checkMonth(int date) async {
+    if ((await db.monthDao.getMonthByDate(date)) == null) {
+      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+      int first = getFirstDateOfMonthInMillis(dateTime);
+      int last = getLastDateOfMonthInMillis(dateTime);
+
+      var newMonth = MonthsCompanion.insert(
+          maxBudget: 0, firstDate: first, lastDate: last);
+      await insertMonth(newMonth);
+    }
+  }
+
+  /// Returns the id of a month by date (in milliseconds since epoch).
+  /// If no month month was found that included the date, every
+  Future<int> createOrGetMonth(int date) async {
+    int id = await getMonthByDate(date);
+    if (id == null) {
+      await checkMonth(date);
+      id = await getMonthByDate(date);
+    }
+    assert(id != null);
+    return id;
   }
 }
