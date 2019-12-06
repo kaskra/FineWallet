@@ -6,8 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
@@ -44,8 +42,8 @@ class _HistoryState extends State<History> {
     super.initState();
     if (widget.selectedItems != null) {
       if (widget.selectedItems.length > 0) {
-        widget.selectedItems
-            .forEach((item) => _selectedItems.putIfAbsent(item.id, () => item));
+        widget.selectedItems.forEach(
+            (item) => _selectedItems.putIfAbsent(item.originalId, () => item));
         _selectionMode = true;
         _checkSelectionMode();
       }
@@ -70,9 +68,9 @@ class _HistoryState extends State<History> {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
       for (TransactionsWithCategory tx in _selectedItems.values) {
-        // TODO change to new
-        Provider.of<TransactionBloc>(context).delete(tx.id);
-        Provider.of<MonthBloc>(context).syncMonths();
+        Provider.of<AppDatabase>(context)
+            .transactionDao
+            .deleteTransactionById(tx.originalId);
       }
       _closeSelection();
     }
@@ -167,7 +165,7 @@ class _HistoryState extends State<History> {
           key: key,
           context: context,
           transaction: snapshot.data[i],
-          isSelected: _selectedItems.containsKey(snapshot.data[i].id),
+          isSelected: _selectedItems.containsKey(snapshot.data[i].originalId),
           isSelectionModeActive: _selectionMode,
           onSelect: (selected) {
             _toggleSelectionMode(selected, snapshot.data[i]);
@@ -182,12 +180,12 @@ class _HistoryState extends State<History> {
 
   void _toggleSelectionMode(bool selected, TransactionsWithCategory data) {
     if (selected) {
-      if (!_selectedItems.containsKey(data.id)) {
-        _selectedItems.putIfAbsent(data.id, () => data);
+      if (!_selectedItems.containsKey(data.originalId)) {
+        _selectedItems.putIfAbsent(data.originalId, () => data);
         _selectionMode = true;
       }
     } else {
-      _selectedItems.remove(data.id);
+      _selectedItems.remove(data.originalId);
       if (_selectedItems.isEmpty) {
         _selectionMode = false;
       }
