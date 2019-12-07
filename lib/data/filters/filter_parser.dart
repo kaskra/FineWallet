@@ -21,40 +21,48 @@ class TransactionFilterParser
   TransactionFilterParser(TransactionFilterSettings settings) : super(settings);
 
   /// Parse the input to singular WHERE expressions.
-  Queue _getQueueOfArguments() {
+  Queue _getQueueOfArguments({String tableName = ""}) {
     Queue queue = new Queue();
     if (settings.category != null) {
-      queue.add("category = ${settings.category}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}category = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
-      queue.add("category = ${settings.subcategory}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}category = ${settings.subcategory}");
     }
 
     if (settings.month != null) {
-      queue.add("month = ${settings.month}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}month = ${settings.month}");
     }
 
     if (settings.day != null) {
-      queue.add("date = ${settings.day}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}date = ${settings.day}");
     }
 
     if (settings.before != null) {
-      queue.add("date <= ${settings.before}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}date <= ${settings.before}");
     }
 
     if (settings.expenses != null) {
-      queue.add("is_expense = ${settings.expenses ? 1 : 0}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}is_expense = ${settings.expenses ? 1 : 0}");
     }
 
     if (settings.incomes != null) {
-      queue.add("is_expense = ${settings.incomes ? 0 : 1}");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}is_expense = ${settings.incomes ? 0 : 1}");
     }
 
     if (settings.dateInMonth != null) {
-      queue.add(" id = (SELECT id FROM months "
-          "WHERE first_date >= ${settings.dateInMonth} "
-          "AND last_date <= ${settings.dateInMonth})");
+      queue.add(
+          "${tableName != "" ? tableName + "." : ""}month_id = (SELECT months.id FROM months "
+          "WHERE months.first_date <= ${settings.dateInMonth} "
+          "AND months.last_date >= ${settings.dateInMonth})");
     }
     return queue;
   }
@@ -62,8 +70,8 @@ class TransactionFilterParser
   /// Parse the whole [TransactionFilterSettings] object
   /// into one WHERE-clause.
   @override
-  String parse() {
-    Queue args = _getQueueOfArguments();
+  String parse({String tableName = ""}) {
+    Queue args = _getQueueOfArguments(tableName: tableName);
     if (args.length <= 0) return "";
 
     String whereQuery = " WHERE ";

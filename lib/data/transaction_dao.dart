@@ -52,6 +52,7 @@ class TransactionsWithCategory {
 @UseDao(
   tables: [
     Transactions,
+    Categories,
     Subcategories,
     Months,
   ],
@@ -178,11 +179,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   Stream<List<TransactionsWithCategory>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
-    FilterParser txParser = new TransactionFilterParser(settings);
+    var txParser = new TransactionFilterParser(settings);
 
     final query2 = customSelectQuery(
-        "SELECT * FROM transactions_with_categories "
-        "${txParser.parse()} ORDER BY date DESC, id DESC",
+        "SELECT * FROM transactions_with_categories t"
+        "${txParser.parse(tableName: "t")} ORDER BY date DESC, id DESC",
         readsFrom: {transactions, subcategories});
 
     return query2.watch().map((rows) => rows
@@ -249,5 +250,38 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
                 .toList());
 
     return expenses;
+  }
+
+  /// Returns a [Stream] of categories and their corresponding
+  /// summed up transactions.
+  ///
+  /// Input
+  /// -----
+  /// [TransactionFilterSettings] to filter the transactions.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of a list of type [Tuple3]
+  ///
+  Stream<List<Tuple3<int, String, double>>> watchSumOfTransactionsByCategories(
+      TransactionFilterSettings settings) {
+    final parser = TransactionFilterParser(settings);
+
+    final query2 = customSelectQuery(
+        "SELECT SUM(t.amount) AS amount, c.id as category_id, c.name as category_name "
+        "FROM transactions_with_categories t "
+        "INNER JOIN categories c "
+        "ON t.category_id = c.id "
+        "${parser.parse(tableName: "t")} GROUP BY category_id",
+        readsFrom: {
+          transactions,
+          subcategories,
+          categories,
+        });
+
+    return query2.watch().map((rows) => rows
+        .map((row) => Tuple3<int, String, double>(row.readInt("category_id"),
+            row.readString("category_name"), row.readDouble("amount")))
+        .toList());
   }
 }

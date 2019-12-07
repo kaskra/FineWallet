@@ -6,11 +6,11 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
-import 'package:FineWallet/core/resources/category_list.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/src/statistics/chart_data.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,51 +29,50 @@ class ProfileChart extends StatefulWidget {
 }
 
 class _ProfileChartState extends State<ProfileChart> {
-  StreamBuilder<CategoryList> _addCategories(
-      CategoryBloc categoryBloc, TransactionBloc transactionBloc) {
-    return StreamBuilder<CategoryList>(
-      stream: categoryBloc.allCategories,
-      builder: (context, AsyncSnapshot<CategoryList> categorySnapshot) {
-        if (categorySnapshot.hasData) {
-          return _addTransactions(transactionBloc, categorySnapshot);
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  StreamBuilder<TransactionList> _addTransactions(
-      TransactionBloc bloc, AsyncSnapshot<CategoryList> categorySnapshot) {
+  /// Returns a [StreamBuilder] that displays a chart with expenses per category.
+  StreamBuilder<List<Tuple3<int, String, double>>> _buildChartWithData() {
     // Check which chart should be displayed and load the correct data for it.
+    var settings;
     if (widget.type == ProfileChart.MONTHLY_CHART) {
-      bloc.getMonthlyTransactions();
+      settings = TransactionFilterSettings(
+        dateInMonth: dayInMillis(DateTime.now()),
+        expenses: true,
+      );
     } else {
-      bloc.getAllTransactions();
+      settings = TransactionFilterSettings(expenses: true);
     }
 
-    return StreamBuilder<TransactionList>(
-      stream: widget.type == ProfileChart.MONTHLY_CHART
-          ? bloc.monthlyTransactions
-          : bloc.allTransactions,
-      builder: (context, AsyncSnapshot<TransactionList> transactionSnapshot) {
-        return _buildChart(transactionSnapshot, categorySnapshot);
+    return StreamBuilder<List<Tuple3<int, String, double>>>(
+      stream: Provider.of<AppDatabase>(context)
+          .transactionDao
+          .watchSumOfTransactionsByCategories(settings),
+      builder: (context, transactionSnapshot) {
+        return _buildChart(transactionSnapshot);
       },
     );
   }
 
-  Widget _buildChart(AsyncSnapshot<TransactionList> transactionSnapshot,
-      AsyncSnapshot<CategoryList> categorySnapshot) {
-    if (transactionSnapshot.hasData && categorySnapshot.data.ids() != null) {
-      // Get the summed up expenses for each category.
-      List<double> expenses = [
-        for (int c in categorySnapshot.data.ids())
-          transactionSnapshot.data.byCategory(c).sumExpenses()
-      ];
+  /// Builds the [CircularProfileChart] to display the expenses per
+  /// category with names.
+  ///
+  /// Input
+  /// -----
+  /// [AsyncSnapshot] of [Tuple3]s with category id, category name and
+  /// expense per category.
+  ///
+  /// Return
+  /// ------
+  /// Resulting [CircularProfileChart].
+  Widget _buildChart(
+      AsyncSnapshot<List<Tuple3<int, String, double>>> transactionSnapshot) {
+    if (transactionSnapshot.hasData) {
+      // Get the summed up expenses, ids and names for each category.
+      final ids = transactionSnapshot.data.map((l) => l.first).toList();
+      final names = transactionSnapshot.data.map((l) => l.second).toList();
+      final expenses = transactionSnapshot.data.map((l) => l.third).toList();
 
       // Create the chart with expenses per category and category names.
-      return CircularProfileChart.withTransactions(
-          expenses, categorySnapshot.data.ids(), categorySnapshot.data.names());
+      return CircularProfileChart.withTransactions(expenses, ids, names);
     }
     return Center(child: CircularProgressIndicator());
   }
@@ -82,12 +81,7 @@ class _ProfileChartState extends State<ProfileChart> {
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: Consumer2<TransactionBloc, CategoryBloc>(
-          builder: (_, transactionBloc, categoryBloc, child) {
-            categoryBloc.getCategories(true);
-            return _addCategories(categoryBloc, transactionBloc);
-          },
-        ),
+        child: _buildChartWithData(),
       ),
     );
   }
