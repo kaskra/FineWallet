@@ -54,3 +54,20 @@ List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
 
   return recurrences;
 }
+
+/// Checks that the chosen recurrence type is possible for the timespan between
+/// first date and second date.
+///
+/// No check whether first date is before second date!
+///
+/// Input
+/// -----
+/// - [int] first date as date in milliseconds since epoch
+/// - [int] second date as date in milliseconds since epoch
+/// - [int] recurrence type to check
+///
+bool isRecurrencePossible(int firstDate, int secondDate, int type) {
+  int difference = (secondDate - firstDate).abs();
+  int neededInterval = _replayTypeToMillis(type, firstDate);
+  return difference >= neededInterval;
+}

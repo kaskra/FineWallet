@@ -14,6 +14,7 @@ import 'package:FineWallet/core/datatypes/repeat_type.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart' as db;
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/data/utils/recurrence_utils.dart' as recurrenceUtils;
 import 'package:FineWallet/src/add_page/bottom_sheets.dart';
 import 'package:FineWallet/src/widgets/corner_triangle.dart';
 import 'package:FineWallet/src/widgets/general_widgets.dart';
@@ -99,7 +100,6 @@ class _AddPageState extends State<AddPage> {
             .getAllTransactions();
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
         txs = txs.where((tx) => tx.id == _editTxId).toList();
-        // TODO is wrong date when in recurring
         _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
       }
       setState(() {});
@@ -516,12 +516,10 @@ class _AddPageState extends State<AddPage> {
                 return _showMissingValueSnackBar(context,
                     "Please choose a date that is after the current date.");
 
-              // TODO implement later
-//              if (isRecurrencePossible(dayInMillis(_date),
-//                      dayInMillis(_repeatUntil), _typeIndex) ==
-//                  -1)
-//                return _showMissingValueSnackBar(context,
-//                    "Your recurrence type does not fit inside the time frame.");
+              if (!recurrenceUtils.isRecurrencePossible(
+                  dayInMillis(_date), dayInMillis(_repeatUntil), _typeIndex))
+                return _showMissingValueSnackBar(context,
+                    "Your recurrence type does not fit inside the time frame.");
             }
 
             db.Transaction newTx = new db.Transaction(
