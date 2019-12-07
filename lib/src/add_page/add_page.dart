@@ -53,7 +53,6 @@ class _AddPageState extends State<AddPage> {
   int _typeIndex = 2;
   bool _isEditMode = false;
   int _editTxId = -1;
-  int _originalId = -1;
 
   @override
   void initState() {
@@ -74,8 +73,7 @@ class _AddPageState extends State<AddPage> {
         selectedCategory -= 1;
       }
 
-      _editTxId = widget.transaction.id;
-      _originalId = widget.transaction.originalId;
+      _editTxId = widget.transaction.originalId;
       _isEditMode = true;
       _expense = widget.transaction.amount;
       _textEditingController.text = _expense.toStringAsFixed(2);
@@ -100,8 +98,8 @@ class _AddPageState extends State<AddPage> {
             .transactionDao
             .getAllTransactions();
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
-
         txs = txs.where((tx) => tx.id == _editTxId).toList();
+        // TODO is wrong date when in recurring
         _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
       }
       setState(() {});
@@ -526,10 +524,9 @@ class _AddPageState extends State<AddPage> {
 //                    "Your recurrence type does not fit inside the time frame.");
             }
 
-            print(_isExpanded);
             db.Transaction newTx = new db.Transaction(
                 id: null,
-                originalId: _originalId,
+                originalId: _editTxId,
                 amount: _expense,
                 subcategoryId: _subcategory.index,
                 monthId: null,
@@ -541,7 +538,6 @@ class _AddPageState extends State<AddPage> {
                     _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
 
             if (_isEditMode) {
-              // TODO rework update, because id is not right
               newTx = newTx.copyWith(id: _editTxId);
               Provider.of<db.AppDatabase>(context)
                   .transactionDao

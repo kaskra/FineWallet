@@ -79,7 +79,6 @@ class _HistoryState extends State<History> {
   /// Edit an item on the add page. Close selection mode afterwards.
   void _editItem(TransactionsWithCategory tx) {
     int isExpense = tx.isExpense ? 1 : 0;
-    print(tx);
     String title = tx.isExpense ? "Expense" : "Income";
     Navigator.push(
         context,

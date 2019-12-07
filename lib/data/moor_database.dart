@@ -93,8 +93,7 @@ class Recurrences extends Table {
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
     "getTimestamp":
-        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
-    "maxTransactionId": "SELECT MAX(id) FROM transactions"
+        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
   },
 )
 class AppDatabase extends _$AppDatabase {
@@ -146,4 +145,11 @@ class AppDatabase extends _$AppDatabase {
           await monthDao.checkLatestMonths();
         },
       );
+
+  /// Returns the current maximum AUTO INCREMENT value of table transactions.
+  Future<int> maxTransactionId() {
+    var res = customSelectQuery(
+        "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
+    return res.map((row) => row.readInt("seq")).getSingle();
+  }
 }

@@ -75,8 +75,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future insertTransaction(db_file.Transaction tx) async {
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
-    List<int> countTransactions = await db.maxTransactionId();
-    int nextId = (countTransactions?.first ?? 0) + 1;
+    int maxTransactionID = await db.maxTransactionId();
+    int nextId = (maxTransactionID ?? 0) + 1;
     tx = tx.copyWith(originalId: nextId);
 
     // Fill in month id
@@ -87,6 +87,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     // Make sure that every transaction has its correct month id assigned.
     List<Insertable<db_file.Transaction>> txs = [];
+
     if (tx.isRecurring) {
       List<db_file.Transaction> recurrences = generateRecurrences(tx);
       for (var t in recurrences) {
@@ -107,20 +108,31 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  Future updateTransaction(db_file.Transaction transaction) async {
-    print(transaction);
-    // Fill in month id
-    if (transaction.monthId == null) {
-      int id = await db.monthDao.createOrGetMonth(transaction.date);
-      transaction = transaction.copyWith(monthId: id);
-    }
-
-//    await update(transactions).replace(transaction.createCompanion(true));
-    // TODO Revisit as soon as history is done
-    await (update(transactions)
-          ..where((t) => t.originalId.equals(transaction.originalId)))
-        .write(transaction);
-    await db.monthDao.syncMonths();
+  /// Updates the transaction and its recurrences in the database.
+  /// After updating, all months are synced to make sure that the max budget is
+  /// still up-to-date.
+  ///
+  /// Input
+  /// -----
+  /// - [db_file.Transaction] that should be updated.
+  ///
+  Future updateTransaction(db_file.Transaction tx) async {
+    return transaction(() async {
+      await deleteTransactionById(tx.originalId);
+      tx = db_file.Transaction(
+          id: null,
+          originalId: null,
+          amount: tx.amount,
+          monthId: tx.monthId,
+          date: tx.date,
+          subcategoryId: tx.subcategoryId,
+          isExpense: tx.isExpense,
+          isRecurring: tx.isRecurring,
+          recurringUntil: tx.recurringUntil,
+          recurringType: tx.recurringType);
+      await insertTransaction(tx);
+      await db.monthDao.syncMonths();
+    });
   }
 
   Future deleteTransaction(db_file.Transaction transaction) async {
@@ -157,9 +169,6 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Stream<List<TransactionsWithCategory>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     FilterParser txParser = new TransactionFilterParser(settings);
-
-//    print("SELECT * FROM transactions_with_categories "
-//        "${txParser.parse()}");
 
     final query2 = customSelectQuery(
         "SELECT * FROM transactions_with_categories "
