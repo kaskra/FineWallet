@@ -50,6 +50,12 @@ class TransactionFilterParser
     if (settings.incomes != null) {
       queue.add("is_expense = ${settings.incomes ? 0 : 1}");
     }
+
+    if (settings.dateInMonth != null) {
+      queue.add(" id = (SELECT id FROM months "
+          "WHERE first_date >= ${settings.dateInMonth} "
+          "AND last_date <= ${settings.dateInMonth})");
+    }
     return queue;
   }
 

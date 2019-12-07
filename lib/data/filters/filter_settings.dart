@@ -13,6 +13,7 @@ class TransactionFilterSettings extends FilterSettings {
   final bool expenses;
   final bool incomes;
   final int before;
+  final int dateInMonth;
 
   TransactionFilterSettings({
     this.category,
@@ -22,6 +23,7 @@ class TransactionFilterSettings extends FilterSettings {
     this.expenses,
     this.incomes,
     this.before,
+    this.dateInMonth,
   });
 
   factory TransactionFilterSettings.byCategory(int categoryId) =>
@@ -44,4 +46,7 @@ class TransactionFilterSettings extends FilterSettings {
 
   factory TransactionFilterSettings.beforeDate(DateTime date) =>
       TransactionFilterSettings(before: dayInMillis(date));
+
+  factory TransactionFilterSettings.inMonth(DateTime date) =>
+      TransactionFilterSettings(dateInMonth: dayInMillis(date));
 }
