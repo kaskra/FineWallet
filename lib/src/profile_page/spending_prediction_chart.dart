@@ -7,8 +7,9 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/src/statistics/chart_data.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -51,8 +52,10 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
       builder: (_, bloc, child) {
         bloc.getMonthlyTransactions();
         return StreamBuilder(
-          stream: bloc.monthlyTransactions,
-          builder: (context, AsyncSnapshot<TransactionList> snapshot) {
+          stream: Provider.of<AppDatabase>(context)
+              .transactionDao
+              .watchExpensesPerDayInMonth(DateTime.now()),
+          builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               return _buildChartByDataType(snapshot);
             }
@@ -69,7 +72,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   /// - The **int**-domain chart shows some specific hardcoded ticks.
   ///
   /// Which chart to choose is decided by constant [USE_DATETIME_CHART].
-  Widget _buildChartByDataType(AsyncSnapshot<TransactionList> snapshot) {
+  Widget _buildChartByDataType(AsyncSnapshot<List<Tuple2>> snapshot) {
     if (USE_DATETIME_CHART) {
       return PredictionDateChart.withTransactions(
           _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
@@ -80,7 +83,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   }
 
   List<PredictionPoint> _calcDataPoints(
-      AsyncSnapshot<TransactionList> snapshot) {
+      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
     // all days of month as date in millis
     List<double> data = getListOfMonthDays(_today);
 
@@ -88,9 +91,11 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
 
     // calc the step function by using all expenses of every day in the month
     double prev = 0;
-    List<double> expense = data
-        .map((date) => snapshot.data.byDayInMillis(date.toInt()).sumExpenses())
-        .map((double d) {
+    List<double> expense = data.map((date) {
+      var t = snapshot.data.where((t) => t.first == date).toList();
+      if (t.length > 0) return t.first.second;
+      return 0.0;
+    }).map((double d) {
       prev += d;
       return prev;
     }).toList();
@@ -127,7 +132,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   }
 
   List<PredictionPointDate> _calcDateTimeDataPoints(
-      AsyncSnapshot<TransactionList> snapshot) {
+      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
     // all days of month as date in millis
     List<double> data = getListOfMonthDays(_today);
 
@@ -140,9 +145,11 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
 
     // calc the step function by using all expenses of every day in the month
     double prev = 0;
-    List<double> expense = data
-        .map((date) => snapshot.data.byDayInMillis(date.toInt()).sumExpenses())
-        .map((double d) {
+    List<double> expense = data.map((date) {
+      var t = snapshot.data.where((t) => t.first == date).toList();
+      if (t.length > 0) return t.first.second;
+      return 0.0;
+    }).map((double d) {
       prev += d;
       return prev;
     }).toList();

@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/filters/filter_parser.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -200,6 +201,16 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .toList());
   }
 
+  /// Returns a [Stream] of the monthly income.
+  ///
+  /// Input
+  /// -----
+  /// [DateTime] a date in the month to watch.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of type [double] that holds the monthly income.
+  ///
   Stream<double> watchMonthlyIncome(DateTime date) {
     final income = customSelectQuery(
             "SELECT IFNULL( (SELECT SUM(amount) FROM incomes "
@@ -211,5 +222,22 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .map((row) => row.readDouble("income"));
 
     return income;
+  }
+
+  Stream<List<Tuple2<int, double>>> watchExpensesPerDayInMonth(
+      DateTime dateInMonth) {
+    final expenses =
+        customSelectQuery("SELECT SUM(amount) as sumAmount, date FROM expenses "
+                "WHERE month_id = (SELECT id FROM months "
+                "WHERE first_date <= ${dayInMillis(dateInMonth)} "
+                "AND last_date >= ${dayInMillis(dateInMonth)})"
+                "GROUP BY date ORDER BY date")
+            .watch()
+            .map((r) => r
+                .map((row) => Tuple2<int, double>(
+                    row.readInt("date"), row.readDouble("sumAmount")))
+                .toList());
+
+    return expenses;
   }
 }
