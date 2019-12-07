@@ -48,7 +48,13 @@ class TransactionsWithCategory {
   }
 }
 
-@UseDao(tables: [Transactions, Subcategories, Months])
+@UseDao(
+  tables: [
+    Transactions,
+    Subcategories,
+    Months,
+  ],
+)
 class TransactionDao extends DatabaseAccessor<AppDatabase>
     with _$TransactionDaoMixin {
   final AppDatabase db;
@@ -192,5 +198,18 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
             recurringType: row.readInt("recurring_type"),
             date: row.readInt("date")))
         .toList());
+  }
+
+  Stream<double> watchMonthlyIncome(DateTime date) {
+    final income = customSelectQuery(
+            "SELECT IFNULL( (SELECT SUM(amount) FROM incomes "
+            "WHERE month_id = (SELECT id FROM months "
+            "WHERE first_date <= ${dayInMillis(date)} "
+            "AND last_date >= ${dayInMillis(date)}) ), 0) AS income",
+            readsFrom: {transactions, months})
+        .watchSingle()
+        .map((row) => row.readDouble("income"));
+
+    return income;
   }
 }

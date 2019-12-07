@@ -35,13 +35,20 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
-  Future<int> getMonthByDate(int dateInMillis) async {
+  Future<int> getMonthIdByDate(int dateInMillis) async {
     Month m = await (select(months)
           ..where((m) => m.firstDate.isSmallerOrEqualValue(dateInMillis))
           ..where((m) => m.lastDate.isBiggerOrEqualValue(dateInMillis)))
         .getSingle();
     return m?.id;
   }
+
+  Future<Month> getCurrentMonth() => (select(months)
+        ..where((m) =>
+            m.firstDate.isSmallerOrEqualValue(dayInMillis(DateTime.now())))
+        ..where((m) =>
+            m.lastDate.isBiggerOrEqualValue(dayInMillis(DateTime.now()))))
+      .getSingle();
 
   Future<Month> getMonthById(int id) =>
       (select(months)..where((m) => m.id.equals(id))).getSingle();
@@ -108,7 +115,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   }
 
   Future checkMonth(int date) async {
-    if ((await db.monthDao.getMonthByDate(date)) == null) {
+    if ((await db.monthDao.getMonthIdByDate(date)) == null) {
       DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
       int first = getFirstDateOfMonthInMillis(dateTime);
       int last = getLastDateOfMonthInMillis(dateTime);
@@ -122,10 +129,10 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// Returns the id of a month by date (in milliseconds since epoch).
   /// If no month month was found that included the date, every
   Future<int> createOrGetMonth(int date) async {
-    int id = await getMonthByDate(date);
+    int id = await getMonthIdByDate(date);
     if (id == null) {
       await checkMonth(date);
-      id = await getMonthByDate(date);
+      id = await getMonthIdByDate(date);
     }
     assert(id != null);
     return id;
