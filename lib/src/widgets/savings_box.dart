@@ -44,6 +44,8 @@ class SavingsBox extends StatelessWidget {
   }
 }
 
+/// This class is used to display a [Text] widget with the
+/// savings up to the current month.
 class SavingsWidget extends StatelessWidget {
   final TextStyle textStyle;
 
