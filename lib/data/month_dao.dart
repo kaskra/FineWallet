@@ -65,25 +65,22 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
         ]))
       .watch();
 
-  Future syncSingleMonth(int id) async {
+  Future syncSingleMonth(Month month) async {
     List<db_file.Transaction> txs = await (select(transactions)
-          ..where((t) => t.monthId.equals(id))
+          ..where((t) => t.monthId.equals(month.id))
           ..where((t) => t.isExpense.equals(false)))
         .get();
 
     double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
-    Month m = await getMonthById(id);
-
-    if (sumIncomes < m.maxBudget) {
-      m.copyWith(maxBudget: sumIncomes);
-      updateMonth(m.createCompanion(true));
+    if (sumIncomes < month.maxBudget) {
+      month = month.copyWith(maxBudget: sumIncomes);
+      await updateMonth(month.createCompanion(true));
     }
   }
 
   Future syncMonths() async {
     List<Month> months = await getAllMonths();
-
-    for (Month m in months) await syncSingleMonth(m.id);
+    for (Month m in months) await syncSingleMonth(m);
   }
 
   /// Check months after last recorded month to see whether any are missing.

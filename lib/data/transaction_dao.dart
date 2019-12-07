@@ -124,8 +124,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// - [db_file.Transaction] that should be updated.
   ///
   Future updateTransaction(db_file.Transaction tx) async {
-    return transaction(() async {
-      await deleteTransactionById(tx.originalId);
+    await transaction(() async {
+      await deleteTransactionById(tx.originalId, beforeInsert: true);
       tx = db_file.Transaction(
           id: null,
           originalId: null,
@@ -138,8 +138,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           recurringUntil: tx.recurringUntil,
           recurringType: tx.recurringType);
       await insertTransaction(tx);
-      await db.monthDao.syncMonths();
     });
+    return await db.monthDao.syncMonths();
   }
 
   Future deleteTransaction(db_file.Transaction transaction) async {
@@ -147,9 +147,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     await db.monthDao.syncMonths();
   }
 
-  Future deleteTransactionById(int id) async {
+  Future deleteTransactionById(int id, {bool beforeInsert = false}) async {
     await (delete(transactions)..where((t) => t.originalId.equals(id))).go();
-    await db.monthDao.syncMonths();
+    if (!beforeInsert) await db.monthDao.syncMonths();
   }
 
   /// Returns a [Stream] with the savings up to the current month.
