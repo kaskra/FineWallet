@@ -1,4 +1,4 @@
-import 'package:FineWallet/data/moor_database.dart' as db_file;
+import 'package:FineWallet/data/moor_database.dart' as dbFile;
 import 'package:FineWallet/utils.dart';
 
 int _replayTypeToMillis(int replayType, int transactionDate) {
@@ -34,8 +34,17 @@ int _replayTypeToMillis(int replayType, int transactionDate) {
   return -1;
 }
 
-List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
-  List<db_file.Transaction> recurrences = [];
+/// Generates and returns all recurrences for a [dbFile.Transaction].
+///
+/// Input
+/// -----
+/// [dbFile.Transaction] recurring transaction.
+///
+/// Return
+/// ------
+/// list of [dbFile.Transaction], each is recurrence of the input transaction.
+List<dbFile.Transaction> generateRecurrences(dbFile.Transaction tx) {
+  List<dbFile.Transaction> recurrences = [];
 
   int currentDate = tx.date;
   int interval = _replayTypeToMillis(tx.recurringType, currentDate);
