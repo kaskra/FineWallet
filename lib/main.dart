@@ -12,7 +12,6 @@ import 'package:FineWallet/core/resources/db_initilization.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
-import 'package:FineWallet/src/debug/database_page.dart';
 import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
@@ -151,14 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
       ProfilePage(),
-//      MoorTestPage(),
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
-      // _buildHistory(),
-      DBPage(
-        child: _buildHistory(),
-      )
+      _buildHistory(),
     ];
 
     return Scaffold(

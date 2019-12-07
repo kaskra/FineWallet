@@ -195,13 +195,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  flutter_sqflite_manager:
-    dependency: "direct main"
-    description:
-      name: flutter_sqflite_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
