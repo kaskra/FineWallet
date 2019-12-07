@@ -224,6 +224,16 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return income;
   }
 
+  /// Returns a [Stream] of summed up monthly expenses grouped and ordered by day.
+  ///
+  /// Input
+  /// -----
+  /// [DateTime] a date in the month to watch.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of a list of [Tuple2]s with date and summed up expenses.
+  ///
   Stream<List<Tuple2<int, double>>> watchExpensesPerDayInMonth(
       DateTime dateInMonth) {
     final expenses =
