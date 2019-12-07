@@ -299,4 +299,73 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .watchSingle()
         .map((row) => TransactionsWithCategory.fromQueryRow(row));
   }
+
+  /// Returns a [Stream] of the monthly budget.
+  ///
+  /// Budget calculation
+  ///
+  /// `budget = max_budget - expenses;`
+  ///
+  /// Input
+  /// -----
+  /// [DateTime] a date in the month to watch.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of type [double] that holds the daily budget.
+  ///
+  Stream<double> watchMonthlyBudget(DateTime date) {
+    final budget = customSelectQuery(
+            "SELECT IFNULL( (SELECT max_budget "
+            "FROM months "
+            "WHERE first_date <= ${dayInMillis(date)} "
+            "AND last_date >= ${dayInMillis(date)}),0) - "
+            "IFNULL( (SELECT SUM(amount) FROM expenses "
+            "WHERE month_id = (SELECT id FROM months "
+            "WHERE first_date <= ${dayInMillis(date)} "
+            "AND last_date >= ${dayInMillis(date)}) ), 0) AS budget",
+            readsFrom: {transactions, months})
+        .watchSingle()
+        .map((row) => row.readDouble("budget"));
+
+    return budget;
+  }
+
+  /// Returns a [Stream] of the daily budget.
+  ///
+  /// Budget calculation
+  ///
+  /// `budget = max_budget - expenses;`
+  ///
+  /// Input
+  /// -----
+  /// [DateTime] a date in the month to watch.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of type [double] that holds the daily budget.
+  ///
+  Stream<double> watchDailyBudget(DateTime date) {
+    int remainingDays = getRemainingDaysInMonth(date);
+
+    final dailyBudget = customSelectQuery(
+            "SELECT (IFNULL( (SELECT max_budget FROM months "
+            "WHERE first_date <= ${dayInMillis(date)} "
+            "AND last_date >= ${dayInMillis(date)}), 0) - "
+            "IFNULL( (SELECT SUM(amount) FROM expenses "
+            "WHERE month_id = (SELECT id FROM months "
+            "WHERE first_date <= ${dayInMillis(date)} "
+            "AND last_date >= ${dayInMillis(date)}) ), 0)) / $remainingDays - "
+            "IFNULL( (SELECT SUM(amount) FROM expenses "
+            "WHERE date = ${dayInMillis(date)} "
+            "AND month_id = (SELECT id FROM months "
+            "WHERE first_date <= ${dayInMillis(date)} "
+            "AND last_date >= ${dayInMillis(date)}) ), 0) "
+            "AS budget",
+            readsFrom: {transactions, months})
+        .watchSingle()
+        .map((row) => row.readDouble("budget"));
+
+    return dailyBudget;
+  }
 }

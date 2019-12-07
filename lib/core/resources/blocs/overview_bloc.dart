@@ -54,7 +54,7 @@ class OverviewBloc {
     MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
     double currentMaxBudget = currentMonth?.currentMaxBudget ?? 0;
 
-    int remainingDaysInMonth = getRemainingDaysInMonth();
+    int remainingDaysInMonth = getRemainingDaysInMonth(DateTime.now());
 
     // Retain every transaction that is a daily transaction or not recurring at all.
     list = list.where((tx) => tx.replayType == 0 || tx.isRecurring == 0);
@@ -100,10 +100,11 @@ class OverviewBloc {
   }
 
   getLatestTransaction() async {
-    TransactionList transactions = await TransactionsProvider.db
-        .getAllTrans(dayInMillis(DateTime.now()));
+    TransactionList transactions =
+        await TransactionsProvider.db.getAllTrans(dayInMillis(DateTime.now()));
 
-    TransactionModel latest = transactions.length > 0 ? transactions.first : null;
+    TransactionModel latest =
+        transactions.length > 0 ? transactions.first : null;
 
     _latestTransactionController.sink.add(latest);
   }

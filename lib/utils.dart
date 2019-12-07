@@ -94,8 +94,8 @@ String getMonthName(int month, {bool abbrev = false}) {
   return abbrev ? monthName.substring(0, 3) : monthName;
 }
 
-int getRemainingDaysInMonth() =>
-    getLastDayOfMonth(DateTime.now()) - DateTime.now().day + 1;
+int getRemainingDaysInMonth(DateTime date) =>
+    getLastDayOfMonth(date) - date.day + 1;
 
 List<DateTime> getLastWeekAsDates() {
   List<DateTime> days = List();
