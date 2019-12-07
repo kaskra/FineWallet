@@ -62,9 +62,12 @@ List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
 ///
 /// Input
 /// -----
+///
 /// - [int] first date as date in milliseconds since epoch
+///
 /// - [int] second date as date in milliseconds since epoch
-/// - [int] recurrence type to check
+///
+/// - [int] recurrence type to check <\br>
 ///
 bool isRecurrencePossible(int firstDate, int secondDate, int type) {
   int difference = (secondDate - firstDate).abs();
