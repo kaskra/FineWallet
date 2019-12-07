@@ -11,6 +11,7 @@ import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/utils/recurrence_utils.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'transaction_dao.g.dart';
@@ -145,16 +146,18 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     await db.monthDao.syncMonths();
   }
 
-  /// Returns a [Stream] that watches the database table. The stream is updated
-  /// every time the database is changed.
+  /// Returns a [Stream] with the savings up to the current month.
+  /// The stream is updated every time the database is changed.
   Stream<double> watchTotalSavings() {
+    int currentDate = getFirstDateOfMonthInMillis(DateTime.now());
     final savings = customSelectQuery(
-            "SELECT (SELECT SUM(amount) FROM incomes) - "
-            "(SELECT SUM(amount) FROM expenses) AS savings",
+            "SELECT IFNULL( (SELECT SUM(amount) FROM incomes "
+            "WHERE date < $currentDate), 0) - "
+            "IFNULL((SELECT SUM(amount) FROM expenses "
+            "WHERE date < $currentDate), 0) AS savings",
             readsFrom: {transactions})
         .watchSingle()
         .map((row) => row.readDouble("savings"));
-
     return savings;
   }
 
