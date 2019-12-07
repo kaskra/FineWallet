@@ -47,6 +47,22 @@ class TransactionsWithCategory {
   String toString() {
     return 'TransactionsWithCategory{id: $id, amount: $amount, date: $date, isExpense: $isExpense, isRecurring: $isRecurring, recurringUntil: $recurringUntil, subcategoryId: $subcategoryId, subcategoryName: $subcategoryName, categoryId: $categoryId, originalId: $originalId, recurringType: $recurringType}';
   }
+
+  factory TransactionsWithCategory.fromQueryRow(QueryRow row) {
+    return TransactionsWithCategory(
+      id: row.readInt("id"),
+      isExpense: row.readBool("is_expense"),
+      subcategoryId: row.readInt("subcategory_id"),
+      categoryId: row.readInt("category_id"),
+      subcategoryName: row.readString("name"),
+      amount: row.readDouble("amount"),
+      isRecurring: row.readBool("is_recurring"),
+      recurringUntil: row.readInt("recurring_until"),
+      originalId: row.readInt("original_id"),
+      recurringType: row.readInt("recurring_type"),
+      date: row.readInt("date"),
+    );
+  }
 }
 
 @UseDao(
@@ -186,20 +202,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         "${txParser.parse(tableName: "t")} ORDER BY date DESC, id DESC",
         readsFrom: {transactions, subcategories});
 
-    return query2.watch().map((rows) => rows
-        .map((row) => TransactionsWithCategory(
-            id: row.readInt("id"),
-            isExpense: row.readBool("is_expense"),
-            subcategoryId: row.readInt("subcategory_id"),
-            categoryId: row.readInt("category_id"),
-            subcategoryName: row.readString("name"),
-            amount: row.readDouble("amount"),
-            isRecurring: row.readBool("is_recurring"),
-            recurringUntil: row.readInt("recurring_until"),
-            originalId: row.readInt("original_id"),
-            recurringType: row.readInt("recurring_type"),
-            date: row.readInt("date")))
-        .toList());
+    return query2.watch().map((rows) =>
+        rows.map((row) => TransactionsWithCategory.fromQueryRow(row)).toList());
   }
 
   /// Returns a [Stream] of the monthly income.
@@ -267,7 +271,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       TransactionFilterSettings settings) {
     final parser = TransactionFilterParser(settings);
 
-    final query2 = customSelectQuery(
+    final query = customSelectQuery(
         "SELECT SUM(t.amount) AS amount, c.id as category_id, c.name as category_name "
         "FROM transactions_with_categories t "
         "INNER JOIN categories c "
@@ -279,9 +283,20 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           categories,
         });
 
-    return query2.watch().map((rows) => rows
+    return query.watch().map((rows) => rows
         .map((row) => Tuple3<int, String, double>(row.readInt("category_id"),
             row.readString("category_name"), row.readDouble("amount")))
         .toList());
+  }
+
+  /// Returns the latest non-recurrence transaction.
+  Stream<TransactionsWithCategory> watchLatestTransaction() {
+    final query =
+        customSelectQuery("SElECT * FROM transactions_with_categories t "
+            "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT 1");
+
+    return query
+        .watchSingle()
+        .map((row) => TransactionsWithCategory.fromQueryRow(row));
   }
 }

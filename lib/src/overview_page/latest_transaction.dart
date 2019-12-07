@@ -6,9 +6,9 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/models/transaction_model.dart';
-import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
@@ -34,7 +34,7 @@ class LatestTransaction extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              _buildLastTransactionContent(),
+              _buildLastTransactionContent(context),
               Text(
                 "Latest transaction",
                 style: TextStyle(
@@ -48,60 +48,50 @@ class LatestTransaction extends StatelessWidget {
     );
   }
 
-  Widget _buildLastTransactionContent() {
-    return Consumer<OverviewBloc>(
-      builder: (context, bloc, child) {
-        bloc.getLatestTransaction();
-        return StreamBuilder<TransactionModel>(
-          stream: bloc.latestTransaction,
-          initialData: TransactionModel(
-            amount: 0,
-            isExpense: 1,
-          ),
-          builder: (context, snapshot) {
-            return InkWell(
-              onTap: () {
-                if (snapshot.hasData) {
-                  Provider.of<NavigationNotifier>(context).setPage(4);
-                }
-              },
-              child: !snapshot.hasData
-                  ? _buildPlaceholder()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Center(
-                          child: _buildIcon(
-                              context,
-                              snapshot.data.category != null
-                                  ? CategoryIcon(snapshot.data.category - 1)
-                                      .data
-                                  : Icons.autorenew),
-                        ),
-                        // Text(
-                        //   snapshot.data.subcategoryName ?? "",
-                        //   style: TextStyle(
-                        //     color: Theme.of(context).colorScheme.onSurface,
-                        //     fontSize: 18,
-                        //   ),
-                        // ),
-                        FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: Text(
-                            "${snapshot.data.isExpense == 1 && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
-                            style: TextStyle(
-                              color: snapshot.data.isExpense == 1
-                                  ? Colors.red
-                                  : Colors.green,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-            );
+  Widget _buildLastTransactionContent(BuildContext context) {
+    return StreamBuilder<TransactionsWithCategory>(
+      stream: Provider.of<AppDatabase>(context)
+          .transactionDao
+          .watchLatestTransaction(),
+      builder: (context, snapshot) {
+        return InkWell(
+          onTap: () {
+            /* TODO either:
+                  - open dialog with choices (share, edit, etc.)
+                OR
+                  - go directly to AddPage in edit mode
+            * */
+            if (snapshot.hasData) {
+              Provider.of<NavigationNotifier>(context).setPage(4);
+            }
           },
+          child: !snapshot.hasData
+              ? _buildPlaceholder()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
+                      child: _buildIcon(
+                          context,
+                          snapshot.data.categoryId != null
+                              ? CategoryIcon(snapshot.data.categoryId - 1).data
+                              : Icons.autorenew),
+                    ),
+                    FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Text(
+                        "${snapshot.data.isExpense && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
+                        style: TextStyle(
+                          color: snapshot.data.isExpense
+                              ? Colors.red
+                              : Colors.green,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
         );
       },
     );
