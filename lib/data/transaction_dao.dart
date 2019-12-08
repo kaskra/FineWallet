@@ -370,6 +370,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Returns all expenses of the last seven days grouped by date and summed up.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of a list of [Tuple2]s with a day's date in milliseconds since
+  /// epoch and the sum of its expenses.
   Stream<List<Tuple2<int, double>>> watchLastWeeksTransactions() {
     // Set initial values.
     int millisPerDay = Duration.millisecondsPerDay;
