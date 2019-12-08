@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/utils/month_utils.dart';
@@ -14,11 +15,22 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 part 'month_dao.g.dart';
 
-class MonthWithTransactions {
+class MonthWithDetails {
   final Month month;
-  final List<db_file.Transaction> transactions;
+  final Tuple3<double, double, double> details;
 
-  MonthWithTransactions(this.month, this.transactions);
+  MonthWithDetails(this.month, this.details);
+
+  @override
+  String toString() {
+    return 'MonthWithDetails(month: $month, details: $details)';
+  }
+
+  double get savings => details.third;
+
+  double get income => details.first;
+
+  double get expense => details.second;
 }
 
 @UseDao(tables: [Months, Transactions])
@@ -133,5 +145,44 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     }
     assert(id != null);
     return id;
+  }
+
+  /// Returns a [Stream] that watches the months and transactions table.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of a list of [MonthWithDetails] which consists of a [Month]
+  /// entity and a [Tuple3] to hold the month's details, like monthly income,
+  /// monthly expenses and the monthly savings.
+  ///
+  Stream<List<MonthWithDetails>> watchAllMonthsWithDetails() {
+    final query = customSelectQuery(
+        "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
+        "AS month_income, "
+        "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
+        "AS month_expense,  m.* "
+        "FROM months m "
+        "GROUP BY m.id "
+        "ORDER BY m.first_date DESC",
+        readsFrom: {
+          months,
+          transactions
+        }).watch().map((rows) => rows
+        .map(
+          (row) => MonthWithDetails(
+              Month(
+                  id: row.readInt("id"),
+                  firstDate: row.readInt("first_date"),
+                  lastDate: row.readInt("last_date"),
+                  maxBudget: row.readDouble("max_budget")),
+              Tuple3<double, double, double>(
+                  row.readDouble("month_income"),
+                  row.readDouble("month_expense"),
+                  row.readDouble("month_income") -
+                      row.readDouble("month_expense"))),
+        )
+        .toList());
+
+    return query;
   }
 }
