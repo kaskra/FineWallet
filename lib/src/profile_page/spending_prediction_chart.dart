@@ -8,7 +8,6 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/src/statistics/chart_data.dart';
 import 'package:FineWallet/utils.dart';
@@ -48,20 +47,15 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   }
 
   Widget _buildChart() {
-    return Consumer<TransactionBloc>(
-      builder: (_, bloc, child) {
-        bloc.getMonthlyTransactions();
-        return StreamBuilder(
-          stream: Provider.of<AppDatabase>(context)
-              .transactionDao
-              .watchExpensesPerDayInMonth(DateTime.now()),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              return _buildChartByDataType(snapshot);
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        );
+    return StreamBuilder(
+      stream: Provider.of<AppDatabase>(context)
+          .transactionDao
+          .watchExpensesPerDayInMonth(DateTime.now()),
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return _buildChartByDataType(snapshot);
+        }
+        return Center(child: CircularProgressIndicator());
       },
     );
   }
