@@ -82,6 +82,18 @@ class WeekOverviewTimeline extends StatelessWidget {
     );
   }
 
+  /// Generates the days of the last seven days that are
+  /// missing in the query result.
+  ///
+  /// Input
+  /// -----
+  /// [AsyncSnapshot] with the query result, which consists of the date
+  /// in milliseconds since epoch and the sum of all expenses on that day.
+  ///
+  /// Return
+  /// ------
+  /// [List] of [Tuple3]s with the weekday, the sum of expenses and
+  /// the [DateTime] of each day.
   List<Tuple3<int, double, DateTime>> _generateMissingDays(
       AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
     List<int> days = getLastWeekAsDates().map((t) => dayInMillis(t)).toList();
