@@ -7,13 +7,12 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/core/models/month_model.dart';
-import 'package:FineWallet/core/models/transaction_model.dart';
-import 'package:FineWallet/core/resources/blocs/category_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
-import 'package:FineWallet/core/resources/category_list.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
@@ -222,37 +221,33 @@ class CategoryListView extends StatelessWidget {
   }
 
   Widget _buildCategoryListView() {
-    return Consumer2<TransactionBloc, CategoryBloc>(
-      builder: (context, txBloc, categoryBloc, child) {
-        txBloc.getMonthlyTransactions(dateInMonth: model.firstDayOfMonth);
-        return StreamBuilder<TransactionList>(
-          stream: txBloc.monthlyTransactions,
-          builder:
-              (BuildContext context, AsyncSnapshot<TransactionList> snapshot) {
-            if (snapshot.hasData) {
-              List<int> ids = snapshot.data.expenses().getCategoryIds();
+    var settings = TransactionFilterSettings(
+      dateInMonth: model.firstDayOfMonth,
+      expenses: true,
+    );
 
-              Map<int, double> amounts = Map.fromEntries(ids.map((id) =>
-                  MapEntry(id, snapshot.data.byCategory(id).sumExpenses())));
-
-              categoryBloc.getCategories(true);
-              return ListView(
-                children: <Widget>[
-                  for (int i = 0; i < amounts.length; i++)
-                    _buildCategoryListItem(amounts.keys.elementAt(i),
-                        amounts[amounts.keys.elementAt(i)], categoryBloc)
-                ],
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        );
+    return StreamBuilder<List<Tuple3<int, String, double>>>(
+      stream: Provider.of<AppDatabase>(context)
+          .transactionDao
+          .watchSumOfTransactionsByCategories(settings),
+      builder: (BuildContext context,
+          AsyncSnapshot<List<Tuple3<int, String, double>>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView(
+            children: <Widget>[
+              for (int i = 0; i < snapshot.data.length; i++)
+                _buildCategoryListItem(snapshot.data[i].first,
+                    snapshot.data[i].third, snapshot.data[i].second)
+            ],
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
       },
     );
   }
 
-  void _showTransactionsOfCategory(int id, CategoryBloc bloc) {
+  void _showTransactionsOfCategory(int id, String categoryName) {
     showDialog(
       context: context,
       builder: (context) => Center(
@@ -264,7 +259,7 @@ class CategoryListView extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.8,
           child: Column(
             children: <Widget>[
-              _buildDialogHeader(id, bloc),
+              _buildDialogHeader(id, categoryName),
               Expanded(child: _buildDialogTransactionList(id)),
               Align(
                 alignment: Alignment.bottomRight,
@@ -287,7 +282,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  Widget _buildDialogHeader(int id, CategoryBloc bloc) {
+  Widget _buildDialogHeader(int id, String categoryName) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
@@ -314,20 +309,15 @@ class CategoryListView extends StatelessWidget {
               ),
             ),
           ),
-          StreamBuilder<CategoryList>(
-            stream: bloc.allCategories,
-            builder: (context, snapshot) {
-              return Text(
-                snapshot.hasData ? "${snapshot.data[id - 1].name}" : "",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  decoration: TextDecoration.none,
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: "roboto",
-                ),
-              );
-            },
+          Text(
+            categoryName,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              decoration: TextDecoration.none,
+              fontSize: 18,
+              fontWeight: FontWeight.normal,
+              fontFamily: "roboto",
+            ),
           ),
         ],
       ),
@@ -335,34 +325,28 @@ class CategoryListView extends StatelessWidget {
   }
 
   Widget _buildDialogTransactionList(int id) {
+    var settings = TransactionFilterSettings(
+        dateInMonth: model.firstDayOfMonth, category: id);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Consumer<TransactionBloc>(
-        builder: (context, bloc, __) {
-          bloc.getMonthlyTransactions(dateInMonth: model.firstDayOfMonth);
-          return StreamBuilder(
-            stream: bloc.monthlyTransactions,
-            builder: (context, snapshot) {
-              // Load transactions of month and filter to only get category of certain id.
-              TransactionList transactionOfCategory =
-                  snapshot.hasData ? snapshot.data : TransactionList();
-              transactionOfCategory = transactionOfCategory.byCategory(id);
-
-              return ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  for (var tx in transactionOfCategory)
-                    _buildTransactionRow(tx),
-                ],
-              );
-            },
+      child: StreamBuilder(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchTransactionsWithFilter(settings),
+        builder: (context, snapshot) {
+          return ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              for (var tx in snapshot.data ?? []) _buildTransactionRow(tx),
+            ],
           );
         },
       ),
     );
   }
 
-  InformationRow _buildTransactionRow(TransactionModel tx) {
+  InformationRow _buildTransactionRow(TransactionsWithCategory tx) {
     // Initialize date formatter for timestamp
     var formatter = new DateFormat('E, dd.MM.yy');
 
@@ -402,10 +386,10 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryListItem(int id, double amount, CategoryBloc bloc) {
+  Widget _buildCategoryListItem(int id, double amount, String categoryName) {
     return ListTile(
       onTap: () {
-        _showTransactionsOfCategory(id, bloc);
+        _showTransactionsOfCategory(id, categoryName);
       },
       leading: SizedBox(
         height: 50,
@@ -429,13 +413,7 @@ class CategoryListView extends StatelessWidget {
         style: TextStyle(
             color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
       ),
-      title: StreamBuilder<CategoryList>(
-          stream: bloc.allCategories,
-          builder: (context, snapshot) {
-            return Text(
-              snapshot.hasData ? "${snapshot.data[id - 1].name}" : "",
-            );
-          }),
+      title: Text(categoryName),
     );
   }
 }

@@ -25,17 +25,17 @@ class TransactionFilterParser
     Queue queue = new Queue();
     if (settings.category != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}category = ${settings.category}");
+          "${tableName != "" ? tableName + "." : ""}category_id = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}category = ${settings.subcategory}");
+          "${tableName != "" ? tableName + "." : ""}subcategory_id = ${settings.subcategory}");
     }
 
     if (settings.month != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}month = ${settings.month}");
+          "${tableName != "" ? tableName + "." : ""}month_id = ${settings.month}");
     }
 
     if (settings.day != null) {
