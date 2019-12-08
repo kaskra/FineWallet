@@ -30,6 +30,11 @@ class ProfileChart extends StatefulWidget {
 
 class _ProfileChartState extends State<ProfileChart> {
   /// Returns a [StreamBuilder] that displays a chart with expenses per category.
+  ///
+  /// Return
+  /// -----
+  /// [AsyncSnapshot] of [Tuple3]s with category id, category name and
+  /// expense per category.
   StreamBuilder<List<Tuple3<int, String, double>>> _buildChartWithData() {
     // Check which chart should be displayed and load the correct data for it.
     var settings;
