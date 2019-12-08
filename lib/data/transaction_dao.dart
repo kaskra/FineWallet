@@ -368,4 +368,27 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     return dailyBudget;
   }
+
+  /// Returns all expenses of the last seven days grouped by date and summed up.
+  Stream<List<Tuple2<int, double>>> watchLastWeeksTransactions() {
+    // Set initial values.
+    int millisPerDay = Duration.millisecondsPerDay;
+    int currentDateInMillis = dayInMillis(DateTime.now());
+
+    // Setup watch of last weeks transactions.
+    final lastWeekQuery = customSelectQuery(
+            "SELECT SUM(amount) AS amount, date FROM transactions "
+            "WHERE is_expense = 1 "
+            "AND date > ${currentDateInMillis - 7 * millisPerDay} "
+            "GROUP BY date "
+            "LIMIT 7",
+            readsFrom: {transactions})
+        .watch()
+        .map((rows) => rows
+            .map((row) => Tuple2<int, double>(
+                row.readInt("date"), row.readDouble("amount")))
+            .toList());
+
+    return lastWeekQuery;
+  }
 }
