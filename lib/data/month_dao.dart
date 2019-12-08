@@ -162,6 +162,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
         "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
         "AS month_expense,  m.* "
         "FROM months m "
+        "WHERE ${dayInMillis(DateTime.now())} > m.first_date "
         "GROUP BY m.id "
         "ORDER BY m.first_date DESC",
         readsFrom: {
