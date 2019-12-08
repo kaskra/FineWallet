@@ -7,13 +7,10 @@
  */
 
 import 'package:FineWallet/core/models/category_model.dart';
-import 'package:FineWallet/core/models/month_model.dart';
 import 'package:FineWallet/core/models/subcategory_model.dart';
 import 'package:FineWallet/core/resources/category_list.dart';
 import 'package:FineWallet/core/resources/category_provider.dart';
 import 'package:FineWallet/core/resources/db_provider.dart';
-import 'package:FineWallet/core/resources/month_provider.dart';
-import 'package:FineWallet/utils.dart';
 
 void initDB() async {
   CategoryList categories = await CategoryProvider.db.getAllCategories();
@@ -190,16 +187,5 @@ void initDB() async {
         .newSubcategory(SubcategoryModel(category: 10, name: "Money Gift"));
     DatabaseProvider.db
         .newSubcategory(SubcategoryModel(category: 10, name: "Voucher"));
-  }
-
-  int numRecordedMonths = await MonthProvider.db.amountRecordedMonths();
-  if (numRecordedMonths == 0) {
-    DatabaseProvider.db.newMonth(
-      MonthModel(
-          firstDayOfMonth: getFirstDateOfMonthInMillis(DateTime.now()),
-          currentMaxBudget: 0.0,
-          savings: 0.0,
-          monthlyExpenses: 0.0),
-    );
   }
 }
