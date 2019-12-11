@@ -6,7 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/navigation_notifier.dart';

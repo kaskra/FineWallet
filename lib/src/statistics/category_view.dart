@@ -1,6 +1,6 @@
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
-import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';

@@ -6,7 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/models/month_model.dart';
+import 'package:FineWallet/data/month_dao.dart';
 import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -15,16 +15,16 @@ class IncomeExpenseChart extends StatelessWidget {
 
   const IncomeExpenseChart({Key key, this.seriesList}) : super(key: key);
 
-  factory IncomeExpenseChart.withData(MonthModel m) {
+  factory IncomeExpenseChart.withData(MonthWithDetails m) {
     return new IncomeExpenseChart(
       seriesList: _createData(m),
     );
   }
 
-  static List<Series<double, int>> _createData(MonthModel m) {
-    double max = m.currentMaxBudget;
-    double curr = m.monthlyExpenses;
-    
+  static List<Series<double, int>> _createData(MonthWithDetails m) {
+    double max = m.month.maxBudget;
+    double curr = m.expense;
+
     double firstPart = curr / max;
     double secondPart = 1 - firstPart;
 

@@ -7,7 +7,7 @@
  */
 
 import 'package:FineWallet/core/datatypes/category.dart';
-import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart' as DB;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

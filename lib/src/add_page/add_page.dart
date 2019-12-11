@@ -10,8 +10,8 @@ import 'dart:async';
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/core/datatypes/repeat_type.dart';
-import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart' as db;
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/utils/recurrence_utils.dart' as recurrenceUtils;
