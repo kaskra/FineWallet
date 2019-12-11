@@ -19,7 +19,7 @@ List<SingleChildCloneableWidget> providers = [
 
 List<SingleChildCloneableWidget> independentServices = [
   Provider<AppDatabase>(
-    builder: (_) => AppDatabase(),
+    create: (_) => AppDatabase(),
     dispose: (_, db) => db.close(),
   ),
   ChangeNotifierProvider.value(
