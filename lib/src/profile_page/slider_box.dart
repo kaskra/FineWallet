@@ -1,8 +1,4 @@
-import 'package:FineWallet/core/models/month_model.dart';
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
-import 'package:FineWallet/core/resources/month_provider.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
@@ -28,44 +24,37 @@ class BudgetSlider extends StatefulWidget {
 
 class _BudgetSliderState extends State<BudgetSlider> {
   /// Current month entity, holding the current available budget of the month.
-  MonthModel _currentMonth;
+  Month _currentMonth;
 
-  /// The text editor controller for the slider-dependend textfield.
+  /// The text editor controller for the slider-depending textfield.
   TextEditingController _textEditingController = TextEditingController();
-
-  @override
-  void initState() {
-    _loadCurrentMonth();
-    super.initState();
-  }
 
   /// Load the current month and set the overall maximum budget,
   /// the current maximum available budget, update the parent by
   /// calling onChanged event callback.
   void _loadCurrentMonth() async {
-    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
-
-    Provider.of<BudgetNotifier>(context)
-        .setBudget(currentMonth.currentMaxBudget);
+    Month m =
+        await Provider.of<AppDatabase>(context).monthDao.getCurrentMonth();
+    Provider.of<BudgetNotifier>(context).setBudget(m.maxBudget);
 
     setState(() {
-      _currentMonth = currentMonth;
+      _currentMonth = m;
     });
-
-    _textEditingController.text =
-        currentMonth.currentMaxBudget.toStringAsFixed(2);
+    _textEditingController.text = m.maxBudget.toStringAsFixed(2);
   }
 
   /// Update the current month by updating the current monthly available budget in the entity.
   ///
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
-    _currentMonth?.currentMaxBudget =
-        Provider.of<BudgetNotifier>(context).budget;
-    Provider.of<MonthBloc>(context).updateMonth(_currentMonth);
+    Month month = _currentMonth.copyWith(
+        maxBudget: Provider.of<BudgetNotifier>(context).budget);
+    Provider.of<AppDatabase>(context)
+        .monthDao
+        .updateMonth(month.createCompanion(true));
   }
 
-  /// Build the center row with slider, suffix and the slider-dependend textfield.
+  /// Build the center row with slider, suffix and the slider-depending textfield.
   Widget _buildSliderWithTextInput() {
     return Align(
       alignment: Alignment.centerRight,
@@ -80,7 +69,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
             "€ ",
             style: const TextStyle(fontSize: 16),
           ),
-          _buildDependendTextField(),
+          _buildDependingTextField(),
         ],
       ),
     );
@@ -101,37 +90,34 @@ class _BudgetSliderState extends State<BudgetSlider> {
     Provider.of<BudgetNotifier>(context).setBudget(value);
   }
 
-  /// The dependend textfield shows the current value of the slider.
+  /// The depending textfield shows the current value of the slider.
   ///
   /// It can be changed by keyboard input to a custom value.
   /// That value is then shown on the slider.
-  Widget _buildDependendTextField() {
+  Widget _buildDependingTextField() {
     return Expanded(
-      child: Consumer<TransactionBloc>(
-        builder: (context, bloc, _) {
-          bloc.getMonthlyTransactions();
-          return StreamBuilder<TransactionList>(
-            stream: bloc.monthlyTransactions,
-            builder: (context, snapshot) {
-              double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
+      child: StreamBuilder(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchMonthlyIncome(DateTime.now()),
+        builder: (context, snapshot) {
+          double max = snapshot.hasData ? snapshot.data : 0;
 
-              return TextField(
-                decoration: InputDecoration(border: InputBorder.none),
-                onSubmitted: (valueAsString) {
-                  double value = double.parse(valueAsString);
-                  _setMaxMonthlyBudget(value, max);
-                  _updateMonthModel();
-                },
-                onTap: () {
-                  _textEditingController.selection = TextSelection(
-                      baseOffset: 0,
-                      extentOffset: _textEditingController.text.length);
-                },
-                controller: _textEditingController,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.done,
-              );
+          return TextField(
+            decoration: InputDecoration(border: InputBorder.none),
+            onSubmitted: (valueAsString) {
+              double value = double.parse(valueAsString);
+              _setMaxMonthlyBudget(value, max);
+              _updateMonthModel();
             },
+            onTap: () {
+              _textEditingController.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: _textEditingController.text.length);
+            },
+            controller: _textEditingController,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
           );
         },
       ),
@@ -145,19 +131,16 @@ class _BudgetSliderState extends State<BudgetSlider> {
         "Total available budget: ",
         style: TextStyle(fontSize: 14),
       ),
-      value: Consumer<TransactionBloc>(
-        builder: (context, bloc, child) {
-          bloc.getSavings();
-          return StreamBuilder<double>(
-            stream: bloc.savings,
-            builder: (context, snapshot) {
-              double maxBudget = snapshot.data ?? 0;
-              maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
-              return Text(
-                "${maxBudget.toStringAsFixed(2)}€",
-                style: TextStyle(fontSize: 14),
-              );
-            },
+      value: StreamBuilder<double>(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchTotalSavings(),
+        builder: (context, snapshot) {
+          double maxBudget = snapshot.data ?? 0;
+          maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
+          return Text(
+            "${maxBudget.toStringAsFixed(2)}€",
+            style: TextStyle(fontSize: 14),
           );
         },
       ),
@@ -182,21 +165,18 @@ class _BudgetSliderState extends State<BudgetSlider> {
         "Expected savings: ",
         style: TextStyle(fontSize: 14),
       ),
-      value: Consumer<TransactionBloc>(
-        builder: (context, bloc, _) {
-          bloc.getMonthlyTransactions();
-          return StreamBuilder<TransactionList>(
-            stream: bloc.monthlyTransactions,
-            builder: (context, snapshot) {
-              double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
-              return Text(
-                " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}€",
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              );
-            },
+      value: StreamBuilder(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchMonthlyIncome(DateTime.now()),
+        builder: (context, snapshot) {
+          double max = snapshot.hasData ? snapshot.data : 0;
+          return Text(
+            " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}€",
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
           );
         },
       ),
@@ -205,6 +185,10 @@ class _BudgetSliderState extends State<BudgetSlider> {
 
   @override
   Widget build(BuildContext context) {
+    if (_currentMonth == null) {
+      _loadCurrentMonth();
+    }
+
     return ExpandToWidth(
       ratio: widget.screenWidthRatio,
       child: DecoratedCard(
@@ -236,18 +220,16 @@ class _ValueSlider extends StatefulWidget {
 }
 
 class __ValueSliderState extends State<_ValueSlider> {
-  @override
-  void initState() {
-    _loadCurrentBudget();
-    super.initState();
-  }
+  bool _loaded = false;
 
   /// Load current maximum budget from current month.
   _loadCurrentBudget() async {
-    MonthModel currentMonth = await MonthProvider.db.getCurrentMonth();
-
-    Provider.of<BudgetNotifier>(context)
-        .setBudget(currentMonth.currentMaxBudget);
+    Month m =
+        await Provider.of<AppDatabase>(context).monthDao.getCurrentMonth();
+    Provider.of<BudgetNotifier>(context).setBudget(m.maxBudget);
+    setState(() {
+      _loaded = true;
+    });
   }
 
   /// Build the slider, which calls sets the current maximum budget when getting changed.
@@ -256,43 +238,42 @@ class __ValueSliderState extends State<_ValueSlider> {
   /// When the change starts, a new focus node is set, to force the keyboard to be closed.
   @override
   Widget build(BuildContext context) {
+    if (!_loaded) _loadCurrentBudget();
+
     return Expanded(
       flex: 3,
-      child: Consumer<TransactionBloc>(
-        builder: (context, bloc, _) {
-          bloc.getMonthlyTransactions();
-          return StreamBuilder<TransactionList>(
-            stream: bloc.monthlyTransactions,
-            builder: (context, snapshot) {
-              // Make sure that max is not smaller than the value to be displayed.
-              // Happens while loading the monthly transactions.
-              double max = snapshot.hasData ? snapshot.data.sumIncomes() : 0;
-              if (max < (Provider.of<BudgetNotifier>(context)?.budget ?? 0)) {
-                max = Provider.of<BudgetNotifier>(context).budget;
-              }
+      child: StreamBuilder(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchMonthlyIncome(DateTime.now()),
+        builder: (context, snapshot) {
+          // Make sure that max is not smaller than the value to be displayed.
+          // Happens while loading the monthly transactions.
+          double max = snapshot.hasData ? snapshot.data : 0;
+          if (max < (Provider.of<BudgetNotifier>(context)?.budget ?? 0)) {
+            max = Provider.of<BudgetNotifier>(context).budget;
+          }
 
-              return Slider(
-                onChangeEnd: (value) {
-                  if (widget.onChangeEnd != null) {
-                    widget.onChangeEnd(value);
-                  }
-                  Provider.of<BudgetNotifier>(context).setBudget(value);
-                },
-                onChanged: (value) {
-                  if (widget.onChange != null) {
-                    widget.onChange(value);
-                  }
-                  Provider.of<BudgetNotifier>(context).setBudget(value);
-                },
-                onChangeStart: (value) {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                },
-                value: Provider.of<BudgetNotifier>(context)?.budget ?? 0,
-                min: 0,
-                max: max,
-                divisions: 100,
-              );
+          return Slider(
+            onChangeEnd: (value) {
+              if (widget.onChangeEnd != null) {
+                widget.onChangeEnd(value);
+              }
+              Provider.of<BudgetNotifier>(context).setBudget(value);
             },
+            onChanged: (value) {
+              if (widget.onChange != null) {
+                widget.onChange(value);
+              }
+              Provider.of<BudgetNotifier>(context).setBudget(value);
+            },
+            onChangeStart: (value) {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            value: Provider.of<BudgetNotifier>(context)?.budget ?? 0,
+            min: 0,
+            max: max,
+            divisions: 100,
           );
         },
       ),

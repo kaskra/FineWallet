@@ -6,7 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

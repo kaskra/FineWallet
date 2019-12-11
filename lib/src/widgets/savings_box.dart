@@ -1,4 +1,4 @@
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -44,24 +44,23 @@ class SavingsBox extends StatelessWidget {
   }
 }
 
+/// This class is used to display a [Text] widget with the
+/// savings up to the current month.
 class SavingsWidget extends StatelessWidget {
   final TextStyle textStyle;
+
   const SavingsWidget({Key key, this.textStyle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TransactionBloc>(
-      builder: (context, bloc, child) {
-        bloc.getSavings();
-        return StreamBuilder(
-          initialData: 0.0,
-          stream: bloc.savings,
-          builder: (context, snapshot) {
-            return Text(
-              "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}€",
-              style: textStyle,
-            );
-          },
+    return StreamBuilder(
+      initialData: 0.0,
+      stream:
+          Provider.of<AppDatabase>(context).transactionDao.watchTotalSavings(),
+      builder: (context, snapshot) {
+        return Text(
+          "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}€",
+          style: textStyle,
         );
       },
     );

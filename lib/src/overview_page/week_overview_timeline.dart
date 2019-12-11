@@ -7,8 +7,8 @@
  */
 
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/models/transaction_model.dart';
-import 'package:FineWallet/core/resources/blocs/overview_bloc.dart';
+import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/src/widgets/timeline.dart';
 import 'package:FineWallet/src/widgets/timestamp.dart';
 import 'package:FineWallet/utils.dart';
@@ -82,38 +82,65 @@ class WeekOverviewTimeline extends StatelessWidget {
     );
   }
 
+  /// Generates the days of the last seven days that are
+  /// missing in the query result.
+  ///
+  /// Input
+  /// -----
+  /// [AsyncSnapshot] with the query result, which consists of the date
+  /// in milliseconds since epoch and the sum of all expenses on that day.
+  ///
+  /// Return
+  /// ------
+  /// [List] of [Tuple3]s with the weekday, the sum of expenses and
+  /// the [DateTime] of each day.
+  List<Tuple3<int, double, DateTime>> _generateMissingDays(
+      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
+    List<int> days = getLastWeekAsDates().map((t) => dayInMillis(t)).toList();
+
+    return days.map((day) {
+      var date = DateTime.fromMillisecondsSinceEpoch(day);
+      int foundIndex = snapshot.data.indexWhere((t) => t.first == day);
+      if (foundIndex != -1) {
+        return Tuple3<int, double, DateTime>(
+            date.weekday, snapshot.data[foundIndex].second, date);
+      } else {
+        return Tuple3<int, double, DateTime>(date.weekday, 0.0, date);
+      }
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<OverviewBloc>(
-      builder: (context, bloc, child) {
-        bloc.getLastWeekTransactions();
-        return StreamBuilder(
-          stream: bloc.lastWeekTransactions,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
+    return StreamBuilder(
+      stream: Provider.of<AppDatabase>(context)
+          .transactionDao
+          .watchLastWeeksTransactions(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            heightFactor: 7,
+            child: Text(
+              "Could not load last weeks transactions! Error: ${snapshot.error.toString()}",
+              style: TextStyle(color: Colors.black54),
+            ),
+          );
+        }
+
+        return !snapshot.hasData
+            ? const Center(
                 heightFactor: 7,
-                child: Text(
-                  "Could not load last weeks transactions! Error: ${snapshot.error.toString()}",
-                  style: TextStyle(color: Colors.black54),
-                ),
+                child: CircularProgressIndicator(),
+              )
+            : Timeline(
+                color: Colors.grey,
+                selectionColor: Theme.of(context).colorScheme.secondary,
+                items: <Widget>[
+                  for (Tuple3<int, double, DateTime> tuple
+                      in _generateMissingDays(snapshot))
+                    _buildDay(tuple.first, tuple.second, tuple.third)
+                ],
               );
-            }
-            return !snapshot.hasData
-                ? const Center(
-                    heightFactor: 7,
-                    child: CircularProgressIndicator(),
-                  )
-                : Timeline(
-                    color: Colors.grey,
-                    selectionColor: Theme.of(context).colorScheme.secondary,
-                    items: <Widget>[
-                      for (SumOfTransactionModel m in snapshot.data)
-                        _buildDay(m.weekday, m.amount.toDouble(), m.date)
-                    ],
-                  );
-          },
-        );
       },
     );
   }

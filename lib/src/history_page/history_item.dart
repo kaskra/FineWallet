@@ -7,9 +7,9 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
-import 'package:FineWallet/core/models/transaction_model.dart';
-import 'package:FineWallet/core/resources/category_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,10 +23,10 @@ class HistoryItem extends StatelessWidget {
       @required this.isSelected,
       @required this.isSelectionModeActive,
       this.onSelect})
-      : isExpense = transaction.isExpense == 1,
-        isRecurring = transaction.isRecurring == 1;
+      : isExpense = transaction.isExpense,
+        isRecurring = transaction.isRecurring;
   final BuildContext context;
-  final TransactionModel transaction;
+  final TransactionsWithCategory transaction;
   final bool isExpense;
   final bool isRecurring;
   final bool isSelectionModeActive;
@@ -83,7 +83,7 @@ class HistoryItem extends StatelessWidget {
             isSelected: isSelected,
             isExpense: isExpense,
             isRecurring: isRecurring,
-            iconData: CategoryIcon(transaction.category - 1),
+            iconData: CategoryIcon(transaction.categoryId - 1),
             context: context,
           ),
         ),

@@ -8,20 +8,15 @@
 
 import 'dart:async';
 
-import 'package:FineWallet/src/add_page/bottom_sheets.dart';
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
-import 'package:FineWallet/core/datatypes/repeat_type.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
+import 'package:FineWallet/data/moor_database.dart' as db;
+import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/data/utils/recurrence_utils.dart' as recurrenceUtils;
+import 'package:FineWallet/src/add_page/bottom_sheets.dart';
 import 'package:FineWallet/src/widgets/corner_triangle.dart';
 import 'package:FineWallet/src/widgets/general_widgets.dart';
-import 'package:FineWallet/core/models/transaction_model.dart';
-import 'package:FineWallet/core/resources/blocs/month_bloc.dart';
-import 'package:FineWallet/core/resources/blocs/transaction_bloc.dart';
-import 'package:FineWallet/core/resources/category_list.dart';
-import 'package:FineWallet/core/resources/category_provider.dart';
-import 'package:FineWallet/core/resources/category_icon.dart';
-import 'package:FineWallet/core/resources/transaction_list.dart';
-import 'package:FineWallet/core/resources/transaction_provider.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +29,7 @@ class AddPage extends StatefulWidget {
 
   final String title;
   final int isExpense;
-  final TransactionModel transaction;
+  final TransactionsWithCategory transaction;
 
   _AddPageState createState() => _AddPageState();
 }
@@ -62,46 +57,48 @@ class _AddPageState extends State<AddPage> {
   @override
   void initState() {
     super.initState();
-
     _date = DateTime.now();
-    checkForEditMode();
   }
 
-  // TODO rework this
+  // TODO rework this!!
   void checkForEditMode() async {
     if (widget.transaction != null) {
-      CategoryList categories = await CategoryProvider.db.getAllCategories();
-      int selectedCategory = widget.transaction.category;
-      if (widget.transaction.isExpense != 1) {
+      List<db.Category> categories = await Provider.of<db.AppDatabase>(context)
+          .categoryDao
+          .getAllCategories();
+      int selectedCategory = widget.transaction.categoryId;
+      if (!widget.transaction.isExpense) {
         selectedCategory -= categories.length;
       } else {
         selectedCategory -= 1;
       }
 
-      _editTxId = widget.transaction.id;
+      _editTxId = widget.transaction.originalId;
       _isEditMode = true;
       _expense = widget.transaction.amount;
       _textEditingController.text = _expense.toStringAsFixed(2);
       _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
       _subcategory = Category(
-          CategoryIcon(widget.transaction.category - 1).data,
+          CategoryIcon(widget.transaction.categoryId - 1).data,
           widget.transaction.subcategoryName,
-          widget.transaction.subcategory,
+          widget.transaction.subcategoryId,
           selectedCategory: selectedCategory);
 
-      if (widget.transaction.isRecurring == 1) {
-        if (widget.transaction.replayUntil != null) {
+      if (widget.transaction.isRecurring) {
+        if (widget.transaction.recurringUntil != null) {
           _repeatUntil = DateTime.fromMillisecondsSinceEpoch(
-              widget.transaction.replayUntil);
+              widget.transaction.recurringUntil);
         }
-        _typeIndex = widget.transaction.replayType;
-        _isExpanded = widget.transaction.isRecurring == 1;
+        _typeIndex = widget.transaction.recurringType;
+        _isExpanded = widget.transaction.isRecurring;
 
         // If recurring, set the date to the first of the recurrence.
         // With that every recurring instance is changed
-        TransactionList txs = await TransactionsProvider.db
-            .getAllTrans(dayInMillis(DateTime.now()));
-        txs = txs.where((tx) => tx.id == _editTxId);
+        List<db.Transaction> txs = await Provider.of<db.AppDatabase>(context)
+            .transactionDao
+            .getAllTransactions();
+        txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
+        txs = txs.where((tx) => tx.id == _editTxId).toList();
         _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
       }
       setState(() {});
@@ -380,35 +377,33 @@ class _AddPageState extends State<AddPage> {
           width: 100,
           height: 35,
           alignment: Alignment.center,
-          child: DropdownButton(
-            isDense: true,
-            isExpanded: true,
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
-            value: _typeIndex,
-            items: [
-              DropdownMenuItem(
-                value: 0,
-                child: Text(RepeatType.daily),
-              ),
-              DropdownMenuItem(
-                value: 1,
-                child: Text(RepeatType.weekly),
-              ),
-              DropdownMenuItem(
-                value: 2,
-                child: Text(RepeatType.monthly),
-              ),
-              DropdownMenuItem(value: 3, child: Text(RepeatType.yearly)),
-            ],
-            onChanged: (v) {
-              setState(() {
-                if (v != null) {
-                  _typeIndex = v;
-                }
-              });
-            },
-          ),
+          child: FutureBuilder<List<db.Recurrence>>(
+              future: Provider.of<db.AppDatabase>(context).getRecurrences(),
+              builder: (context, snapshot) {
+                return DropdownButton(
+                  isDense: true,
+                  isExpanded: true,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 14),
+                  value: _typeIndex,
+                  items: snapshot.hasData
+                      ? snapshot.data
+                          .map((rec) => DropdownMenuItem(
+                                value: rec.type,
+                                child: Text(rec.name),
+                              ))
+                          .toList()
+                      : [],
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) {
+                        _typeIndex = v;
+                      }
+                    });
+                  },
+                );
+              }),
         )
       ],
     );
@@ -453,6 +448,8 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isEditMode) checkForEditMode();
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -502,7 +499,7 @@ class _AddPageState extends State<AddPage> {
           Icons.save,
           color: Theme.of(context).colorScheme.onSecondary,
         ),
-        onPressed: () {
+        onPressed: () async {
           if (_expense != null &&
               _date != null &&
               _subcategory != null &&
@@ -512,30 +509,35 @@ class _AddPageState extends State<AddPage> {
                 return _showMissingValueSnackBar(context,
                     "Please choose a date that is after the current date.");
 
-              if (isRecurrencePossible(dayInMillis(_date),
-                      dayInMillis(_repeatUntil), _typeIndex) ==
-                  -1)
+              if (!recurrenceUtils.isRecurrencePossible(
+                  dayInMillis(_date), dayInMillis(_repeatUntil), _typeIndex))
                 return _showMissingValueSnackBar(context,
                     "Your recurrence type does not fit inside the time frame.");
             }
 
-            TransactionModel tx = new TransactionModel(
+            db.Transaction newTx = new db.Transaction(
+                id: null,
+                originalId: _editTxId,
                 amount: _expense,
-                isExpense: widget.isExpense,
+                subcategoryId: _subcategory.index,
+                monthId: null,
                 date: dayInMillis(_date),
-                subcategory: _subcategory.index,
-                isRecurring: _isExpanded ? 1 : 0,
-                replayType: _typeIndex,
-                replayUntil:
+                isExpense: widget.isExpense == 1,
+                isRecurring: _isExpanded,
+                recurringType: _typeIndex,
+                recurringUntil:
                     _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
 
             if (_isEditMode) {
-              tx.id = _editTxId;
-              Provider.of<TransactionBloc>(context).updateTransaction(tx);
+              newTx = newTx.copyWith(id: _editTxId);
+              Provider.of<db.AppDatabase>(context)
+                  .transactionDao
+                  .updateTransaction(newTx);
             } else {
-              Provider.of<TransactionBloc>(context).add(tx);
+              Provider.of<db.AppDatabase>(context)
+                  .transactionDao
+                  .insertTransaction(newTx);
             }
-            Provider.of<MonthBloc>(context).syncMonths();
             Navigator.pop(context);
           } else {
             return _showMissingValueSnackBar(context);

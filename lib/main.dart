@@ -6,19 +6,17 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/navigation_notifier.dart';
-import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/color_themes.dart';
-import 'package:FineWallet/src/debug/database_page.dart';
-import 'package:FineWallet/src/statistics/month_pages.dart';
-import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
-import 'package:FineWallet/src/widgets/sliding_menu.dart';
+import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/navigation_notifier.dart';
+import 'package:FineWallet/provider_setup.dart';
+import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
-import 'package:FineWallet/provider_setup.dart';
-import 'package:FineWallet/core/resources/db_initilization.dart';
-import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/src/statistics/month_pages.dart';
+import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
+import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -49,6 +47,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+//    SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
@@ -70,12 +69,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
-
-  @override
-  void initState() {
-    super.initState();
-    initDB();
-  }
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
@@ -153,10 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
-      // _buildHistory(),
-      DBPage(
-        child: _buildHistory(),
-      )
+      _buildHistory(),
     ];
 
     return Scaffold(
