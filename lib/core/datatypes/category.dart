@@ -16,4 +16,9 @@ class Category {
   String subcategoryLabel;
   int index;
   int selectedCategory;
+
+  @override
+  String toString() {
+    return 'Category{icon: $icon, subcategoryLabel: $subcategoryLabel, index: $index, selectedCategory: $selectedCategory}';
+  }
 }
