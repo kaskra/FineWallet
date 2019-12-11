@@ -27,6 +27,9 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Category>> getAllCategories() => select(categories).get();
 
+  Future<List<Category>> getAllCategoriesByType(bool isExpense) =>
+      (select(categories)..where((c) => c.isExpense.equals(isExpense))).get();
+
   Future insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
 
@@ -38,6 +41,9 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Subcategory>> getAllSubcategories() =>
       select(subcategories).get();
+
+  Future<List<Subcategory>> getAllSubcategoriesOf(int id) =>
+      (select(subcategories)..where((s) => s.categoryId.equals(id))).get();
 
   Future insertSubcategory(Insertable<Subcategory> subcategory) =>
       into(subcategories).insert(subcategory);

@@ -7,10 +7,7 @@
  */
 
 import 'package:FineWallet/core/datatypes/category.dart';
-import 'package:FineWallet/core/models/category_model.dart';
-import 'package:FineWallet/core/models/subcategory_model.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
-import 'package:FineWallet/core/resources/category_provider.dart';
 import 'package:FineWallet/data/moor_database.dart' as DB;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -174,9 +171,10 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                       child: Container(
                         height: categoryListHeight,
                         width: MediaQuery.of(context).size.width,
-                        child: FutureBuilder(
-                          future: CategoryProvider.db.getAllCategories(
-                              isExpense: widget.isExpense == 1),
+                        child: FutureBuilder<List<DB.Category>>(
+                          future: Provider.of<DB.AppDatabase>(context)
+                              .categoryDao
+                              .getAllCategoriesByType(widget.isExpense == 1),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return ListView.builder(
@@ -187,7 +185,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                                   int iconIndex = widget.isExpense == 1
                                       ? index
                                       : CategoryIcon.amount - 1;
-                                  CategoryModel item = snapshot.data[index];
+                                  DB.Category item = snapshot.data[index];
                                   return _categoryCard(CategoryIcon(iconIndex),
                                       item.name, index);
                                 },
@@ -208,9 +206,10 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                           categoryListHeight -
                           topBorderHeight -
                           dividerHeight,
-                      child: FutureBuilder(
-                        future: CategoryProvider.db.getSubcategories(
-                            widget.isExpense == 1
+                      child: FutureBuilder<List<DB.Subcategory>>(
+                        future: Provider.of<DB.AppDatabase>(context)
+                            .categoryDao
+                            .getAllSubcategoriesOf(widget.isExpense == 1
                                 ? _selectedCategory + 1
                                 : CategoryIcon.amount),
                         builder: (context, snapshot) {
@@ -220,7 +219,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                               scrollDirection: Axis.vertical,
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
-                                SubcategoryModel item = snapshot.data[index];
+                                DB.Subcategory item = snapshot.data[index];
                                 return _subcategoryTile(item.id, item.name);
                               },
                             );
