@@ -9,11 +9,13 @@
 import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/models/category_model.dart';
 import 'package:FineWallet/core/models/subcategory_model.dart';
-import 'package:FineWallet/core/resources/category_provider.dart';
 import 'package:FineWallet/core/resources/category_icon.dart';
+import 'package:FineWallet/core/resources/category_provider.dart';
+import 'package:FineWallet/data/moor_database.dart' as DB;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class CategoryBottomSheet extends StatefulWidget {
   CategoryBottomSheet(this.isExpense, this.prevSubcategory);
@@ -28,6 +30,8 @@ class CategoryBottomSheet extends StatefulWidget {
 class _CategoryBottomSheetState extends State<CategoryBottomSheet>
     with SingleTickerProviderStateMixin {
   int _selectedCategory = 0;
+
+  bool _initiated = false;
 
   Category _subcategory;
   ScrollController _subcategoryScrollController;
@@ -50,22 +54,27 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
       _selectedCategory =
           widget.isExpense == 1 ? widget.prevSubcategory.selectedCategory : 0;
       _subcategory = widget.prevSubcategory;
-      initScrollController();
     }
   }
 
   void initScrollController() async {
-    await CategoryProvider.db.indexOf(widget.prevSubcategory.index).then((idx) {
-      _subcategoryScrollController = new ScrollController(
-        initialScrollOffset:
-            (_subcategory.index.toDouble() - (idx + midOfSubcategories)) *
-                subcategoryCardHeight,
-      );
-      _categoryScrollController = new ScrollController(
-        initialScrollOffset:
-            (_subcategory.selectedCategory.toDouble() - midOfCategories) *
-                categoryCardWidth,
-      );
+    int index = await Provider.of<DB.AppDatabase>(context)
+        .categoryDao
+        .countSubcategoriesBeforeCategory(widget.prevSubcategory.index);
+
+    _subcategoryScrollController = new ScrollController(
+      initialScrollOffset:
+          (_subcategory.index.toDouble() - (index + midOfSubcategories)) *
+              subcategoryCardHeight,
+    );
+    _categoryScrollController = new ScrollController(
+      initialScrollOffset:
+          (_subcategory.selectedCategory.toDouble() - midOfCategories) *
+              categoryCardWidth,
+    );
+
+    setState(() {
+      _initiated = true;
     });
   }
 
@@ -130,7 +139,8 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 int iconIndex = widget.isExpense == 1
                     ? _selectedCategory
                     : CategoryIcon.amount - 1;
-                _subcategory = new Category(CategoryIcon(iconIndex).data, name, index,
+                _subcategory = new Category(
+                    CategoryIcon(iconIndex).data, name, index,
                     selectedCategory: _selectedCategory);
                 Navigator.pop(context, _subcategory);
               },
@@ -139,6 +149,10 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.prevSubcategory != null && !_initiated) {
+      initScrollController();
+    }
+
     return Container(
         decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
@@ -174,8 +188,8 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                                       ? index
                                       : CategoryIcon.amount - 1;
                                   CategoryModel item = snapshot.data[index];
-                                  return _categoryCard(
-                                      CategoryIcon(iconIndex), item.name, index);
+                                  return _categoryCard(CategoryIcon(iconIndex),
+                                      item.name, index);
                                 },
                               );
                             } else {
