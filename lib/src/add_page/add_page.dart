@@ -11,7 +11,6 @@ import 'dart:async';
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
-import 'package:FineWallet/core/datatypes/repeat_type.dart';
 import 'package:FineWallet/data/moor_database.dart' as db;
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/utils/recurrence_utils.dart' as recurrenceUtils;
@@ -378,39 +377,33 @@ class _AddPageState extends State<AddPage> {
           width: 100,
           height: 35,
           alignment: Alignment.center,
-          child: DropdownButton(
-            isDense: true,
-            isExpanded: true,
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
-            value: _typeIndex,
-            items: [
-              // TODO get from recurrences database table
-              DropdownMenuItem(
-                value: 1,
-                child: Text(RepeatType.daily),
-              ),
-              DropdownMenuItem(
-                value: 2,
-                child: Text(RepeatType.weekly),
-              ),
-              DropdownMenuItem(
-                value: 3,
-                child: Text(RepeatType.monthly),
-              ),
-              DropdownMenuItem(
-                value: 4,
-                child: Text(RepeatType.yearly),
-              ),
-            ],
-            onChanged: (v) {
-              setState(() {
-                if (v != null) {
-                  _typeIndex = v;
-                }
-              });
-            },
-          ),
+          child: FutureBuilder<List<db.Recurrence>>(
+              future: Provider.of<db.AppDatabase>(context).getRecurrences(),
+              builder: (context, snapshot) {
+                return DropdownButton(
+                  isDense: true,
+                  isExpanded: true,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 14),
+                  value: _typeIndex,
+                  items: snapshot.hasData
+                      ? snapshot.data
+                          .map((rec) => DropdownMenuItem(
+                                value: rec.type,
+                                child: Text(rec.name),
+                              ))
+                          .toList()
+                      : [],
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) {
+                        _typeIndex = v;
+                      }
+                    });
+                  },
+                );
+              }),
         )
       ],
     );

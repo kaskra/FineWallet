@@ -152,4 +152,11 @@ class AppDatabase extends _$AppDatabase {
         "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
     return res.map((row) => row.readInt("seq")).getSingle();
   }
+
+  /// Return a list of all [Recurrence]s in database table.
+  ///
+  /// Return
+  /// ------
+  /// list of all [Recurrence]s
+  Future<List<Recurrence>> getRecurrences() => select(recurrences).get();
 }
