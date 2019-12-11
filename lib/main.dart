@@ -8,7 +8,6 @@
 
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/resources/db_initilization.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
@@ -70,12 +69,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
-
-  @override
-  void initState() {
-    super.initState();
-    initDB();
-  }
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(

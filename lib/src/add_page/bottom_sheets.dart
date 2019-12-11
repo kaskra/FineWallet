@@ -150,6 +150,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
       initScrollController();
     }
 
+    // TODO too many DB queries!!! FIXME
     return Container(
         decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
