@@ -6,8 +6,8 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
-      theme: standardTheme,
+      theme: Provider.of<ThemeNotifier>(context).theme,
       home: MyHomePage(title: 'FineWallet'),
     );
   }
@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
-      color: Theme.of(context).colorScheme.onSurface,
+      color: Theme.of(context).colorScheme.primary,
       selectedColor: Theme.of(context).colorScheme.secondary,
       items: [
         FloatingActionButtonBottomAppBarItem(
@@ -136,6 +136,14 @@ class _MyHomePageState extends State<MyHomePage> {
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.lightbulb_outline),
+            onPressed: () {
+              Provider.of<ThemeNotifier>(context).switchTheme();
+            },
+          )
+        ],
       );
 
   @override

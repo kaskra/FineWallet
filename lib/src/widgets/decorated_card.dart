@@ -13,7 +13,7 @@ class DecoratedCard extends StatelessWidget {
       {Key key,
       this.child,
       this.borderRadius = BorderRadius.zero,
-      this.color = Colors.white,
+      this.color,
       this.borderColor = Colors.white,
       this.borderWidth = 1,
       this.padding = 10})
@@ -29,7 +29,7 @@ class DecoratedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: color,
+      color: color ?? Theme.of(context).cardTheme.color,
       shape: RoundedRectangleBorder(
           borderRadius: borderRadius,
           side: BorderSide(width: borderWidth, color: borderColor)),

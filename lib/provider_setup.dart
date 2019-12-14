@@ -6,7 +6,9 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:provider/provider.dart';
@@ -33,4 +35,7 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   ChangeNotifierProvider.value(
     value: BudgetNotifier(),
   ),
+  ChangeNotifierProvider.value(
+    value: ThemeNotifier(theme: standardTheme),
+  )
 ];

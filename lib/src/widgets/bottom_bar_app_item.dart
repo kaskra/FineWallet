@@ -115,6 +115,7 @@ class _FloatingActionButtonBottomAppBarState
     });
 
     return BottomAppBar(
+      color: Theme.of(context).bottomAppBarColor,
       elevation: 20,
       shape: widget.isVisible ? CircularNotchedRectangle() : null,
       child: Row(
