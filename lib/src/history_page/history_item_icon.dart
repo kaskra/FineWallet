@@ -127,7 +127,8 @@ class HistoryItemIcon extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
+            border:
+                Border.all(color: Theme.of(context).cardTheme.color, width: 2),
             color: isExpense ? Colors.red : Colors.green,
           ),
           child: Icon(

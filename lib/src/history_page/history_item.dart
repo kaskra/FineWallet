@@ -42,7 +42,9 @@ class HistoryItem extends StatelessWidget {
         height: 60,
         child: DecoratedCard(
           borderRadius: BorderRadius.circular(CARD_RADIUS),
-          color: isSelected ? Colors.grey.withOpacity(0.6) : Colors.white,
+          color: isSelected
+              ? Colors.grey.withOpacity(0.6)
+              : Theme.of(context).cardTheme.color,
           borderColor: isSelected
               ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).colorScheme.primary,

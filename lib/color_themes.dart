@@ -35,6 +35,7 @@ final ThemeData standardTheme = ThemeData(
   accentTextTheme: TextTheme(body1: TextStyle(color: _negBudget)),
   scaffoldBackgroundColor: _overallBackground,
   canvasColor: _background,
+  cardTheme: CardTheme(color: _background),
   colorScheme: ColorScheme(
     primary: _primary,
     primaryVariant: _primary.shade700,
@@ -81,7 +82,8 @@ final TextTheme textTheme = TextTheme(
 //  subtitle: TextStyle(color: Color(0xFFff9800), fontFamily: "roboto"),
 //  title: TextStyle(color: Color(0xFFff9800), fontFamily: "roboto"),
   body1: TextStyle(color: colorScheme.secondary, fontFamily: "roboto"),
-  button: TextStyle(color: Color(0xFFffc947)),
+//  button: TextStyle(color: Color(0xFFffc947)),
+  button: TextStyle(color: Colors.red),
 );
 
 final ThemeData standardTheme2 = ThemeData(
@@ -94,8 +96,9 @@ final ThemeData standardTheme2 = ThemeData(
     textTheme: ButtonTextTheme.primary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular((4))),
   ),
-  floatingActionButtonTheme:
-      FloatingActionButtonThemeData(foregroundColor: colorScheme.onSecondary),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+      foregroundColor: colorScheme.secondary,
+      backgroundColor: colorScheme.primary),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
   ),
@@ -113,6 +116,7 @@ final ThemeData standardTheme2 = ThemeData(
     thumbColor: colorScheme.primary,
   ),
   bottomAppBarColor: colorScheme.primary,
+  iconTheme: IconThemeData(color: colorScheme.onPrimary),
 );
 
 final ColorScheme darkColorScheme = ColorScheme(
@@ -176,4 +180,5 @@ final ThemeData darkTheme = ThemeData(
     thumbColor: darkColorScheme.secondary,
   ),
   bottomAppBarColor: darkColorScheme.primary,
+  iconTheme: IconThemeData(color: colorScheme.onPrimary),
 );
