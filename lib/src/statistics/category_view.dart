@@ -114,7 +114,6 @@ class CategoryListView extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               child: Icon(
                 CategoryIcon(id - 1).data,
-                color: Theme.of(context).colorScheme.onSurface,
                 size: 45,
               ),
             ),
@@ -223,10 +222,7 @@ class CategoryListView extends StatelessWidget {
         style: TextStyle(
             color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
       ),
-      title: Text(
-        categoryName,
-        style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-      ),
+      title: Text(categoryName),
     );
   }
 }

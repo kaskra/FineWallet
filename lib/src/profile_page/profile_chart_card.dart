@@ -61,9 +61,7 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
       _showPrediction
           ? "Spending prediction"
           : "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
-      style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).colorScheme.onSecondary),
+      style: TextStyle(fontWeight: FontWeight.bold),
     );
   }
 
@@ -80,7 +78,7 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
                       child: Icon(
                         Icons.repeat,
                         size: 16,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       )),
                   onTap: () {
                     setState(() {
@@ -103,7 +101,7 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
                 child: Icon(
                   Icons.show_chart,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
               onTap: () {

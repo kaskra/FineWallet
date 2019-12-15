@@ -8,65 +8,46 @@
 
 import 'package:flutter/material.dart';
 
-const _primary = Colors.orange;
-const _secondary = Colors.orangeAccent;
-const _onMainColor = Colors.white;
-const _errorColor = Colors.red;
-const _onBackground = Colors.black;
-const _background = Colors.white;
-const _negBudget = Colors.red;
-const _overallBackground = Colors.white; //Color(0xffd8e7ff);
-const _brightness = Brightness.light;
-
-final ThemeData standardTheme = ThemeData(
-  primaryColor: _primary,
-  primaryColorDark: _primary.shade700,
-  textSelectionColor: _onBackground.withOpacity(0.15),
-  cursorColor: _onBackground.withOpacity(0.26),
-  cardColor: _background,
-  accentColor: _secondary,
-  buttonColor: _secondary,
-  textTheme: TextTheme(
-    body1:
-        TextStyle(color: _onBackground.withOpacity(0.87), fontFamily: "roboto"),
-    button: TextStyle(color: _onMainColor),
-  ),
-  iconTheme: IconThemeData(color: _onMainColor),
-  accentTextTheme: TextTheme(body1: TextStyle(color: _negBudget)),
-  scaffoldBackgroundColor: _overallBackground,
-  canvasColor: _background,
-  cardTheme: CardTheme(color: _background),
-  colorScheme: ColorScheme(
-    primary: _primary,
-    primaryVariant: _primary.shade700,
-    secondary: _secondary,
-    secondaryVariant: _secondary.shade400,
-    surface: _primary,
-    background: _background,
-    brightness: _brightness,
-    onError: _onMainColor,
-    onPrimary: _onMainColor,
-    onSurface: _onBackground.withOpacity(0.7),
-    onBackground: _onBackground,
-    onSecondary: _onMainColor,
-    error: _errorColor,
-  ),
-);
-
 final ColorScheme colorScheme = ColorScheme(
   primary: Colors.orange,
   primaryVariant: Colors.orange,
+  onPrimary: Colors.white,
+  //
   secondary: Colors.orange,
   secondaryVariant: Colors.white,
-  surface: Color(0xFFFFFFFF),
-  background: Color(0xFFFFFFFF),
-  error: Colors.red,
-  onPrimary: Colors.white,
   onSecondary: Color(0xFF151515),
+  //
+  surface: Color(0xFFFFFFFF),
   onSurface: Colors.white,
-  onError: Color(0xFF151515),
+  //
+  background: Color(0xFFFFFFFF),
   onBackground: Color(0xFF151515),
+  //
+  error: Colors.red,
+  onError: Color(0xFF151515),
+  //
   brightness: Brightness.light,
+);
+
+final ColorScheme darkColorScheme = ColorScheme(
+  primary: Color(0xFF212121),
+  primaryVariant: Color(0xFF151515),
+  onPrimary: Colors.orange,
+  //
+  secondary: Colors.orange,
+  secondaryVariant: Color(0xFFc66900),
+  onSecondary: Colors.white,
+  //
+  surface: Color(0xFFFFFFFF),
+  onSurface: Colors.white,
+  //
+  background: Color(0xFF212121),
+  onBackground: Colors.orange,
+  //
+  error: Colors.red,
+  onError: Colors.white,
+  //
+  brightness: Brightness.dark,
 );
 
 final TextTheme textTheme = TextTheme(
@@ -82,10 +63,26 @@ final TextTheme textTheme = TextTheme(
   subtitle: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   title: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   body1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  button: TextStyle(color: Color(0xFFffc947)),
+  button: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
 );
 
-final ThemeData standardTheme2 = ThemeData(
+final TextTheme darkTextTheme = TextTheme(
+  body2: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  caption: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  display1: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  display2: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  display3: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  display4: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  overline: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  subhead: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  subtitle: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  title: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  body1: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  button: TextStyle(color: Colors.white, fontFamily: "roboto"),
+);
+
+final ThemeData standardTheme = ThemeData(
   colorScheme: colorScheme,
   primaryColor: colorScheme.primary,
   accentColor: colorScheme.secondary,
@@ -117,38 +114,6 @@ final ThemeData standardTheme2 = ThemeData(
   bottomAppBarColor: colorScheme.primary,
   iconTheme: IconThemeData(color: colorScheme.onSurface),
   hintColor: Color(0xFF212121),
-);
-
-final ColorScheme darkColorScheme = ColorScheme(
-  primary: Color(0xFF212121),
-  primaryVariant: Color(0xFF151515),
-  secondary: Colors.orange,
-  secondaryVariant: Color(0xFFc66900),
-  surface: Color(0xFFFFFFFF),
-  background: Color(0xFF212121),
-  error: Colors.red,
-  onPrimary: Colors.orange,
-  onSecondary: Colors.white,
-  onSurface: Colors.white,
-  onError: Colors.white,
-  onBackground: Colors.orange,
-  brightness: Brightness.dark,
-);
-
-final TextTheme darkTextTheme = TextTheme(
-  body2: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  caption: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  display1: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  display2: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  display3: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  display4: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  headline: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  overline: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  subhead: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  subtitle: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  title: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  body1: TextStyle(color: darkColorScheme.secondary, fontFamily: "roboto"),
-  button: TextStyle(color: Color(0xFFffc947)),
 );
 
 final ThemeData darkTheme = ThemeData(

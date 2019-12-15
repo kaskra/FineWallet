@@ -26,7 +26,7 @@ class UsedBudgetBar extends StatelessWidget {
         : Colors.black.withOpacity(0.05);
     Color progressColor = model.expense > model.month.maxBudget
         ? Colors.redAccent
-        : Colors.orange;
+        : Theme.of(context).colorScheme.secondary;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -60,9 +60,7 @@ class UsedBudgetBar extends StatelessWidget {
             padding: const EdgeInsets.only(top: 6.0),
             child: Text(
               "Used budget",
-              style: TextStyle(
-                  fontSize: 13,
-                  color: Theme.of(context).colorScheme.onSecondary),
+              style: TextStyle(fontSize: 13),
             ),
           ),
         ],

@@ -30,7 +30,7 @@ class SavingsOverview extends StatelessWidget {
                   textStyle: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.body1.color),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
             ),
@@ -38,9 +38,7 @@ class SavingsOverview extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Text(
                 "Savings",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSecondary,
-                    fontSize: 13),
+                style: TextStyle(fontSize: 13),
               ),
             )
           ],

@@ -37,9 +37,7 @@ class LatestTransaction extends StatelessWidget {
               _buildLastTransactionContent(context),
               Text(
                 "Latest transaction",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSecondary,
-                    fontSize: 13),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),

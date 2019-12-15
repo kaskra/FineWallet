@@ -29,6 +29,7 @@ class DecoratedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
       color: color ?? Theme.of(context).cardTheme.color,
       shape: RoundedRectangleBorder(
           borderRadius: borderRadius,

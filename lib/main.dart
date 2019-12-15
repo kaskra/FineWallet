@@ -138,7 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.lightbulb_outline),
+            icon: Icon(
+              Icons.lightbulb_outline,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
             onPressed: () {
               Provider.of<ThemeNotifier>(context).switchTheme();
             },

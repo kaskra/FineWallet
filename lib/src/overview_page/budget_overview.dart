@@ -22,8 +22,7 @@ class BudgetOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       child: DecoratedCard(
-//        borderColor: Theme.of(context).colorScheme.onPrimary,
-        borderColor: Colors.transparent,
+        borderColor: Theme.of(context).colorScheme.primary,
         color: Theme.of(context).colorScheme.primary,
         borderWidth: 0,
         borderRadius: BorderRadius.circular(CARD_RADIUS),
@@ -44,9 +43,7 @@ class BudgetOverview extends StatelessWidget {
             ),
             Text(
               "Remaining budget",
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  fontSize: 13),
+              style: TextStyle(fontSize: 13),
             )
           ],
         ),
@@ -71,8 +68,7 @@ class BudgetOverview extends StatelessWidget {
         children: <Widget>[
           Text(
             getMonthName(DateTime.now().month).toUpperCase().toString(),
-            style: TextStyle(
-                fontSize: 12, color: Theme.of(context).colorScheme.onSecondary),
+            style: TextStyle(fontSize: 12),
           ),
           FittedBox(
             child: MonthlyBudgetWidget(),
@@ -90,8 +86,7 @@ class BudgetOverview extends StatelessWidget {
         children: <Widget>[
           Text(
             "TODAY",
-            style: TextStyle(
-                fontSize: 12, color: Theme.of(context).colorScheme.onSecondary),
+            style: TextStyle(fontSize: 12),
           ),
           FittedBox(child: DailyBudgetWidget()),
         ],

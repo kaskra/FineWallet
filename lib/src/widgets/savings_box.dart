@@ -29,15 +29,13 @@ class SavingsBox extends StatelessWidget {
           children: <Widget>[
             Text(
               "Savings",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSecondary),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SavingsWidget(
               textStyle: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
+                  color: Theme.of(context).colorScheme.secondary),
             ),
           ],
         ),
