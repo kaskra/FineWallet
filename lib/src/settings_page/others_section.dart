@@ -1,6 +1,8 @@
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
 
+/// This class creates a [Section] which shows some remaining
+/// settings, like exporting and importing the database.
 class OthersSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

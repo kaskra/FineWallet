@@ -1,6 +1,8 @@
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
 
+/// This class creates a [Section] which shows the chart
+/// settings, like which chart to display first on the profile page.
 class ChartsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

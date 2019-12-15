@@ -1,6 +1,8 @@
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
 
+/// This class creates a [Section] which shows the localization
+/// settings, like which language and currency should be used etc.
 class LocalizationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

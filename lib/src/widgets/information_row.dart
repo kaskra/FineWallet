@@ -8,7 +8,8 @@
 
 import 'package:flutter/material.dart';
 
-/// Simulate the title and trailing widgets of a [ListTile] without any vertical padding.
+/// Simulate the title and trailing widgets of a [ListTile]
+/// without any vertical padding.
 class InformationRow extends StatelessWidget {
   const InformationRow(
       {Key key,
