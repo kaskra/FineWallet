@@ -26,10 +26,7 @@ class LatestTransaction extends StatelessWidget {
       height: 100,
       ratio: 0.46,
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
         padding: 10,
-        borderWidth: 0,
-        borderRadius: BorderRadius.circular(10),
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

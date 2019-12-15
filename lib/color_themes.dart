@@ -6,6 +6,8 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 final ColorScheme colorScheme = ColorScheme(
@@ -17,7 +19,7 @@ final ColorScheme colorScheme = ColorScheme(
   secondaryVariant: Colors.white,
   onSecondary: Color(0xFF151515),
   //
-  surface: Color(0xFFFFFFFF),
+  surface: Color(0xFF151515),
   onSurface: Colors.white,
   //
   background: Color(0xFFFFFFFF),
@@ -38,7 +40,7 @@ final ColorScheme darkColorScheme = ColorScheme(
   secondaryVariant: Color(0xFFc66900),
   onSecondary: Colors.white,
   //
-  surface: Color(0xFFFFFFFF),
+  surface: Color(0xFF151515),
   onSurface: Colors.white,
   //
   background: Color(0xFF212121),
@@ -99,7 +101,10 @@ final ThemeData standardTheme = ThemeData(
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
   ),
   cardTheme: CardTheme(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(CARD_RADIUS),
+          side: BorderSide(width: 0, color: colorScheme.primary)),
+      elevation: 4,
       color: colorScheme.background),
   dividerColor: Colors.black.withOpacity(0.5),
   textTheme: textTheme,
@@ -132,7 +137,10 @@ final ThemeData darkTheme = ThemeData(
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
   ),
   cardTheme: CardTheme(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(CARD_RADIUS),
+          side: BorderSide(width: 0, color: darkColorScheme.primary)),
+      elevation: 4,
       color: darkColorScheme.background),
   dividerColor: Colors.orange,
   textTheme: darkTextTheme,
@@ -147,4 +155,5 @@ final ThemeData darkTheme = ThemeData(
   bottomAppBarColor: darkColorScheme.primary,
   iconTheme: IconThemeData(color: colorScheme.onPrimary),
   hintColor: Color(0xFF212121),
+  canvasColor: Color(0xFF292929),
 );

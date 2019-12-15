@@ -11,12 +11,10 @@ import 'package:provider/provider.dart';
 ///
 /// The slider box is rendered to screen width with an optional ratio.
 class BudgetSlider extends StatefulWidget {
-  BudgetSlider(
-      {Key key, this.borderRadius = BorderRadius.zero, double widthRatio = 1})
+  BudgetSlider({Key key, double widthRatio = 1})
       : this.screenWidthRatio = widthRatio,
         super(key: key);
 
-  final BorderRadius borderRadius;
   final double screenWidthRatio;
 
   _BudgetSliderState createState() => _BudgetSliderState();
@@ -191,9 +189,6 @@ class _BudgetSliderState extends State<BudgetSlider> {
     return ExpandToWidth(
       ratio: widget.screenWidthRatio,
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
-        borderRadius: widget.borderRadius,
         child: Column(
           children: <Widget>[
             _buildTitle(),

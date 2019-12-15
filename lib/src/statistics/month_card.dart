@@ -32,9 +32,6 @@ class MonthCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           DecoratedCard(
-            borderColor: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(10),
-            borderWidth: 0,
             child: _buildContent(),
           ),
           _buildYearNumber(),

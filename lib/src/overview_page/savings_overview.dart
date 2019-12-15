@@ -19,9 +19,6 @@ class SavingsOverview extends StatelessWidget {
       height: 100,
       padding: const EdgeInsets.only(right: 5.0),
       child: DecoratedCard(
-        borderWidth: 0,
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(10),
         child: Stack(
           children: <Widget>[
             Center(

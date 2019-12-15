@@ -47,7 +47,7 @@ class SelectionIcon extends StatelessWidget {
     return IconWrapper(
       child: Container(
         padding: const EdgeInsets.all(5),
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondary,
         child: Icon(
           Icons.check,
           size: 25,

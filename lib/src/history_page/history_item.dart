@@ -41,14 +41,16 @@ class HistoryItem extends StatelessWidget {
         ratio: 0.55,
         height: 60,
         child: DecoratedCard(
-          borderRadius: BorderRadius.circular(CARD_RADIUS),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(CARD_RADIUS),
+              side: BorderSide(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.primary,
+                  width: isSelected ? 2 : 0)),
           color: isSelected
               ? Colors.grey.withOpacity(0.6)
               : Theme.of(context).cardTheme.color,
-          borderColor: isSelected
-              ? Theme.of(context).colorScheme.secondary
-              : Theme.of(context).colorScheme.primary,
-          borderWidth: isSelected ? 2 : 0,
           padding: 0,
           child: InkWell(
             child: _buildMainItemContent(context),

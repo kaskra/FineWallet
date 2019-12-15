@@ -19,7 +19,6 @@ import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -134,13 +133,13 @@ class _MyHomePageState extends State<MyHomePage> {
             Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
         title: Text(
           widget.title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         actions: <Widget>[
           IconButton(
             icon: Icon(
               Icons.lightbulb_outline,
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             onPressed: () {
               Provider.of<ThemeNotifier>(context).switchTheme();

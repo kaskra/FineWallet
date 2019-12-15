@@ -18,9 +18,6 @@ class WeekOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
-        borderRadius: BorderRadius.circular(10),
         child: WeekOverviewTimeline(
           context: context,
         ),

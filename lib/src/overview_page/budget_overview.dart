@@ -6,7 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/src/overview_page/daily_budget.dart';
 import 'package:FineWallet/src/overview_page/monthly_budget.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
@@ -22,10 +21,7 @@ class BudgetOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpandToWidth(
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
         color: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
-        borderRadius: BorderRadius.circular(CARD_RADIUS),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

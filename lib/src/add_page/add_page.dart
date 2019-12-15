@@ -137,25 +137,17 @@ class _AddPageState extends State<AddPage> {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(label,
-                          style: TextStyle(
-                              fontSize: 10,
-                              color:
-                                  Theme.of(context).colorScheme.onBackground)),
+                      Text(label, style: TextStyle(fontSize: 10)),
                       Icon(
                         iconData,
                         size: constraint.biggest.width / 3,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
                       FittedBox(
                         child: Text(valueString,
                             maxLines: 2,
                             softWrap: false,
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onBackground)),
+                            style: TextStyle(fontSize: 15)),
                       ),
                     ]);
               },
@@ -177,7 +169,7 @@ class _AddPageState extends State<AddPage> {
               return Future.value(true);
             },
             child: Container(
-              color: const Color(0xFF636a75),
+              color: Colors.transparent, //const Color(0xFF636a75),
               child: Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
@@ -197,12 +189,15 @@ class _AddPageState extends State<AddPage> {
                         contentPadding: const EdgeInsets.all(4),
                         labelStyle: TextStyle(
                             fontSize: 15,
-                            color: Theme.of(context).textTheme.body1.color),
+                            color: Theme.of(context).colorScheme.onSecondary),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onBackground)),
+                        hintStyle: TextStyle(
+                            fontSize: 25,
+                            color: Theme.of(context).colorScheme.onSecondary),
                         hintText: "0.00"),
                     autofocus: true,
                     onSubmitted: (s) {
@@ -239,7 +234,7 @@ class _AddPageState extends State<AddPage> {
         context: context,
         builder: (context) {
           return Container(
-            color: Color(0xFF636a75),
+            color: Colors.transparent, //const Color(0xFF636a75),
             child: CategoryBottomSheet(widget.isExpense, _subcategory),
           );
         }).then((chosenCategory) {
@@ -309,7 +304,7 @@ class _AddPageState extends State<AddPage> {
               corner: Corner.TOP_LEFT,
               size: const Size(25, 25),
               icon: CornerIcon(Icons.replay,
-                  color: Theme.of(context).colorScheme.onSecondary),
+                  color: Theme.of(context).colorScheme.onSurface),
               color: Theme.of(context).colorScheme.secondary,
               child: Column(
                 children: <Widget>[
@@ -320,10 +315,7 @@ class _AddPageState extends State<AddPage> {
                       Container(
                         child: Text(
                           "Repeat transaction",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color:
-                                  Theme.of(context).colorScheme.onBackground),
+                          style: TextStyle(fontSize: 16),
                         ),
                         margin: EdgeInsets.only(left: 10),
                       ),
@@ -374,8 +366,7 @@ class _AddPageState extends State<AddPage> {
       children: <Widget>[
         Text(
           "Every",
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground, fontSize: 16),
+          style: TextStyle(fontSize: 16),
         ),
         Container(
           width: 100,
@@ -388,8 +379,9 @@ class _AddPageState extends State<AddPage> {
                   isDense: true,
                   isExpanded: true,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      fontSize: 14),
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
                   value: _typeIndex,
                   items: snapshot.hasData
                       ? snapshot.data
@@ -421,8 +413,7 @@ class _AddPageState extends State<AddPage> {
       children: <Widget>[
         Text(
           "Until",
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground, fontSize: 16),
+          style: TextStyle(fontSize: 16),
         ),
         Container(
           width: 100,
@@ -439,10 +430,7 @@ class _AddPageState extends State<AddPage> {
             },
             child: Text(
               _repeatUntil != null ? formatter.format(_repeatUntil) : "",
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
             ),
           ),
         )
@@ -464,7 +452,7 @@ class _AddPageState extends State<AddPage> {
             Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
         title: Text(
           widget.title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),
       body: Column(
@@ -497,11 +485,11 @@ class _AddPageState extends State<AddPage> {
     return FloatingActionButton.extended(
         label: Text("SAVE",
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSecondary,
+              color: Theme.of(context).colorScheme.onSurface,
             )),
         icon: Icon(
           Icons.save,
-          color: Theme.of(context).colorScheme.onSecondary,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
         onPressed: () async {
           if (_expense != null &&
