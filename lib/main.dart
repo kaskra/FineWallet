@@ -14,6 +14,7 @@ import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
+import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/src/statistics/month_pages.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
@@ -136,6 +137,15 @@ class _MyHomePageState extends State<MyHomePage> {
           widget.title,
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
+            },
+          )
+        ],
       );
 
   @override

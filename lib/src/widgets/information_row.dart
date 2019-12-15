@@ -14,6 +14,7 @@ class InformationRow extends StatelessWidget {
       {Key key,
       @required this.text,
       @required this.value,
+      this.height = 35,
       this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
       this.mainAxisSize = MainAxisSize.max,
@@ -25,6 +26,7 @@ class InformationRow extends StatelessWidget {
 
   final Widget text;
   final Widget value;
+  final double height;
   final EdgeInsets padding;
   final MainAxisAlignment mainAxisAlignment;
   final MainAxisSize mainAxisSize;
@@ -35,7 +37,8 @@ class InformationRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: alignment,
-      child: Padding(
+      child: Container(
+        height: height,
         padding: padding,
         child: Row(
           mainAxisAlignment: mainAxisAlignment,
