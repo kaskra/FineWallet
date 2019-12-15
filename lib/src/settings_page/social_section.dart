@@ -13,7 +13,7 @@ class SocialSection extends StatelessWidget {
 
   Widget _buildShareToggle() {
     return SectionItem(
-      title: "Enable Sharing",
+      title: "Enable TX SHARE",
       trailing: Switch(
         value: true,
         onChanged: (val) {
