@@ -48,3 +48,12 @@ class SectionItem extends StatelessWidget {
     );
   }
 }
+
+class SectionItemDivider extends SectionItem {
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 2,
+    );
+  }
+}
