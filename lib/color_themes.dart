@@ -33,7 +33,7 @@ final ColorScheme colorScheme = ColorScheme(
 
 final ColorScheme darkColorScheme = ColorScheme(
   primary: Color(0xFF212121),
-  primaryVariant: Color(0xFF151515),
+  primaryVariant: Color(0xFF1a1a1a),
   onPrimary: Colors.orange,
   //
   secondary: Colors.orange,
