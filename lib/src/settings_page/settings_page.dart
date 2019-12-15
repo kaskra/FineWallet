@@ -31,10 +31,10 @@ class SettingsPage extends StatelessWidget {
               SectionTitle(text: "\n!! BELOW IS NOT USED CURRENTLY !! \n"),
               SectionTitle(text: "Localization"),
               LocalizationSection(),
-              SectionTitle(text: "Charts"),
-              ChartsSection(),
               SectionTitle(text: "Social"),
               SocialSection(),
+              SectionTitle(text: "Charts"),
+              ChartsSection(),
               SectionTitle(text: "Other"),
               OthersSection(),
 
