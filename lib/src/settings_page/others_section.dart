@@ -6,32 +6,39 @@ class OthersSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Section(
       children: <SectionItem>[
-        _buildImport(),
-        _buildExport(),
+        _buildPlaceHolder(),
+        _buildPlaceHolder(),
+        SectionItemDivider(),
+        _buildImportExport(),
       ],
     );
   }
 
-  Widget _buildImport() {
+  Widget _buildPlaceHolder() {
     return SectionItem(
-      title: "Import your data",
-      trailing: FlatButton(
-        child: Text("IMPORT"),
-        onPressed: () {
-          print("IMPORT!!");
-        },
-      ),
+      title: "--- PLACEHOLDER",
+      trailing: Text("---"),
     );
   }
 
-  Widget _buildExport() {
+  Widget _buildImportExport() {
     return SectionItem(
-      title: "Export your data",
-      trailing: FlatButton(
-        child: Text("EXPORT"),
-        onPressed: () {
-          print("EXPORT!!");
-        },
+      title: "Transactions",
+      trailing: Row(
+        children: <Widget>[
+          FlatButton(
+            child: Text("IMPORT"),
+            onPressed: () {
+              print("IMPORT!!");
+            },
+          ),
+          FlatButton(
+            child: Text("EXPORT"),
+            onPressed: () {
+              print("EXPORT!!");
+            },
+          ),
+        ],
       ),
     );
   }
