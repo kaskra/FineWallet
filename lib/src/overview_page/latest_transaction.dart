@@ -38,7 +38,7 @@ class LatestTransaction extends StatelessWidget {
               Text(
                 "Latest transaction",
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Theme.of(context).colorScheme.onSecondary,
                     fontSize: 13),
               )
             ],

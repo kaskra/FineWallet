@@ -72,8 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
-      color: Theme.of(context).colorScheme.primary,
-      selectedColor: Theme.of(context).colorScheme.secondary,
+      unselectedColor: Theme.of(context).colorScheme.onSecondary,
+      selectedColor: Theme.of(context).colorScheme.onPrimary,
       items: [
         FloatingActionButtonBottomAppBarItem(
             iconData: Icons.person, text: "Me"),

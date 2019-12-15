@@ -229,13 +229,25 @@ class PredictionDateChart extends StatelessWidget {
           roundEndCaps: true, strokeWidthPx: 1.8, areaOpacity: 0.3),
       domainAxis: charts.DateTimeAxisSpec(
           showAxisLine: true,
+          renderSpec: charts.SmallTickRendererSpec(
+            tickLengthPx: 3,
+            labelStyle: charts.TextStyleSpec(
+                color: charts.ColorUtil.fromDartColor(
+                    Theme.of(context).colorScheme.onSecondary)),
+          ),
           tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
               day:
                   charts.TimeFormatterSpec(format: "d", transitionFormat: "d")),
           tickProviderSpec: charts.DayTickProviderSpec(increments: [3])),
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
-            lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
+            labelStyle: charts.TextStyleSpec(
+                color: charts.ColorUtil.fromDartColor(
+                    Theme.of(context).colorScheme.onSecondary)),
+            lineStyle: charts.LineStyleSpec(
+                dashPattern: [6, 6],
+                color: charts.ColorUtil.fromDartColor(
+                    Theme.of(context).colorScheme.onSecondary))),
       ),
     );
   }

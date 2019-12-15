@@ -140,7 +140,8 @@ class _AddPageState extends State<AddPage> {
                       Text(label,
                           style: TextStyle(
                               fontSize: 10,
-                              color: Theme.of(context).colorScheme.onSurface)),
+                              color:
+                                  Theme.of(context).colorScheme.onBackground)),
                       Icon(
                         iconData,
                         size: constraint.biggest.width / 3,
@@ -152,8 +153,9 @@ class _AddPageState extends State<AddPage> {
                             softWrap: false,
                             style: TextStyle(
                                 fontSize: 15,
-                                color:
-                                    Theme.of(context).colorScheme.onSurface)),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onBackground)),
                       ),
                     ]);
               },
@@ -198,8 +200,9 @@ class _AddPageState extends State<AddPage> {
                             color: Theme.of(context).textTheme.body1.color),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color:
-                                    Theme.of(context).colorScheme.onSurface)),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onBackground)),
                         hintText: "0.00"),
                     autofocus: true,
                     onSubmitted: (s) {
@@ -319,7 +322,8 @@ class _AddPageState extends State<AddPage> {
                           "Repeat transaction",
                           style: TextStyle(
                               fontSize: 16,
-                              color: Theme.of(context).colorScheme.onSurface),
+                              color:
+                                  Theme.of(context).colorScheme.onBackground),
                         ),
                         margin: EdgeInsets.only(left: 10),
                       ),
@@ -371,7 +375,7 @@ class _AddPageState extends State<AddPage> {
         Text(
           "Every",
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
+              color: Theme.of(context).colorScheme.onBackground, fontSize: 16),
         ),
         Container(
           width: 100,
@@ -384,7 +388,7 @@ class _AddPageState extends State<AddPage> {
                   isDense: true,
                   isExpanded: true,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: Theme.of(context).colorScheme.onBackground,
                       fontSize: 14),
                   value: _typeIndex,
                   items: snapshot.hasData
@@ -418,7 +422,7 @@ class _AddPageState extends State<AddPage> {
         Text(
           "Until",
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
+              color: Theme.of(context).colorScheme.onBackground, fontSize: 16),
         ),
         Container(
           width: 100,
@@ -436,7 +440,7 @@ class _AddPageState extends State<AddPage> {
             child: Text(
               _repeatUntil != null ? formatter.format(_repeatUntil) : "",
               style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Theme.of(context).colorScheme.onBackground,
                   fontSize: 16,
                   fontWeight: FontWeight.normal),
             ),

@@ -61,7 +61,9 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
       _showPrediction
           ? "Spending prediction"
           : "${_chartType == ProfileChart.MONTHLY_CHART ? "Monthly" : "Lifetime"} expenses",
-      style: TextStyle(fontWeight: FontWeight.bold),
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.onSecondary),
     );
   }
 

@@ -75,7 +75,7 @@ class MonthCard extends StatelessWidget {
             "${getMonthName(date.month)}",
             style: TextStyle(
                 fontSize: 18,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).colorScheme.onSecondary,
                 fontWeight: FontWeight.bold),
           ),
         ],
@@ -102,7 +102,7 @@ class MonthCard extends StatelessWidget {
         child: Text(
           "${date.year}",
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onSecondary, fontSize: 22),
+              color: Theme.of(context).colorScheme.onSurface, fontSize: 22),
         ),
       ),
     );

@@ -36,6 +36,6 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
     value: BudgetNotifier(),
   ),
   ChangeNotifierProvider.value(
-    value: ThemeNotifier(theme: standardTheme),
+    value: ThemeNotifier(theme: standardTheme2),
   )
 ];

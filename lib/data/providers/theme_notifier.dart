@@ -10,13 +10,14 @@ class ThemeNotifier extends ChangeNotifier {
   ThemeData get theme => _theme;
 
   Future switchTheme() async {
-    if (_theme == standardTheme) {
+    if (_theme == standardTheme2) {
       _theme = darkTheme;
     } else if (_theme == darkTheme) {
       _theme = standardTheme2;
-    } else {
-      _theme = standardTheme;
     }
+//    else {
+//      _theme = standardTheme;
+//    }
     notifyListeners();
   }
 }

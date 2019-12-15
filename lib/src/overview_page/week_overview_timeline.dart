@@ -25,13 +25,17 @@ class WeekOverviewTimeline extends StatelessWidget {
     bool isToday = day == DateTime.now().weekday;
 
     TextStyle textStyle = TextStyle(
-      color: Theme.of(context).textTheme.body1.color,
+      color: isToday
+          ? Theme.of(context).colorScheme.secondary
+          : Theme.of(context).colorScheme.onSecondary,
       fontSize: isToday ? 20 : 16,
       fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
     );
 
     TextStyle numberTextStyle = TextStyle(
-      color: Theme.of(context).textTheme.body1.color,
+      color: isToday
+          ? Theme.of(context).colorScheme.secondary
+          : Theme.of(context).colorScheme.onSecondary,
       fontSize: isToday ? 20 : 16,
       fontWeight: FontWeight.bold,
     );

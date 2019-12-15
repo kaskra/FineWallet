@@ -67,7 +67,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
           ),
           Text(
             "€ ",
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(
+                fontSize: 16, color: Theme.of(context).colorScheme.onSecondary),
           ),
           _buildDependingTextField(),
         ],
@@ -104,6 +105,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
           double max = snapshot.hasData ? snapshot.data : 0;
 
           return TextField(
+            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
             decoration: InputDecoration(border: InputBorder.none),
             onSubmitted: (valueAsString) {
               double value = double.parse(valueAsString);
@@ -129,7 +131,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
     return new InformationRow(
       text: Text(
         "Total available budget: ",
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(
+            fontSize: 14, color: Theme.of(context).colorScheme.onSecondary),
       ),
       value: StreamBuilder<double>(
         stream: Provider.of<AppDatabase>(context)
@@ -140,7 +143,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
           maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
           return Text(
             "${maxBudget.toStringAsFixed(2)}€",
-            style: TextStyle(fontSize: 14),
+            style: TextStyle(
+                fontSize: 14, color: Theme.of(context).colorScheme.onSecondary),
           );
         },
       ),
@@ -153,7 +157,9 @@ class _BudgetSliderState extends State<BudgetSlider> {
       alignment: Alignment.topCenter,
       child: Text(
         "Monthly available budget",
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onSecondary),
       ),
     );
   }
@@ -163,7 +169,8 @@ class _BudgetSliderState extends State<BudgetSlider> {
     return new InformationRow(
       text: Text(
         "Expected savings: ",
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(
+            fontSize: 14, color: Theme.of(context).colorScheme.onSecondary),
       ),
       value: StreamBuilder(
         stream: Provider.of<AppDatabase>(context)
@@ -173,10 +180,10 @@ class _BudgetSliderState extends State<BudgetSlider> {
           double max = snapshot.hasData ? snapshot.data : 0;
           return Text(
             " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}€",
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSecondary),
           );
         },
       ),

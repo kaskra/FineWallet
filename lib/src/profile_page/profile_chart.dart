@@ -148,9 +148,15 @@ class CircularProfileChart extends StatelessWidget {
         arcRendererDecorators: [
           new charts.ArcLabelDecorator(
               leaderLineStyleSpec: charts.ArcLabelLeaderLineStyleSpec(
-                  length: 10, color: charts.Color.black, thickness: 1),
+                  length: 10,
+                  color: charts.ColorUtil.fromDartColor(
+                      Theme.of(context).colorScheme.onSecondary),
+                  thickness: 1),
               showLeaderLines: true,
-              outsideLabelStyleSpec: charts.TextStyleSpec(fontSize: 12),
+              outsideLabelStyleSpec: charts.TextStyleSpec(
+                  fontSize: 12,
+                  color: charts.ColorUtil.fromDartColor(
+                      Theme.of(context).colorScheme.onSecondary)),
               labelPosition: charts.ArcLabelPosition.outside),
         ],
         arcWidth: 25,
