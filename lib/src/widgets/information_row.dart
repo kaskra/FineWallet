@@ -14,7 +14,7 @@ class InformationRow extends StatelessWidget {
       {Key key,
       @required this.text,
       @required this.value,
-      this.height = 35,
+      this.height,
       this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
       this.mainAxisSize = MainAxisSize.max,
