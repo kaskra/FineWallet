@@ -44,7 +44,7 @@ final ColorScheme darkColorScheme = ColorScheme(
   onSurface: Colors.white,
   //
   background: Color(0xFF212121),
-  onBackground: Colors.orange,
+  onBackground: Colors.white,
   //
   error: Colors.red,
   onError: Colors.white,
@@ -156,4 +156,5 @@ final ThemeData darkTheme = ThemeData(
   iconTheme: IconThemeData(color: colorScheme.onPrimary),
   hintColor: Color(0xFF212121),
   canvasColor: Color(0xFF292929),
+  dialogBackgroundColor: darkColorScheme.primary,
 );
