@@ -8,8 +8,8 @@
 
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
