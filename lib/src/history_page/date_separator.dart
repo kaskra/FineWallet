@@ -34,7 +34,7 @@ class DateSeparator extends StatelessWidget {
             child: Text(
               isToday ? "TODAY" : _getDateString(),
               style: TextStyle(
-                  color: Theme.of(context).textTheme.button.color,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 11,
                   fontWeight: isToday ? FontWeight.bold : FontWeight.bold),
             )));

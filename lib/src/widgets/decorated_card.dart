@@ -10,29 +10,20 @@ import 'package:flutter/material.dart';
 
 class DecoratedCard extends StatelessWidget {
   const DecoratedCard(
-      {Key key,
-      this.child,
-      this.borderRadius = BorderRadius.zero,
-      this.color = Colors.white,
-      this.borderColor = Colors.white,
-      this.borderWidth = 1,
-      this.padding = 10})
+      {Key key, this.child, this.color, this.shape, this.padding = 10})
       : super(key: key);
 
   final Widget child;
-  final BorderRadius borderRadius;
-  final double borderWidth;
-  final Color borderColor;
+  final ShapeBorder shape;
   final double padding;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: color,
-      shape: RoundedRectangleBorder(
-          borderRadius: borderRadius,
-          side: BorderSide(width: borderWidth, color: borderColor)),
+      elevation: 4,
+      color: color ?? Theme.of(context).cardTheme.color,
+      shape: shape ?? Theme.of(context).cardTheme.shape,
       child: Padding(padding: EdgeInsets.all(padding), child: child),
     );
   }

@@ -6,7 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/src/profile_page/profile_chart_card.dart';
 import 'package:FineWallet/src/profile_page/slider_box.dart';
 import 'package:FineWallet/src/widgets/savings_box.dart';
@@ -15,25 +14,19 @@ import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage();
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   Widget _buildBody() {
-    BorderRadius radius = BorderRadius.circular(CARD_RADIUS);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        BudgetSlider(
-          borderRadius: radius,
-        ),
-        ProfileChartCard(
-          radius: radius,
-        ),
-        SavingsBox(
-          borderRadius: radius,
-        )
+        BudgetSlider(),
+        ProfileChartCard(),
+        SavingsBox(),
       ],
     );
   }

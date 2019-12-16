@@ -16,12 +16,7 @@ import 'package:provider/provider.dart';
 import 'budget_notifier.dart';
 
 class ProfileChartCard extends StatefulWidget {
-  const ProfileChartCard({
-    Key key,
-    @required this.radius,
-  }) : super(key: key);
-
-  final BorderRadius radius;
+  const ProfileChartCard({Key key}) : super(key: key);
 
   @override
   _ProfileChartCardState createState() => _ProfileChartCardState();
@@ -78,7 +73,7 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
                       child: Icon(
                         Icons.repeat,
                         size: 16,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       )),
                   onTap: () {
                     setState(() {
@@ -101,7 +96,7 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
                 child: Icon(
                   Icons.show_chart,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
               onTap: () {
@@ -119,9 +114,6 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
     return ExpandToWidth(
       child: DecoratedCard(
         child: _buildCategoryBox(),
-        borderRadius: widget.radius,
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
       ),
     );
   }

@@ -7,8 +7,8 @@
  */
 
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/src/statistics/category_view.dart';
-import 'package:FineWallet/src/statistics/used_budget_bar.dart';
+import 'package:FineWallet/src/statistics_page/category_view.dart';
+import 'package:FineWallet/src/statistics_page/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
@@ -32,9 +32,6 @@ class MonthCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           DecoratedCard(
-            borderColor: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(10),
-            borderWidth: 0,
             child: _buildContent(),
           ),
           _buildYearNumber(),
@@ -73,10 +70,7 @@ class MonthCard extends StatelessWidget {
         children: <Widget>[
           Text(
             "${getMonthName(date.month)}",
-            style: TextStyle(
-                fontSize: 18,
-                color: Theme.of(context).colorScheme.onSurface,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -102,7 +96,7 @@ class MonthCard extends StatelessWidget {
         child: Text(
           "${date.year}",
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onSecondary, fontSize: 22),
+              color: Theme.of(context).colorScheme.onSurface, fontSize: 22),
         ),
       ),
     );

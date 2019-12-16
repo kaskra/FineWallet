@@ -6,15 +6,10 @@ import 'package:provider/provider.dart';
 
 /// Show the savings of previous months centered in a screen wide box.
 class SavingsBox extends StatelessWidget {
-  const SavingsBox(
-      {Key key,
-      BorderRadius borderRadius = BorderRadius.zero,
-      double widthRatio = 1})
-      : this.borderRadius = borderRadius,
-        this.screenWidthRatio = widthRatio,
+  const SavingsBox({Key key, double widthRatio = 1})
+      : this.screenWidthRatio = widthRatio,
         super(key: key);
 
-  final BorderRadius borderRadius;
   final double screenWidthRatio;
 
   @override
@@ -22,9 +17,6 @@ class SavingsBox extends StatelessWidget {
     return ExpandToWidth(
       ratio: screenWidthRatio,
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
-        borderRadius: borderRadius,
         child: Column(
           children: <Widget>[
             Text(
@@ -35,7 +27,7 @@ class SavingsBox extends StatelessWidget {
               textStyle: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primaryVariant),
+                  color: Theme.of(context).colorScheme.secondary),
             ),
           ],
         ),

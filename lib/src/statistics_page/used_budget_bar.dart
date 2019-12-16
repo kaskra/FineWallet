@@ -50,6 +50,7 @@ class UsedBudgetBar extends StatelessWidget {
             childCenter: Text(
               "${model.expense.toStringAsFixed(2)} / ${model.month.maxBudget.toStringAsFixed(2)} €",
               style: TextStyle(
+                color: Theme.of(context).hintColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -59,8 +60,7 @@ class UsedBudgetBar extends StatelessWidget {
             padding: const EdgeInsets.only(top: 6.0),
             child: Text(
               "Used budget",
-              style: TextStyle(
-                  fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
+              style: TextStyle(fontSize: 13),
             ),
           ),
         ],

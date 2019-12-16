@@ -20,7 +20,6 @@ class LocalizationSection extends StatelessWidget {
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: 1,
-          style: TextStyle(color: Colors.black),
           isDense: true,
           onChanged: (val) {
             print(val);
@@ -46,7 +45,6 @@ class LocalizationSection extends StatelessWidget {
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: 1,
-          style: TextStyle(color: Colors.black),
           isDense: true,
           onChanged: (val) {
             print(val);

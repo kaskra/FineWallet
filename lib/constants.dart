@@ -8,6 +8,6 @@
 
 const double APPBAR_ELEVATION = 0; // default 4
 const double APPBAR_OPACITY = 1; // in [0, 1]
-const double CARD_RADIUS = 8;
 const bool CENTER_APPBAR = true;
 const bool USE_DATETIME_CHART = true;
+const double CARD_RADIUS = 8;

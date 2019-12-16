@@ -63,7 +63,7 @@ class CategoryListView extends StatelessWidget {
       builder: (context) => Center(
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.circular(CARD_RADIUS)),
           height: MediaQuery.of(context).size.height * 0.8,
           width: MediaQuery.of(context).size.width * 0.8,
@@ -79,7 +79,7 @@ class CategoryListView extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   padding: const EdgeInsets.all(5),
-                  textColor: Theme.of(context).colorScheme.primary,
+                  textColor: Theme.of(context).colorScheme.secondary,
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
@@ -95,7 +95,7 @@ class CategoryListView extends StatelessWidget {
   Widget _buildDialogHeader(int id, String categoryName) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.secondary,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(CARD_RADIUS),
           topRight: Radius.circular(CARD_RADIUS),
@@ -111,10 +111,9 @@ class CategoryListView extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.secondary,
               child: Icon(
                 CategoryIcon(id - 1).data,
-                color: Theme.of(context).colorScheme.onSecondary,
                 size: 45,
               ),
             ),
@@ -122,7 +121,7 @@ class CategoryListView extends StatelessWidget {
           Text(
             categoryName,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
               decoration: TextDecoration.none,
               fontSize: 18,
               fontWeight: FontWeight.normal,
@@ -174,7 +173,7 @@ class CategoryListView extends StatelessWidget {
               )
             ],
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onBackground,
               decoration: TextDecoration.none,
               fontSize: 18,
               fontWeight: FontWeight.w500,
@@ -212,7 +211,7 @@ class CategoryListView extends StatelessWidget {
             color: Theme.of(context).colorScheme.secondary,
             child: Icon(
               CategoryIcon(id - 1).data,
-              color: Theme.of(context).colorScheme.onSecondary,
+              color: Theme.of(context).colorScheme.onSurface,
               size: 25,
             ),
           ),

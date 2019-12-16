@@ -60,7 +60,7 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
           selectedItems.length.toString(),
           maxLines: 1,
           style: TextStyle(
-              fontSize: 20, color: Theme.of(context).colorScheme.onSecondary),
+              fontSize: 20, color: Theme.of(context).colorScheme.onSurface),
         ));
   }
 

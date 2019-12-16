@@ -11,12 +11,10 @@ import 'package:provider/provider.dart';
 ///
 /// The slider box is rendered to screen width with an optional ratio.
 class BudgetSlider extends StatefulWidget {
-  BudgetSlider(
-      {Key key, this.borderRadius = BorderRadius.zero, double widthRatio = 1})
+  BudgetSlider({Key key, double widthRatio = 1})
       : this.screenWidthRatio = widthRatio,
         super(key: key);
 
-  final BorderRadius borderRadius;
   final double screenWidthRatio;
 
   _BudgetSliderState createState() => _BudgetSliderState();
@@ -67,7 +65,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
           ),
           Text(
             "€ ",
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16),
           ),
           _buildDependingTextField(),
         ],
@@ -129,7 +127,9 @@ class _BudgetSliderState extends State<BudgetSlider> {
     return new InformationRow(
       text: Text(
         "Total available budget: ",
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(
+          fontSize: 14,
+        ),
       ),
       value: StreamBuilder<double>(
         stream: Provider.of<AppDatabase>(context)
@@ -153,7 +153,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
       alignment: Alignment.topCenter,
       child: Text(
         "Monthly available budget",
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -173,10 +173,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
           double max = snapshot.hasData ? snapshot.data : 0;
           return Text(
             " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}€",
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           );
         },
       ),
@@ -192,9 +189,6 @@ class _BudgetSliderState extends State<BudgetSlider> {
     return ExpandToWidth(
       ratio: widget.screenWidthRatio,
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderWidth: 0,
-        borderRadius: widget.borderRadius,
         child: Column(
           children: <Widget>[
             _buildTitle(),

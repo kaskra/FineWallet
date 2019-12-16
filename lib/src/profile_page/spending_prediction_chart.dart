@@ -9,7 +9,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/src/statistics/chart_data.dart';
+import 'package:FineWallet/src/statistics_page/chart_data.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
@@ -229,13 +229,25 @@ class PredictionDateChart extends StatelessWidget {
           roundEndCaps: true, strokeWidthPx: 1.8, areaOpacity: 0.3),
       domainAxis: charts.DateTimeAxisSpec(
           showAxisLine: true,
+          renderSpec: charts.SmallTickRendererSpec(
+            tickLengthPx: 3,
+            labelStyle: charts.TextStyleSpec(
+                color: charts.ColorUtil.fromDartColor(
+                    Theme.of(context).colorScheme.onSecondary)),
+          ),
           tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
               day:
                   charts.TimeFormatterSpec(format: "d", transitionFormat: "d")),
           tickProviderSpec: charts.DayTickProviderSpec(increments: [3])),
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
-            lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
+            labelStyle: charts.TextStyleSpec(
+                color: charts.ColorUtil.fromDartColor(
+                    Theme.of(context).colorScheme.onSecondary)),
+            lineStyle: charts.LineStyleSpec(
+                dashPattern: [6, 6],
+                color: charts.ColorUtil.fromDartColor(
+                    Theme.of(context).colorScheme.onSecondary))),
       ),
     );
   }

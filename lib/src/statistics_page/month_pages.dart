@@ -8,7 +8,7 @@
 
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/src/statistics/month_card.dart';
+import 'package:FineWallet/src/statistics_page/month_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

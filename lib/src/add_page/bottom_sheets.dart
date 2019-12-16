@@ -99,13 +99,13 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet>
                 children: <Widget>[
                   Icon(
                     iconData.data,
-                    color: Theme.of(context).colorScheme.onSecondary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   Text(
                     label,
                     style: TextStyle(
                         fontSize: 10,
-                        color: Theme.of(context).colorScheme.onSecondary),
+                        color: Theme.of(context).colorScheme.onSurface),
                   )
                 ],
               ),

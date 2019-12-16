@@ -19,9 +19,6 @@ class SavingsOverview extends StatelessWidget {
       height: 100,
       padding: const EdgeInsets.only(right: 5.0),
       child: DecoratedCard(
-        borderWidth: 0,
-        borderColor: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(10),
         child: Stack(
           children: <Widget>[
             Center(
@@ -30,7 +27,7 @@ class SavingsOverview extends StatelessWidget {
                   textStyle: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
             ),
@@ -38,9 +35,7 @@ class SavingsOverview extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Text(
                 "Savings",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 13),
+                style: TextStyle(fontSize: 13),
               ),
             )
           ],

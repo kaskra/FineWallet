@@ -9,7 +9,7 @@
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/src/statistics/chart_data.dart';
+import 'package:FineWallet/src/statistics_page/chart_data.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
@@ -148,9 +148,15 @@ class CircularProfileChart extends StatelessWidget {
         arcRendererDecorators: [
           new charts.ArcLabelDecorator(
               leaderLineStyleSpec: charts.ArcLabelLeaderLineStyleSpec(
-                  length: 10, color: charts.Color.black, thickness: 1),
+                  length: 10,
+                  color: charts.ColorUtil.fromDartColor(
+                      Theme.of(context).colorScheme.onSecondary),
+                  thickness: 1),
               showLeaderLines: true,
-              outsideLabelStyleSpec: charts.TextStyleSpec(fontSize: 12),
+              outsideLabelStyleSpec: charts.TextStyleSpec(
+                  fontSize: 12,
+                  color: charts.ColorUtil.fromDartColor(
+                      Theme.of(context).colorScheme.onSecondary)),
               labelPosition: charts.ArcLabelPosition.outside),
         ],
         arcWidth: 25,

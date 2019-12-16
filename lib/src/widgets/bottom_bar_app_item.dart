@@ -23,7 +23,7 @@ class FloatingActionButtonBottomAppBar extends StatefulWidget {
       @required this.onTabSelected,
       this.selectedIndex,
       this.selectedColor,
-      this.color,
+      this.unselectedColor,
       this.height: 50,
       this.iconSize: 24,
       this.isVisible});
@@ -31,7 +31,7 @@ class FloatingActionButtonBottomAppBar extends StatefulWidget {
   final ValueChanged<int> onTabSelected;
   final int selectedIndex;
   final Color selectedColor;
-  final Color color;
+  final Color unselectedColor;
   final double height;
   final double iconSize;
   final bool isVisible;
@@ -74,7 +74,8 @@ class _FloatingActionButtonBottomAppBarState
     ValueChanged<int> onPressed,
     bool isDisabled,
   }) {
-    Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
+    Color color =
+        _selectedIndex == index ? widget.selectedColor : widget.unselectedColor;
     return Expanded(
       child: SizedBox(
         height: widget.height,
@@ -115,6 +116,7 @@ class _FloatingActionButtonBottomAppBarState
     });
 
     return BottomAppBar(
+      color: Theme.of(context).bottomAppBarColor,
       elevation: 20,
       shape: widget.isVisible ? CircularNotchedRectangle() : null,
       child: Row(

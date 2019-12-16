@@ -150,7 +150,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
                     onPressed: () {},
                     child: Icon(
                       Icons.swap_horiz,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: Theme.of(context).iconTheme.color,
                     ),
                   )),
                 ),

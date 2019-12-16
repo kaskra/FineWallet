@@ -8,8 +8,8 @@
 
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/navigation_notifier.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -26,10 +26,7 @@ class LatestTransaction extends StatelessWidget {
       height: 100,
       ratio: 0.46,
       child: DecoratedCard(
-        borderColor: Theme.of(context).colorScheme.primary,
         padding: 10,
-        borderWidth: 0,
-        borderRadius: BorderRadius.circular(10),
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,9 +34,7 @@ class LatestTransaction extends StatelessWidget {
               _buildLastTransactionContent(context),
               Text(
                 "Latest transaction",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 13),
+                style: TextStyle(fontSize: 13),
               )
             ],
           ),

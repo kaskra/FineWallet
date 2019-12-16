@@ -16,9 +16,6 @@ class Section extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
       child: DecoratedCard(
-        borderRadius: BorderRadius.circular(10),
-        borderWidth: 0,
-        borderColor: Colors.orange,
         padding: 0,
         child: Column(
           children: children,
