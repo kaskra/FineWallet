@@ -9,6 +9,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/widgets/timeline.dart';
 import 'package:FineWallet/src/widgets/timestamp.dart';
 import 'package:FineWallet/utils.dart';
@@ -56,7 +57,7 @@ class WeekOverviewTimeline extends StatelessWidget {
 
   Widget _buildAmountString(double budget, TextStyle textStyle) {
     return Text(
-      "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}€",
+      "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
       maxLines: 1,
       style: textStyle,
     );

@@ -7,12 +7,14 @@
  */
 
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/statistics_page/category_view.dart';
 import 'package:FineWallet/src/statistics_page/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MonthCard extends StatelessWidget {
   final BuildContext context;
@@ -112,7 +114,8 @@ class MonthCard extends StatelessWidget {
     return FittedBox(
       fit: BoxFit.contain,
       child: Text(
-        "$prefix ${model.savings.toStringAsFixed(2)}€".toUpperCase(),
+        "$prefix ${model.savings.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}"
+            .toUpperCase(),
         style: TextStyle(
             fontSize: 20,
             color: Theme.of(context).colorScheme.secondary,

@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
@@ -64,7 +65,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
                 _textEditingController.text = value.toStringAsFixed(2),
           ),
           Text(
-            "€ ",
+            "${Provider.of<LocalizationNotifier>(context).currency} ",
             style: TextStyle(fontSize: 16),
           ),
           _buildDependingTextField(),
@@ -139,7 +140,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
           double maxBudget = snapshot.data ?? 0;
           maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
           return Text(
-            "${maxBudget.toStringAsFixed(2)}€",
+            "${maxBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
             style: TextStyle(fontSize: 14),
           );
         },
@@ -172,7 +173,7 @@ class _BudgetSliderState extends State<BudgetSlider> {
         builder: (context, snapshot) {
           double max = snapshot.hasData ? snapshot.data : 0;
           return Text(
-            " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}€",
+            " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           );
         },

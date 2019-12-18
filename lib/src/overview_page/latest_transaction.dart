@@ -8,6 +8,7 @@
 
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
@@ -75,7 +76,7 @@ class LatestTransaction extends StatelessWidget {
                     FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Text(
-                        "${snapshot.data.isExpense && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}€",
+                        "${snapshot.data.isExpense && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
                         style: TextStyle(
                           color: snapshot.data.isExpense
                               ? Colors.red

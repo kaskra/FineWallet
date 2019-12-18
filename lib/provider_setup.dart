@@ -7,6 +7,7 @@
  */
 
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
@@ -36,5 +37,8 @@ List<SingleChildCloneableWidget> uiConsumableProviders = [
   ),
   ChangeNotifierProvider.value(
     value: ThemeNotifier(),
+  ),
+  ChangeNotifierProvider.value(
+    value: LocalizationNotifier(),
   )
 ];

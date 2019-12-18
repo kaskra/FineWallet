@@ -4,6 +4,7 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
@@ -183,7 +184,7 @@ class CategoryListView extends StatelessWidget {
         ),
       ),
       value: Text(
-        "-${tx.amount.toStringAsFixed(2)}€",
+        "-${tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
         style: TextStyle(
           color: Theme.of(context).colorScheme.error,
           decoration: TextDecoration.none,
@@ -218,7 +219,7 @@ class CategoryListView extends StatelessWidget {
         ),
       ),
       trailing: Text(
-        "-${amount.toStringAsFixed(2)}€",
+        "-${amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
         style: TextStyle(
             color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
       ),

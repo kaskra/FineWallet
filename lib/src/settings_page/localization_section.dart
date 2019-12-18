@@ -1,6 +1,8 @@
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 /// This class creates a [Section] which shows the localization
 /// settings, like which language and currency should be used etc.
@@ -42,7 +44,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
           value: _selectedLanguage,
           isDense: true,
           onChanged: (val) {
-            UserSettings.setLanguage(val);
+            Provider.of<LocalizationNotifier>(context).setLanguageCode(val);
             setState(() {
               _selectedLanguage = val;
             });
@@ -70,7 +72,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
           value: _selectedCurrency,
           isDense: true,
           onChanged: (val) {
-            UserSettings.setCurrency(val);
+            Provider.of<LocalizationNotifier>(context).setCurrencySymbol(val);
             setState(() {
               _selectedCurrency = val;
             });
