@@ -56,51 +56,51 @@ class UserSettings {
   /// Sets the applications language code to the selected code and
   /// saves it persistently in the user settings.
   ///
-  /// The default value is 'EN'.
+  /// The default language is 'EN'.
   ///
   /// Input
   /// -----
-  /// The selected language code.
+  /// The selected language id.
   ///
-  static setLanguage(String languageCode) {
-    _store.setString(_Keys.LANGUAGE, languageCode);
+  static setLanguage(int languageId) {
+    _store.setInt(_Keys.LANGUAGE, languageId);
   }
 
   /// Returns the applications language code saved in memory.
   ///
-  /// The default value is 'EN'.
+  /// The default language is 'EN'.
   ///
   /// Returns
   /// -----
-  /// The retrieved language code from user settings memory.
+  /// The retrieved language id from user settings memory.
   ///
-  static String getLanguage() {
-    return _store.getString(_Keys.LANGUAGE) ?? "en";
+  static int getLanguage() {
+    return _store.getInt(_Keys.LANGUAGE) ?? 1;
   }
 
-  /// Sets the applications currency symbol to the selected symbol and
+  /// Sets the applications currency id to the selected symbol and
   /// saves it persistently in the user settings.
   ///
-  /// The default value is '$'.
+  /// The default currency is '$'.
   ///
   /// Input
   /// -----
-  /// The selected currency symbol.
+  /// The selected currency id.
   ///
-  static setCurrency(String currencySymbol) {
-    _store.setString(_Keys.CURRENCY, currencySymbol);
+  static setCurrency(int currencySymbolId) {
+    _store.setInt(_Keys.CURRENCY, currencySymbolId);
   }
 
-  /// Returns the applications currency symbol saved in memory.
+  /// Returns the applications currency id saved in memory.
   ///
-  /// The default value is '$'.
+  /// The default currency is '$'.
   ///
   /// Returns
   /// -----
-  /// The retrieved currency symbol from user settings memory.
+  /// The retrieved currency id from user settings memory.
   ///
   static getCurrency() {
-    return _store.getString(_Keys.CURRENCY) ?? "\$";
+    return _store.getInt(_Keys.CURRENCY) ?? 1;
   }
 
   /// Sets the value whether TX SHARE is enabled or not.
