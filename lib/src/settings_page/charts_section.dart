@@ -1,9 +1,17 @@
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
 
 /// This class creates a [Section] which shows the chart
 /// settings, like which chart to display first on the profile page.
-class ChartsSection extends StatelessWidget {
+class ChartsSection extends StatefulWidget {
+  @override
+  _ChartsSectionState createState() => _ChartsSectionState();
+}
+
+class _ChartsSectionState extends State<ChartsSection> {
+  int _selectedId = UserSettings.getDefaultProfileChart();
+
   @override
   Widget build(BuildContext context) {
     return Section(
@@ -19,10 +27,13 @@ class ChartsSection extends StatelessWidget {
       title: "Default Profile Chart",
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
-          value: 1,
+          value: _selectedId,
           isDense: true,
           onChanged: (val) {
-            print(val);
+            UserSettings.setDefaultProfileChart(val);
+            setState(() {
+              _selectedId = val;
+            });
           },
           items: [
             DropdownMenuItem(
