@@ -222,32 +222,41 @@ class PredictionDateChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var labelColor = charts.ColorUtil.fromDartColor(
+        Theme.of(context).colorScheme.onBackground);
+
     return new charts.TimeSeriesChart(
       seriesList,
       animate: false,
+      defaultInteractions: false,
       defaultRenderer: charts.LineRendererConfig(
-          roundEndCaps: true, strokeWidthPx: 1.8, areaOpacity: 0.3),
+        roundEndCaps: true,
+        strokeWidthPx: 1.8,
+        areaOpacity: 0.3,
+      ),
       domainAxis: charts.DateTimeAxisSpec(
-          showAxisLine: true,
-          renderSpec: charts.SmallTickRendererSpec(
-            tickLengthPx: 3,
-            labelStyle: charts.TextStyleSpec(
-                color: charts.ColorUtil.fromDartColor(
-                    Theme.of(context).colorScheme.onSecondary)),
+        showAxisLine: true,
+        renderSpec: charts.SmallTickRendererSpec<DateTime>(
+          tickLengthPx: 4,
+          labelStyle: charts.TextStyleSpec(
+            color: labelColor,
           ),
-          tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
-              day:
-                  charts.TimeFormatterSpec(format: "d", transitionFormat: "d")),
-          tickProviderSpec: charts.DayTickProviderSpec(increments: [3])),
+        ),
+        tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+          day: charts.TimeFormatterSpec(format: "d", transitionFormat: "d"),
+        ),
+        tickProviderSpec: charts.DayTickProviderSpec(increments: [3]),
+      ),
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
-            labelStyle: charts.TextStyleSpec(
-                color: charts.ColorUtil.fromDartColor(
-                    Theme.of(context).colorScheme.onSecondary)),
-            lineStyle: charts.LineStyleSpec(
-                dashPattern: [6, 6],
-                color: charts.ColorUtil.fromDartColor(
-                    Theme.of(context).colorScheme.onSecondary))),
+          labelStyle: charts.TextStyleSpec(
+            color: labelColor,
+          ),
+          lineStyle: charts.LineStyleSpec(
+            dashPattern: [6, 6],
+            color: labelColor,
+          ),
+        ),
       ),
     );
   }
