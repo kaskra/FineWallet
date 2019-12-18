@@ -9,6 +9,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history.dart';
@@ -19,26 +20,19 @@ import 'package:FineWallet/src/statistics_page/month_pages.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  // set mock values for testing/emulator
-  const MethodChannel('plugins.flutter.io/shared_preferences')
-      .setMockMethodCallHandler((MethodCall methodCall) async {
-    if (methodCall.method == 'getAll') {
-      return <String, dynamic>{}; // set initial values here if desired
-    }
-    return null;
-  });
-  runApp(
-    MultiProvider(
-      providers: providers,
-      child: MyApp(),
-    ),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await UserSettings.init();
+  runApp(MultiProvider(
+    providers: providers,
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
