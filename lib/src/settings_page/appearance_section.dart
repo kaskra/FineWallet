@@ -16,6 +16,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
   @override
   Widget build(BuildContext context) {
     return Section(
+      title: "Appearance",
       children: <SectionItem>[
         _buildDarkModeSwitch(context),
       ],

@@ -5,6 +5,7 @@ class SocialSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Section(
+      title: "Social",
       children: <SectionItem>[
         _buildShareToggle(),
       ],

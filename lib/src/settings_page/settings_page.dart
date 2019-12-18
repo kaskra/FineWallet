@@ -8,10 +8,7 @@ import 'package:FineWallet/src/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 
 /// This class creates a page where the user can edit the application
-/// settings in a list of [Section]s.
-///
-/// Before each section there should be a [SectionTitle] to describe what the
-/// user sees in the following section.
+/// settings in a list of [Section]s with [SectionTitle].
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -38,16 +35,11 @@ class SettingsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SectionTitle(text: "Appearance"),
               AppearanceSection(),
               SectionTitle(text: "\n!! BELOW IS NOT USED CURRENTLY !! \n"),
-              SectionTitle(text: "Localization"),
               LocalizationSection(),
-              SectionTitle(text: "Social"),
               SocialSection(),
-              SectionTitle(text: "Charts"),
               ChartsSection(),
-              SectionTitle(text: "Other"),
               OthersSection(),
             ],
           ),

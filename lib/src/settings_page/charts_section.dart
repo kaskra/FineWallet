@@ -7,6 +7,7 @@ class ChartsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Section(
+      title: "Charts",
       children: <SectionItem>[
         _buildDefaultProfileChart(),
       ],

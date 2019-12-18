@@ -7,6 +7,7 @@ class OthersSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Section(
+      title: "Other",
       children: <SectionItem>[
         _buildPlaceHolder(),
         _buildPlaceHolder(),

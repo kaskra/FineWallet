@@ -7,6 +7,7 @@ class LocalizationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Section(
+      title: "Localization",
       children: <SectionItem>[
         _buildLanguage(),
         _buildCurrency(),
