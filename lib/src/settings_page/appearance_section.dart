@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/providers/theme_notifier.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +12,6 @@ class AppearanceSection extends StatefulWidget {
 }
 
 class _AppearanceSectionState extends State<AppearanceSection> {
-  bool _isDark = false;
-
   @override
   Widget build(BuildContext context) {
     return Section(
@@ -27,12 +26,9 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     return SectionItem(
       title: "Dark Mode",
       trailing: Switch(
-        value: _isDark,
-        onChanged: (val) {
-          Provider.of<ThemeNotifier>(context).switchTheme();
-          setState(() {
-            _isDark = !_isDark;
-          });
+        value: UserSettings.getDarkMode(),
+        onChanged: (val) async {
+          Provider.of<ThemeNotifier>(context).switchTheme(dark: val);
         },
       ),
     );
