@@ -29,6 +29,7 @@ class IncomeExpenseChart extends StatelessWidget {
     double secondPart = 1 - firstPart;
 
     Series<double, int> series = Series<double, int>(
+      id: "IncomeExpense",
       data: [firstPart, secondPart],
       domainFn: (_, i) => i,
       measureFn: (d, _) => d,
