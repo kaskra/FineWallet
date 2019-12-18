@@ -11,21 +11,36 @@ class LocalizationNotifier extends ChangeNotifier {
 
   setLanguageCode(int c) async {
     UserSettings.setLanguage(c);
-    if (c == 1) {
-      _languageCode = "en";
-    } else if (c == 2) {
-      _languageCode = "de";
-    }
+    _languageCode = mapIdToLanguage(c);
     notifyListeners();
   }
 
   setCurrencySymbol(int c) {
     UserSettings.setCurrency(c);
-    if (c == 1) {
-      _currencySymbol = "\$";
-    } else if (c == 2) {
-      _currencySymbol = "€";
-    }
+    _currencySymbol = mapIdToCurrency(c);
     notifyListeners();
   }
+
+  LocalizationNotifier() {
+    _currencySymbol = mapIdToCurrency(UserSettings.getCurrency());
+    _languageCode = mapIdToLanguage(UserSettings.getLanguage());
+  }
+}
+
+String mapIdToCurrency(int id) {
+  if (id == 1) {
+    return "\$";
+  } else if (id == 2) {
+    return "€";
+  }
+  return "\$";
+}
+
+String mapIdToLanguage(int id) {
+  if (id == 1) {
+    return "en";
+  } else if (id == 2) {
+    return "de";
+  }
+  return "en";
 }
