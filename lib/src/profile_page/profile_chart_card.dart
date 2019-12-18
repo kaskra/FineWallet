@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/profile_page/profile_chart.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
@@ -107,6 +108,14 @@ class _ProfileChartCardState extends State<ProfileChartCard> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      _showPrediction = UserSettings.getDefaultProfileChart() == 2;
+    });
+    super.initState();
   }
 
   @override

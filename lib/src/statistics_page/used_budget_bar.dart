@@ -1,8 +1,10 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
 import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
+import 'package:provider/provider.dart';
 
 /// This class creates a widget that displays how much money
 /// was spend in one month.
@@ -48,7 +50,7 @@ class UsedBudgetBar extends StatelessWidget {
             percent: firstPart,
             height: 25,
             childCenter: Text(
-              "${model.expense.toStringAsFixed(2)} / ${model.month.maxBudget.toStringAsFixed(2)} €",
+              "${model.expense.toStringAsFixed(2)} / ${model.month.maxBudget.toStringAsFixed(2)} ${Provider.of<LocalizationNotifier>(context).currency}",
               style: TextStyle(
                 color: Theme.of(context).hintColor,
                 fontWeight: FontWeight.bold,

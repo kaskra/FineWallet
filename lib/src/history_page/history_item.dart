@@ -8,12 +8,14 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_item_icon.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HistoryItem extends StatelessWidget {
   HistoryItem(
@@ -127,14 +129,15 @@ class HistoryItem extends StatelessWidget {
 
   Widget _buildItemText() {
     String prefix = (isExpense && transaction.amount > 0) ? "-" : "";
-    String suffix = "€";
     Color color = isExpense ? Colors.red : Colors.green;
     return Align(
       alignment: Alignment.bottomRight,
       child: FittedBox(
         fit: BoxFit.fitHeight,
         child: Text(
-          prefix + transaction.amount.toStringAsFixed(2) + suffix,
+          prefix +
+              transaction.amount.toStringAsFixed(2) +
+              Provider.of<LocalizationNotifier>(context).currency,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 15, color: color),
           maxLines: 2,
