@@ -36,7 +36,6 @@ class SettingsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               AppearanceSection(),
-              SectionTitle(text: "\n!! BELOW IS NOT USED CURRENTLY !! \n"),
               LocalizationSection(),
               SocialSection(),
               ChartsSection(),
