@@ -14,7 +14,10 @@ class SectionTitle extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         text.toUpperCase(),
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.secondary),
       ),
     );
   }
