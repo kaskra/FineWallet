@@ -4,6 +4,7 @@ import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
 import 'package:FineWallet/src/add_page-rework/row_wrapper.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,9 @@ class _AddPageReworkState extends State<AddPageRework> {
   int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
   int _recurrenceType = 1;
 
+  /// State variables
+  bool _hasError = false;
+
   @override
   void initState() {
     if (widget.transaction != null) {
@@ -61,6 +65,7 @@ class _AddPageReworkState extends State<AddPageRework> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(
           'Add ${widget.isExpense ? "Expense" : "Income"}',
@@ -84,7 +89,8 @@ class _AddPageReworkState extends State<AddPageRework> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => print("Pressed!"),
+        onPressed: () => _handleSaving(),
+
         tooltip: 'Save transaction',
         label: Text(
           "SAVE",
@@ -92,14 +98,28 @@ class _AddPageReworkState extends State<AddPageRework> {
               fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
         ), //Change Icon
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation
-          .endFloat, //Change for different locations
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      //Change for different locations
       body: Center(
         child: Container(
           child: _buildBody(),
         ),
       ),
     );
+  }
+
+  void _handleSaving() {
+    // Show snackbar
+    if (_hasError) print("NOT WORKING WITH THIS!!");
+
+    print(
+        "Amount: $_amount, Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}");
+
+    if (_editing) {
+      print("Save edited transaction!");
+    } else {
+      print("Save new transaction!");
+    }
   }
 
   Widget _buildBody() {
@@ -131,7 +151,22 @@ class _AddPageReworkState extends State<AddPageRework> {
         leadingIcon: Icons.attach_money,
         isExpandable: false,
         isChild: false,
-        onTap: () {},
+        child: EditableNumericInputText(
+          defaultValue: _amount,
+          onChanged: (value) {
+            setState(() {
+              _amount = value;
+            });
+          },
+          onError: (value) {
+            if (value) {
+              print("Got error! No real double value!");
+            }
+            setState(() {
+              _hasError = value;
+            });
+          },
+        ),
       )
     ];
   }

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 /// This class is used to have recurring theme of column rows
 /// of the add page.
 class RowWrapper extends StatelessWidget {
-  final double _iconPadding = 8;
-
   final IconData leadingIcon;
   final bool isExpandable;
   final double iconSize;
@@ -13,6 +11,7 @@ class RowWrapper extends StatelessWidget {
   final Function(bool) onSwitch;
   final bool isChild;
   final String text;
+  final Widget child;
 
   const RowWrapper({
     Key key,
@@ -23,15 +22,17 @@ class RowWrapper extends StatelessWidget {
     this.isExpanded,
     this.onTap,
     this.isChild,
+    this.child,
     this.onSwitch,
   })  : assert(leadingIcon != null),
         assert(isExpandable != null),
         assert(iconSize != null),
         assert(isChild != null),
         assert(isExpandable ? isExpanded != null : true),
-        assert(!isExpandable ? onTap != null : true),
         assert(isExpandable ? onSwitch != null : true),
         super(key: key);
+
+  final double _iconPadding = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -66,23 +67,28 @@ class RowWrapper extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
         height: iconSize + _iconPadding,
-        child: InkWell(
-          onTap: () => onTap(),
-          child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.onBackground)),
-              ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  text,
-                  style: TextStyle(fontSize: 16),
+        child: onTap != null
+            ? InkWell(
+                onTap: () => onTap(),
+                child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              width: 2,
+                              color:
+                                  Theme.of(context).colorScheme.onBackground)),
+                    ),
+                    child:
+                        Align(alignment: Alignment.centerRight, child: child)),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          width: 2,
+                          color: Theme.of(context).colorScheme.onBackground)),
                 ),
-              )),
-        ),
+                child: Align(alignment: Alignment.centerRight, child: child)),
       ),
     );
   }
