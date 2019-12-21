@@ -1,5 +1,7 @@
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
+import 'package:FineWallet/src/add_page-rework/row_wrapper.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
@@ -109,31 +111,29 @@ class _AddPageReworkState extends State<AddPageRework> {
     return [
       Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: _buildRowTitle("Amount")),
-      _RowWrapper(
+          child: RowTitle(title: "Amount")),
+      RowWrapper(
         text: _amount.toStringAsFixed(2) +
             Provider.of<LocalizationNotifier>(context).currency,
         iconSize: 24,
         leadingIcon: Icons.attach_money,
         isExpandable: false,
-        onTap: () {
-          print("Tapped AMOUNT!");
-        },
+        isChild: false,
+        onTap: () {},
       )
     ];
   }
 
   List<Widget> _buildCategoryRow() {
     return [
-      _buildRowTitle("Category"),
-      _RowWrapper(
+      RowTitle(title: "Category"),
+      RowWrapper(
         text: _subcategoryName ?? "",
         iconSize: 24,
         leadingIcon: Icons.category,
         isExpandable: false,
-        onTap: () {
-          print("Tapped CATEGORY!");
-        },
+        isChild: false,
+        onTap: () {},
       ),
     ];
   }
@@ -142,30 +142,30 @@ class _AddPageReworkState extends State<AddPageRework> {
     var formatter = new DateFormat('dd.MM.yy');
     String formattedDate =
         formatter.format(DateTime.fromMillisecondsSinceEpoch(_date));
+
     return [
-      _buildRowTitle("Date"),
-      _RowWrapper(
+      RowTitle(title: "Date"),
+      RowWrapper(
         text: formattedDate,
         iconSize: 24,
         leadingIcon: Icons.calendar_today,
         isExpandable: false,
-        onTap: () {
-          print("Tapped CALENDAR!");
-        },
+        isChild: false,
+        onTap: () {},
       ),
     ];
   }
 
   List<Widget> _buildRecurrenceRow() {
     return [
-      _buildRowTitle("Recurrence"),
-      _RowWrapper(
+      RowTitle(title: "Recurrence"),
+      RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.replay,
         isExpandable: true,
         isExpanded: _isRecurring,
+        isChild: false,
         onSwitch: (val) {
-          print("Switch to $val");
           setState(() {
             _isRecurring = val;
           });
@@ -175,114 +175,24 @@ class _AddPageReworkState extends State<AddPageRework> {
   }
 
   List<Widget> _buildRecurrenceChoices() {
-    return [];
-  }
-
-  Widget _buildRowTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 48),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 13),
+    return [
+      RowChildDivider(),
+      RowWrapper(
+        leadingIcon: Icons.low_priority,
+        iconSize: 20,
+        text: "",
+        isExpandable: false,
+        isChild: true,
+        onTap: () {},
       ),
-    );
-  }
-}
-
-/// This class is used to have recurring theme of column rows
-/// of the add page.
-class _RowWrapper extends StatelessWidget {
-  final double _iconPadding = 8;
-
-  final IconData leadingIcon;
-  final bool isExpandable;
-  final double iconSize;
-  final String placeholderText;
-  final bool isExpanded;
-  final Function onTap;
-  final Function(bool) onSwitch;
-
-  final String text;
-
-  const _RowWrapper({
-    Key key,
-    this.text,
-    this.leadingIcon,
-    this.isExpandable,
-    this.iconSize,
-    this.placeholderText,
-    this.isExpanded,
-    this.onTap,
-    this.onSwitch,
-  })  : assert(leadingIcon != null),
-        assert(isExpandable != null),
-        assert(iconSize != null),
-        assert(isExpandable ? isExpanded != null : true),
-        assert(!isExpandable ? onTap != null : true),
-        assert(isExpandable ? onSwitch != null : true),
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      margin: const EdgeInsets.only(bottom: 5),
-      child: Row(
-        children: <Widget>[
-          _buildLeading(context),
-          isExpandable ? _buildExpandableSwitch() : _buildMainContent(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLeading(BuildContext context) {
-    return SizedBox(
-      width: iconSize + _iconPadding,
-      height: iconSize + _iconPadding,
-      child: Icon(
-        leadingIcon,
-        size: iconSize,
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
-    );
-  }
-
-  Widget _buildMainContent() {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: iconSize + _iconPadding,
-        child: InkWell(
-          onTap: () => onTap(),
-          child: Container(
-              decoration: BoxDecoration(
-                border:
-                    Border(bottom: BorderSide(width: 2, color: Colors.black54)),
-              ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  text,
-                  style: TextStyle(fontSize: 16),
-                ),
-              )),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildExpandableSwitch() {
-    return Expanded(
-      child: Container(
-        alignment: Alignment.centerRight,
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: iconSize + _iconPadding,
-        child: Switch.adaptive(
-          value: true,
-          onChanged: (val) => onSwitch(val),
-        ),
-      ),
-    );
+      RowWrapper(
+        leadingIcon: Icons.access_time,
+        iconSize: 20,
+        text: "",
+        isExpandable: false,
+        isChild: true,
+        onTap: () {},
+      )
+    ];
   }
 }
