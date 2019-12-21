@@ -175,7 +175,13 @@ class _AddPageReworkState extends State<AddPageRework> {
         leadingIcon: Icons.category,
         isExpandable: false,
         isChild: false,
-        onTap: () {},
+        onTap: () async {
+          var res = showDialog(
+              context: context,
+              child: CategoryChoiceDialog(
+                isExpense: widget.isExpense,
+              ));
+        },
         child: Text(_subcategoryName ?? ""),
       ),
     ];
