@@ -261,83 +261,59 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
   }
 
   Widget _buildCategoryAddItem() {
-    return GridTile(
-      child: Center(
-        child: Container(
-          margin: const EdgeInsets.all(7),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(CARD_RADIUS),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.onSecondary,
-            ),
-          ),
-          child: Material(
-            borderRadius: BorderRadius.circular(CARD_RADIUS),
-            clipBehavior: Clip.hardEdge,
-            color: Theme.of(context).colorScheme.secondary,
-            child: InkWell(
-              onTap: () {
-                print("Tapped ADDING");
-              },
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                constraints: BoxConstraints.expand(),
-                child: Column(
-                  children: <Widget>[
-                    Icon(
-                      Icons.add,
-                      size: 30,
-                    ),
-                    FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        "Add Category",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface),
-                      ),
-                    )
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+    return _buildGeneralGridItem(
+      color: Theme.of(context).colorScheme.secondary,
+      onTap: () {
+        print("Tapped ADDED!");
+      },
+      text: "Add Category",
+      iconData: Icons.add,
     );
   }
 
   Widget _buildCategoryGridItem(Category c) {
+    return _buildGeneralGridItem(
+      color: _selectedCategory == c.id
+          ? Theme.of(context).colorScheme.secondary
+          : Colors.grey,
+      onTap: () {
+        print("Tapped ${c.name}");
+        setState(() {
+          _selectedCategory = c.id;
+        });
+      },
+      text: c.name,
+      iconData: CategoryIcon(c.id - 1).data,
+    );
+  }
+
+  Widget _buildGeneralGridItem(
+      {@required Color color,
+      @required Function onTap,
+      @required String text,
+      @required IconData iconData}) {
     return GridTile(
       child: Center(
         child: Container(
           margin: const EdgeInsets.all(7),
           child: Material(
-            color: _selectedCategory == c.id
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.grey,
+            color: color,
             borderRadius: BorderRadius.circular(CARD_RADIUS),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
-              onTap: () {
-                print("Tapped ${c.name}");
-                setState(() {
-                  _selectedCategory = c.id;
-                });
-              },
+              onTap: () => onTap(),
               child: Container(
                 padding: const EdgeInsets.all(7),
                 constraints: BoxConstraints.expand(),
                 child: Column(
                   children: <Widget>[
                     Icon(
-                      CategoryIcon(c.id - 1).data,
+                      iconData,
                     ),
                     FittedBox(
                       fit: BoxFit.fitWidth,
                       child: Text(
-                        c.name,
+                        text,
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface),
                       ),
