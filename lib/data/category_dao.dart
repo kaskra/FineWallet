@@ -30,6 +30,9 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future<List<Category>> getAllCategoriesByType(bool isExpense) =>
       (select(categories)..where((c) => c.isExpense.equals(isExpense))).get();
 
+  Stream<List<Category>> watchAllCategoriesByType(bool isExpense) =>
+      (select(categories)..where((c) => c.isExpense.equals(isExpense))).watch();
+
   Future insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
 
