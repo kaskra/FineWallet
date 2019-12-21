@@ -23,14 +23,24 @@ class AddPageRework extends StatefulWidget {
 }
 
 class _AddPageReworkState extends State<AddPageRework> {
-  bool _editing = false;
+  /// The transactions that the user wants to edit.
   TransactionsWithCategory _transaction;
 
+  /// The flag that signals if the page is loaded in edit or normal mode.
+  bool _editing = false;
+
+  /// The transaction money amount.
   double _amount = 0.00;
+
+  /// The (original) transaction date.
   int _date = dayInMillis(DateTime.now());
-  int _subcategoryId = -1;
+
   String _subcategoryName = "";
+  int _subcategoryId = -1;
+
   bool _isRecurring = false;
+  int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
+  int _recurrenceType = 1;
 
   @override
   void initState() {
@@ -42,6 +52,8 @@ class _AddPageReworkState extends State<AddPageRework> {
       _subcategoryId = _transaction.subcategoryId;
       _subcategoryName = _transaction.subcategoryName;
       _isRecurring = _transaction.isRecurring;
+      _untilDate = _transaction.recurringUntil;
+      _recurrenceType = _transaction.recurringType;
     }
     super.initState();
   }
@@ -175,6 +187,10 @@ class _AddPageReworkState extends State<AddPageRework> {
   }
 
   List<Widget> _buildRecurrenceChoices() {
+    var formatter = new DateFormat('dd.MM.yy');
+    String formattedDate =
+        formatter.format(DateTime.fromMillisecondsSinceEpoch(_untilDate));
+
     return [
       RowChildDivider(),
       RowWrapper(
@@ -188,7 +204,7 @@ class _AddPageReworkState extends State<AddPageRework> {
       RowWrapper(
         leadingIcon: Icons.access_time,
         iconSize: 20,
-        text: "",
+        text: formattedDate,
         isExpandable: false,
         isChild: true,
         onTap: () {},
