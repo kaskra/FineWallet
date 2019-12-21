@@ -11,7 +11,7 @@ import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/provider_setup.dart';
-import 'package:FineWallet/src/add_page/add_page.dart';
+import 'package:FineWallet/src/add_page-rework/add_page_rework.dart';
 import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
@@ -95,13 +95,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _addTransaction(int leftRight) {
+//    if (leftRight == -1) {
+//      Navigator.push(context,
+//          MaterialPageRoute(builder: (context) => AddPage("Income", 0)));
+//    } else if (leftRight == 1) {
+//      Navigator.push(context,
+//          MaterialPageRoute(builder: (context) => AddPage("Expense", 1)));
+//    }
     if (leftRight == -1) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddPage("Income", 0)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AddPageRework(
+                    isExpense: false,
+                  )));
     } else if (leftRight == 1) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddPage("Expense", 1)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AddPageRework(
+                    isExpense: true,
+                  )));
     }
+
     return;
   }
 
