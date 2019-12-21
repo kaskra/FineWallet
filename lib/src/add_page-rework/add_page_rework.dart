@@ -1,4 +1,3 @@
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
 import 'package:FineWallet/src/add_page-rework/row_wrapper.dart';
@@ -7,7 +6,6 @@ import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class AddPageRework extends StatefulWidget {
   AddPageRework({
@@ -145,8 +143,6 @@ class _AddPageReworkState extends State<AddPageRework> {
           padding: const EdgeInsets.only(top: 8),
           child: RowTitle(title: "Amount")),
       RowWrapper(
-        text: _amount.toStringAsFixed(2) +
-            Provider.of<LocalizationNotifier>(context).currency,
         iconSize: 24,
         leadingIcon: Icons.attach_money,
         isExpandable: false,
@@ -175,12 +171,12 @@ class _AddPageReworkState extends State<AddPageRework> {
     return [
       RowTitle(title: "Category"),
       RowWrapper(
-        text: _subcategoryName ?? "",
         iconSize: 24,
         leadingIcon: Icons.category,
         isExpandable: false,
         isChild: false,
         onTap: () {},
+        child: Text(_subcategoryName ?? ""),
       ),
     ];
   }
@@ -193,12 +189,36 @@ class _AddPageReworkState extends State<AddPageRework> {
     return [
       RowTitle(title: "Date"),
       RowWrapper(
-        text: formattedDate,
         iconSize: 24,
         leadingIcon: Icons.calendar_today,
         isExpandable: false,
         isChild: false,
-        onTap: () {},
+        onTap: () async {
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.fromMillisecondsSinceEpoch(_date),
+            firstDate: DateTime(2000, 1, 1),
+            lastDate: DateTime(2050, 12, 31),
+            initialDatePickerMode: DatePickerMode.day,
+          );
+          if (pickedDate != null) {
+            setState(() {
+              _date = dayInMillis(pickedDate);
+              if (_untilDate - dayInMillis(pickedDate) <
+                  Duration.millisecondsPerDay) {
+                _untilDate = dayInMillis(pickedDate.add(Duration(days: 1)));
+              }
+            });
+            print(DateTime.fromMillisecondsSinceEpoch(_date));
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            formattedDate,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
       ),
     ];
   }
@@ -231,18 +251,39 @@ class _AddPageReworkState extends State<AddPageRework> {
       RowWrapper(
         leadingIcon: Icons.low_priority,
         iconSize: 20,
-        text: "",
         isExpandable: false,
         isChild: true,
         onTap: () {},
+        child: Text(""),
       ),
       RowWrapper(
         leadingIcon: Icons.access_time,
         iconSize: 20,
-        text: formattedDate,
         isExpandable: false,
         isChild: true,
-        onTap: () {},
+        onTap: () async {
+          DateTime date =
+              DateTime.fromMillisecondsSinceEpoch(_date).add(Duration(days: 1));
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.fromMillisecondsSinceEpoch(_untilDate),
+            firstDate: DateTime(date.year, date.month, date.day),
+            lastDate: DateTime(2050, 12, 31),
+            initialDatePickerMode: DatePickerMode.day,
+          );
+          if (pickedDate != null) {
+            setState(() {
+              _untilDate = dayInMillis(pickedDate);
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            formattedDate,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
       )
     ];
   }

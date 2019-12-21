@@ -10,12 +10,10 @@ class RowWrapper extends StatelessWidget {
   final Function onTap;
   final Function(bool) onSwitch;
   final bool isChild;
-  final String text;
   final Widget child;
 
   const RowWrapper({
     Key key,
-    this.text,
     this.leadingIcon,
     this.isExpandable,
     this.iconSize,
