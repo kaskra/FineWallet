@@ -1,3 +1,4 @@
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page-rework/category_dialog.dart';
@@ -9,6 +10,7 @@ import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddPageRework extends StatefulWidget {
   AddPageRework({
@@ -45,10 +47,17 @@ class _AddPageReworkState extends State<AddPageRework> {
 
   /// State variables
   bool _hasError = false;
-  Recurrence _recurrence = Recurrence(type: -1, name: "");
+  Recurrence _recurrence;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   @override
   void initState() {
+    _getTransactionValues();
+    super.initState();
+  }
+
+  Future _getTransactionValues() async {
     if (widget.transaction != null) {
       _transaction = widget.transaction;
       _editing = true;
@@ -65,13 +74,24 @@ class _AddPageReworkState extends State<AddPageRework> {
       );
       _isRecurring = _transaction.isRecurring;
       _untilDate = _transaction.recurringUntil;
+
+      if (_isRecurring) {
+        // If recurring, set the date to the first of the recurrence.
+        // With that every recurring instance is changed
+        List<Transaction> txs = await Provider.of<AppDatabase>(context)
+            .transactionDao
+            .getAllTransactions();
+        txs = txs.where((tx) => tx.id == _transaction.originalId).toList();
+        txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
+        _date = txs.toList().last.date;
+      }
     }
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(
@@ -114,20 +134,102 @@ class _AddPageReworkState extends State<AddPageRework> {
     );
   }
 
-  void _handleSaving() {
-    // Show snackbar
-    if (_hasError) print("NOT WORKING WITH THIS!!");
+  Tuple2<String, bool> _isValidTransaction() {
+    Tuple2<String, bool> res;
+    if (_amount < 0)
+      return Tuple2<String, bool>(
+          "The specified amount can only be positive!", false);
+    if (_subcategory == null)
+      return Tuple2<String, bool>("Please choose a category!", false);
+    if (_isRecurring && _recurrence == null)
+      return Tuple2<String, bool>(
+          "Please specify which recurrence "
+          "type you want to use!",
+          false);
+    // We don't need to check if date is at least a day before until date.
+    // That is handled by the date picker.
+    if (_isRecurring && _untilDate == null)
+      return Tuple2<String, bool>(
+          "Please choose an end date "
+          "for the recurrence!",
+          false);
+    if (_date == null)
+      return Tuple2<String, bool>(
+          "Please choose a date for your transaction!", false);
 
+    return Tuple2<String, bool>("", true);
+  }
+
+  void _handleSaving() {
+    // Show snackbar with hints when error or not valid
+    if (_hasError) {
+      print("NOT WORKING WITH THIS!!");
+      _showSnackBar("Your specified amount is not a number!");
+    }
+
+    Tuple2<String, bool> isValid = _isValidTransaction();
+    if (!isValid.second) {
+      _showSnackBar(isValid.first);
+    }
+
+    // TODO remove when done
     print("Amount: $_amount, "
         "Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}, "
         "Cat: $_subcategory "
         "Recurrence: $_recurrence");
 
     if (_editing) {
+      _updateTransaction();
       print("Save edited transaction!");
     } else {
+      _addNewTransaction();
       print("Save new transaction!");
     }
+    Navigator.of(context).pop();
+  }
+
+  void _addNewTransaction() async {
+    var tx = Transaction(
+      id: null,
+      date: _date,
+      isExpense: widget.isExpense,
+      isRecurring: _isRecurring,
+      amount: _amount,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      recurringType: _isRecurring ? _recurrence.type : null,
+      recurringUntil: _untilDate,
+      originalId: null,
+    );
+
+    await Provider.of<AppDatabase>(context)
+        .transactionDao
+        .insertTransaction(tx);
+  }
+
+  void _updateTransaction() async {
+    var tx = Transaction(
+      id: _transaction.originalId,
+      date: _date,
+      isExpense: widget.isExpense,
+      isRecurring: _isRecurring,
+      amount: _amount,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      recurringType: _isRecurring ? _recurrence.type : null,
+      recurringUntil: _untilDate,
+      originalId: _transaction.originalId,
+    );
+    await Provider.of<AppDatabase>(context)
+        .transactionDao
+        .updateTransaction(tx);
+  }
+
+  void _showSnackBar(String value) {
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: Text(value),
+      backgroundColor: Colors.grey,
+    ));
   }
 
   Widget _buildBody() {
@@ -162,6 +264,9 @@ class _AddPageReworkState extends State<AddPageRework> {
           onChanged: (value) {
             setState(() {
               _amount = value;
+              if (_amount < 0) {
+                _hasError = true;
+              }
             });
           },
           onError: (value) {
@@ -291,7 +396,7 @@ class _AddPageReworkState extends State<AddPageRework> {
           Recurrence rec = await showDialog(
             context: context,
             child: RecurrenceDialog(
-              recurrenceType: _recurrence.type,
+              recurrenceType: _recurrence?.type ?? -1,
             ),
           );
           if (rec != null) {
@@ -303,7 +408,7 @@ class _AddPageReworkState extends State<AddPageRework> {
         child: Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
-            _recurrence.name,
+            _recurrence?.name ?? "",
             style: TextStyle(fontSize: 16),
           ),
         ),
