@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page-rework/category_dialog.dart';
 import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
@@ -35,8 +36,8 @@ class _AddPageReworkState extends State<AddPageRework> {
   /// The (original) transaction date.
   int _date = dayInMillis(DateTime.now());
 
-  String _subcategoryName = "";
-  int _subcategoryId = -1;
+  /// The chosen subcategory, holds id, name and category id.
+  Subcategory _subcategory;
 
   bool _isRecurring = false;
   int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
@@ -52,8 +53,10 @@ class _AddPageReworkState extends State<AddPageRework> {
       _editing = true;
       _amount = _transaction.amount;
       _date = _transaction.date;
-      _subcategoryId = _transaction.subcategoryId;
-      _subcategoryName = _transaction.subcategoryName;
+      _subcategory = Subcategory(
+          id: _transaction.subcategoryId,
+          name: _transaction.subcategoryName,
+          categoryId: _transaction.categoryId);
       _isRecurring = _transaction.isRecurring;
       _untilDate = _transaction.recurringUntil;
       _recurrenceType = _transaction.recurringType;
@@ -177,16 +180,31 @@ class _AddPageReworkState extends State<AddPageRework> {
         isExpandable: false,
         isChild: false,
         onTap: () async {
-          var res = showDialog(
+          // Let the user choose a category and subcategory.
+          // Returning the Subcategory is enough, because
+          // it also holds the category id.
+          Subcategory res = await showDialog(
             context: context,
             child: CategoryChoiceDialog(
               isExpense: widget.isExpense,
-              selectedCategory: _subcategoryId,
+              selectedSubcategory: _subcategory,
             ),
           );
-          print("Return from Category: $res");
+
+          if (res != null) {
+            print("Return from Category: $res");
+            setState(() {
+              _subcategory = res;
+            });
+          }
         },
-        child: Text(_subcategoryName ?? ""),
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            _subcategory?.name ?? "",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
       ),
     ];
   }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SubcategoryDialog extends StatefulWidget {
-  SubcategoryDialog({Key key, @required this.category}) : super(key: key);
+  SubcategoryDialog({Key key, @required this.category, this.subcategory})
+      : super(key: key);
 
   final Category category;
+  final Subcategory subcategory;
 
   @override
   _SubcategoryDialogState createState() => _SubcategoryDialogState();
@@ -22,6 +24,10 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
   void initState() {
     if (widget.category != null) {
       _category = widget.category;
+    }
+    if (widget.subcategory != null) {
+      _selectedSubcategory = widget.subcategory.id;
+      _subcategory = widget.subcategory;
     }
     super.initState();
   }

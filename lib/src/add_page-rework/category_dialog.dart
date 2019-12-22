@@ -12,12 +12,12 @@ import 'package:provider/provider.dart';
 ///
 class CategoryChoiceDialog extends StatefulWidget {
   final bool isExpense;
-  final int selectedCategory;
+  final Subcategory selectedSubcategory;
 
   const CategoryChoiceDialog({
     Key key,
     @required this.isExpense,
-    this.selectedCategory,
+    this.selectedSubcategory,
   }) : super(key: key);
 
   @override
@@ -26,14 +26,14 @@ class CategoryChoiceDialog extends StatefulWidget {
 
 class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
   int _selectedCategory = -1;
-
   Subcategory _subcategory;
   Category _category;
 
   @override
   void initState() {
-    if (widget.selectedCategory != null) {
-      _selectedCategory = widget.selectedCategory;
+    if (widget.selectedSubcategory != null) {
+      _selectedCategory = widget.selectedSubcategory.categoryId;
+      _subcategory = widget.selectedSubcategory;
     }
     super.initState();
   }
@@ -61,7 +61,11 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                 padding: const EdgeInsets.all(5),
                 textColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  if (_isSelectionValid()) {
+                    Navigator.of(context).pop(_subcategory);
+                  } else {
+                    Navigator.of(context).pop(null);
+                  }
                 },
               ),
             )
@@ -69,6 +73,22 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
         ),
       ),
     );
+  }
+
+  /// Checks that the selected category and subcategory fit together
+  /// and are valid.
+  bool _isSelectionValid() {
+    if (_category != null) {
+      if (_selectedCategory != null && _selectedCategory != -1) {
+        if (_subcategory != null) {
+          if (_subcategory.categoryId == _category.id &&
+              _subcategory.categoryId == _selectedCategory) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   Widget _buildDialogHeader() {
@@ -144,22 +164,32 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           ? Theme.of(context).colorScheme.secondary
           : Colors.grey,
       onTap: () async {
-        setState(() {
-          _selectedCategory = c.id;
-          _category = c;
-        });
-
         var res = await showDialog(
           context: context,
           child: SubcategoryDialog(
             category: c,
+            subcategory: _subcategory,
           ),
         );
 
         if (res != null) {
           print("Result of subcategories: $res");
+          // Set state values
           setState(() {
             _subcategory = res;
+            _selectedCategory = c.id;
+            _category = c;
+          });
+
+          if (_isSelectionValid()) {
+            Navigator.of(context).pop(_subcategory);
+          }
+        } else {
+          // Reset state values
+          setState(() {
+            _selectedCategory = -1;
+            _category = null;
+            _subcategory = null;
           });
         }
       },
