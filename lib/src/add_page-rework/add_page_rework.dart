@@ -1,6 +1,7 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page-rework/category_dialog.dart';
+import 'package:FineWallet/src/add_page-rework/recurrence_dialog.dart';
 import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
 import 'package:FineWallet/src/add_page-rework/row_wrapper.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
@@ -41,10 +42,10 @@ class _AddPageReworkState extends State<AddPageRework> {
 
   bool _isRecurring = false;
   int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
-  int _recurrenceType = 1;
 
   /// State variables
   bool _hasError = false;
+  Recurrence _recurrence = Recurrence(type: -1, name: "");
 
   @override
   void initState() {
@@ -54,12 +55,16 @@ class _AddPageReworkState extends State<AddPageRework> {
       _amount = _transaction.amount;
       _date = _transaction.date;
       _subcategory = Subcategory(
-          id: _transaction.subcategoryId,
-          name: _transaction.subcategoryName,
-          categoryId: _transaction.categoryId);
+        id: _transaction.subcategoryId,
+        name: _transaction.subcategoryName,
+        categoryId: _transaction.categoryId,
+      );
+      _recurrence = Recurrence(
+        type: _transaction.recurringType,
+        name: "",
+      );
       _isRecurring = _transaction.isRecurring;
       _untilDate = _transaction.recurringUntil;
-      _recurrenceType = _transaction.recurringType;
     }
     super.initState();
   }
@@ -92,7 +97,6 @@ class _AddPageReworkState extends State<AddPageRework> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _handleSaving(),
-
         tooltip: 'Save transaction',
         label: Text(
           "SAVE",
@@ -114,8 +118,10 @@ class _AddPageReworkState extends State<AddPageRework> {
     // Show snackbar
     if (_hasError) print("NOT WORKING WITH THIS!!");
 
-    print(
-        "Amount: $_amount, Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}");
+    print("Amount: $_amount, "
+        "Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}, "
+        "Cat: $_subcategory "
+        "Recurrence: $_recurrence");
 
     if (_editing) {
       print("Save edited transaction!");
@@ -281,8 +287,26 @@ class _AddPageReworkState extends State<AddPageRework> {
         iconSize: 20,
         isExpandable: false,
         isChild: true,
-        onTap: () {},
-        child: Text(""),
+        onTap: () async {
+          Recurrence rec = await showDialog(
+            context: context,
+            child: RecurrenceDialog(
+              recurrenceType: _recurrence.type,
+            ),
+          );
+          if (rec != null) {
+            setState(() {
+              _recurrence = rec;
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            _recurrence.name,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
       ),
       RowWrapper(
         leadingIcon: Icons.access_time,
