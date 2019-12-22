@@ -127,6 +127,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
     );
   }
 
+  /// UNUSED until adding of category/subcategory is implemented
   Widget _buildAddSubcategoryItem() {
     return _buildGeneralListItem(
       text: "+",

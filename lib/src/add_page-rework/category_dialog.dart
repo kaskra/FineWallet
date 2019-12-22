@@ -147,11 +147,12 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
     );
   }
 
+  /// UNUSED until adding of category/subcategory is implemented
   Widget _buildCategoryAddItem() {
     return _buildGeneralGridItem(
       color: Theme.of(context).colorScheme.secondary,
       onTap: () {
-        print("Tapped ADDED!");
+        print("Add new category !! TODO !!");
       },
       text: "Add Category",
       iconData: Icons.add,
