@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/src/add_page-rework/category_dialog.dart';
 import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
 import 'package:FineWallet/src/add_page-rework/row_wrapper.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
@@ -177,10 +178,13 @@ class _AddPageReworkState extends State<AddPageRework> {
         isChild: false,
         onTap: () async {
           var res = showDialog(
-              context: context,
-              child: CategoryChoiceDialog(
-                isExpense: widget.isExpense,
-              ));
+            context: context,
+            child: CategoryChoiceDialog(
+              isExpense: widget.isExpense,
+              selectedCategory: _subcategoryId,
+            ),
+          );
+          print("Return from Category: $res");
         },
         child: Text(_subcategoryName ?? ""),
       ),
