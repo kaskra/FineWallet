@@ -166,21 +166,17 @@ class _AddPageReworkState extends State<AddPageRework> {
   /// appear and provide the needed information to the user.
   ///
   void _handleSaving() {
-    // Show snackbar with hints when error or not valid
+    // Show snackbar with hints when error
     if (_hasError) {
       print("NOT WORKING WITH THIS!!");
       _showSnackBar("Your specified amount is not a number!");
     }
 
+    // Show snackbar with hints when not valid
     Tuple2<String, bool> isValid = _isValidTransaction();
     if (!isValid.second) {
       _showSnackBar(isValid.first);
     }
-
-//    print("Amount: $_amount, "
-//        "Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}, "
-//        "Cat: $_subcategory "
-//        "Recurrence: $_recurrence");
 
     if (_editing) {
       _updateTransaction();
@@ -248,6 +244,7 @@ class _AddPageReworkState extends State<AddPageRework> {
     ));
   }
 
+  /// Builds the body structure .
   Widget _buildBody() {
     List<Widget> items = []
       ..addAll(_buildAmountRow())
