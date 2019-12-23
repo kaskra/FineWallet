@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // TODO: Specify your own unique Application ID (https://developer.android.com/Fstudio/build/application-id.html).
         applicationId "com.sylu.FineWallet"
         minSdkVersion 16
         targetSdkVersion 28
