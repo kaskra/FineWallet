@@ -64,16 +64,4 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
           .insertAll(catWithSubs.subcategories, orReplace: true);
     });
   }
-
-  /// Returns the amount of subcategories of all categories before
-  /// the selected category.
-  ///
-  /// TODO Remove when reworking add page
-  Future<int> countSubcategoriesBeforeCategory(int id) {
-    return customSelectQuery("SELECT COUNT(*) AS count FROM subcategories "
-            "WHERE category_id < (SELECT category_id as count "
-            "FROM subcategories WHERE id = $id)")
-        .map((QueryRow row) => row.readInt("count"))
-        .getSingle();
-  }
 }

@@ -9,7 +9,7 @@
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/src/add_page-rework/add_page_rework.dart';
+import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/date_separator.dart';
 import 'package:FineWallet/src/history_page/history_item.dart';
 import 'package:FineWallet/src/widgets/general_widgets.dart';
@@ -78,16 +78,10 @@ class _HistoryState extends State<History> {
 
   /// Edit an item on the add page. Close selection mode afterwards.
   void _editItem(TransactionsWithCategory tx) {
-    int isExpense = tx.isExpense ? 1 : 0;
-    String title = tx.isExpense ? "Expense" : "Income";
-//    Navigator.push(
-//        context,
-//        MaterialPageRoute(
-//            builder: (context) => AddPage(title, isExpense, transaction: tx)));
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AddPageRework(
+            builder: (context) => AddPage(
                   isExpense: tx.isExpense,
                   transaction: tx,
                 )));

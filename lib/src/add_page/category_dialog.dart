@@ -1,7 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/src/add_page-rework/subcategory_dialog.dart';
+import 'package:FineWallet/src/add_page/subcategory_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

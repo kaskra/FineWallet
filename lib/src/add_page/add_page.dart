@@ -1,22 +1,10 @@
-/*
- * Project: FineWallet
- * Last Modified: Tuesday, 10th September 2019 11:15:33 am
- * Modified By: Lukas (luke.krauch@gmail.com>)
- * -----
- * Copyright 2019 - 2019 Sylu, Sylu
- */
-
-import 'dart:async';
-
-import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/datatypes/category.dart';
-import 'package:FineWallet/core/datatypes/category_icon.dart';
-import 'package:FineWallet/data/moor_database.dart' as db;
+import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/data/utils/recurrence_utils.dart' as recurrenceUtils;
-import 'package:FineWallet/src/add_page/bottom_sheets.dart';
-import 'package:FineWallet/src/widgets/corner_triangle.dart';
-import 'package:FineWallet/src/widgets/general_widgets.dart';
+import 'package:FineWallet/src/add_page/category_dialog.dart';
+import 'package:FineWallet/src/add_page/recurrence_dialog.dart';
+import 'package:FineWallet/src/add_page/row_widgets.dart';
+import 'package:FineWallet/src/add_page/row_wrapper.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,516 +12,449 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AddPage extends StatefulWidget {
-  AddPage(this.title, this.isExpense, {Key key, this.transaction})
-      : super(key: key);
+  AddPage({
+    Key key,
+    @required this.isExpense,
+    this.transaction,
+  }) : super(key: key);
 
-  final String title;
-  final int isExpense;
+  final bool isExpense;
   final TransactionsWithCategory transaction;
 
+  @override
   _AddPageState createState() => _AddPageState();
 }
 
 class _AddPageState extends State<AddPage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  /// The transactions that the user wants to edit.
+  TransactionsWithCategory _transaction;
 
-  final double bottomSheetHeight = 265;
-  final double topBorderHeight = 5;
-  final TextEditingController _textEditingController = TextEditingController();
+  /// The flag that signals if the page is loaded in edit or normal mode.
+  bool _editing = false;
 
-  // transactions
-  double _expense;
-  Category _subcategory;
-  DateTime _date;
-  double _keyboardHeight;
+  /// The transaction money amount.
+  double _amount = 0.00;
 
-  // additional transaction parameters
-  bool _isExpanded = false;
-  DateTime _repeatUntil;
-  int _typeIndex = 2;
-  bool _isEditMode = false;
-  int _editTxId = -1;
+  /// The (original) transaction date.
+  int _date = dayInMillis(DateTime.now());
 
-  @override
-  void initState() {
-    super.initState();
-    _date = DateTime.now();
-  }
+  /// The chosen subcategory, holds id, name and category id.
+  Subcategory _subcategory;
 
-  // TODO rework this!!
-  void checkForEditMode() async {
+  bool _isRecurring = false;
+  Recurrence _recurrence;
+  int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
+
+  /// State variables
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  bool _hasError = false;
+  bool _initialized = false;
+
+  Future _getTransactionValues() async {
     if (widget.transaction != null) {
-      List<db.Category> categories = await Provider.of<db.AppDatabase>(context)
-          .categoryDao
-          .getAllCategories();
-      int selectedCategory = widget.transaction.categoryId;
-      if (!widget.transaction.isExpense) {
-        selectedCategory -= categories.length;
-      } else {
-        selectedCategory -= 1;
-      }
+      _transaction = widget.transaction;
+      _editing = true;
+      _amount = _transaction.amount;
+      _date = _transaction.date;
+      _subcategory = Subcategory(
+        id: _transaction.subcategoryId,
+        name: _transaction.subcategoryName,
+        categoryId: _transaction.categoryId,
+      );
+      _isRecurring = _transaction.isRecurring;
+      _untilDate = _transaction.recurringUntil;
 
-      _editTxId = widget.transaction.originalId;
-      _isEditMode = true;
-      _expense = widget.transaction.amount;
-      _textEditingController.text = _expense.toStringAsFixed(2);
-      _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction.date);
-      _subcategory = Category(
-          CategoryIcon(widget.transaction.categoryId - 1).data,
-          widget.transaction.subcategoryName,
-          widget.transaction.subcategoryId,
-          selectedCategory: selectedCategory);
-
-      if (widget.transaction.isRecurring) {
-        if (widget.transaction.recurringUntil != null) {
-          _repeatUntil = DateTime.fromMillisecondsSinceEpoch(
-              widget.transaction.recurringUntil);
-        }
-        _typeIndex = widget.transaction.recurringType;
-        _isExpanded = widget.transaction.isRecurring;
-
+      if (_isRecurring) {
         // If recurring, set the date to the first of the recurrence.
         // With that every recurring instance is changed
-        List<db.Transaction> txs = await Provider.of<db.AppDatabase>(context)
+        List<Transaction> txs = await Provider.of<AppDatabase>(context)
             .transactionDao
             .getAllTransactions();
+        txs = txs.where((tx) => tx.id == _transaction.originalId).toList();
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
-        txs = txs.where((tx) => tx.id == _editTxId).toList();
-        _date = DateTime.fromMillisecondsSinceEpoch(txs.toList().last.date);
+        _date = txs.toList().last.date;
+
+        List<Recurrence> recurrenceName =
+            await Provider.of<AppDatabase>(context).getRecurrences();
+        _recurrence = recurrenceName
+            .where((r) => r.type == _transaction.recurringType)
+            .first;
       }
-      setState(() {});
     }
-  }
-
-  Widget _expenseCards(IconData icon, String label, int value, Function onTap) {
-    String valueString = "";
-    IconData iconData = icon;
-    switch (value) {
-      case 0:
-        valueString = _expense != null ? _expense.toStringAsFixed(2) : "-";
-        break;
-      case 1:
-        valueString =
-            _subcategory != null ? _subcategory.subcategoryLabel : "-";
-        iconData = _subcategory != null ? _subcategory.icon : icon;
-        break;
-      case 2:
-        if (_date != null) {
-          var formatter = new DateFormat('dd.MM.yy');
-          valueString = formatter.format(_date);
-        } else {
-          valueString = "-";
-        }
-    }
-
-    return Expanded(
-      child: Card(
-        child: InkWell(
-          onTap: () => onTap(),
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            child: LayoutBuilder(
-              builder: (context, constraint) {
-                return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(label, style: TextStyle(fontSize: 10)),
-                      Icon(
-                        iconData,
-                        size: constraint.biggest.width / 3,
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      ),
-                      FittedBox(
-                        child: Text(valueString,
-                            maxLines: 2,
-                            softWrap: false,
-                            style: TextStyle(fontSize: 15)),
-                      ),
-                    ]);
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void setExpense() {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          _keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-          return WillPopScope(
-            onWillPop: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
-              return Future.value(true);
-            },
-            child: Container(
-              color: Colors.transparent, //const Color(0xFF636a75),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                    border: Border.all(
-                        color: Theme.of(context).canvasColor,
-                        width: topBorderHeight / 2),
-                    borderRadius:
-                        BorderRadius.vertical(top: const Radius.circular(16))),
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                height: _keyboardHeight + (bottomSheetHeight - _keyboardHeight),
-                child: Align(
-                  alignment: FractionalOffset.topCenter,
-                  child: TextField(
-                    decoration: InputDecoration(
-                        labelText:
-                            "Enter your ${widget.isExpense == 0 ? "income" : "expense"}",
-                        contentPadding: const EdgeInsets.all(4),
-                        labelStyle: TextStyle(
-                            fontSize: 15,
-                            color: Theme.of(context).colorScheme.onSecondary),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onBackground)),
-                        hintStyle: TextStyle(
-                            fontSize: 25,
-                            color: Theme.of(context).colorScheme.onSecondary),
-                        hintText: "0.00"),
-                    autofocus: true,
-                    onSubmitted: (s) {
-                      return Navigator.pop(context);
-                    },
-                    controller: _textEditingController,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(fontSize: 25),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).whenComplete(() {
-      double value = 0;
-      try {
-        value = double.parse(_textEditingController.text);
-      } catch (e) {
-        if (_textEditingController.text != "") {
-          String replaced = _textEditingController.text.replaceAll(',', '.');
-          value = double.parse(replaced);
-        } else {
-          value = 0;
-        }
-      }
-      setState(() {
-        _expense = value;
-      });
+    setState(() {
+      _initialized = true;
     });
-  }
-
-  void setCategory() async {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            color: Colors.transparent, //const Color(0xFF636a75),
-            child: CategoryBottomSheet(widget.isExpense, _subcategory),
-          );
-        }).then((chosenCategory) {
-      setState(() {
-        _subcategory = chosenCategory ?? _subcategory;
-      });
-    });
-  }
-
-  void setDate() {
-    showCupertinoModalPopup<DateTime>(
-      context: context,
-      builder: (BuildContext context) {
-        return buildBottomPicker(
-            CupertinoDatePicker(
-              mode: CupertinoDatePickerMode.date,
-              initialDateTime: _date ?? DateTime.now(),
-              onDateTimeChanged: (DateTime newDateTime) {
-                setState(() {
-                  _date = newDateTime;
-                });
-              },
-            ),
-            bottomSheetHeight,
-            topBorderHeight,
-            context);
-      },
-    );
-  }
-
-  void setRepeatingDate() {
-    showCupertinoModalPopup<DateTime>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          color: Color(0xFF636a75),
-          child: buildBottomPicker(
-              CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                initialDateTime:
-                    _repeatUntil ?? DateTime.now().add(Duration(days: 1)),
-                onDateTimeChanged: (DateTime newDateTime) {
-                  setState(() {
-                    _repeatUntil = newDateTime;
-                  });
-                },
-              ),
-              bottomSheetHeight,
-              topBorderHeight,
-              context),
-        );
-      },
-    );
-  }
-
-  void _showMissingValueSnackBar(BuildContext context, [String text]) {
-    _scaffoldKey.currentState?.showSnackBar(SnackBar(
-      content: Text(text ?? "Please fill out every panel!"),
-    ));
-  }
-
-  Widget _buildRecurringCard() {
-    return Container(
-        margin: const EdgeInsets.only(left: 5, right: 5),
-        child: Card(
-          child: CornerTriangle(
-              corner: Corner.TOP_LEFT,
-              size: const Size(25, 25),
-              icon: CornerIcon(Icons.replay,
-                  color: Theme.of(context).colorScheme.onSurface),
-              color: Theme.of(context).colorScheme.secondary,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        child: Text(
-                          "Repeat transaction",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        margin: EdgeInsets.only(left: 10),
-                      ),
-                      Switch(
-                        value: _isExpanded,
-                        onChanged: (v) {
-                          setState(() {
-                            _isExpanded = v;
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                  growAnimation(
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 10, right: 10, bottom: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Container(
-                              child: Divider(
-                                height: 1,
-                              ),
-                              margin: const EdgeInsets.only(bottom: 4),
-                            ),
-                            _repeatTypeChoice(),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: _repeatUntilDate(),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(),
-                      _isExpanded,
-                      const Duration(milliseconds: 300))
-                ],
-              )),
-        ));
-  }
-
-  Widget _repeatTypeChoice() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          "Every",
-          style: TextStyle(fontSize: 16),
-        ),
-        Container(
-          width: 100,
-          height: 35,
-          alignment: Alignment.center,
-          child: FutureBuilder<List<db.Recurrence>>(
-              future: Provider.of<db.AppDatabase>(context).getRecurrences(),
-              builder: (context, snapshot) {
-                return DropdownButton(
-                  isDense: true,
-                  isExpanded: true,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSecondary,
-                  ),
-                  value: _typeIndex,
-                  items: snapshot.hasData
-                      ? snapshot.data
-                          .map((rec) => DropdownMenuItem(
-                                value: rec.type,
-                                child: Text(rec.name),
-                              ))
-                          .toList()
-                      : [],
-                  onChanged: (v) {
-                    setState(() {
-                      if (v != null) {
-                        _typeIndex = v;
-                      }
-                    });
-                  },
-                );
-              }),
-        )
-      ],
-    );
-  }
-
-  Widget _repeatUntilDate() {
-    var formatter = new DateFormat('dd.MM.yy');
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Text(
-          "Until",
-          style: TextStyle(fontSize: 16),
-        ),
-        Container(
-          width: 100,
-          height: 35,
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.black12))),
-          child: MaterialButton(
-            onPressed: () {
-              setState(() {
-                _repeatUntil =
-                    _repeatUntil ?? DateTime.now().add(Duration(days: 1));
-              });
-              setRepeatingDate();
-            },
-            child: Text(
-              _repeatUntil != null ? formatter.format(_repeatUntil) : "",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-            ),
-          ),
-        )
-      ],
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isEditMode) checkForEditMode();
+    if (!_initialized && widget.transaction != null) {
+      _getTransactionValues();
+    }
 
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        iconTheme: Theme.of(context).iconTheme,
-        centerTitle: CENTER_APPBAR,
-        elevation: APPBAR_ELEVATION,
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
         title: Text(
-          widget.title,
+          'Add ${widget.isExpense ? "Expense" : "Income"}',
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        iconTheme: Theme.of(context).iconTheme,
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.topCenter,
-            height: 100,
-            margin: EdgeInsets.all(5),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _expenseCards(
-                    Icons.euro_symbol,
-                    "Amount ${widget.isExpense == 1 ? "Expense" : "Income"}",
-                    0,
-                    setExpense),
-                _expenseCards(Icons.local_offer, "Category", 1, setCategory),
-                _expenseCards(Icons.today, "Date", 2, setDate),
-              ],
-            ),
-          ),
-          _buildRecurringCard()
-        ],
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _handleSaving(),
+        tooltip: 'Save transaction',
+        label: Text(
+          "SAVE",
+          style: TextStyle(
+              fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
+        ), //Change Icon
       ),
-      floatingActionButton: buildFloatingActionButton(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      //Change for different locations
+      body: Center(
+        child: Container(
+          child: _buildBody(),
+        ),
+      ),
     );
   }
 
-  FloatingActionButton buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton.extended(
-        label: Text("SAVE",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-            )),
-        icon: Icon(
-          Icons.save,
-          color: Theme.of(context).colorScheme.onSurface,
+  /// Checks if the selected and specified transactions values are valid.
+  ///
+  /// Return
+  /// ------
+  /// [Tuple2] with a snackbar string and a boolean value that indicates
+  /// if there is a problem.
+  ///
+  Tuple2<String, bool> _isValidTransaction() {
+    if (_amount < 0)
+      return Tuple2<String, bool>(
+          "The specified amount can only be positive!", false);
+
+    if (_subcategory == null)
+      return Tuple2<String, bool>("Please choose a category!", false);
+
+    if (_isRecurring && _recurrence == null)
+      return Tuple2<String, bool>(
+          "Please specify which recurrence "
+          "type you want to use!",
+          false);
+
+    // We don't need to check if date is at least a day before until date.
+    // That is handled by the date picker.
+    if (_isRecurring && _untilDate == null)
+      return Tuple2<String, bool>(
+          "Please choose an end date "
+          "for the recurrence!",
+          false);
+
+    if (_date == null)
+      return Tuple2<String, bool>(
+          "Please choose a date for your transaction!", false);
+
+    return Tuple2<String, bool>("", true);
+  }
+
+  /// Creates or updates the transaction, if it is valid and there are no
+  /// other problems.
+  ///
+  /// If there is a problem with any of the values a snackbar will
+  /// appear and provide the needed information to the user.
+  ///
+  void _handleSaving() {
+    // Show snackbar with hints when error
+    if (_hasError) {
+      print("NOT WORKING WITH THIS!!");
+      _showSnackBar("Your specified amount is not a number!");
+    }
+
+    // Show snackbar with hints when not valid
+    Tuple2<String, bool> isValid = _isValidTransaction();
+    if (!isValid.second) {
+      _showSnackBar(isValid.first);
+    }
+
+    if (_editing) {
+      _updateTransaction();
+      print("Save edited transaction!");
+    } else {
+      _addNewTransaction();
+      print("Save new transaction!");
+    }
+    Navigator.of(context).pop();
+  }
+
+  /// Creates a [Transaction] object and adds it to the database table
+  /// `transactions`.
+  ///
+  void _addNewTransaction() async {
+    var tx = Transaction(
+      id: null,
+      date: _date,
+      isExpense: widget.isExpense,
+      isRecurring: _isRecurring,
+      amount: _amount,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      recurringType: _isRecurring ? _recurrence.type : null,
+      recurringUntil: _untilDate,
+      originalId: null,
+    );
+
+    await Provider.of<AppDatabase>(context)
+        .transactionDao
+        .insertTransaction(tx);
+  }
+
+  /// Creates a [Transaction] object and updates that transaction in
+  /// the database table `transactions`.
+  ///
+  /// The transaction is identified by its `originalId`, because recurrences
+  /// have a unique `id` value, but the same `originalId`
+  /// as the original transaction.
+  ///
+  void _updateTransaction() async {
+    var tx = Transaction(
+      id: _transaction.originalId,
+      date: _date,
+      isExpense: widget.isExpense,
+      isRecurring: _isRecurring,
+      amount: _amount,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      recurringType: _isRecurring ? _recurrence.type : null,
+      recurringUntil: _untilDate,
+      originalId: _transaction.originalId,
+    );
+    await Provider.of<AppDatabase>(context)
+        .transactionDao
+        .updateTransaction(tx);
+  }
+
+  /// Shows a snackbar with a specified text.
+  ///
+  void _showSnackBar(String value) {
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: Text(value),
+      backgroundColor: Colors.grey,
+    ));
+  }
+
+  /// Builds the body structure .
+  Widget _buildBody() {
+    List<Widget> items = []
+      ..addAll(_buildAmountRow())
+      ..addAll(_buildCategoryRow())
+      ..addAll(_buildDateRow())
+      ..addAll(_buildRecurrenceRow());
+
+    if (_isRecurring) {
+      items.addAll(_buildRecurrenceChoices());
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: items,
+    );
+  }
+
+  List<Widget> _buildAmountRow() {
+    return [
+      Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: RowTitle(title: "Amount")),
+      RowWrapper(
+        iconSize: 24,
+        leadingIcon: Icons.attach_money,
+        isExpandable: false,
+        isChild: false,
+        child: EditableNumericInputText(
+          defaultValue: _amount,
+          onChanged: (value) {
+            setState(() {
+              _amount = value;
+              if (_amount < 0) {
+                _hasError = true;
+              }
+            });
+          },
+          onError: (value) {
+            if (value) {
+              print("Got error! No real double value!");
+            }
+            setState(() {
+              _hasError = value;
+            });
+          },
         ),
-        onPressed: () async {
-          if (_expense != null &&
-              _date != null &&
-              _subcategory != null &&
-              _typeIndex != null) {
-            if (_repeatUntil != null) {
-              if (_repeatUntil.isBefore(_date))
-                return _showMissingValueSnackBar(context,
-                    "Please choose a date that is after the current date.");
+      )
+    ];
+  }
 
-              if (!recurrenceUtils.isRecurrencePossible(
-                  dayInMillis(_date), dayInMillis(_repeatUntil), _typeIndex))
-                return _showMissingValueSnackBar(context,
-                    "Your recurrence type does not fit inside the time frame.");
-            }
+  List<Widget> _buildCategoryRow() {
+    return [
+      RowTitle(title: "Category"),
+      RowWrapper(
+        iconSize: 24,
+        leadingIcon: Icons.category,
+        isExpandable: false,
+        isChild: false,
+        onTap: () async {
+          // Let the user choose a category and subcategory.
+          // Returning the Subcategory is enough, because
+          // it also holds the category id.
+          Subcategory res = await showDialog(
+            context: context,
+            child: CategoryChoiceDialog(
+              isExpense: widget.isExpense,
+              selectedSubcategory: _subcategory,
+            ),
+          );
 
-            db.Transaction newTx = new db.Transaction(
-                id: null,
-                originalId: _editTxId,
-                amount: _expense,
-                subcategoryId: _subcategory.index,
-                monthId: null,
-                date: dayInMillis(_date),
-                isExpense: widget.isExpense == 1,
-                isRecurring: _isExpanded,
-                recurringType: _typeIndex,
-                recurringUntil:
-                    _repeatUntil != null ? dayInMillis(_repeatUntil) : null);
-
-            if (_isEditMode) {
-              newTx = newTx.copyWith(id: _editTxId);
-              Provider.of<db.AppDatabase>(context)
-                  .transactionDao
-                  .updateTransaction(newTx);
-            } else {
-              Provider.of<db.AppDatabase>(context)
-                  .transactionDao
-                  .insertTransaction(newTx);
-            }
-            Navigator.pop(context);
-          } else {
-            return _showMissingValueSnackBar(context);
+          if (res != null) {
+            print("Return from Category: $res");
+            setState(() {
+              _subcategory = res;
+            });
           }
-        });
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            _subcategory?.name ?? "",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildDateRow() {
+    var formatter = new DateFormat('dd.MM.yy');
+    String formattedDate =
+        formatter.format(DateTime.fromMillisecondsSinceEpoch(_date));
+
+    return [
+      RowTitle(title: "Date"),
+      RowWrapper(
+        iconSize: 24,
+        leadingIcon: Icons.calendar_today,
+        isExpandable: false,
+        isChild: false,
+        onTap: () async {
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.fromMillisecondsSinceEpoch(_date),
+            firstDate: DateTime(2000, 1, 1),
+            lastDate: DateTime(2050, 12, 31),
+            initialDatePickerMode: DatePickerMode.day,
+          );
+          if (pickedDate != null) {
+            setState(() {
+              _date = dayInMillis(pickedDate);
+              if (_untilDate - dayInMillis(pickedDate) <
+                  Duration.millisecondsPerDay) {
+                _untilDate = dayInMillis(pickedDate.add(Duration(days: 1)));
+              }
+            });
+            print(DateTime.fromMillisecondsSinceEpoch(_date));
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            formattedDate,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildRecurrenceRow() {
+    return [
+      RowTitle(title: "Recurrence"),
+      RowWrapper(
+        iconSize: 24,
+        leadingIcon: Icons.replay,
+        isExpandable: true,
+        isExpanded: _isRecurring,
+        isChild: false,
+        onSwitch: (val) {
+          setState(() {
+            _isRecurring = val;
+          });
+        },
+      ),
+    ];
+  }
+
+  List<Widget> _buildRecurrenceChoices() {
+    var formatter = new DateFormat('dd.MM.yy');
+    String formattedDate =
+        formatter.format(DateTime.fromMillisecondsSinceEpoch(_untilDate));
+
+    return [
+      RowChildDivider(),
+      RowWrapper(
+        leadingIcon: Icons.low_priority,
+        iconSize: 20,
+        isExpandable: false,
+        isChild: true,
+        onTap: () async {
+          Recurrence rec = await showDialog(
+            context: context,
+            child: RecurrenceDialog(
+              recurrenceType: _recurrence?.type ?? -1,
+            ),
+          );
+          if (rec != null) {
+            setState(() {
+              _recurrence = rec;
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            _recurrence?.name ?? "",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+      RowWrapper(
+        leadingIcon: Icons.access_time,
+        iconSize: 20,
+        isExpandable: false,
+        isChild: true,
+        onTap: () async {
+          DateTime date =
+              DateTime.fromMillisecondsSinceEpoch(_date).add(Duration(days: 1));
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.fromMillisecondsSinceEpoch(_untilDate),
+            firstDate: DateTime(date.year, date.month, date.day),
+            lastDate: DateTime(2050, 12, 31),
+            initialDatePickerMode: DatePickerMode.day,
+          );
+          if (pickedDate != null) {
+            setState(() {
+              _untilDate = dayInMillis(pickedDate);
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            formattedDate,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      )
+    ];
   }
 }
