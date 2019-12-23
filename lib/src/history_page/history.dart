@@ -78,12 +78,13 @@ class _HistoryState extends State<History> {
 
   /// Edit an item on the add page. Close selection mode afterwards.
   void _editItem(TransactionsWithCategory tx) {
-    int isExpense = tx.isExpense ? 1 : 0;
-    String title = tx.isExpense ? "Expense" : "Income";
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AddPage(title, isExpense, transaction: tx)));
+            builder: (context) => AddPage(
+                  isExpense: tx.isExpense,
+                  transaction: tx,
+                )));
     _closeSelection();
   }
 

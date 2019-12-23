@@ -30,6 +30,9 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future<List<Category>> getAllCategoriesByType(bool isExpense) =>
       (select(categories)..where((c) => c.isExpense.equals(isExpense))).get();
 
+  Stream<List<Category>> watchAllCategoriesByType(bool isExpense) =>
+      (select(categories)..where((c) => c.isExpense.equals(isExpense))).watch();
+
   Future insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
 
@@ -60,17 +63,5 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
       await into(subcategories)
           .insertAll(catWithSubs.subcategories, orReplace: true);
     });
-  }
-
-  /// Returns the amount of subcategories of all categories before
-  /// the selected category.
-  ///
-  /// TODO Remove when reworking add page
-  Future<int> countSubcategoriesBeforeCategory(int id) {
-    return customSelectQuery("SELECT COUNT(*) AS count FROM subcategories "
-            "WHERE category_id < (SELECT category_id as count "
-            "FROM subcategories WHERE id = $id)")
-        .map((QueryRow row) => row.readInt("count"))
-        .getSingle();
   }
 }
