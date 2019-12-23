@@ -70,11 +70,12 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
   void initState() {
     if (widget.defaultValue != null) {
       _controller = TextEditingController.fromValue(
-          TextEditingValue(text: widget.defaultValue.toStringAsFixed(2)));
+          TextEditingValue(text: widget.defaultValue.toString()));
     } else {
       _controller = TextEditingController();
     }
-    _controller.clear();
+    _controller.selection =
+        TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
     super.initState();
   }
 
@@ -85,6 +86,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         color: _foundError ? Colors.red.withOpacity(0.8) : Colors.transparent,
       ),
       child: TextFormField(
+        controller: _controller,
         textAlign: TextAlign.right,
         textInputAction: TextInputAction.done,
         enableInteractiveSelection: false,
@@ -97,7 +99,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
           ),
           suffixText: Provider.of<LocalizationNotifier>(context).currency,
         ),
-        onChanged: (value) {
+        onChanged: (String value) {
           var res = double.tryParse(value);
           setState(() {
             _foundError = (res == null);
@@ -113,8 +115,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
           _validateAndSend(value);
         },
         maxLines: 1,
-        // TODO check back
-//        autofocus: true,
+        autofocus: true,
         autocorrect: false,
       ),
     );

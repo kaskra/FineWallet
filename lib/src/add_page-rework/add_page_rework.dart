@@ -89,11 +89,7 @@ class _AddPageReworkState extends State<AddPageRework> {
   @override
   Widget build(BuildContext context) {
     if (!_initialized && widget.transaction != null) {
-      // TODO Issue: when loading to edit single transaction
       _getTransactionValues();
-      return Center(
-        child: CircularProgressIndicator(),
-      );
     }
 
     return Scaffold(

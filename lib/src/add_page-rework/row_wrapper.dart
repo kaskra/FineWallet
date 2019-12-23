@@ -72,7 +72,7 @@ class RowWrapper extends StatelessWidget {
                     decoration: BoxDecoration(
                       border: Border(
                           bottom: BorderSide(
-                              width: 2,
+                              width: 1,
                               color:
                                   Theme.of(context).colorScheme.onBackground)),
                     ),
@@ -83,7 +83,7 @@ class RowWrapper extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
-                          width: 2,
+                          width: 1,
                           color: Theme.of(context).colorScheme.onBackground)),
                 ),
                 child: Align(alignment: Alignment.centerRight, child: child)),
