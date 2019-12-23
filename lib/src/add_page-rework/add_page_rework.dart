@@ -5,7 +5,6 @@ import 'package:FineWallet/src/add_page-rework/category_dialog.dart';
 import 'package:FineWallet/src/add_page-rework/recurrence_dialog.dart';
 import 'package:FineWallet/src/add_page-rework/row_widgets.dart';
 import 'package:FineWallet/src/add_page-rework/row_wrapper.dart';
-import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,19 +42,13 @@ class _AddPageReworkState extends State<AddPageRework> {
   Subcategory _subcategory;
 
   bool _isRecurring = false;
+  Recurrence _recurrence;
   int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
 
   /// State variables
-  bool _hasError = false;
-  Recurrence _recurrence;
-
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-
-  @override
-  void initState() {
-    _getTransactionValues();
-    super.initState();
-  }
+  bool _hasError = false;
+  bool _initialized = false;
 
   Future _getTransactionValues() async {
     if (widget.transaction != null) {
@@ -67,10 +60,6 @@ class _AddPageReworkState extends State<AddPageRework> {
         id: _transaction.subcategoryId,
         name: _transaction.subcategoryName,
         categoryId: _transaction.categoryId,
-      );
-      _recurrence = Recurrence(
-        type: _transaction.recurringType,
-        name: "",
       );
       _isRecurring = _transaction.isRecurring;
       _untilDate = _transaction.recurringUntil;
@@ -84,12 +73,29 @@ class _AddPageReworkState extends State<AddPageRework> {
         txs = txs.where((tx) => tx.id == _transaction.originalId).toList();
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
         _date = txs.toList().last.date;
+
+        List<Recurrence> recurrenceName =
+            await Provider.of<AppDatabase>(context).getRecurrences();
+        _recurrence = recurrenceName
+            .where((r) => r.type == _transaction.recurringType)
+            .first;
       }
     }
+    setState(() {
+      _initialized = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_initialized && widget.transaction != null) {
+      // TODO Issue: when loading to edit single transaction
+      _getTransactionValues();
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
@@ -101,19 +107,6 @@ class _AddPageReworkState extends State<AddPageRework> {
         centerTitle: true,
         automaticallyImplyLeading: true,
         iconTheme: Theme.of(context).iconTheme,
-        // TODO Remove after testing
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()));
-            },
-          )
-        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _handleSaving(),
@@ -134,18 +127,27 @@ class _AddPageReworkState extends State<AddPageRework> {
     );
   }
 
+  /// Checks if the selected and specified transactions values are valid.
+  ///
+  /// Return
+  /// ------
+  /// [Tuple2] with a snackbar string and a boolean value that indicates
+  /// if there is a problem.
+  ///
   Tuple2<String, bool> _isValidTransaction() {
-    Tuple2<String, bool> res;
     if (_amount < 0)
       return Tuple2<String, bool>(
           "The specified amount can only be positive!", false);
+
     if (_subcategory == null)
       return Tuple2<String, bool>("Please choose a category!", false);
+
     if (_isRecurring && _recurrence == null)
       return Tuple2<String, bool>(
           "Please specify which recurrence "
           "type you want to use!",
           false);
+
     // We don't need to check if date is at least a day before until date.
     // That is handled by the date picker.
     if (_isRecurring && _untilDate == null)
@@ -153,6 +155,7 @@ class _AddPageReworkState extends State<AddPageRework> {
           "Please choose an end date "
           "for the recurrence!",
           false);
+
     if (_date == null)
       return Tuple2<String, bool>(
           "Please choose a date for your transaction!", false);
@@ -160,6 +163,12 @@ class _AddPageReworkState extends State<AddPageRework> {
     return Tuple2<String, bool>("", true);
   }
 
+  /// Creates or updates the transaction, if it is valid and there are no
+  /// other problems.
+  ///
+  /// If there is a problem with any of the values a snackbar will
+  /// appear and provide the needed information to the user.
+  ///
   void _handleSaving() {
     // Show snackbar with hints when error or not valid
     if (_hasError) {
@@ -172,11 +181,10 @@ class _AddPageReworkState extends State<AddPageRework> {
       _showSnackBar(isValid.first);
     }
 
-    // TODO remove when done
-    print("Amount: $_amount, "
-        "Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}, "
-        "Cat: $_subcategory "
-        "Recurrence: $_recurrence");
+//    print("Amount: $_amount, "
+//        "Date: ${DateTime.fromMillisecondsSinceEpoch(_date)}, "
+//        "Cat: $_subcategory "
+//        "Recurrence: $_recurrence");
 
     if (_editing) {
       _updateTransaction();
@@ -188,6 +196,9 @@ class _AddPageReworkState extends State<AddPageRework> {
     Navigator.of(context).pop();
   }
 
+  /// Creates a [Transaction] object and adds it to the database table
+  /// `transactions`.
+  ///
   void _addNewTransaction() async {
     var tx = Transaction(
       id: null,
@@ -207,6 +218,13 @@ class _AddPageReworkState extends State<AddPageRework> {
         .insertTransaction(tx);
   }
 
+  /// Creates a [Transaction] object and updates that transaction in
+  /// the database table `transactions`.
+  ///
+  /// The transaction is identified by its `originalId`, because recurrences
+  /// have a unique `id` value, but the same `originalId`
+  /// as the original transaction.
+  ///
   void _updateTransaction() async {
     var tx = Transaction(
       id: _transaction.originalId,
@@ -225,6 +243,8 @@ class _AddPageReworkState extends State<AddPageRework> {
         .updateTransaction(tx);
   }
 
+  /// Shows a snackbar with a specified text.
+  ///
   void _showSnackBar(String value) {
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: Text(value),

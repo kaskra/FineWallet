@@ -113,7 +113,8 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
           _validateAndSend(value);
         },
         maxLines: 1,
-        autofocus: true,
+        // TODO check back
+//        autofocus: true,
         autocorrect: false,
       ),
     );
