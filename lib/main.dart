@@ -98,10 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _addTransaction(int leftRight) {
     if (leftRight == -1) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddPage("Income", 0)));
+          MaterialPageRoute(builder: (context) => AddPage(isExpense: false)));
     } else if (leftRight == 1) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddPage("Expense", 1)));
+          MaterialPageRoute(builder: (context) => AddPage(isExpense: true)));
     }
     return;
   }
