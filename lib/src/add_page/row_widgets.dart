@@ -14,6 +14,7 @@ class RowChildDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Divider(
+      color: Theme.of(context).colorScheme.onBackground,
       indent: 20,
       endIndent: 15,
       thickness: 0.2,
