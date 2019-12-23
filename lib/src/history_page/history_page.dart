@@ -32,6 +32,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Theme.of(context).colorScheme.background,
       child: _buildHistoryList(),
     );
   }
@@ -44,7 +45,11 @@ class _HistoryPageState extends State<HistoryPage> {
       builder: (BuildContext context,
           AsyncSnapshot<List<TransactionsWithCategory>> snapshot) {
         if (snapshot.hasData) {
-          return _buildItems(snapshot.data);
+          if (snapshot.data.length > 0) {
+            return _buildItems(snapshot.data);
+          } else {
+            return const SizedBox();
+          }
         } else {
           return const SizedBox();
         }
