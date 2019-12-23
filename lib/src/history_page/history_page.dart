@@ -114,6 +114,7 @@ class _HistoryPageState extends State<HistoryPage> {
         foregroundPainter: IndicatorPainter(
           color: d.isExpense ? Colors.red : Colors.green,
           thickness: 6,
+          side: d.isExpense ? IndicatorSide.RIGHT : IndicatorSide.LEFT,
         ),
         child: Material(
           elevation: Theme.of(context).cardTheme.elevation,
