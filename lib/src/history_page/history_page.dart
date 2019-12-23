@@ -1,7 +1,9 @@
+import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/src/history_page/indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
@@ -54,25 +56,22 @@ class _HistoryPageState extends State<HistoryPage> {
     List<Widget> items = [];
 
     DateTime lastDate = DateTime.fromMillisecondsSinceEpoch(data.first.date);
-    items.add(Text(
-      _getDateString(lastDate),
-      style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),
-    ));
+    items.add(_buildDateString(lastDate));
     for (var d in data) {
       var date = DateTime.fromMillisecondsSinceEpoch(d.date);
 
+      // Visually divide transactions when the month changes.
       if (date.month != lastDate.month) {
-        items.add(Divider());
+        items.add(_buildMonthDivider());
       }
 
+      // Add a date string to indicate to which day the transactions belong.
       if (date != lastDate) {
-        items.add(Text(
-          _getDateString(date),
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),
-        ));
+        items.add(_buildDateString(date));
       }
 
       items.add(_buildTxItem(d));
+      lastDate = date;
     }
 
     return ListView(
@@ -81,22 +80,59 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Widget _buildMonthDivider() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Divider(
+        endIndent: 10,
+        indent: 10,
+      ),
+    );
+  }
+
+  Widget _buildDateString(DateTime lastDate) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0),
+      child: Text(
+        _getDateString(lastDate),
+        style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.secondary),
+      ),
+    );
+  }
+
   Widget _buildTxItem(TransactionsWithCategory d) {
-    return CustomPaint(
-      foregroundPainter:
-          IndicatorPainter(d.isExpense ? Colors.red : Colors.green),
-      child: ListTile(
-        title: Text(
-          d.subcategoryName,
-          style: TextStyle(fontWeight: FontWeight.w600),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: CustomPaint(
+        foregroundPainter: IndicatorPainter(
+          color: d.isExpense ? Colors.red : Colors.green,
+          thickness: 6,
         ),
-        subtitle: Text(d.subcategoryName),
-        trailing: Text(
-          " ${d.isExpense ? "-" : ""}${d.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-          style: TextStyle(
-              fontSize: 16,
-              color: d.isExpense ? Colors.red : Colors.green,
-              fontWeight: FontWeight.bold),
+        child: Material(
+          elevation: Theme.of(context).cardTheme.elevation,
+          child: ListTile(
+            title: Text(
+              d.subcategoryName,
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(d.subcategoryName),
+            trailing: Text(
+              " ${d.isExpense ? "-" : ""}${d.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: d.isExpense ? Colors.red : Colors.green,
+                  fontWeight: FontWeight.bold),
+            ),
+            leading: CircleAvatar(
+              child: Icon(
+                CategoryIcon(d.categoryId - 1).data,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+            ),
+          ),
         ),
       ),
     );
@@ -105,25 +141,5 @@ class _HistoryPageState extends State<HistoryPage> {
   String _getDateString(DateTime date) {
     intl.DateFormat d = intl.DateFormat.MMMEd();
     return d.format(date).toUpperCase();
-  }
-}
-
-class IndicatorPainter extends CustomPainter {
-  final Color _color;
-
-  IndicatorPainter(this._color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = _color;
-
-    Rect rect = Rect.fromLTWH(0, 0, 6, size.height);
-
-    canvas.drawRect(rect, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }
