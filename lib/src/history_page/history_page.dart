@@ -124,35 +124,43 @@ class _HistoryPageState extends State<HistoryPage> {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             subtitle: Text(d.subcategoryName),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                d.isExpense
-                    ? Icon(
-                        Icons.replay,
-                        color: Theme.of(context).colorScheme.secondary,
-                        size: 18,
-                      )
-                    : SizedBox(),
-                Text(
-                  " ${d.isExpense ? "-" : ""}${d.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: d.isExpense ? Colors.red : Colors.green,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            leading: CircleAvatar(
-              child: Icon(
-                CategoryIcon(d.categoryId - 1).data,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-            ),
+            trailing: _buildAmountText(d),
+            leading: _buildItemIcon(d),
           ),
         ),
       ),
+    );
+  }
+
+  CircleAvatar _buildItemIcon(TransactionsWithCategory d) {
+    return CircleAvatar(
+      child: Icon(
+        CategoryIcon(d.categoryId - 1).data,
+        color: Theme.of(context).iconTheme.color,
+      ),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
+    );
+  }
+
+  Widget _buildAmountText(TransactionsWithCategory d) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        d.isExpense
+            ? Icon(
+                Icons.replay,
+                color: Theme.of(context).colorScheme.secondary,
+                size: 18,
+              )
+            : SizedBox(),
+        Text(
+          " ${d.isExpense ? "-" : ""}${d.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          style: TextStyle(
+              fontSize: 16,
+              color: d.isExpense ? Colors.red : Colors.green,
+              fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
