@@ -96,10 +96,12 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildDateString(DateTime lastDate) {
+    intl.DateFormat d = intl.DateFormat.MMMEd();
+
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0),
       child: Text(
-        _getDateString(lastDate),
+        d.format(lastDate).toUpperCase(),
         style: TextStyle(
             fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.secondary),
@@ -162,10 +164,5 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       ],
     );
-  }
-
-  String _getDateString(DateTime date) {
-    intl.DateFormat d = intl.DateFormat.MMMEd();
-    return d.format(date).toUpperCase();
   }
 }
