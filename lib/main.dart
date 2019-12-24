@@ -154,7 +154,13 @@ class _MyHomePageState extends State<MyHomePage> {
       const SizedBox(),
       const OverviewPage(),
 //      _buildHistory(),
-      const HistoryPage()
+      HistoryPage(
+        onChangeSelectionMode: (b) {
+          setState(() {
+            _isSelectionModeActive = b;
+          });
+        },
+      )
     ];
 
     return Scaffold(
