@@ -70,7 +70,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildSelectionAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: SelectionAppBar(
+      child: SelectionAppBar<TransactionsWithCategory>(
         title: "FineWallet",
         selectedItems: _selectedItems,
         onClose: () => _closeSelection(),

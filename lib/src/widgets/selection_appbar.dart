@@ -7,11 +7,9 @@
  */
 
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:flutter/material.dart';
 
-// TODO transform to generic
-class SelectionAppBar extends StatefulWidget implements PreferredSizeWidget {
+class SelectionAppBar<T> extends StatefulWidget implements PreferredSizeWidget {
   SelectionAppBar(
       {Key key,
       @required this.title,
@@ -21,7 +19,7 @@ class SelectionAppBar extends StatefulWidget implements PreferredSizeWidget {
       this.onEdit})
       : preferredSize = Size.fromHeight(kToolbarHeight);
 
-  final Map<int, TransactionsWithCategory> selectedItems;
+  final Map<int, T> selectedItems;
   final String title;
   final void Function() onDelete;
   final void Function() onEdit;
@@ -34,7 +32,7 @@ class SelectionAppBar extends StatefulWidget implements PreferredSizeWidget {
   _SelectionAppBarState createState() => _SelectionAppBarState();
 }
 
-class _SelectionAppBarState extends State<SelectionAppBar> {
+class _SelectionAppBarState<T> extends State<SelectionAppBar> {
   @override
   Widget build(BuildContext context) {
     return _buildSelectionAppBar(widget.selectedItems);
@@ -44,8 +42,7 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
   /// Has possible actions like Edit, Delete, Close.
   ///
   /// Returns: The built app bar.
-  Widget _buildSelectionAppBar(
-      Map<int, TransactionsWithCategory> selectedItems) {
+  Widget _buildSelectionAppBar(Map<int, T> selectedItems) {
     return AppBar(
         backgroundColor:
             Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
@@ -78,7 +75,7 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
     );
   }
 
-  Widget _buildEditAction(Map<int, TransactionsWithCategory> selectedItems) {
+  Widget _buildEditAction(Map<int, T> selectedItems) {
     return selectedItems.length == 1
         ? Padding(
             padding: const EdgeInsets.only(right: 20),
