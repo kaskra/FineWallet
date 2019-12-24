@@ -12,7 +12,6 @@ import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
-import 'package:FineWallet/src/history_page/history.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
 import 'package:FineWallet/src/profile_page/profile.dart';
@@ -113,10 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildHistory() {
-    return History(
-      onChangeSelectionMode: (isSelectionModeOn) {
+    return HistoryPage(
+      onChangeSelectionMode: (b) {
         setState(() {
-          _isSelectionModeActive = isSelectionModeOn;
+          _isSelectionModeActive = b;
         });
       },
     );
@@ -153,14 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
-//      _buildHistory(),
-      HistoryPage(
-        onChangeSelectionMode: (b) {
-          setState(() {
-            _isSelectionModeActive = b;
-          });
-        },
-      )
+      _buildHistory(),
     ];
 
     return Scaffold(

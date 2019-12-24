@@ -3,21 +3,30 @@ import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_date_title.dart';
+import 'package:FineWallet/src/history_page/history_item.dart';
 import 'package:FineWallet/src/history_page/history_month_divider.dart';
-import 'package:FineWallet/src/history_page/new_history_item.dart';
 import 'package:FineWallet/src/widgets/general_widgets.dart';
 import 'package:FineWallet/src/widgets/selection_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// This class is used to create a page which shows all recorded transactions.
+///
+/// By passing in a [TransactionFilterSettings] the user can decide
+/// which transactions to see.
+///
+/// By default every recorded transaction up to the current day is shown.
+///
 class HistoryPage extends StatefulWidget {
   final TransactionFilterSettings filterSettings;
 
   final void Function(bool) onChangeSelectionMode;
 
-  const HistoryPage(
-      {Key key, this.filterSettings, @required this.onChangeSelectionMode})
-      : super(key: key);
+  const HistoryPage({
+    Key key,
+    this.filterSettings,
+    @required this.onChangeSelectionMode,
+  }) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -40,7 +49,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: <Widget>[
           _isSelectionActive ? _buildSelectionAppBar() : Container(),
@@ -91,6 +100,23 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  /// Returns a [ListView] containing every queried [TransactionsWithCategory].
+  ///
+  /// Before every new date in the list, a [HistoryDateTitle] is added to
+  /// show to which date the following [HistoryItem]s belong.
+  ///
+  /// When the month between two transactions changes, an additional
+  /// item [HistoryMonthDivider] is added to visually divide the transactions.
+  ///
+  /// Input
+  /// -----
+  /// List of [TransactionsWithCategory] to display.
+  ///
+  /// Return
+  /// -----
+  /// [ListView] containing [HistoryItem], [HistoryMonthDivider]
+  /// and [HistoryDateTitle].
+  ///
   Widget _buildItems(List<TransactionsWithCategory> data) {
     List<Widget> items = [];
 
@@ -109,16 +135,7 @@ class _HistoryPageState extends State<HistoryPage> {
         items.add(HistoryDateTitle(date: date));
       }
 
-      items.add(NewHistoryItem(
-        key: new Key(d.hashCode.toString()),
-        transaction: d,
-        isSelected: _selectedItems.containsKey(d.originalId),
-        isSelectionActive: _isSelectionActive,
-        onSelect: (selected) {
-          _toggleSelectionMode(selected, d);
-          _checkSelectionMode();
-        },
-      ));
+      items.add(_buildItem(d));
       lastDate = date;
     }
 
@@ -128,6 +145,43 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  /// Returns the [HistoryItem] for a specific [TransactionsWithCategory]
+  /// that is passed in.
+  ///
+  /// Input
+  /// -----
+  /// [TransactionsWithCategory] to display in history.
+  ///
+  /// Return
+  /// ------
+  /// [HistoryItem] with transaction information.
+  ///
+  Widget _buildItem(TransactionsWithCategory d) {
+    return HistoryItem(
+      key: new Key(d.hashCode.toString()),
+      transaction: d,
+      isSelected: _selectedItems.containsKey(d.originalId),
+      isSelectionActive: _isSelectionActive,
+      onSelect: (selected) {
+        _toggleSelectionMode(selected, d);
+        _checkSelectionMode();
+      },
+    );
+  }
+
+  /// Toggles between selection ON and OFF. When ON, the main appbar is
+  /// replaced by the [SelectionAppBar], which shows how many items
+  /// are selected and provides actions to apply to the selected items.
+  ///
+  /// The selected items are identified by the `originalId` of
+  /// their transaction. By using this id, every recurring transaction of
+  /// an original transaction is selected once a single one is selected.
+  ///
+  /// Input
+  /// -----
+  /// - [bool] received from a item.
+  /// - [TransactionsWithCategory] which is displayed on the item.
+  ///
   void _toggleSelectionMode(bool selected, TransactionsWithCategory data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.originalId)) {
@@ -142,17 +196,22 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  /// Execute the passed function when the selection mode changes.
+  /// Executes the passed function when the selection mode changes.
   ///
   /// The selection mode gets activated when some history item is pressed for a longer time.
   /// In selection mode the displayed app bar changes to the selection app bar.
+  ///
   void _checkSelectionMode() async {
     if (widget.onChangeSelectionMode != null) {
       widget.onChangeSelectionMode(_isSelectionActive);
     }
   }
 
-  /// Delete the selected items from database. Close selection mode afterwards.
+  /// Deletes the selected items from database. Close selection mode afterwards.
+  ///
+  /// Before deleting the transaction, a confirm dialog will show,
+  /// requiring the user to authorize the deletion.
+  ///
   void _deleteItems() async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
@@ -166,6 +225,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   /// Edit an item on the add page. Close selection mode afterwards.
+  ///
   void _editItem(TransactionsWithCategory tx) {
     Navigator.push(
         context,
@@ -176,6 +236,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   /// Closes selection mode and clears the selected items list.
+  ///
   void _closeSelection() {
     setState(() {
       _selectedItems.clear();

@@ -6,7 +6,7 @@ import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/src/history_page/history_item_icon.dart';
+import 'package:FineWallet/src/widgets/icon_wrapper.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
