@@ -61,6 +61,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
           suffixText: Provider.of<LocalizationNotifier>(context).currency,
         ),
         onChanged: (String value) {
+          value = value.replaceAll(",", ".");
           var res = double.tryParse(value);
           setState(() {
             _foundError = (res == null);
@@ -84,6 +85,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
 
   void _validateAndSend(String text) {
     if (widget.onChanged != null) {
+      text = text.replaceAll(",", ".");
       var res = double.tryParse(text);
       if (res == null) {
         setState(() {
