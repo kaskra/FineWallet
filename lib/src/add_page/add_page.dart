@@ -172,12 +172,14 @@ class _AddPageState extends State<AddPage> {
     if (_hasError) {
       print("NOT WORKING WITH THIS!!");
       _showSnackBar("Your specified amount is not a number!");
+      return;
     }
 
     // Show snackbar with hints when not valid
     Tuple2<String, bool> isValid = _isValidTransaction();
     if (!isValid.second) {
       _showSnackBar(isValid.first);
+      return;
     }
 
     if (_editing) {
