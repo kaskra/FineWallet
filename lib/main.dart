@@ -14,7 +14,7 @@ import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/overview_page/overview.dart';
-import 'package:FineWallet/src/profile_page/profile.dart';
+import 'package:FineWallet/src/profile_page/new_profile_page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/src/statistics_page/month_pages.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
@@ -148,7 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
-      ProfilePage(),
+//      ProfilePage(),
+      NewProfilePage(),
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
