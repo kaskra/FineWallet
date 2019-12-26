@@ -14,7 +14,7 @@ class HistoryDateTitle extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0),
       child: Text(
         d.format(date).toUpperCase(),
-        style: TextStyle(
+        style: Theme.of(context).textTheme.body1.copyWith(
             fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.secondary),
       ),
