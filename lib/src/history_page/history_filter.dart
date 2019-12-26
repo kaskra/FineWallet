@@ -23,7 +23,7 @@ class HistoryFilter extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary, width: 0))),
         child: ExpansionTile(
           title: Text("Filter Settings"),
-          leading: Icon(Icons.settings),
+          leading: Icon(Icons.filter_list),
           children: items,
         ),
       ),
