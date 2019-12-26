@@ -61,11 +61,7 @@ class WeekOverviewTimeline extends StatelessWidget {
   Scaffold _historyWithScaffold(DateTime date, BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Expenses on ${date.day}.${date.month}.${date.year}",
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
-        iconTheme: Theme.of(context).iconTheme,
+        title: Text("Expenses on ${date.day}.${date.month}.${date.year}"),
       ),
       body: HistoryPage(
         onChangeSelectionMode: (s) {},
