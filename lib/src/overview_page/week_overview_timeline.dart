@@ -8,8 +8,10 @@
 
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/widgets/timeline.dart';
 import 'package:FineWallet/src/widgets/timestamp.dart';
 import 'package:FineWallet/utils.dart';
@@ -40,7 +42,8 @@ class WeekOverviewTimeline extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(CARD_RADIUS),
       onTap: () {
-        print("Go to ${date.day}.${date.month}.${date.year}!");
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => _historyWithScaffold(date, context)));
       },
       child: Container(
         padding: EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
@@ -51,6 +54,23 @@ class WeekOverviewTimeline extends StatelessWidget {
             _buildAmountString(budget, numberTextStyle),
           ],
         ),
+      ),
+    );
+  }
+
+  Scaffold _historyWithScaffold(DateTime date, BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Expenses on ${date.day}.${date.month}.${date.year}",
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
+        iconTheme: Theme.of(context).iconTheme,
+      ),
+      body: HistoryPage(
+        onChangeSelectionMode: (s) {},
+        filterSettings:
+            TransactionFilterSettings(day: dayInMillis(date), expenses: true),
       ),
     );
   }
