@@ -350,20 +350,25 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Stream<double> watchDailyBudget(DateTime date) {
     int remainingDays = getRemainingDaysInMonth(date);
 
+    String maxBudget = "(SELECT max_budget FROM months "
+        "WHERE first_date <= ${dayInMillis(date)} "
+        "AND last_date >= ${dayInMillis(date)})";
+    String monthId = "(SELECT id FROM months "
+        "WHERE first_date <= ${dayInMillis(date)} "
+        "AND last_date >= ${dayInMillis(date)})";
+
+    String monthlyExpenses = "(SELECT SUM(amount) FROM expenses "
+        "WHERE month_id = $monthId "
+        "AND NOT (date = ${dayInMillis(date)})"
+        "AND (recurring_type = 1 OR is_recurring = 0))";
+    String todayExpenses = "(SELECT SUM(amount) FROM expenses "
+        "WHERE date = ${dayInMillis(date)} "
+        "AND month_id = $monthId"
+        "AND (recurring_type = 1 OR is_recurring = 0))";
+
     final dailyBudget = customSelectQuery(
-            "SELECT (IFNULL( (SELECT max_budget FROM months "
-            "WHERE first_date <= ${dayInMillis(date)} "
-            "AND last_date >= ${dayInMillis(date)}), 0) - "
-            "IFNULL( (SELECT SUM(amount) FROM expenses "
-            "WHERE month_id = (SELECT id FROM months "
-            "WHERE first_date <= ${dayInMillis(date)} "
-            "AND last_date >= ${dayInMillis(date)}) ), 0)) / $remainingDays - "
-            "IFNULL( (SELECT SUM(amount) FROM expenses "
-            "WHERE date = ${dayInMillis(date)} "
-            "AND month_id = (SELECT id FROM months "
-            "WHERE first_date <= ${dayInMillis(date)} "
-            "AND last_date >= ${dayInMillis(date)}) ), 0) "
-            "AS budget",
+            "SELECT (IFNULL($maxBudget, 0) - IFNULL($monthlyExpenses, 0)) "
+            "/ $remainingDays - IFNULL( $todayExpenses, 0) AS budget",
             readsFrom: {transactions, months})
         .watchSingle()
         .map((row) => row.readDouble("budget"));
