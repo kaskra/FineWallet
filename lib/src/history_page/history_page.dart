@@ -3,10 +3,12 @@ import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_date_title.dart';
+import 'package:FineWallet/src/history_page/history_filter.dart';
 import 'package:FineWallet/src/history_page/history_item.dart';
 import 'package:FineWallet/src/history_page/history_month_divider.dart';
 import 'package:FineWallet/src/widgets/general_widgets.dart';
 import 'package:FineWallet/src/widgets/selection_appbar.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,12 +21,13 @@ import 'package:provider/provider.dart';
 ///
 class HistoryPage extends StatefulWidget {
   final TransactionFilterSettings filterSettings;
-
   final void Function(bool) onChangeSelectionMode;
+  final bool showFilters;
 
   const HistoryPage({
     Key key,
     this.filterSettings,
+    this.showFilters = false,
     @required this.onChangeSelectionMode,
   }) : super(key: key);
 
@@ -36,6 +39,11 @@ class _HistoryPageState extends State<HistoryPage> {
   TransactionFilterSettings _filterSettings;
   Map<int, TransactionsWithCategory> _selectedItems = new Map();
   bool _isSelectionActive = false;
+
+  /// The history filter state that holds every filter setting.
+  ///
+  /// Used to synchronize between the different setting rows.
+  HistoryFilterState _filterState = HistoryFilterState();
 
   @override
   void initState() {
@@ -53,6 +61,9 @@ class _HistoryPageState extends State<HistoryPage> {
       child: Column(
         children: <Widget>[
           _isSelectionActive ? _buildSelectionAppBar() : Container(),
+          (widget.showFilters ?? true)
+              ? _buildFilterSettingsRow()
+              : Container(),
           Expanded(
             child: Container(
               child: MediaQuery.removePadding(
@@ -64,6 +75,48 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFilterSettingsRow() {
+    return HistoryFilter(
+      items: [
+        HistoryFilterItem(
+          initialValue: _filterState.onlyExpenses,
+          title: "Only show expenses",
+          onChanged: (b) {
+            setState(() {
+              _filterState.onlyExpenses = b;
+            });
+            _handleFilterSettings();
+          },
+        ),
+        HistoryFilterItem(
+          initialValue: _filterState.onlyIncomes,
+          title: "Only show incomes",
+          onChanged: (b) {
+            setState(() {
+              _filterState.onlyIncomes = b;
+            });
+            _handleFilterSettings();
+          },
+        )
+      ],
+    );
+  }
+
+  void _handleFilterSettings() {
+    if (_filterState.onlyExpenses && _filterState.onlyIncomes) {
+      setState(() {
+        _filterSettings = TransactionFilterSettings.beforeDate(DateTime.now());
+      });
+      return;
+    }
+
+    _filterSettings = TransactionFilterSettings(
+      before: dayInMillis(DateTime.now()),
+      incomes: _filterState.onlyIncomes,
+      expenses: _filterState.onlyExpenses,
     );
   }
 
