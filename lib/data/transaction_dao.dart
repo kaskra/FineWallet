@@ -128,7 +128,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       );
 
       if (tx.isRecurring) {
-        await into(transactions).insertAll(txs);
+        await batch((b) {
+          b.insertAll(transactions, txs);
+        });
       }
     });
   }
