@@ -32,7 +32,7 @@ class SettingsPage extends StatelessWidget {
               AppearanceSection(),
               LocalizationSection(),
               SocialSection(),
-              ChartsSection(),
+              DefaultsSection(),
               OthersSection(),
             ],
           ),

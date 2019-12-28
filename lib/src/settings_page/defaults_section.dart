@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 /// This class creates a [Section] which shows the chart
 /// settings, like which chart to display first on the profile page.
-class ChartsSection extends StatefulWidget {
+class DefaultsSection extends StatefulWidget {
   @override
-  _ChartsSectionState createState() => _ChartsSectionState();
+  _DefaultsSectionState createState() => _DefaultsSectionState();
 }
 
-class _ChartsSectionState extends State<ChartsSection> {
+class _DefaultsSectionState extends State<DefaultsSection> {
   int _selectedId = UserSettings.getDefaultProfileChart();
 
   @override
