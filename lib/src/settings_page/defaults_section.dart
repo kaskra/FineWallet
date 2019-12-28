@@ -65,7 +65,10 @@ class _DefaultsSectionState extends State<DefaultsSection> {
                       state: UserSettings.getDefaultFilterSettings())),
             );
           },
-          child: Icon(Icons.keyboard_arrow_right),
+          child: Icon(
+            Icons.keyboard_arrow_right,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
         ),
       ),
     );

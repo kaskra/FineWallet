@@ -63,6 +63,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
           },
           child: Icon(
             Icons.keyboard_arrow_right,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
         ),
       ),
@@ -97,6 +98,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
           },
           child: Icon(
             Icons.keyboard_arrow_right,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
         ),
       ),
