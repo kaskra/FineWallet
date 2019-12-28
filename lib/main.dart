@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _isSelectionModeActive = b;
         });
       },
-      showFilters: true,
+      showFilters: UserSettings.getIsFilterSettings(),
     );
   }
 

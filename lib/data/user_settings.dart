@@ -9,6 +9,7 @@ class _Keys {
   static const CURRENCY = "currency";
   static const TX_SHARE = "tx_share";
   static const PROFILE_CHART = "default_profile_chart";
+  static const IS_FILTER_SETTINGS = "is_filter_settings";
 }
 
 /// This class is used to save user settings/preferences to persistent
@@ -164,5 +165,28 @@ class UserSettings {
     // 1 = Categories
     // 2 = Prediction
     return _store.getInt(_Keys.PROFILE_CHART) ?? 1;
+  }
+
+  /// Sets the value whether Filter Settings are enabled or not.
+  ///
+  /// The default value is TRUE.
+  ///
+  /// Input
+  /// -----
+  /// Value as [bool] to save persistently.
+  ///
+  static setIsFilterSettings(bool val) {
+    _store.setBool(_Keys.IS_FILTER_SETTINGS, val);
+  }
+
+  /// Returns the value whether Filter Settings are enabled or not.
+  ///
+  /// The default value is TRUE.
+  ///
+  /// Return
+  /// ------
+  /// True if Filter Settings are enabled, false otherwise.
+  static bool getIsFilterSettings() {
+    return _store.getBool(_Keys.IS_FILTER_SETTINGS) ?? true;
   }
 }
