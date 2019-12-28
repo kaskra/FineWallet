@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/src/settings_page/pages/filter_settings_page.dart';
 import 'package:FineWallet/src/widgets/section.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,7 @@ class _ChartsSectionState extends State<ChartsSection> {
       title: "Defaults",
       children: <SectionItem>[
         _buildDefaultProfileChart(),
+        _buildDefaultFilterSettings(),
       ],
     );
   }
@@ -45,6 +47,25 @@ class _ChartsSectionState extends State<ChartsSection> {
               value: 2,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultFilterSettings() {
+    return SectionItem(
+      title: "Default Filter Settings",
+      trailing: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => DefaultFilterSettingsPage(
+                      state: UserSettings.getDefaultFilterSettings())),
+            );
+          },
+          child: Icon(Icons.keyboard_arrow_right),
         ),
       ),
     );

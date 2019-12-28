@@ -47,7 +47,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
 
   Widget _buildFilterSettingsSwitch(BuildContext context) {
     return SectionItem(
-      title: "Show Filter Settings in History",
+      title: "Enable Filtering of History",
       trailing: Switch(
         value: _isFilterSettings,
         onChanged: (val) async {

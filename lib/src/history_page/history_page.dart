@@ -1,6 +1,7 @@
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_date_title.dart';
 import 'package:FineWallet/src/history_page/history_filter.dart';
@@ -47,10 +48,13 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   void initState() {
-    _filterSettings = widget.filterSettings;
-    if (widget.filterSettings == null) {
-      _filterSettings = TransactionFilterSettings.beforeDate(DateTime.now());
-    }
+    setState(() {
+      _filterSettings = widget.filterSettings;
+      if (widget.filterSettings == null) {
+        _filterState = UserSettings.getDefaultFilterSettings();
+        _handleFilterSettings();
+      }
+    });
     super.initState();
   }
 
@@ -106,18 +110,20 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void _handleFilterSettings() {
-    if (_filterState.onlyExpenses && _filterState.onlyIncomes) {
-      setState(() {
-        _filterSettings = TransactionFilterSettings.beforeDate(DateTime.now());
-      });
-      return;
-    }
+    setState(() {
+      _filterSettings = TransactionFilterSettings.beforeDate(DateTime.now());
+    });
+    if (widget.showFilters) {
+      if (_filterState.onlyExpenses && _filterState.onlyIncomes) {
+        return;
+      }
 
-    _filterSettings = TransactionFilterSettings(
-      before: dayInMillis(DateTime.now()),
-      incomes: _filterState.onlyIncomes,
-      expenses: _filterState.onlyExpenses,
-    );
+      _filterSettings = TransactionFilterSettings(
+        before: dayInMillis(DateTime.now()),
+        incomes: _filterState.onlyIncomes,
+        expenses: _filterState.onlyExpenses,
+      );
+    }
   }
 
   Widget _buildSelectionAppBar() {
