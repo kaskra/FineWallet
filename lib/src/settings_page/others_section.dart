@@ -9,9 +9,9 @@ class OthersSection extends StatelessWidget {
     return Section(
       title: "Other",
       children: <SectionItem>[
-        _buildPlaceHolder(),
-        _buildPlaceHolder(),
-        SectionItemDivider(),
+//        _buildPlaceHolder(),
+//        _buildPlaceHolder(),
+//        SectionItemDivider(),
         _buildImportExport(),
       ],
     );
