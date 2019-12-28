@@ -46,7 +46,6 @@ class _LocalizationSectionState extends State<LocalizationSection> {
 
     return SectionItem(
       title: "Language (UNUSED)",
-      // TODO write language name in front of arrow (get database here and send snapshot to other page)
       trailing: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -87,7 +86,6 @@ class _LocalizationSectionState extends State<LocalizationSection> {
 
     return SectionItem(
       title: "Currency Symbol",
-      // TODO write currency symbol in front of arrow (get database here and send snapshot to other page)
       trailing: Material(
         color: Colors.transparent,
         child: InkWell(
