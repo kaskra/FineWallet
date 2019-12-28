@@ -100,7 +100,7 @@ class UserSettings {
   /// -----
   /// The retrieved currency id from user settings memory.
   ///
-  static getCurrency() {
+  static int getCurrency() {
     return _store.getInt(_Keys.CURRENCY) ?? 1;
   }
 

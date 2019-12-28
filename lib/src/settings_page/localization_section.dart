@@ -1,6 +1,8 @@
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/src/settings_page/localization_pages/language_selection_page.dart';
 import 'package:FineWallet/src/widgets/section.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,35 +32,27 @@ class _LocalizationSectionState extends State<LocalizationSection> {
     return Section(
       title: "Localization",
       children: <SectionItem>[
-        _buildLanguage(),
+        _buildLanguage2(),
         _buildCurrency(),
       ],
     );
   }
 
-  Widget _buildLanguage() {
+  Widget _buildLanguage2() {
     return SectionItem(
       title: "Language (UNUSED)",
-      trailing: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          value: _selectedLanguage,
-          isDense: true,
-          onChanged: (val) {
-            Provider.of<LocalizationNotifier>(context).setLanguageCode(val);
-            setState(() {
-              _selectedLanguage = val;
-            });
+      // TODO write language name in front of arrow (get database here and send snapshot to other page)
+      trailing: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => LanguageSelectionPage(
+                    selectedIndex: UserSettings.getLanguage())));
           },
-          items: [
-            DropdownMenuItem(
-              child: Text("ENG"),
-              value: 1,
-            ),
-            DropdownMenuItem(
-              child: Text("GER"),
-              value: 2,
-            ),
-          ],
+          child: Icon(
+            Icons.keyboard_arrow_right,
+          ),
         ),
       ),
     );

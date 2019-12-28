@@ -150,7 +150,7 @@ final ThemeData darkTheme = ThemeData(
           side: BorderSide(width: 0, color: darkColorScheme.primary)),
       elevation: 4,
       color: darkColorScheme.background),
-  dividerColor: Colors.orange,
+  dividerColor: Colors.white,
   textTheme: darkTextTheme,
   primaryTextTheme: darkTextTheme,
   accentTextTheme: darkTextTheme,
