@@ -59,11 +59,19 @@ class _LocalizationSectionState extends State<LocalizationSection> {
                     )));
             if (res != null) {
               UserSettings.setLanguage(res);
+              setState(() {
+                _selectedLanguage = res;
+              });
             }
           },
-          child: Icon(
-            Icons.keyboard_arrow_right,
-            color: Theme.of(context).colorScheme.onBackground,
+          child: Row(
+            children: <Widget>[
+              Text(items[_selectedLanguage]),
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ],
           ),
         ),
       ),
@@ -94,11 +102,20 @@ class _LocalizationSectionState extends State<LocalizationSection> {
               UserSettings.setCurrency(res);
               // TODO get symbol from database and provide it
               Provider.of<LocalizationNotifier>(context).setCurrencySymbol(res);
+              setState(() {
+                _selectedCurrency = res;
+              });
             }
           },
-          child: Icon(
-            Icons.keyboard_arrow_right,
-            color: Theme.of(context).colorScheme.onBackground,
+          child: Row(
+            children: <Widget>[
+              // TODO display name of currency (abbrev) instead of symbol
+              Text(items[_selectedCurrency]),
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ],
           ),
         ),
       ),
