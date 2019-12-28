@@ -12,23 +12,49 @@ class AppearanceSection extends StatefulWidget {
 }
 
 class _AppearanceSectionState extends State<AppearanceSection> {
+  bool _isFilterSettings = true;
+
+  @override
+  void initState() {
+    setState(() {
+      _isFilterSettings = UserSettings.getIsFilterSettings();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Section(
       title: "Appearance",
       children: <SectionItem>[
         _buildDarkModeSwitch(context),
+        _buildFilterSettingsSwitch(context)
       ],
     );
   }
 
   Widget _buildDarkModeSwitch(BuildContext context) {
     return SectionItem(
-      title: "Dark Mode",
+      title: "Enable Dark Mode",
       trailing: Switch(
         value: UserSettings.getDarkMode(),
         onChanged: (val) async {
           Provider.of<ThemeNotifier>(context).switchTheme(dark: val);
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterSettingsSwitch(BuildContext context) {
+    return SectionItem(
+      title: "Enable Filtering of History",
+      trailing: Switch(
+        value: _isFilterSettings,
+        onChanged: (val) async {
+          UserSettings.setIsFilterSettings(val);
+          setState(() {
+            _isFilterSettings = val;
+          });
         },
       ),
     );

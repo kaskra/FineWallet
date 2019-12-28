@@ -23,7 +23,7 @@ class MonthlyBudgetWidget extends StatelessWidget {
       initialData: 0.0,
       builder: (context, snapshot) {
         return Text(
-          "${snapshot.data.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          "${snapshot.hasData ? snapshot.data.toStringAsFixed(2) : "0.00"}${Provider.of<LocalizationNotifier>(context).currency}",
           style: TextStyle(
               color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold,

@@ -12,33 +12,34 @@ import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
-List<SingleChildCloneableWidget> providers = [
+List<SingleChildWidget> providers = [
   ...independentServices,
   ...dependentServices,
   ...uiConsumableProviders
 ];
 
-List<SingleChildCloneableWidget> independentServices = [
+List<SingleChildWidget> independentServices = [
   Provider<AppDatabase>(
     create: (_) => AppDatabase(),
     dispose: (_, db) => db.close(),
   ),
-  ChangeNotifierProvider.value(
-    value: NavigationNotifier(),
+  ChangeNotifierProvider<NavigationNotifier>(
+    create: (_) => NavigationNotifier(),
   ),
 ];
 
-List<SingleChildCloneableWidget> dependentServices = [];
+List<SingleChildWidget> dependentServices = [];
 
-List<SingleChildCloneableWidget> uiConsumableProviders = [
-  ChangeNotifierProvider.value(
-    value: BudgetNotifier(),
+List<SingleChildWidget> uiConsumableProviders = [
+  ChangeNotifierProvider<BudgetNotifier>(
+    create: (_) => BudgetNotifier(),
   ),
-  ChangeNotifierProvider.value(
-    value: ThemeNotifier(),
+  ChangeNotifierProvider<ThemeNotifier>(
+    create: (_) => ThemeNotifier(),
   ),
-  ChangeNotifierProvider.value(
-    value: LocalizationNotifier(),
+  ChangeNotifierProvider<LocalizationNotifier>(
+    create: (_) => LocalizationNotifier(),
   )
 ];

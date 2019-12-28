@@ -60,8 +60,10 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future<void> insertCategoryWithSubs(CategoryWithSubs catWithSubs) {
     return transaction(() async {
       await into(categories).insert(catWithSubs.category, orReplace: true);
-      await into(subcategories)
-          .insertAll(catWithSubs.subcategories, orReplace: true);
+      await batch((b) {
+        b.insertAll(subcategories, catWithSubs.subcategories,
+            mode: InsertMode.insertOrReplace);
+      });
     });
   }
 }

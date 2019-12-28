@@ -119,7 +119,9 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     }
 
     if (newMonths.length > 0) {
-      await into(months).insertAll(newMonths);
+      await batch((b) {
+        b.insertAll(months, newMonths);
+      });
     }
   }
 

@@ -116,14 +116,23 @@ class AppDatabase extends _$AppDatabase {
             // When changing sth in here reinstall the app
             await into(months).insert(moor_init.currentMonth);
 
-            await into(recurrences).insertAll(moor_init.recurrences);
+            await batch((b) {
+              b.insertAll(recurrences, moor_init.recurrences);
 
-            for (var catWithSubs in moor_init.categories) {
-              await into(categories)
-                  .insert(catWithSubs.category, orReplace: true);
-              await into(subcategories)
-                  .insertAll(catWithSubs.subcategories, orReplace: true);
-            }
+              for (var catWithSubs in moor_init.categories) {
+                b.insert(categories, catWithSubs.category,
+                    mode: InsertMode.insertOrReplace);
+              }
+            });
+
+            // Has to be done in extra batch, because
+            // otherwise it would not insert anything.
+            await batch((b) {
+              for (var catWithSubs in moor_init.categories) {
+                b.insertAll(subcategories, catWithSubs.subcategories,
+                    mode: InsertMode.insertOrReplace);
+              }
+            });
 
             await customStatement("CREATE VIEW IF NOT EXISTS expenses "
                 "AS SELECT * FROM transactions WHERE is_expense = 1");

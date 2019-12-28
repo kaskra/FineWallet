@@ -86,7 +86,7 @@ class HistoryItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        transaction.isExpense
+        transaction.isRecurring
             ? Icon(
                 Icons.replay,
                 color: Theme.of(context).colorScheme.secondary,
