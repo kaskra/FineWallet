@@ -15,7 +15,7 @@ class _ChartsSectionState extends State<ChartsSection> {
   @override
   Widget build(BuildContext context) {
     return Section(
-      title: "Charts",
+      title: "Defaults",
       children: <SectionItem>[
         _buildDefaultProfileChart(),
       ],

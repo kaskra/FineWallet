@@ -1,5 +1,5 @@
 import 'package:FineWallet/src/settings_page/appearance_section.dart';
-import 'package:FineWallet/src/settings_page/charts_section.dart';
+import 'package:FineWallet/src/settings_page/defaults_section.dart';
 import 'package:FineWallet/src/settings_page/localization_section.dart';
 import 'package:FineWallet/src/settings_page/others_section.dart';
 import 'package:FineWallet/src/settings_page/social_section.dart';
