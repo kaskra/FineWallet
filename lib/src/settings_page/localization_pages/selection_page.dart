@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class SelectionPage extends StatelessWidget {
   final int selectedIndex;
   final Map<int, String> data;
+  final String pageTitle;
 
-  const SelectionPage({Key key, this.selectedIndex, @required this.data})
+  const SelectionPage(
+      {Key key, this.selectedIndex, @required this.data, this.pageTitle})
       : super(key: key);
 
   @override
@@ -17,7 +19,7 @@ class SelectionPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Languages"),
+        title: Text(pageTitle ?? ""),
       ),
       body: ListView(
         children: items,

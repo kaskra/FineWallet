@@ -53,6 +53,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
           onTap: () async {
             var res = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SelectionPage(
+                      pageTitle: "Languages",
                       selectedIndex: UserSettings.getLanguage(),
                       data: items,
                     )));
@@ -84,6 +85,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
           onTap: () async {
             var res = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SelectionPage(
+                      pageTitle: "Currencies",
                       selectedIndex: UserSettings.getCurrency(),
                       data: items,
                     )));
