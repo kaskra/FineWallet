@@ -4,10 +4,10 @@ import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AvailableBudgetWidget extends StatelessWidget {
+class AvailableBudgetView extends StatelessWidget {
   final TextStyle textStyle;
 
-  const AvailableBudgetWidget({Key key, this.textStyle}) : super(key: key);
+  const AvailableBudgetView({Key key, this.textStyle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

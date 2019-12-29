@@ -7,7 +7,7 @@
  */
 
 import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/savings_box.dart';
+import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:flutter/material.dart';
 
 class SavingsOverview extends StatelessWidget {
@@ -23,7 +23,7 @@ class SavingsOverview extends StatelessWidget {
           children: <Widget>[
             Center(
               child: FittedBox(
-                child: SavingsWidget(
+                child: SavingsView(
                   textStyle: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,

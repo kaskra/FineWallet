@@ -4,10 +4,10 @@ import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ExpectedSavingsWidget extends StatelessWidget {
+class ExpectedSavingsView extends StatelessWidget {
   final TextStyle textStyle;
 
-  const ExpectedSavingsWidget({Key key, this.textStyle}) : super(key: key);
+  const ExpectedSavingsView({Key key, this.textStyle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

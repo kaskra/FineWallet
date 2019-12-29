@@ -1,5 +1,5 @@
-import 'package:FineWallet/src/widgets/available_budget.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
+import 'package:FineWallet/src/widgets/views/available_budget.dart';
 import 'package:flutter/material.dart';
 
 class AvailableBudgetItem extends StatelessWidget {
@@ -11,7 +11,7 @@ class AvailableBudgetItem extends StatelessWidget {
         "Total available budget: ",
         style: TextStyle(fontSize: 14),
       ),
-      value: AvailableBudgetWidget(
+      value: AvailableBudgetView(
         textStyle: TextStyle(fontSize: 14),
       ),
     );

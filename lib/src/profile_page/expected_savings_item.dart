@@ -1,5 +1,5 @@
-import 'package:FineWallet/src/widgets/expected_savings.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
+import 'package:FineWallet/src/widgets/views/expected_savings.dart';
 import 'package:flutter/material.dart';
 
 class ExpectedSavingsItem extends StatelessWidget {
@@ -12,7 +12,7 @@ class ExpectedSavingsItem extends StatelessWidget {
         "Expected savings: ",
         style: TextStyle(fontSize: 14),
       ),
-      value: ExpectedSavingsWidget(
+      value: ExpectedSavingsView(
         textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
       ),
     );
