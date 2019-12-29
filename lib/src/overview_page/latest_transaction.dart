@@ -47,7 +47,7 @@ class LatestTransaction extends StatelessWidget {
   }
 
   Widget _buildLastTransactionContent(BuildContext context) {
-    return StreamBuilder<TransactionsWithCategory>(
+    return StreamBuilder<TransactionWithCategory>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchLatestTransaction(),
@@ -66,16 +66,17 @@ class LatestTransaction extends StatelessWidget {
                     Center(
                       child: _buildIcon(
                           context,
-                          snapshot.data.categoryId != null
-                              ? CategoryIcon(snapshot.data.categoryId - 1).data
+                          snapshot.data.sub.categoryId != null
+                              ? CategoryIcon(snapshot.data.sub.categoryId - 1)
+                                  .data
                               : Icons.autorenew),
                     ),
                     FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Text(
-                        "${snapshot.data.isExpense && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                        "${snapshot.data.tx.isExpense && snapshot.data.tx.amount > 0 ? "-" : ""}${snapshot.data.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
                         style: TextStyle(
-                          color: snapshot.data.isExpense
+                          color: snapshot.data.tx.isExpense
                               ? Colors.red
                               : Colors.green,
                           fontSize: 18,
@@ -91,7 +92,7 @@ class LatestTransaction extends StatelessWidget {
   }
 
   Future _showActions(BuildContext context,
-      AsyncSnapshot<TransactionsWithCategory> snapshot) async {
+      AsyncSnapshot<TransactionWithCategory> snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(
@@ -118,7 +119,7 @@ class LatestTransaction extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddPage(
-                      isExpense: snapshot.data.isExpense,
+                      isExpense: snapshot.data.tx.isExpense,
                       transaction: snapshot.data),
                 ),
               );

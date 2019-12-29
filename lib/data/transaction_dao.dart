@@ -17,51 +17,15 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 part 'transaction_dao.g.dart';
 
-class TransactionsWithCategory {
-  final int id;
-  final double amount;
-  final int date;
-  final bool isExpense;
-  final bool isRecurring;
-  final int recurringUntil;
-  final int subcategoryId;
-  final String subcategoryName;
-  final int categoryId;
-  final int originalId;
-  final int recurringType;
+class TransactionWithCategory {
+  final db_file.Transaction tx;
+  final db_file.Subcategory sub;
 
-  TransactionsWithCategory(
-      {this.id,
-      this.amount,
-      this.date,
-      this.isExpense,
-      this.isRecurring,
-      this.recurringUntil,
-      this.subcategoryId,
-      this.subcategoryName,
-      this.originalId,
-      this.recurringType,
-      this.categoryId});
+  TransactionWithCategory({this.tx, this.sub});
 
   @override
   String toString() {
-    return 'TransactionsWithCategory{id: $id, amount: $amount, date: $date, isExpense: $isExpense, isRecurring: $isRecurring, recurringUntil: $recurringUntil, subcategoryId: $subcategoryId, subcategoryName: $subcategoryName, categoryId: $categoryId, originalId: $originalId, recurringType: $recurringType}';
-  }
-
-  factory TransactionsWithCategory.fromQueryRow(QueryRow row) {
-    return TransactionsWithCategory(
-      id: row.readInt("id"),
-      isExpense: row.readBool("is_expense"),
-      subcategoryId: row.readInt("subcategory_id"),
-      categoryId: row.readInt("category_id"),
-      subcategoryName: row.readString("name"),
-      amount: row.readDouble("amount"),
-      isRecurring: row.readBool("is_recurring"),
-      recurringUntil: row.readInt("recurring_until"),
-      originalId: row.readInt("original_id"),
-      recurringType: row.readInt("recurring_type"),
-      date: row.readInt("date"),
-    );
+    return 'TransactionWithCategory{transaction: $tx, subcategory: $sub}';
   }
 }
 
@@ -195,7 +159,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   ///  - [TransactionFilterSettings] to filter the query results.
   ///
-  Stream<List<TransactionsWithCategory>> watchTransactionsWithFilter(
+  Stream<List<TransactionWithCategory>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     var txParser = new TransactionFilterParser(settings);
 
@@ -204,8 +168,14 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         "${txParser.parse(tableName: "t")} ORDER BY date DESC, id DESC",
         readsFrom: {transactions, subcategories});
 
-    return query2.watch().map((rows) =>
-        rows.map((row) => TransactionsWithCategory.fromQueryRow(row)).toList());
+    return query2.map((row) {
+      db_file.Transaction tx = db_file.Transaction.fromData(row.data, db);
+      Subcategory sub = Subcategory(
+          id: row.readInt("subcategory_id"),
+          name: row.readString("name"),
+          categoryId: row.readInt("category_id"));
+      return TransactionWithCategory(sub: sub, tx: tx);
+    }).watch();
   }
 
   /// Returns a [Stream] of the monthly income.
@@ -292,14 +262,19 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Returns the latest non-recurrence transaction.
-  Stream<TransactionsWithCategory> watchLatestTransaction() {
+  Stream<TransactionWithCategory> watchLatestTransaction() {
     final query =
         customSelectQuery("SElECT * FROM transactions_with_categories t "
             "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT 1");
 
-    return query
-        .watchSingle()
-        .map((row) => TransactionsWithCategory.fromQueryRow(row));
+    return query.map((row) {
+      var tx = db_file.Transaction.fromData(row.data, db);
+      var sub = Subcategory(
+          id: row.readInt("subcategory_id"),
+          categoryId: row.readInt("category_id"),
+          name: row.readString("name"));
+      return TransactionWithCategory(tx: tx, sub: sub);
+    }).watchSingle();
   }
 
   /// Returns a [Stream] of the monthly budget.
