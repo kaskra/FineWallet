@@ -54,7 +54,7 @@ class _PageViewIndicatorState extends State<PageViewIndicator> {
       width: 10,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: selected ? Colors.orange : Colors.white,
+        color: selected ? Theme.of(context).colorScheme.secondary : Colors.grey,
       ),
     );
   }
