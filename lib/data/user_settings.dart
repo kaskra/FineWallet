@@ -137,9 +137,9 @@ class UserSettings {
   ///
   /// Possible IDs:
   ///
-  ///  - 1 = Categories
+  ///  - 0 = Monthly expenses
   ///
-  ///  - 2 = Prediction
+  ///  - 1 = Lifetime expenses
   ///
   /// Input
   /// ------
@@ -156,9 +156,9 @@ class UserSettings {
   ///
   /// Possible IDs:
   ///
-  ///  - 1 = Categories
+  ///  - 0 = Monthly expenses
   ///
-  ///  - 2 = Prediction
+  ///  - 1 = Lifetime expenses
   ///
   /// Return
   /// ------
@@ -167,7 +167,7 @@ class UserSettings {
   static int getDefaultProfileChart() {
     // 1 = Categories
     // 2 = Prediction
-    return _store.getInt(_Keys.PROFILE_CHART) ?? 1;
+    return _store.getInt(_Keys.PROFILE_CHART) ?? 0;
   }
 
   /// Sets the value whether Filter Settings are enabled or not.

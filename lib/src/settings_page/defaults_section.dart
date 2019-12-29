@@ -26,7 +26,7 @@ class _DefaultsSectionState extends State<DefaultsSection> {
 
   Widget _buildDefaultProfileChart() {
     return SectionItem(
-      title: "Default Profile Chart",
+      title: "Default Expense Chart",
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: _selectedId,
@@ -39,12 +39,12 @@ class _DefaultsSectionState extends State<DefaultsSection> {
           },
           items: [
             DropdownMenuItem(
-              child: Text("Categories"),
-              value: 1,
+              child: Text("Monthly"),
+              value: 0,
             ),
             DropdownMenuItem(
-              child: Text("Prediction"),
-              value: 2,
+              child: Text("Lifetime"),
+              value: 1,
             ),
           ],
         ),

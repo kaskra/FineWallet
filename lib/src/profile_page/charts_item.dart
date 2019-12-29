@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/providers/budget_notifier.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/profile_page/profile_chart.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class CategoryChartsItem extends StatelessWidget {
 
   Widget _buildPages(BuildContext context) {
     return PageView(
-      controller: PageController(initialPage: 0),
+      controller:
+          PageController(initialPage: UserSettings.getDefaultProfileChart()),
       children: <Widget>[
         _buildChartWrapper(
           context,
@@ -29,7 +31,7 @@ class CategoryChartsItem extends StatelessWidget {
           context,
           "Lifetime",
           ProfileChart(
-            type: ProfileChart.MONTHLY_CHART,
+            type: ProfileChart.LIFE_CHART,
           ),
         ),
       ],
