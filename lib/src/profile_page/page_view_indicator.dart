@@ -50,8 +50,8 @@ class _PageViewIndicatorState extends State<PageViewIndicator> {
 
   Widget _buildDot(bool selected) {
     return Container(
-      height: 10,
-      width: 10,
+      height: 7,
+      width: 7,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: selected ? Theme.of(context).colorScheme.secondary : Colors.grey,
