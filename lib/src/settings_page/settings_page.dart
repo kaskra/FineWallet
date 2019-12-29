@@ -1,5 +1,5 @@
 import 'package:FineWallet/src/settings_page/appearance_section.dart';
-import 'package:FineWallet/src/settings_page/charts_section.dart';
+import 'package:FineWallet/src/settings_page/defaults_section.dart';
 import 'package:FineWallet/src/settings_page/localization_section.dart';
 import 'package:FineWallet/src/settings_page/others_section.dart';
 import 'package:FineWallet/src/settings_page/social_section.dart';
@@ -14,15 +14,9 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Settings',
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
+        title: Text('Settings'),
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -38,7 +32,7 @@ class SettingsPage extends StatelessWidget {
               AppearanceSection(),
               LocalizationSection(),
               SocialSection(),
-              ChartsSection(),
+              DefaultsSection(),
               OthersSection(),
             ],
           ),

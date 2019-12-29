@@ -156,7 +156,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  InformationRow _buildTransactionRow(TransactionsWithCategory tx) {
+  InformationRow _buildTransactionRow(TransactionWithCategory tx) {
     // Initialize date formatter for timestamp
     var formatter = new DateFormat('E, dd.MM.yy');
 
@@ -165,11 +165,11 @@ class CategoryListView extends StatelessWidget {
       text: Expanded(
         child: Text.rich(
           TextSpan(
-            text: "${tx.subcategoryName}",
+            text: "${tx.sub.name}",
             children: [
               TextSpan(
                 text:
-                    "\n${formatter.format(DateTime.fromMillisecondsSinceEpoch(tx.date))}",
+                    "\n${formatter.format(DateTime.fromMillisecondsSinceEpoch(tx.tx.date))}",
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               )
             ],
@@ -184,7 +184,7 @@ class CategoryListView extends StatelessWidget {
         ),
       ),
       value: Text(
-        "-${tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+        "-${tx.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
         style: TextStyle(
           color: Theme.of(context).colorScheme.error,
           decoration: TextDecoration.none,

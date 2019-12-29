@@ -9,8 +9,10 @@
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
-import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/src/add_page/add_page.dart';
+import 'package:FineWallet/src/overview_page/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/icon_wrapper.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
@@ -45,20 +47,15 @@ class LatestTransaction extends StatelessWidget {
   }
 
   Widget _buildLastTransactionContent(BuildContext context) {
-    return StreamBuilder<TransactionsWithCategory>(
+    return StreamBuilder<TransactionWithCategory>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchLatestTransaction(),
       builder: (context, snapshot) {
         return InkWell(
-          onTap: () {
-            /* TODO either:
-                  - open dialog with choices (share, edit, etc.)
-                OR
-                  - go directly to AddPage in edit mode
-            * */
+          onTap: () async {
             if (snapshot.hasData) {
-              Provider.of<NavigationNotifier>(context).setPage(4);
+              await _showActions(context, snapshot);
             }
           },
           child: !snapshot.hasData
@@ -69,16 +66,17 @@ class LatestTransaction extends StatelessWidget {
                     Center(
                       child: _buildIcon(
                           context,
-                          snapshot.data.categoryId != null
-                              ? CategoryIcon(snapshot.data.categoryId - 1).data
+                          snapshot.data.sub.categoryId != null
+                              ? CategoryIcon(snapshot.data.sub.categoryId - 1)
+                                  .data
                               : Icons.autorenew),
                     ),
                     FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Text(
-                        "${snapshot.data.isExpense && snapshot.data.amount > 0 ? "-" : ""}${snapshot.data.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                        "${snapshot.data.tx.isExpense && snapshot.data.tx.amount > 0 ? "-" : ""}${snapshot.data.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
                         style: TextStyle(
-                          color: snapshot.data.isExpense
+                          color: snapshot.data.tx.isExpense
                               ? Colors.red
                               : Colors.green,
                           fontSize: 18,
@@ -90,6 +88,45 @@ class LatestTransaction extends StatelessWidget {
                 ),
         );
       },
+    );
+  }
+
+  Future _showActions(BuildContext context,
+      AsyncSnapshot<TransactionWithCategory> snapshot) async {
+    await showModalBottomSheet<ActionBottomSheet>(
+      context: context,
+      builder: (context) => ActionBottomSheet(
+        actions: <Widget>[
+          ListTile(
+            enabled: UserSettings.getTXShare(),
+            title: Text("Share"),
+            leading: Icon(
+              Icons.share,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            onTap: () {
+              print("Tapped share");
+            },
+          ),
+          ListTile(
+            title: Text("Edit"),
+            leading: Icon(
+              Icons.edit,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddPage(
+                      isExpense: snapshot.data.tx.isExpense,
+                      transaction: snapshot.data),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

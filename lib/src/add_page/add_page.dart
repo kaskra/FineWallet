@@ -21,7 +21,7 @@ class AddPage extends StatefulWidget {
   }) : super(key: key);
 
   final bool isExpense;
-  final TransactionsWithCategory transaction;
+  final TransactionWithCategory transaction;
 
   @override
   _AddPageState createState() => _AddPageState();
@@ -29,7 +29,7 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   /// The transactions that the user wants to edit.
-  TransactionsWithCategory _transaction;
+  TransactionWithCategory _transaction;
 
   /// The flag that signals if the page is loaded in edit or normal mode.
   bool _editing = false;
@@ -56,15 +56,11 @@ class _AddPageState extends State<AddPage> {
     if (widget.transaction != null) {
       _transaction = widget.transaction;
       _editing = true;
-      _amount = _transaction.amount;
-      _date = _transaction.date;
-      _subcategory = Subcategory(
-        id: _transaction.subcategoryId,
-        name: _transaction.subcategoryName,
-        categoryId: _transaction.categoryId,
-      );
-      _isRecurring = _transaction.isRecurring;
-      _untilDate = _transaction.recurringUntil;
+      _amount = _transaction.tx.amount;
+      _date = _transaction.tx.date;
+      _subcategory = _transaction.sub;
+      _isRecurring = _transaction.tx.isRecurring;
+      _untilDate = _transaction.tx.recurringUntil;
 
       if (_isRecurring) {
         // If recurring, set the date to the first of the recurrence.
@@ -72,14 +68,14 @@ class _AddPageState extends State<AddPage> {
         List<Transaction> txs = await Provider.of<AppDatabase>(context)
             .transactionDao
             .getAllTransactions();
-        txs = txs.where((tx) => tx.id == _transaction.originalId).toList();
+        txs = txs.where((tx) => tx.id == _transaction.tx.originalId).toList();
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
         _date = txs.toList().last.date;
 
         List<Recurrence> recurrenceName =
             await Provider.of<AppDatabase>(context).getRecurrences();
         _recurrence = recurrenceName
-            .where((r) => r.type == _transaction.recurringType)
+            .where((r) => r.type == _transaction.tx.recurringType)
             .first;
       }
     }
@@ -223,7 +219,7 @@ class _AddPageState extends State<AddPage> {
   ///
   void _updateTransaction() async {
     var tx = Transaction(
-      id: _transaction.originalId,
+      id: _transaction.tx.originalId,
       date: _date,
       isExpense: widget.isExpense,
       isRecurring: _isRecurring,
@@ -232,7 +228,7 @@ class _AddPageState extends State<AddPage> {
       subcategoryId: _subcategory.id,
       recurringType: _isRecurring ? _recurrence.type : null,
       recurringUntil: _untilDate,
-      originalId: _transaction.originalId,
+      originalId: _transaction.tx.originalId,
     );
     await Provider.of<AppDatabase>(context)
         .transactionDao

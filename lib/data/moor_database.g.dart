@@ -74,7 +74,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   @override
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
+    return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
       'subcategoryId': serializer.toJson<int>(subcategoryId),
@@ -179,7 +179,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
                                   $mrjc(recurringUntil.hashCode,
                                       originalId.hashCode))))))))));
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Transaction &&
           other.id == this.id &&
@@ -541,7 +541,7 @@ class Category extends DataClass implements Insertable<Category> {
   @override
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
+    return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'isExpense': serializer.toJson<bool>(isExpense),
@@ -578,7 +578,7 @@ class Category extends DataClass implements Insertable<Category> {
   int get hashCode =>
       $mrjf($mrjc(id.hashCode, $mrjc(name.hashCode, isExpense.hashCode)));
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Category &&
           other.id == this.id &&
@@ -732,7 +732,7 @@ class Subcategory extends DataClass implements Insertable<Subcategory> {
   @override
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
+    return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'categoryId': serializer.toJson<int>(categoryId),
@@ -769,7 +769,7 @@ class Subcategory extends DataClass implements Insertable<Subcategory> {
   int get hashCode =>
       $mrjf($mrjc(id.hashCode, $mrjc(name.hashCode, categoryId.hashCode)));
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Subcategory &&
           other.id == this.id &&
@@ -932,7 +932,7 @@ class Month extends DataClass implements Insertable<Month> {
   @override
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
+    return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'maxBudget': serializer.toJson<double>(maxBudget),
       'firstDate': serializer.toJson<int>(firstDate),
@@ -978,7 +978,7 @@ class Month extends DataClass implements Insertable<Month> {
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(maxBudget.hashCode, $mrjc(firstDate.hashCode, lastDate.hashCode))));
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Month &&
           other.id == this.id &&
@@ -1160,7 +1160,7 @@ class Recurrence extends DataClass implements Insertable<Recurrence> {
   @override
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
+    return <String, dynamic>{
       'type': serializer.toJson<int>(type),
       'name': serializer.toJson<String>(name),
     };
@@ -1190,7 +1190,7 @@ class Recurrence extends DataClass implements Insertable<Recurrence> {
   @override
   int get hashCode => $mrjf($mrjc(type.hashCode, name.hashCode));
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Recurrence &&
           other.type == this.type &&

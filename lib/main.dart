@@ -118,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _isSelectionModeActive = b;
         });
       },
+      showFilters: UserSettings.getIsFilterSettings(),
     );
   }
 
@@ -126,16 +127,10 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: APPBAR_ELEVATION,
         backgroundColor:
             Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
+        title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            icon: Icon(Icons.settings),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()));

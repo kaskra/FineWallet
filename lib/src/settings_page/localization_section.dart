@@ -1,6 +1,8 @@
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/src/widgets/pages/selection_page.dart';
 import 'package:FineWallet/src/widgets/section.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,56 +39,82 @@ class _LocalizationSectionState extends State<LocalizationSection> {
   }
 
   Widget _buildLanguage() {
+    // TODO remove, just placeholders
+    Map<int, String> items = Map();
+    items.putIfAbsent(1, () => "ENG");
+    items.putIfAbsent(2, () => "GER");
+
     return SectionItem(
       title: "Language (UNUSED)",
-      trailing: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          value: _selectedLanguage,
-          isDense: true,
-          onChanged: (val) {
-            Provider.of<LocalizationNotifier>(context).setLanguageCode(val);
-            setState(() {
-              _selectedLanguage = val;
-            });
+      trailing: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () async {
+            var res = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SelectionPage(
+                      pageTitle: "Languages",
+                      selectedIndex: UserSettings.getLanguage(),
+                      data: items,
+                    )));
+            if (res != null) {
+              UserSettings.setLanguage(res);
+              setState(() {
+                _selectedLanguage = res;
+              });
+            }
           },
-          items: [
-            DropdownMenuItem(
-              child: Text("ENG"),
-              value: 1,
-            ),
-            DropdownMenuItem(
-              child: Text("GER"),
-              value: 2,
-            ),
-          ],
+          child: Row(
+            children: <Widget>[
+              Text(items[_selectedLanguage]),
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCurrency() {
+    // TODO just placeholders
+    // TODO String should be currency abbrev., not symbol
+    Map<int, String> items = Map();
+    items.putIfAbsent(1, () => "\$");
+    items.putIfAbsent(2, () => "€");
+
     return SectionItem(
       title: "Currency Symbol",
-      trailing: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          value: _selectedCurrency,
-          isDense: true,
-          onChanged: (val) {
-            Provider.of<LocalizationNotifier>(context).setCurrencySymbol(val);
-            setState(() {
-              _selectedCurrency = val;
-            });
+      trailing: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () async {
+            var res = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SelectionPage(
+                      pageTitle: "Currencies",
+                      selectedIndex: UserSettings.getCurrency(),
+                      data: items,
+                    )));
+            if (res != null) {
+              UserSettings.setCurrency(res);
+              // TODO get symbol from database and provide it
+              Provider.of<LocalizationNotifier>(context).setCurrencySymbol(res);
+              setState(() {
+                _selectedCurrency = res;
+              });
+            }
           },
-          items: [
-            DropdownMenuItem(
-              child: Text("\$"),
-              value: 1,
-            ),
-            DropdownMenuItem(
-              child: Text("€"),
-              value: 2,
-            ),
-          ],
+          child: Row(
+            children: <Widget>[
+              // TODO display name of currency (abbrev) instead of symbol
+              Text(items[_selectedCurrency]),
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'package:FineWallet/data/extensions/string_extension.dart';
+import 'package:FineWallet/src/history_page/history_filter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// This class holds all keys needed to save and retrieve values
@@ -9,6 +11,8 @@ class _Keys {
   static const CURRENCY = "currency";
   static const TX_SHARE = "tx_share";
   static const PROFILE_CHART = "default_profile_chart";
+  static const IS_FILTER_SETTINGS = "is_filter_settings";
+  static const FILTER_SETTINGS = "default_filter_settings";
 }
 
 /// This class is used to save user settings/preferences to persistent
@@ -99,7 +103,7 @@ class UserSettings {
   /// -----
   /// The retrieved currency id from user settings memory.
   ///
-  static getCurrency() {
+  static int getCurrency() {
     return _store.getInt(_Keys.CURRENCY) ?? 1;
   }
 
@@ -164,5 +168,83 @@ class UserSettings {
     // 1 = Categories
     // 2 = Prediction
     return _store.getInt(_Keys.PROFILE_CHART) ?? 1;
+  }
+
+  /// Sets the value whether Filter Settings are enabled or not.
+  ///
+  /// The default value is TRUE.
+  ///
+  /// Input
+  /// -----
+  /// Value as [bool] to save persistently.
+  ///
+  static setIsFilterSettings(bool val) {
+    _store.setBool(_Keys.IS_FILTER_SETTINGS, val);
+  }
+
+  /// Returns the value whether Filter Settings are enabled or not.
+  ///
+  /// The default value is TRUE.
+  ///
+  /// Return
+  /// ------
+  /// True if Filter Settings are enabled, false otherwise.
+  static bool getIsFilterSettings() {
+    return _store.getBool(_Keys.IS_FILTER_SETTINGS) ?? true;
+  }
+
+  /// Sets the default history filter values in the persistent store.
+  ///
+  /// The default history filter values are the values by which the history
+  /// is filtered by default when entering the page.
+  ///
+  /// Fields:
+  ///
+  ///  - only Expenses (by default: true)
+  ///
+  ///  - only Incomes (by default: true)
+  ///
+  /// Input
+  /// ------
+  /// [HistoryFilterState] to save.
+  ///
+  static setDefaultFilterSettings(HistoryFilterState state) {
+    String onlyExp = state.onlyExpenses.toString();
+    String onlyInc = state.onlyIncomes.toString();
+
+    _store.setStringList(_Keys.FILTER_SETTINGS, [onlyExp, onlyInc]);
+  }
+
+  /// Returns the the default history filter values.
+  ///
+  /// The default history filter values are the values by which the history
+  /// is filtered by default when entering the page.
+  ///
+  /// Fields:
+  ///
+  ///  - only Expenses (by default: true)
+  ///
+  ///  - only Incomes (by default: true)
+  ///
+  /// Return
+  /// ------
+  /// [HistoryFilterState] read from persistent storage.
+  ///
+  static HistoryFilterState getDefaultFilterSettings() {
+    List<String> values = _store.getStringList(_Keys.FILTER_SETTINGS);
+
+    if (values != null) {
+      bool onlyExp = values[0].toBool();
+      bool onlyInc = values[1].toBool();
+      var filterState = HistoryFilterState()
+        ..onlyIncomes = onlyInc
+        ..onlyExpenses = onlyExp;
+      return filterState;
+    } else {
+      var filterState = HistoryFilterState()
+        ..onlyIncomes = true
+        ..onlyExpenses = true;
+      return filterState;
+    }
   }
 }
