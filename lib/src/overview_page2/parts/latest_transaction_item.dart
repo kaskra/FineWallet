@@ -16,7 +16,7 @@ class LatestTransactionItem extends StatelessWidget {
           .transactionDao
           .watchLatestTransaction(),
       builder: (context, snapshot) {
-        if (snapshot.hasData)
+        if (!snapshot.hasData)
           return Center(child: CircularProgressIndicator(strokeWidth: 1));
         return Container(
           height: 65,
