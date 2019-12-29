@@ -6,26 +6,9 @@ import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoryChartsItem extends StatefulWidget {
-  @override
-  _CategoryChartsItemState createState() => _CategoryChartsItemState();
-}
-
-class _CategoryChartsItemState extends State<CategoryChartsItem> {
-  int _selectedPage;
-
-  PageController controller =
+class CategoryChartsItem extends StatelessWidget {
+  final PageController controller =
       PageController(initialPage: UserSettings.getDefaultProfileChart());
-
-  @override
-  void initState() {
-    controller.addListener(() {
-      setState(() {
-        _selectedPage = controller.page.round();
-      });
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +20,8 @@ class _CategoryChartsItemState extends State<CategoryChartsItem> {
         children: <Widget>[
           _buildPages(context),
           PageViewIndicator(
-            selectedPage: _selectedPage,
             numberOfChildren: 2,
-            initialPage: controller.initialPage,
+            controller: controller,
           )
         ],
       ),

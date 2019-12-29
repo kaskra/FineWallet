@@ -1,23 +1,40 @@
 import 'package:flutter/material.dart';
 
-class PageViewIndicator extends StatelessWidget {
-  final int selectedPage;
-  final int initialPage;
+class PageViewIndicator extends StatefulWidget {
   final int numberOfChildren;
+  final PageController controller;
 
-  const PageViewIndicator(
-      {Key key,
-      @required this.numberOfChildren,
-      this.selectedPage,
-      this.initialPage})
+  PageViewIndicator(
+      {Key key, @required this.numberOfChildren, @required this.controller})
       : super(key: key);
+
+  @override
+  _PageViewIndicatorState createState() => _PageViewIndicatorState();
+}
+
+class _PageViewIndicatorState extends State<PageViewIndicator> {
+  int selectedPage = 0;
+
+  @override
+  void initState() {
+    // Add listener to page controller to change the selected dot when
+    // switching between pages
+    widget.controller.addListener(() {
+      setState(() {
+        selectedPage = widget.controller.page.round();
+      });
+    });
+    selectedPage = widget.controller.initialPage ?? 0;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var items = <Widget>[];
-    for (int i = 0; i < numberOfChildren; i++) {
-      items.add(_buildDot((selectedPage ?? initialPage) == i));
-      items.add(SizedBox(width: 1.5));
+    for (int i = 0; i < widget.numberOfChildren; i++) {
+      items.add(_buildDot(selectedPage == i));
+      items.add(SizedBox(width: 2));
     }
 
     return Container(
