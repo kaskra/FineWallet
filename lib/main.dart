@@ -143,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
-      ProfilePage(),
+      const ProfilePage(),
       const StatisticsPage(),
       const SizedBox(),
       const OverviewPage(),
