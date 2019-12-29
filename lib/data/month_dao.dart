@@ -173,11 +173,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
         }).watch().map((rows) => rows
         .map(
           (row) => MonthWithDetails(
-              Month(
-                  id: row.readInt("id"),
-                  firstDate: row.readInt("first_date"),
-                  lastDate: row.readInt("last_date"),
-                  maxBudget: row.readDouble("max_budget")),
+              Month.fromData(row.data, db),
               Tuple3<double, double, double>(
                   row.readDouble("month_income"),
                   row.readDouble("month_expense"),
