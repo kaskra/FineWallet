@@ -3,6 +3,10 @@ import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:flutter/material.dart';
 
 class SavingsItem extends StatelessWidget {
+  final double fontSize;
+
+  const SavingsItem({Key key, this.fontSize = 16}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return InformationRow(
@@ -13,7 +17,7 @@ class SavingsItem extends StatelessWidget {
       ),
       value: SavingsView(
         textStyle: TextStyle(
-            fontSize: 16,
+            fontSize: fontSize,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).colorScheme.secondary),
       ),

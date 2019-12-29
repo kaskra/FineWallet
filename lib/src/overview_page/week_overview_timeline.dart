@@ -20,22 +20,25 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class WeekOverviewTimeline extends StatelessWidget {
-  const WeekOverviewTimeline({Key key, this.context}) : super(key: key);
+  const WeekOverviewTimeline(
+      {Key key, @required this.context, this.fontSize = 16})
+      : super(key: key);
 
   final BuildContext context;
+  final double fontSize;
 
   Widget _buildDay(int day, double budget, DateTime date) {
     bool isToday = day == DateTime.now().weekday;
 
     TextStyle textStyle = TextStyle(
       color: isToday ? Theme.of(context).colorScheme.secondary : null,
-      fontSize: isToday ? 20 : 16,
+      fontSize: isToday ? (fontSize + 4) : fontSize,
       fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
     );
 
     TextStyle numberTextStyle = TextStyle(
       color: isToday ? Theme.of(context).colorScheme.secondary : null,
-      fontSize: isToday ? 20 : 16,
+      fontSize: isToday ? (fontSize + 4) : fontSize,
       fontWeight: FontWeight.bold,
     );
 
