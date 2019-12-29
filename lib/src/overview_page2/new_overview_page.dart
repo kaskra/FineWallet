@@ -1,5 +1,6 @@
 import 'package:FineWallet/src/overview_page2/parts/budget_overview_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/latest_transaction_item.dart';
+import 'package:FineWallet/src/overview_page2/parts/timeline_item.dart';
 import 'package:FineWallet/src/profile_page/savings_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
@@ -26,7 +27,12 @@ class NewOverviewPage extends StatelessWidget {
 //            StructureSpace(),
             StructureTitle(text: "Savings"),
             StructureDivider(),
-            SavingsItem()
+            SavingsItem(fontSize: 18),
+            StructureSpace(),
+            StructureTitle(text: "Last week"),
+            StructureDivider(),
+            TimelineItem(),
+            StructureSpace(),
           ],
         ),
       ),
