@@ -13,7 +13,7 @@ class SavingsItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 5.0, left: 8.0, right: 8.0),
       text: Text(
         "Saved amount",
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(fontSize: fontSize - 2),
       ),
       value: SavingsView(
         textStyle: TextStyle(
