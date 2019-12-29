@@ -92,6 +92,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future syncMonths() async {
     List<Month> months = await getAllMonths();
+    // TODO FIXME somehow we have 600 + months in database... why???
     for (Month m in months) await syncSingleMonth(m);
   }
 

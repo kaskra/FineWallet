@@ -2,6 +2,7 @@ import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:FineWallet/src/profile_page/profile_chart.dart';
+import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:FineWallet/src/widgets/savings_box.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,9 @@ import 'package:provider/provider.dart';
 class NewProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,23 +24,20 @@ class NewProfilePage extends StatelessWidget {
             AvailableBudgetItem(),
             ExpectedSavingsItem(),
             _buildSpacer(),
-            TitleText(
-              text: "Charts",
-            ),
+            //
+            TitleText(text: "Spending Prediction"),
             _buildDivider(),
-            Container(
-              height: 200,
-              padding: const EdgeInsets.all(15),
-              child: ProfileChart(
-                type: ProfileChart.LIFE_CHART,
-              ),
-            ),
+            SpendingPredictionItem(),
             _buildSpacer(),
-            TitleText(
-              text: "Savings",
-            ),
+            //
+            TitleText(text: "Expenses per Category"),
             _buildDivider(),
-            SavingsRow()
+            ChartsItem(),
+            //
+            TitleText(text: "Savings"),
+            _buildDivider(),
+            SavingsRow(),
+            _buildSpacer(),
           ],
         ),
       ),
@@ -338,6 +336,75 @@ class __ValueSliderState extends State<_ValueSlider> {
             divisions: 100,
           );
         },
+      ),
+    );
+  }
+}
+
+class ChartsItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      padding: const EdgeInsets.all(5),
+      child: _buildPages(context),
+    );
+  }
+
+  Widget _buildPages(BuildContext context) {
+    return PageView(
+//      pageSnapping: true,
+//      reverse: false,
+//      scrollDirection: Axis.horizontal,
+//      physics: PageScrollPhysics(),
+      controller: PageController(initialPage: 0),
+      children: <Widget>[
+        _buildChartWrapper(
+          context,
+          "Monthly",
+          ProfileChart(
+            type: ProfileChart.MONTHLY_CHART,
+          ),
+        ),
+        _buildChartWrapper(
+          context,
+          "Lifetime",
+          ProfileChart(
+            type: ProfileChart.MONTHLY_CHART,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChartWrapper(BuildContext context, String title, Widget chart) {
+    return Stack(
+      alignment: Alignment(-0.75, -1),
+      children: <Widget>[
+        Text(
+          title,
+          style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: chart,
+        ),
+      ],
+    );
+  }
+}
+
+class SpendingPredictionItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      padding: const EdgeInsets.all(15),
+      child: SpendingPredictionChart(
+        monthlyBudget: Provider.of<BudgetNotifier>(context).budget,
       ),
     );
   }
