@@ -1,24 +1,54 @@
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/src/profile_page/page_view_indicator.dart';
 import 'package:FineWallet/src/profile_page/profile_chart.dart';
 import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoryChartsItem extends StatelessWidget {
+class CategoryChartsItem extends StatefulWidget {
+  @override
+  _CategoryChartsItemState createState() => _CategoryChartsItemState();
+}
+
+class _CategoryChartsItemState extends State<CategoryChartsItem> {
+  int _selectedPage;
+
+  PageController controller =
+      PageController(initialPage: UserSettings.getDefaultProfileChart());
+
+  @override
+  void initState() {
+    controller.addListener(() {
+      setState(() {
+        _selectedPage = controller.page.round();
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 200,
       padding: const EdgeInsets.all(5),
-      child: _buildPages(context),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          _buildPages(context),
+          PageViewIndicator(
+            selectedPage: _selectedPage,
+            numberOfChildren: 2,
+            initialPage: controller.initialPage,
+          )
+        ],
+      ),
     );
   }
 
   Widget _buildPages(BuildContext context) {
     return PageView(
-      controller:
-          PageController(initialPage: UserSettings.getDefaultProfileChart()),
+      controller: controller,
       children: <Widget>[
         _buildChartWrapper(
           context,
