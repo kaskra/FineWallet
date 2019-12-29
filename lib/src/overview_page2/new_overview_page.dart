@@ -21,14 +21,19 @@ class NewOverviewPage extends StatelessWidget {
             StructureDivider(),
             BudgetOverviewItem(),
             StructureSpace(),
-            StructureTitle(text: "Latest transaction"),
-            StructureDivider(),
-            LatestTransactionItem(),
-//            StructureSpace(),
+            //
+            // TODO exchange savings with round progress bar that shows
+            //     how much of monthly money is gone
             StructureTitle(text: "Savings"),
             StructureDivider(),
             SavingsItem(fontSize: 18),
             StructureSpace(),
+            //
+            StructureTitle(text: "Latest transaction"),
+            StructureDivider(),
+            LatestTransactionItem(),
+            StructureSpace(),
+            //
             StructureTitle(text: "Last week"),
             StructureDivider(),
             TimelineItem(),
