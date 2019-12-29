@@ -1,8 +1,8 @@
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/profile_page/page_view_indicator.dart';
-import 'package:FineWallet/src/profile_page/profile_chart.dart';
-import 'package:FineWallet/src/profile_page/spending_prediction_chart.dart';
+import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
+import 'package:FineWallet/src/profile_page/parts/spending_prediction_chart.dart';
+import 'package:FineWallet/src/widgets/page_view_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

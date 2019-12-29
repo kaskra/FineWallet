@@ -1,7 +1,7 @@
 import 'package:FineWallet/src/overview_page2/parts/budget_overview_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/latest_transaction_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/timeline_item.dart';
-import 'package:FineWallet/src/profile_page/savings_item.dart';
+import 'package:FineWallet/src/profile_page/parts/savings_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';

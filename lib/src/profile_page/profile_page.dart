@@ -1,8 +1,8 @@
-import 'package:FineWallet/src/profile_page/available_budget_item.dart';
-import 'package:FineWallet/src/profile_page/charts_item.dart';
-import 'package:FineWallet/src/profile_page/expected_savings_item.dart';
-import 'package:FineWallet/src/profile_page/savings_item.dart';
-import 'package:FineWallet/src/profile_page/slider_item.dart';
+import 'package:FineWallet/src/profile_page/parts/available_budget_item.dart';
+import 'package:FineWallet/src/profile_page/parts/charts_item.dart';
+import 'package:FineWallet/src/profile_page/parts/expected_savings_item.dart';
+import 'package:FineWallet/src/profile_page/parts/savings_item.dart';
+import 'package:FineWallet/src/profile_page/parts/slider_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
