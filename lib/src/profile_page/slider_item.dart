@@ -1,27 +1,15 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
-import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/information_row.dart';
-import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// The slider box widgets shows a slider with title, a slider-dependent text field
-/// and a text below the slider for more information about the value.
-///
-/// The slider box is rendered to screen width with an optional ratio.
-class BudgetSlider extends StatefulWidget {
-  BudgetSlider({Key key, double widthRatio = 1})
-      : this.screenWidthRatio = widthRatio,
-        super(key: key);
-
-  final double screenWidthRatio;
-
-  _BudgetSliderState createState() => _BudgetSliderState();
+class SliderItem extends StatefulWidget {
+  @override
+  _SliderItemState createState() => _SliderItemState();
 }
 
-class _BudgetSliderState extends State<BudgetSlider> {
+class _SliderItemState extends State<SliderItem> {
   /// Current month entity, holding the current available budget of the month.
   Month _currentMonth;
 
@@ -55,21 +43,24 @@ class _BudgetSliderState extends State<BudgetSlider> {
 
   /// Build the center row with slider, suffix and the slider-depending textfield.
   Widget _buildSliderWithTextInput() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Row(
-        children: <Widget>[
-          _ValueSlider(
-            onChangeEnd: (value) => _updateMonthModel(),
-            onChange: (value) =>
-                _textEditingController.text = value.toStringAsFixed(2),
-          ),
-          Text(
-            "${Provider.of<LocalizationNotifier>(context).currency} ",
-            style: TextStyle(fontSize: 16),
-          ),
-          _buildDependingTextField(),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Row(
+          children: <Widget>[
+            _ValueSlider(
+              onChangeEnd: (value) => _updateMonthModel(),
+              onChange: (value) =>
+                  _textEditingController.text = value.toStringAsFixed(2),
+            ),
+            Text(
+              "${Provider.of<LocalizationNotifier>(context).currency} ",
+              style: TextStyle(fontSize: 16),
+            ),
+            _buildDependingTextField(),
+          ],
+        ),
       ),
     );
   }
@@ -123,83 +114,13 @@ class _BudgetSliderState extends State<BudgetSlider> {
     );
   }
 
-  /// Build the information row for total available budget (savings plus monthly available budget).
-  Widget _buildAvailableBudget() {
-    return new InformationRow(
-      text: Text(
-        "Total available budget: ",
-        style: TextStyle(
-          fontSize: 14,
-        ),
-      ),
-      value: StreamBuilder<double>(
-        stream: Provider.of<AppDatabase>(context)
-            .transactionDao
-            .watchTotalSavings(),
-        builder: (context, snapshot) {
-          double maxBudget = snapshot.data ?? 0;
-          maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
-          return Text(
-            "${maxBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-            style: TextStyle(fontSize: 14),
-          );
-        },
-      ),
-    );
-  }
-
-  /// Build slider title text
-  Widget _buildTitle() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Text(
-        "Monthly available budget",
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  /// Build expected savings for current month.
-  Widget _buildExpectedSavings() {
-    return new InformationRow(
-      text: Text(
-        "Expected savings: ",
-        style: TextStyle(fontSize: 14),
-      ),
-      value: StreamBuilder(
-        stream: Provider.of<AppDatabase>(context)
-            .transactionDao
-            .watchMonthlyIncome(DateTime.now()),
-        builder: (context, snapshot) {
-          double max = snapshot.hasData ? snapshot.data : 0;
-          return Text(
-            " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_currentMonth == null) {
       _loadCurrentMonth();
     }
 
-    return ExpandToWidth(
-      ratio: widget.screenWidthRatio,
-      child: DecoratedCard(
-        child: Column(
-          children: <Widget>[
-            _buildTitle(),
-            _buildSliderWithTextInput(),
-            _buildAvailableBudget(),
-            _buildExpectedSavings()
-          ],
-        ),
-      ),
-    );
+    return _buildSliderWithTextInput();
   }
 }
 
@@ -236,7 +157,7 @@ class __ValueSliderState extends State<_ValueSlider> {
     if (!_loaded) _loadCurrentBudget();
 
     return Expanded(
-      flex: 3,
+      flex: 5,
       child: StreamBuilder(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao

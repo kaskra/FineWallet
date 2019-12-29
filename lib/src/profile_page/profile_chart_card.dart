@@ -14,7 +14,7 @@ import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'budget_notifier.dart';
+import '../../data/providers/budget_notifier.dart';
 
 class ProfileChartCard extends StatefulWidget {
   const ProfileChartCard({Key key}) : super(key: key);
