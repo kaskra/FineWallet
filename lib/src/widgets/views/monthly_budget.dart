@@ -1,6 +1,6 @@
 /*
  * Project: FineWallet
- * Last Modified: Saturday, 28th September 2019 11:08:55 am
+ * Last Modified: Tuesday, 24th September 2019 12:31:30 pm
  * Modified By: Lukas (luke.krauch@gmail.com>)
  * -----
  * Copyright 2019 - 2019 Sylu, Sylu
@@ -11,17 +11,17 @@ import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DailyBudgetWidget extends StatelessWidget {
+class MonthlyBudgetView extends StatelessWidget {
   final TextStyle textStyle;
 
-  const DailyBudgetWidget({Key key, this.textStyle}) : super(key: key);
+  const MonthlyBudgetView({Key key, this.textStyle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<double>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
-          .watchDailyBudget(DateTime.now()),
+          .watchMonthlyBudget(DateTime.now()),
       initialData: 0.0,
       builder: (context, snapshot) {
         return Text(

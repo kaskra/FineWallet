@@ -6,11 +6,11 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/src/overview_page/daily_budget.dart';
-import 'package:FineWallet/src/overview_page/monthly_budget.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/ui_helper.dart';
 import 'package:FineWallet/src/widgets/vertical_bar.dart';
+import 'package:FineWallet/src/widgets/views/daily_budget.dart';
+import 'package:FineWallet/src/widgets/views/monthly_budget.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -67,7 +67,7 @@ class BudgetOverview extends StatelessWidget {
             style: TextStyle(fontSize: 12),
           ),
           FittedBox(
-            child: MonthlyBudgetWidget(
+            child: MonthlyBudgetView(
               textStyle: TextStyle(
                   color: Theme.of(context).colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
@@ -90,7 +90,7 @@ class BudgetOverview extends StatelessWidget {
             style: TextStyle(fontSize: 12),
           ),
           FittedBox(
-              child: DailyBudgetWidget(
+              child: DailyBudgetView(
             textStyle: TextStyle(
               color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
