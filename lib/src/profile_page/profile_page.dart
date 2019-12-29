@@ -8,7 +8,7 @@ import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:flutter/material.dart';
 
-class NewProfilePage extends StatelessWidget {
+class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
