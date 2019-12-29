@@ -9,20 +9,21 @@ import 'package:flutter/material.dart';
 class NewOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
       child: Container(
-        child: ListView(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StructureTitle(
-              text: "Budget Overview",
-            ),
+            StructureTitle(text: "Budget Overview"),
             StructureDivider(),
             BudgetOverviewItem(),
             StructureSpace(),
             StructureTitle(text: "Latest transaction"),
             StructureDivider(),
             LatestTransactionItem(),
-            StructureSpace(),
+//            StructureSpace(),
             StructureTitle(text: "Savings"),
             StructureDivider(),
             SavingsItem()
