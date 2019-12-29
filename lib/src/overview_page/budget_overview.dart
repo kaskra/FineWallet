@@ -67,7 +67,12 @@ class BudgetOverview extends StatelessWidget {
             style: TextStyle(fontSize: 12),
           ),
           FittedBox(
-            child: MonthlyBudgetWidget(),
+            child: MonthlyBudgetWidget(
+              textStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26),
+            ),
           ),
         ],
       ),
@@ -84,7 +89,14 @@ class BudgetOverview extends StatelessWidget {
             "TODAY",
             style: TextStyle(fontSize: 12),
           ),
-          FittedBox(child: DailyBudgetWidget()),
+          FittedBox(
+              child: DailyBudgetWidget(
+            textStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 26,
+            ),
+          )),
         ],
       ),
     );

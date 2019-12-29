@@ -12,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MonthlyBudgetWidget extends StatelessWidget {
-  const MonthlyBudgetWidget({Key key}) : super(key: key);
+  final TextStyle textStyle;
+
+  const MonthlyBudgetWidget({Key key, this.textStyle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,7 @@ class MonthlyBudgetWidget extends StatelessWidget {
       builder: (context, snapshot) {
         return Text(
           "${snapshot.hasData ? snapshot.data.toStringAsFixed(2) : "0.00"}${Provider.of<LocalizationNotifier>(context).currency}",
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 26),
+          style: textStyle,
         );
       },
     );
