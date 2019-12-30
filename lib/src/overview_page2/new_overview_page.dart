@@ -18,19 +18,22 @@ class NewOverviewPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StructureTitle(text: "Budget Overview"),
+            StructureTitle(text: "Remaining budget"),
             StructureDivider(),
             BudgetOverviewItem(),
-            StructureSpace(),
-            //
-            StructureTitle(text: "Savings"),
-            StructureDivider(),
-            SavingsItem(fontSize: 18),
             StructureSpace(),
             //
             StructureTitle(text: "Used budget"),
             StructureDivider(),
             MonthlyExpenseItem(),
+            StructureSpace(),
+            //
+            StructureTitle(text: "Savings"),
+            StructureDivider(),
+            SavingsItem(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
             StructureSpace(),
             //
             StructureTitle(text: "Latest transaction"),

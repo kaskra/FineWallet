@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 
 class SavingsItem extends StatelessWidget {
   final double fontSize;
+  final FontWeight fontWeight;
 
-  const SavingsItem({Key key, this.fontSize = 16}) : super(key: key);
+  const SavingsItem(
+      {Key key, this.fontSize = 16, this.fontWeight = FontWeight.bold})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,7 @@ class SavingsItem extends StatelessWidget {
       value: SavingsView(
         textStyle: TextStyle(
             fontSize: fontSize,
-            fontWeight: FontWeight.bold,
+            fontWeight: fontWeight,
             color: Theme.of(context).colorScheme.secondary),
       ),
     );
