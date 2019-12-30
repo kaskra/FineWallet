@@ -184,4 +184,34 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
     return query;
   }
+
+  /// Returns a [Stream] that watches the current month and the
+  /// transactions in that month.
+  ///
+  /// Return
+  /// ------
+  /// [Stream] of an entity of [MonthWithDetails] which consists of a [Month]
+  /// entity and a [Tuple3] to hold the month's details, like monthly income,
+  /// monthly expenses and the monthly savings.
+  ///
+  Stream<MonthWithDetails> watchCurrentMonthWithDetails() {
+    final query = customSelectQuery(
+            "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
+            "AS month_income, "
+            "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
+            "AS month_expense,  m.* "
+            "FROM months m "
+            "WHERE ${dayInMillis(DateTime.now())} BETWEEN m.first_date AND m.last_date",
+            readsFrom: {months, transactions}).watchSingle().map(
+          (row) => MonthWithDetails(
+              Month.fromData(row.data, db),
+              Tuple3<double, double, double>(
+                  row.readDouble("month_income"),
+                  row.readDouble("month_expense"),
+                  row.readDouble("month_income") -
+                      row.readDouble("month_expense"))),
+        );
+
+    return query;
+  }
 }

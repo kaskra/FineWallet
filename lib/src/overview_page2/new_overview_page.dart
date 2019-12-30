@@ -1,5 +1,6 @@
 import 'package:FineWallet/src/overview_page2/parts/budget_overview_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/latest_transaction_item.dart';
+import 'package:FineWallet/src/overview_page2/parts/monthly_expense_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/timeline_item.dart';
 import 'package:FineWallet/src/profile_page/parts/savings_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
@@ -22,11 +23,14 @@ class NewOverviewPage extends StatelessWidget {
             BudgetOverviewItem(),
             StructureSpace(),
             //
-            // TODO exchange savings with round progress bar that shows
-            //     how much of monthly money is gone
             StructureTitle(text: "Savings"),
             StructureDivider(),
             SavingsItem(fontSize: 18),
+            StructureSpace(),
+            //
+            StructureTitle(text: "Used budget"),
+            StructureDivider(),
+            MonthlyExpenseItem(),
             StructureSpace(),
             //
             StructureTitle(text: "Latest transaction"),
