@@ -33,13 +33,13 @@ class BudgetOverviewItem extends StatelessWidget {
             getMonthName(DateTime.now().month).toUpperCase().toString(),
             style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           FittedBox(
             child: MonthlyBudgetView(
-              textStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              textStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -57,13 +57,13 @@ class BudgetOverviewItem extends StatelessWidget {
             "TODAY",
             style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           FittedBox(
               child: DailyBudgetView(
-            textStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            textStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
           )),
         ],
       ),
