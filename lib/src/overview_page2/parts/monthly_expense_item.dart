@@ -6,8 +6,8 @@ class MonthlyExpenseItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: MonthlyExpenseChart(
-        radius: 60,
-        thickness: 6,
+        radius: 70,
+        thickness: 10,
       ),
     );
   }
