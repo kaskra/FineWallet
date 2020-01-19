@@ -21,7 +21,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 80,
       child: StreamBuilder<List<TransactionWithCategory>>(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
@@ -50,29 +50,26 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
     );
   }
 
-  Container _buildLatestTransactionItem(
+  Widget _buildLatestTransactionItem(
       BuildContext context, TransactionWithCategory snapshot) {
-    return Container(
-      height: 65,
-      child: ListTile(
-        leading:
-            _buildIcon(context, CategoryIcon(snapshot.sub.categoryId - 1).data),
-        title: Text(snapshot.sub.name),
-        subtitle: Text(snapshot.sub.name),
-        trailing: Text(
-          "${snapshot.tx.isExpense && snapshot.tx.amount > 0 ? "-" : ""}"
-          "${snapshot.tx.amount.toStringAsFixed(2)}"
-          "${Provider.of<LocalizationNotifier>(context).currency}",
-          style: TextStyle(
-            color: snapshot.tx.isExpense ? Colors.red : Colors.green,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+    return ListTile(
+      leading:
+          _buildIcon(context, CategoryIcon(snapshot.sub.categoryId - 1).data),
+      title: Text(snapshot.sub.name),
+      subtitle: Text(snapshot.sub.name),
+      trailing: Text(
+        "${snapshot.tx.isExpense && snapshot.tx.amount > 0 ? "-" : ""}"
+        "${snapshot.tx.amount.toStringAsFixed(2)}"
+        "${Provider.of<LocalizationNotifier>(context).currency}",
+        style: TextStyle(
+          color: snapshot.tx.isExpense ? Colors.red : Colors.green,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
         ),
-        onTap: () async {
-          await _showActions(context, snapshot);
-        },
       ),
+      onTap: () async {
+        await _showActions(context, snapshot);
+      },
     );
   }
 
