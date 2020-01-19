@@ -23,7 +23,7 @@ class NewOverviewPage extends StatelessWidget {
             BudgetOverviewItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Latest transaction"),
+            StructureTitle(text: "Latest transactions"),
             StructureDivider(),
             LatestTransactionItem(),
             StructureSpace(),

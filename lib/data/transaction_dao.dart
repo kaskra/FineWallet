@@ -261,7 +261,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .toList());
   }
 
-  /// Returns the latest non-recurrence transaction.
+  // TODO remove when done with overview page
+  /// Watches the latest non-recurrence transaction.
   Stream<TransactionWithCategory> watchLatestTransaction() {
     final query =
         customSelectQuery("SElECT * FROM transactions_with_categories t "
@@ -275,6 +276,22 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           name: row.readString("name"));
       return TransactionWithCategory(tx: tx, sub: sub);
     }).watchSingle();
+  }
+
+  /// Watches the latest N non-recurrence transactions.
+  Stream<List<TransactionWithCategory>> watchNLatestTransactions(int N) {
+    final query =
+        customSelectQuery("SElECT * FROM transactions_with_categories t "
+            "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT $N");
+
+    return query.map((row) {
+      var tx = db_file.Transaction.fromData(row.data, db);
+      var sub = Subcategory(
+          id: row.readInt("subcategory_id"),
+          categoryId: row.readInt("category_id"),
+          name: row.readString("name"));
+      return TransactionWithCategory(tx: tx, sub: sub);
+    }).watch();
   }
 
   /// Returns a [Stream] of the monthly budget.

@@ -18,7 +18,7 @@ class BudgetOverviewItem extends StatelessWidget {
           FittedBox(
             fit: BoxFit.fitWidth,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
               child: child,
             ),
           ),
