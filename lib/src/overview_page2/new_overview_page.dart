@@ -23,16 +23,16 @@ class NewOverviewPage extends StatelessWidget {
             BudgetOverviewItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Used budget"),
-            StructureDivider(),
-            StructureSpace(),
-            MonthlyExpenseItem(),
-            //
             StructureTitle(text: "Latest transaction"),
             StructureDivider(),
             LatestTransactionItem(),
             StructureSpace(),
             StructureSpace(),
+            //
+            StructureTitle(text: "Used budget"),
+            StructureDivider(),
+            StructureSpace(),
+            MonthlyExpenseItem(),
             //
             StructureTitle(text: "Last week"),
             StructureDivider(),
