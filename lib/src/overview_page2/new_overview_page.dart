@@ -25,8 +25,8 @@ class NewOverviewPage extends StatelessWidget {
             //
             StructureTitle(text: "Used budget"),
             StructureDivider(),
-            MonthlyExpenseItem(),
             StructureSpace(),
+            MonthlyExpenseItem(),
             //
             StructureTitle(text: "Savings"),
             StructureDivider(),
