@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^4.0.2
+  provider: ^4.0.0
   moor: ^2.2.0
   moor_flutter: ^2.0.0
   cupertino_icons: ^0.1.3
