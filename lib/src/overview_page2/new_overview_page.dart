@@ -2,7 +2,6 @@ import 'package:FineWallet/src/overview_page2/parts/budget_overview_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/latest_transaction_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/monthly_expense_item.dart';
 import 'package:FineWallet/src/overview_page2/parts/timeline_item.dart';
-import 'package:FineWallet/src/profile_page/parts/savings_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
@@ -20,6 +19,7 @@ class NewOverviewPage extends StatelessWidget {
           children: <Widget>[
             StructureTitle(text: "Remaining budget"),
             StructureDivider(),
+            StructureSpace(),
             BudgetOverviewItem(),
             StructureSpace(),
             //
@@ -28,17 +28,10 @@ class NewOverviewPage extends StatelessWidget {
             StructureSpace(),
             MonthlyExpenseItem(),
             //
-            StructureTitle(text: "Savings"),
-            StructureDivider(),
-            SavingsItem(
-              fontSize: 17,
-              fontWeight: FontWeight.w500,
-            ),
-            StructureSpace(),
-            //
             StructureTitle(text: "Latest transaction"),
             StructureDivider(),
             LatestTransactionItem(),
+            StructureSpace(),
             StructureSpace(),
             //
             StructureTitle(text: "Last week"),
