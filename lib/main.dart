@@ -82,11 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
       onTabSelected: (int index) {
-        if (index != Provider.of<NavigationNotifier>(context).page) {
+        if (index !=
+            Provider.of<NavigationNotifier>(context, listen: false).page) {
           setState(() {
             _isSelectionModeActive = false;
           });
-          Provider.of<NavigationNotifier>(context).setPage(index);
+          Provider.of<NavigationNotifier>(context, listen: false)
+              .setPage(index);
         }
       },
       selectedIndex: Provider.of<NavigationNotifier>(context).page,

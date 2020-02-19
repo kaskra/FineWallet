@@ -65,15 +65,17 @@ class _AddPageState extends State<AddPage> {
       if (_isRecurring) {
         // If recurring, set the date to the first of the recurrence.
         // With that every recurring instance is changed
-        List<Transaction> txs = await Provider.of<AppDatabase>(context)
-            .transactionDao
-            .getAllTransactions();
+        List<Transaction> txs =
+            await Provider.of<AppDatabase>(context, listen: false)
+                .transactionDao
+                .getAllTransactions();
         txs = txs.where((tx) => tx.id == _transaction.tx.originalId).toList();
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
         _date = txs.toList().last.date;
 
         List<Recurrence> recurrenceName =
-            await Provider.of<AppDatabase>(context).getRecurrences();
+            await Provider.of<AppDatabase>(context, listen: false)
+                .getRecurrences();
         _recurrence = recurrenceName
             .where((r) => r.type == _transaction.tx.recurringType)
             .first;
@@ -205,7 +207,7 @@ class _AddPageState extends State<AddPage> {
       originalId: null,
     );
 
-    await Provider.of<AppDatabase>(context)
+    await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
         .insertTransaction(tx);
   }
@@ -230,7 +232,7 @@ class _AddPageState extends State<AddPage> {
       recurringUntil: _untilDate,
       originalId: _transaction.tx.originalId,
     );
-    await Provider.of<AppDatabase>(context)
+    await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
         .updateTransaction(tx);
   }

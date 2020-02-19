@@ -20,9 +20,10 @@ class _SliderItemState extends State<SliderItem> {
   /// the current maximum available budget, update the parent by
   /// calling onChanged event callback.
   void _loadCurrentMonth() async {
-    Month m =
-        await Provider.of<AppDatabase>(context).monthDao.getCurrentMonth();
-    Provider.of<BudgetNotifier>(context).setBudget(m.maxBudget);
+    Month m = await Provider.of<AppDatabase>(context, listen: false)
+        .monthDao
+        .getCurrentMonth();
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
 
     setState(() {
       _currentMonth = m;
@@ -35,8 +36,8 @@ class _SliderItemState extends State<SliderItem> {
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
     Month month = _currentMonth.copyWith(
-        maxBudget: Provider.of<BudgetNotifier>(context).budget);
-    Provider.of<AppDatabase>(context)
+        maxBudget: Provider.of<BudgetNotifier>(context, listen: false).budget);
+    Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .updateMonth(month.createCompanion(true));
   }
@@ -77,7 +78,7 @@ class _SliderItemState extends State<SliderItem> {
     }
 
     _textEditingController.text = value.toStringAsFixed(2);
-    Provider.of<BudgetNotifier>(context).setBudget(value);
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(value);
   }
 
   /// The depending textfield shows the current value of the slider.
@@ -140,9 +141,10 @@ class __ValueSliderState extends State<_ValueSlider> {
 
   /// Load current maximum budget from current month.
   _loadCurrentBudget() async {
-    Month m =
-        await Provider.of<AppDatabase>(context).monthDao.getCurrentMonth();
-    Provider.of<BudgetNotifier>(context).setBudget(m.maxBudget);
+    Month m = await Provider.of<AppDatabase>(context, listen: false)
+        .monthDao
+        .getCurrentMonth();
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
     setState(() {
       _loaded = true;
     });
@@ -175,18 +177,22 @@ class __ValueSliderState extends State<_ValueSlider> {
               if (widget.onChangeEnd != null) {
                 widget.onChangeEnd(value);
               }
-              Provider.of<BudgetNotifier>(context).setBudget(value);
+              Provider.of<BudgetNotifier>(context, listen: false)
+                  .setBudget(value);
             },
             onChanged: (value) {
               if (widget.onChange != null) {
                 widget.onChange(value);
               }
-              Provider.of<BudgetNotifier>(context).setBudget(value);
+              Provider.of<BudgetNotifier>(context, listen: false)
+                  .setBudget(value);
             },
             onChangeStart: (value) {
               FocusScope.of(context).requestFocus(new FocusNode());
             },
-            value: Provider.of<BudgetNotifier>(context)?.budget ?? 0,
+            value:
+                Provider.of<BudgetNotifier>(context, listen: false)?.budget ??
+                    0,
             min: 0,
             max: max,
             divisions: 100,

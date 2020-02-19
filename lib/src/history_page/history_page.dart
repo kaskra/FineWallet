@@ -275,7 +275,7 @@ class _HistoryPageState extends State<HistoryPage> {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
       for (TransactionWithCategory tx in _selectedItems.values) {
-        Provider.of<AppDatabase>(context)
+        Provider.of<AppDatabase>(context, listen: false)
             .transactionDao
             .deleteTransactionById(tx.tx.originalId);
       }
