@@ -17,24 +17,24 @@ class NewOverviewPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StructureTitle(text: "Remaining budget"),
+            StructureTitle(text: "Remaining Budget"),
             StructureDivider(),
             StructureSpace(),
             BudgetOverviewItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Latest transactions"),
+            StructureTitle(text: "Latest Transactions"),
             StructureDivider(),
             LatestTransactionItem(),
             StructureSpace(),
             StructureSpace(),
             //
-            StructureTitle(text: "Used budget"),
+            StructureTitle(text: "Used Budget"),
             StructureDivider(),
             StructureSpace(),
             MonthlyExpenseItem(),
             //
-            StructureTitle(text: "Last week"),
+            StructureTitle(text: "Last Week"),
             StructureDivider(),
             TimelineItem(),
             StructureSpace(),
