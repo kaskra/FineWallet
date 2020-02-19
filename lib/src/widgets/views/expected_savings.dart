@@ -17,8 +17,9 @@ class ExpectedSavingsView extends StatelessWidget {
           .watchMonthlyIncome(DateTime.now()),
       builder: (context, snapshot) {
         double max = snapshot.hasData ? snapshot.data : 0;
+        var value = max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0);
         return Text(
-          " ${(max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0)).toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          " ${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
           style: textStyle,
         );
       },

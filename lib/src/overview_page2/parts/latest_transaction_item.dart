@@ -33,7 +33,6 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return Center(child: CircularProgressIndicator(strokeWidth: 1));
-
               return SizedBox(
                 height: 80,
                 child: PageView(
@@ -47,7 +46,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             },
           ),
           Positioned(
-            bottom: 2,
+            bottom: 0,
             child: PageViewIndicator(
               numberOfChildren: NUMBER_OF_LATEST_TRANSACTIONS,
               controller: controller,
@@ -81,9 +80,17 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                     padding: const EdgeInsets.only(left: 12.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(snapshot.sub.name),
-                        Text(snapshot.sub.name),
+                        Text(
+                          snapshot.sub.name,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Text(
+                          snapshot.sub.name,
+                          style: TextStyle(
+                              fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
                       ],
                     ),
                   ),

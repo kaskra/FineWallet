@@ -8,3 +8,12 @@ class StructureSpace extends StatelessWidget {
     );
   }
 }
+
+class SmallStructureSpace extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 4,
+    );
+  }
+}

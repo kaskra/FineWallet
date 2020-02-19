@@ -9,8 +9,10 @@ import 'package:provider/provider.dart';
 class MonthlyExpenseChart extends StatelessWidget {
   final double radius;
   final double thickness;
+  final Color backgroundColor;
 
-  const MonthlyExpenseChart({Key key, this.radius = 40, this.thickness = 5})
+  const MonthlyExpenseChart(
+      {Key key, this.radius = 40, this.thickness = 5, this.backgroundColor})
       : super(key: key);
 
   @override
@@ -29,7 +31,7 @@ class MonthlyExpenseChart extends StatelessWidget {
             }
             return CustomPaint(
               painter: MonthlyExpensePainter(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: backgroundColor ?? Colors.transparent,
                   activeColor: Theme.of(context).colorScheme.secondary,
                   value: value,
                   total: total,

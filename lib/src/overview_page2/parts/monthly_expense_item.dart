@@ -6,8 +6,9 @@ class MonthlyExpenseItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: MonthlyExpenseChart(
-        radius: 70,
-        thickness: 10,
+        backgroundColor: Theme.of(context).cardTheme.color,
+        radius: 60,
+        thickness: 6,
       ),
     );
   }

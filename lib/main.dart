@@ -7,6 +7,8 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
@@ -63,6 +65,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
+  bool _isBudgetLoaded = false;
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
@@ -141,8 +144,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
 
+  Future<void> _loadBudget() async {
+    Month m = await Provider.of<AppDatabase>(context, listen: false)
+        .monthDao
+        .getCurrentMonth();
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
+    setState(() {
+      _isBudgetLoaded = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_isBudgetLoaded) {
+      _loadBudget();
+    }
+
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
       const ProfilePage(),
