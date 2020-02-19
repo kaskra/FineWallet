@@ -6,6 +6,7 @@ import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/overview_page/action_bottom_sheet.dart';
+import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/page_view_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,55 +22,87 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
-      child: StreamBuilder<List<TransactionWithCategory>>(
-        stream: Provider.of<AppDatabase>(context)
-            .transactionDao
-            .watchNLatestTransactions(NUMBER_OF_LATEST_TRANSACTIONS),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator(strokeWidth: 1));
-          return Stack(
-            alignment: Alignment.bottomCenter,
-            children: <Widget>[
-              PageView(
-                controller: controller,
-                children: <Widget>[
-                  for (var s in snapshot.data)
-                    _buildLatestTransactionItem(context, s),
-                ],
-              ),
-              PageViewIndicator(
-                numberOfChildren: NUMBER_OF_LATEST_TRANSACTIONS,
-                controller: controller,
-              )
-            ],
-          );
-        },
+      height: 100,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          StreamBuilder<List<TransactionWithCategory>>(
+            stream: Provider.of<AppDatabase>(context)
+                .transactionDao
+                .watchNLatestTransactions(NUMBER_OF_LATEST_TRANSACTIONS),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(child: CircularProgressIndicator(strokeWidth: 1));
+
+              return SizedBox(
+                height: 80,
+                child: PageView(
+                  controller: controller,
+                  children: <Widget>[
+                    for (var s in snapshot.data)
+                      _buildLatestTransactionItem(context, s),
+                  ],
+                ),
+              );
+            },
+          ),
+          Positioned(
+            bottom: 2,
+            child: PageViewIndicator(
+              numberOfChildren: NUMBER_OF_LATEST_TRANSACTIONS,
+              controller: controller,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildLatestTransactionItem(
       BuildContext context, TransactionWithCategory snapshot) {
-    return ListTile(
-      leading:
-          _buildIcon(context, CategoryIcon(snapshot.sub.categoryId - 1).data),
-      title: Text(snapshot.sub.name),
-      subtitle: Text(snapshot.sub.name),
-      trailing: Text(
-        "${snapshot.tx.isExpense && snapshot.tx.amount > 0 ? "-" : ""}"
-        "${snapshot.tx.amount.toStringAsFixed(2)}"
-        "${Provider.of<LocalizationNotifier>(context).currency}",
-        style: TextStyle(
-          color: snapshot.tx.isExpense ? Colors.red : Colors.green,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+    return DecoratedCard(
+      padding: 0,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: () async {
+          await _showActions(context, snapshot);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  _buildIcon(
+                      context, CategoryIcon(snapshot.sub.categoryId - 1).data),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(snapshot.sub.name),
+                        Text(snapshot.sub.name),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                "${snapshot.tx.isExpense && snapshot.tx.amount > 0 ? "-" : ""}"
+                "${snapshot.tx.amount.toStringAsFixed(2)}"
+                "${Provider.of<LocalizationNotifier>(context).currency}",
+                style: TextStyle(
+                  color: snapshot.tx.isExpense ? Colors.red : Colors.green,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      onTap: () async {
-        await _showActions(context, snapshot);
-      },
     );
   }
 
