@@ -39,7 +39,8 @@ class _AppearanceSectionState extends State<AppearanceSection> {
       trailing: Switch(
         value: UserSettings.getDarkMode(),
         onChanged: (val) async {
-          Provider.of<ThemeNotifier>(context).switchTheme(dark: val);
+          Provider.of<ThemeNotifier>(context, listen: false)
+              .switchTheme(dark: val);
         },
       ),
     );
