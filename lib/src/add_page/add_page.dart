@@ -131,6 +131,10 @@ class _AddPageState extends State<AddPage> {
   /// if there is a problem.
   ///
   Tuple2<String, bool> _isValidTransaction() {
+    if (_amount == 0)
+      return Tuple2<String, bool>(
+          "The specified amount has to be greater than Zero", false);
+
     if (_amount < 0)
       return Tuple2<String, bool>(
           "The specified amount can only be positive!", false);
