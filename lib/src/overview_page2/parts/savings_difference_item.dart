@@ -4,7 +4,7 @@ import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:FineWallet/src/widgets/views/savings_difference.dart';
 import 'package:flutter/material.dart';
 
-class SavingsItem extends StatelessWidget {
+class SavingsDifferenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedCard(

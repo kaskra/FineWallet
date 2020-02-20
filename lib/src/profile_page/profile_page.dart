@@ -3,7 +3,7 @@ import 'package:FineWallet/src/profile_page/parts/charts_item.dart';
 import 'package:FineWallet/src/profile_page/parts/expected_savings_item.dart';
 import 'package:FineWallet/src/profile_page/parts/savings_item.dart';
 import 'package:FineWallet/src/profile_page/parts/slider_item.dart';
-import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
+import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:flutter/material.dart';
@@ -21,27 +21,37 @@ class ProfilePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             StructureTitle(text: "Monthly available budget"),
-            StructureDivider(),
-            SliderItem(),
-            AvailableBudgetItem(),
-            ExpectedSavingsItem(),
+            SmallStructureSpace(),
+            _buildMonthlyAvailableBudget(),
             StructureSpace(),
             //
             StructureTitle(text: "Spending Prediction"),
-            StructureDivider(),
+            SmallStructureSpace(),
             SpendingPredictionItem(),
             StructureSpace(),
             //
             StructureTitle(text: "Expenses per Category"),
-            StructureDivider(),
+            SmallStructureSpace(),
             CategoryChartsItem(),
             //
             StructureTitle(text: "Savings"),
-            StructureDivider(),
-            SavingsItem(),
+            SmallStructureSpace(),
+            SimpleSavingsItem(),
             StructureSpace(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMonthlyAvailableBudget() {
+    return DecoratedCard(
+      child: Column(
+        children: <Widget>[
+          SliderItem(),
+          AvailableBudgetItem(),
+          ExpectedSavingsItem(),
+        ],
       ),
     );
   }
