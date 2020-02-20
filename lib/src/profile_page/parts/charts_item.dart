@@ -81,7 +81,6 @@ class SpendingPredictionItem extends StatelessWidget {
         height: 200,
         padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
         child: SpendingPredictionChart(
-          // TODO Fix color of chart labels
           monthlyBudget: Provider.of<BudgetNotifier>(context).budget,
         ),
       ),
