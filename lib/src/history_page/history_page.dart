@@ -87,7 +87,7 @@ class _HistoryPageState extends State<HistoryPage> {
       items: [
         HistoryFilterItem(
           initialValue: _filterState.onlyExpenses,
-          title: "Only show expenses",
+          title: "Show expenses",
           onChanged: (b) {
             setState(() {
               _filterState.onlyExpenses = b;
@@ -97,7 +97,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         HistoryFilterItem(
           initialValue: _filterState.onlyIncomes,
-          title: "Only show incomes",
+          title: "Show incomes",
           onChanged: (b) {
             setState(() {
               _filterState.onlyIncomes = b;
