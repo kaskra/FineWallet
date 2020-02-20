@@ -222,10 +222,7 @@ class PredictionDateChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var labelColor = charts.ColorUtil.fromDartColor(
-        Theme.of(context).colorScheme.onBackground);
-
-    return new charts.TimeSeriesChart(
+    return charts.TimeSeriesChart(
       seriesList,
       animate: false,
       defaultInteractions: false,
@@ -235,13 +232,14 @@ class PredictionDateChart extends StatelessWidget {
         areaOpacity: 0.3,
       ),
       domainAxis: charts.DateTimeAxisSpec(
-        showAxisLine: true,
         renderSpec: charts.SmallTickRendererSpec<DateTime>(
-          tickLengthPx: 4,
-          labelStyle: charts.TextStyleSpec(
-            color: labelColor,
-          ),
-        ),
+            tickLengthPx: 4,
+            labelStyle: charts.TextStyleSpec(
+              color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
+            ),
+            lineStyle: charts.LineStyleSpec(
+              color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
+            )),
         tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
           day: charts.TimeFormatterSpec(format: "d", transitionFormat: "d"),
         ),
@@ -250,11 +248,11 @@ class PredictionDateChart extends StatelessWidget {
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
           labelStyle: charts.TextStyleSpec(
-            color: labelColor,
+            color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
           ),
           lineStyle: charts.LineStyleSpec(
             dashPattern: [6, 6],
-            color: labelColor,
+            color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
           ),
         ),
       ),
