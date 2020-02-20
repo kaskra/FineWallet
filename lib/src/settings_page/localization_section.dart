@@ -99,7 +99,8 @@ class _LocalizationSectionState extends State<LocalizationSection> {
             if (res != null) {
               UserSettings.setCurrency(res);
               // TODO get symbol from database and provide it
-              Provider.of<LocalizationNotifier>(context).setCurrencySymbol(res);
+              Provider.of<LocalizationNotifier>(context, listen: false)
+                  .setCurrencySymbol(res);
               setState(() {
                 _selectedCurrency = res;
               });
