@@ -12,9 +12,11 @@ class UsedBudgetBar extends StatelessWidget {
   const UsedBudgetBar({
     Key key,
     @required this.model,
+    this.padding,
   }) : super(key: key);
 
   final MonthWithDetails model;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +33,13 @@ class UsedBudgetBar extends StatelessWidget {
         : Theme.of(context).colorScheme.secondary;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        10.0,
-        15.0,
-        10.0,
-        0.0,
-      ),
+      padding: padding ??
+          const EdgeInsets.fromLTRB(
+            10.0,
+            15.0,
+            10.0,
+            0.0,
+          ),
       child: Column(
         children: <Widget>[
           RoundedProgressBar(
@@ -62,7 +65,7 @@ class UsedBudgetBar extends StatelessWidget {
             padding: const EdgeInsets.only(top: 6.0),
             child: Text(
               "Used budget",
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
           ),
         ],

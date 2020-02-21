@@ -29,7 +29,7 @@ class SavingsDifferenceItem extends StatelessWidget {
                   textStyle:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                amountPadding: const EdgeInsets.symmetric(vertical: 4),
                 footerText: "Saved amount",
               ),
               RowItem(
@@ -37,7 +37,7 @@ class SavingsDifferenceItem extends StatelessWidget {
                   textStyle:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                amountPadding: const EdgeInsets.symmetric(vertical: 4),
                 footerText: "Current Difference", // TODO: or Currently
               ),
             ],
