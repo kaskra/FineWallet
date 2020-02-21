@@ -1,5 +1,7 @@
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
 import 'package:FineWallet/src/statistics_page/used_budget_bar.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,10 @@ class DetailsBottomSheet extends StatelessWidget {
                     model: month,
                     padding: const EdgeInsets.only(top: 0),
                   ),
+                  // TODO more stats!
+                  Divider(),
+                  _buildCategoryChart(),
+                  Divider(),
                 ],
               ),
             ),
@@ -54,6 +60,27 @@ class DetailsBottomSheet extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Theme.of(context).colorScheme.secondary),
       ),
+    );
+  }
+
+  Widget _buildCategoryChart() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 170,
+          child: ProfileChart(
+            type: ProfileChart.MONTHLY_CHART,
+            filterSettings: TransactionFilterSettings(
+              dateInMonth: month.month.firstDate,
+              expenses: true,
+            ),
+          ),
+        ),
+        Text(
+          "Categories",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+        )
+      ],
     );
   }
 }

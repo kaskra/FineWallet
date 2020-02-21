@@ -17,12 +17,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileChart extends StatefulWidget {
-  ProfileChart({this.type = MONTHLY_CHART});
+  ProfileChart({this.type = MONTHLY_CHART, this.filterSettings});
 
   static const int LIFE_CHART = 2;
   static const int MONTHLY_CHART = 1;
 
   final int type;
+  final TransactionFilterSettings filterSettings;
 
   @override
   _ProfileChartState createState() => _ProfileChartState();
@@ -39,12 +40,14 @@ class _ProfileChartState extends State<ProfileChart> {
     // Check which chart should be displayed and load the correct data for it.
     var settings;
     if (widget.type == ProfileChart.MONTHLY_CHART) {
-      settings = TransactionFilterSettings(
-        dateInMonth: dayInMillis(DateTime.now()),
-        expenses: true,
-      );
+      settings = widget.filterSettings ??
+          TransactionFilterSettings(
+            dateInMonth: dayInMillis(DateTime.now()),
+            expenses: true,
+          );
     } else {
-      settings = TransactionFilterSettings(expenses: true);
+      settings =
+          widget.filterSettings ?? TransactionFilterSettings(expenses: true);
     }
 
     return StreamBuilder<List<Tuple3<int, String, double>>>(
