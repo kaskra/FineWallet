@@ -30,7 +30,7 @@ class MonthlyReportsPage extends StatelessWidget {
                 ],
               )
             : const Center(
-                child: CircularProgressIndicator(),
+                child: Text("Found no recorded months!"),
               );
       },
     );
