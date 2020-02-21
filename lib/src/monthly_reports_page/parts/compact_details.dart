@@ -1,6 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/src/monthly_reports_page/parts/details_bottom_sheet.dart';
 import 'package:FineWallet/src/statistics_page/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
@@ -26,16 +27,17 @@ class CompactDetailsCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: Center(
-                      child: Text(
-                    getMonthName(DateTime.fromMillisecondsSinceEpoch(
-                                month.month.firstDate)
-                            .month) +
-                        ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.secondary),
-                  )),
+                    child: Text(
+                      getMonthName(DateTime.fromMillisecondsSinceEpoch(
+                                  month.month.firstDate)
+                              .month) +
+                          ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.secondary),
+                    ),
+                  ),
                 ),
                 UsedBudgetBar(
                   padding: const EdgeInsets.only(
@@ -92,7 +94,7 @@ class CompactDetailsCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(CARD_RADIUS)),
         onPressed: () {
-          print("Navigate!");
+          _openDetails(context);
         },
         elevation: 4,
         height: 30,
@@ -104,6 +106,20 @@ class CompactDetailsCard extends StatelessWidget {
               fontWeight: FontWeight.w600),
         ),
         color: Theme.of(context).colorScheme.secondary,
+      ),
+    );
+  }
+
+  void _openDetails(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return DetailsBottomSheet(
+          month: month,
+        );
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(CARD_RADIUS),
       ),
     );
   }

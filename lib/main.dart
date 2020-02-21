@@ -17,8 +17,8 @@ import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/monthly_reports_page/monthly_reports_page.dart';
 import 'package:FineWallet/src/overview_page2/new_overview_page.dart';
+import 'package:FineWallet/src/profile_page/profile_page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
-import 'package:FineWallet/src/statistics_page/month_pages.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:flutter/cupertino.dart';
@@ -162,12 +162,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
-//      const ProfilePage(),
+      const ProfilePage(),
       const MonthlyReportsPage(),
-      const StatisticsPage(),
       const SizedBox(),
       NewOverviewPage(),
-//      const OverviewPage(),
       _buildHistory(),
     ];
 
