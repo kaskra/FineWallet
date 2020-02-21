@@ -24,7 +24,9 @@ class MonthlyReportsPage extends StatelessWidget {
                     subtitle: "Reports",
                     svgImage: Images.MONTHLY_REPORT,
                   ),
-                  for (var m in snapshot.data) CompactDetailsCard(month: m)
+                  // Only display previous months not the current one.
+                  for (var m in snapshot.data.sublist(1))
+                    CompactDetailsCard(month: m)
                 ],
               )
             : const Center(
