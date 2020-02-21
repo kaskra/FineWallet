@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/resources/asset_dictionary.dart';
 import 'package:FineWallet/src/overview_page2/parts/row_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
@@ -15,7 +16,7 @@ class SavingsDifferenceItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: SvgPicture.asset(
-              "assets/savings.svg",
+              Images.SAVINGS,
               height: 100,
               semanticsLabel: "Savings",
             ),
