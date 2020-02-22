@@ -135,6 +135,7 @@ class _HistoryPageState extends State<HistoryPage> {
         onClose: () => _closeSelection(),
         onEdit: () => _editItem(_selectedItems.values.first),
         onDelete: () => _deleteItems(),
+        onShare: () => _shareItem(_selectedItems.values.first),
       ),
     );
   }
@@ -291,6 +292,14 @@ class _HistoryPageState extends State<HistoryPage> {
         MaterialPageRoute(
             builder: (context) =>
                 AddPage(isExpense: tx.tx.isExpense, transaction: tx)));
+    _closeSelection();
+  }
+
+  /// Shares an item using TX SHARE. Closes selection mode afterwards.
+  ///
+  void _shareItem(TransactionWithCategory tx) {
+    showConfirmDialog(
+        context, "TX SHARE", "The TX SHARE is not available right now.");
     _closeSelection();
   }
 
