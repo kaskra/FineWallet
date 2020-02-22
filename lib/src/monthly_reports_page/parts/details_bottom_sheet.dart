@@ -37,7 +37,9 @@ class DetailsBottomSheet extends StatelessWidget {
                       OverallDetail(month: month),
                       StructureSpace(),
                       _buildCategoryChart(),
-                      _buildCategoryList(context)
+                      _buildCategoryList(context),
+                      StructureSpace(),
+                      StructureSpace(),
                     ],
                   ),
                 ),
