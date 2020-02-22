@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Creates a small indicator for a limited amount of pages in a [PageView].
+///
 class PageViewIndicator extends StatefulWidget {
   final int numberOfChildren;
   final PageController controller;

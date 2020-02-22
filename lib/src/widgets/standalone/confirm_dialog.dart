@@ -8,17 +8,6 @@
 
 import 'package:flutter/material.dart';
 
-Widget growAnimation(
-    Widget first, Widget second, bool isExpanded, Duration duration) {
-  return AnimatedCrossFade(
-    firstChild: first,
-    secondChild: second,
-    duration: duration,
-    crossFadeState:
-        isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-  );
-}
-
 Future<bool> showConfirmDialog(
     BuildContext context, String title, String content) {
   return showDialog(

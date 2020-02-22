@@ -2,9 +2,8 @@ import 'package:FineWallet/src/settings_page/appearance_section.dart';
 import 'package:FineWallet/src/settings_page/defaults_section.dart';
 import 'package:FineWallet/src/settings_page/localization_section.dart';
 import 'package:FineWallet/src/settings_page/others_section.dart';
+import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:FineWallet/src/settings_page/social_section.dart';
-import 'package:FineWallet/src/widgets/section.dart';
-import 'package:FineWallet/src/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 
 /// This class creates a page where the user can edit the application

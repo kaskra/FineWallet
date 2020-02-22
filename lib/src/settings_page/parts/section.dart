@@ -1,6 +1,6 @@
+import 'package:FineWallet/src/settings_page/parts/section_title.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
-import 'package:FineWallet/src/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 
 /// This class is used to create a section in a column that holds

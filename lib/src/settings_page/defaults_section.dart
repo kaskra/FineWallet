@@ -1,6 +1,6 @@
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/pages/filter_settings_page.dart';
-import 'package:FineWallet/src/widgets/section.dart';
+import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:flutter/material.dart';
 
 /// This class creates a [Section] which shows the chart

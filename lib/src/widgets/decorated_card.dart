@@ -8,6 +8,11 @@
 
 import 'package:flutter/material.dart';
 
+/// Creates a [Card] that has an app-specific styling.
+///
+/// Use to speed up the UI creation when no further styling is required
+/// and the default values can be used.
+///
 class DecoratedCard extends StatelessWidget {
   const DecoratedCard(
       {Key key,

@@ -28,14 +28,14 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider<NavigationNotifier>(
     create: (_) => NavigationNotifier(),
   ),
+  ChangeNotifierProvider<BudgetNotifier>(
+    create: (_) => BudgetNotifier(),
+  ),
 ];
 
 List<SingleChildWidget> dependentServices = [];
 
 List<SingleChildWidget> uiConsumableProviders = [
-  ChangeNotifierProvider<BudgetNotifier>(
-    create: (_) => BudgetNotifier(),
-  ),
   ChangeNotifierProvider<ThemeNotifier>(
     create: (_) => ThemeNotifier(),
   ),

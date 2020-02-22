@@ -7,7 +7,7 @@ import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/overview_page/parts/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/page_view_indicator.dart';
+import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

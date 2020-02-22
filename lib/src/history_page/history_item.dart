@@ -3,7 +3,7 @@ import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/indicator.dart';
+import 'package:FineWallet/src/widgets/standalone/indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
