@@ -12,23 +12,25 @@ class ListHeaderImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10, top: 10),
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Image.asset(
-              image ?? Images.SAVINGS,
-              semanticLabel: semanticLabel ?? "",
-              height: 140,
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 10, top: 10),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Image.asset(
+                image ?? Images.SAVINGS,
+                semanticLabel: semanticLabel ?? "",
+                height: 140,
+              ),
             ),
-          ),
-          Text(
-            subtitle ?? "",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          )
-        ],
+            Text(
+              subtitle ?? "",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            )
+          ],
+        ),
       ),
     );
   }
