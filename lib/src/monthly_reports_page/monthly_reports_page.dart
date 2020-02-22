@@ -20,9 +20,9 @@ class MonthlyReportsPage extends StatelessWidget {
             ? ListView(
                 children: <Widget>[
                   ListHeaderImage(
-                    semanticsLabel: "Monthly Reports",
+                    semanticLabel: "Monthly Reports",
                     subtitle: "Reports",
-                    svgImage: Images.MONTHLY_REPORT,
+                    image: Images.MONTHLY_REPORT,
                   ),
                   // Only display previous months not the current one.
                   for (var m in snapshot.data.sublist(1))

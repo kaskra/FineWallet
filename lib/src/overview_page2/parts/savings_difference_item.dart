@@ -5,7 +5,6 @@ import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:FineWallet/src/widgets/views/savings_difference.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SavingsDifferenceItem extends StatelessWidget {
   @override
@@ -15,10 +14,10 @@ class SavingsDifferenceItem extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
-            child: SvgPicture.asset(
+            child: Image.asset(
               Images.SAVINGS,
               height: 100,
-              semanticsLabel: "Savings",
+              semanticLabel: "Savings",
             ),
           ),
           Row(

@@ -1,14 +1,13 @@
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ListHeaderImage extends StatelessWidget {
-  final String svgImage;
-  final String semanticsLabel;
+  final String image;
+  final String semanticLabel;
   final String subtitle;
 
   const ListHeaderImage(
-      {Key key, this.svgImage, this.subtitle, this.semanticsLabel})
+      {Key key, this.image, this.subtitle, this.semanticLabel})
       : super(key: key);
 
   @override
@@ -19,9 +18,9 @@ class ListHeaderImage extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: SvgPicture.asset(
-              svgImage ?? Images.SAVINGS,
-              semanticsLabel: semanticsLabel ?? "",
+            child: Image.asset(
+              image ?? Images.SAVINGS,
+              semanticLabel: semanticLabel ?? "",
               height: 140,
             ),
           ),

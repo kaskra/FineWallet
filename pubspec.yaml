@@ -28,7 +28,6 @@ dependencies:
   shared_preferences: ^0.5.6+2
   charts_flutter: ^0.8.1
   flutter_rounded_progress_bar: ^0.1.2
-  flutter_svg: ^0.17.1
 
 dev_dependencies:
   flutter_test:
@@ -41,8 +40,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/savings.svg
-    - assets/monthly_reports.svg
+    - assets/monthly_reports.png
+    - assets/savings.png
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
