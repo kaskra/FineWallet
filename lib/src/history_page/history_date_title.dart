@@ -1,3 +1,4 @@
+import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -11,12 +12,9 @@ class HistoryDateTitle extends StatelessWidget {
     intl.DateFormat d = intl.DateFormat.MMMEd();
 
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0),
-      child: Text(
-        d.format(date).toUpperCase(),
-        style: Theme.of(context).textTheme.body1.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.secondary),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: StructureTitle(
+        text: d.format(date),
       ),
     );
   }
