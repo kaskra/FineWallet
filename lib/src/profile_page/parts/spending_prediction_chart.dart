@@ -7,9 +7,9 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/chart_data.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/src/statistics_page/chart_data.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';

@@ -6,13 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-class DataPoint {
-  final int timeStamp;
-  final double expense;
-  final double income;
-  DataPoint(this.timeStamp, this.expense, this.income);
-}
-
 class CategoryExpenses {
   final double amount;
   final int categoryId;
