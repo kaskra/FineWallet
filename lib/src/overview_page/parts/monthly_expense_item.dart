@@ -8,7 +8,7 @@ class MonthlyExpenseItem extends StatelessWidget {
       child: MonthlyExpenseChart(
         backgroundColor: Theme.of(context).cardTheme.color,
         radius: 60,
-        thickness: 6,
+        thickness: 10,
       ),
     );
   }
