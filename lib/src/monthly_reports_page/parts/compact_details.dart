@@ -99,7 +99,7 @@ class CompactDetailsCard extends StatelessWidget {
         elevation: 4,
         height: 30,
         child: Text(
-          "Show Details",
+          "More Details",
           style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
               fontSize: 13,

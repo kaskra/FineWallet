@@ -20,7 +20,7 @@ class ProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StructureTitle(text: "Monthly available budget"),
+            StructureTitle(text: "Monthly Available Budget"),
             SmallStructureSpace(),
             _buildMonthlyAvailableBudget(),
             StructureSpace(),
