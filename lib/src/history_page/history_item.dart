@@ -1,6 +1,8 @@
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,49 +24,61 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-      child: CustomPaint(
-        foregroundPainter: IndicatorPainter(
-          color: transaction.tx.isExpense ? Colors.red : Colors.green,
-          thickness: 6,
-          side: transaction.tx.isExpense
-              ? IndicatorSide.RIGHT
-              : IndicatorSide.LEFT,
-        ),
-        child: Material(
-          color: isSelected ? Color(0xFF6F6F6F) : null,
-          elevation: Theme.of(context).cardTheme.elevation,
-          child: ListTile(
-            onTap: () {
-              bool isSelect = false;
-              if (isSelected) {
-                isSelect = false;
-              } else if (isSelectionActive) {
-                isSelect = true;
-              }
-              if (onSelect != null) {
-                onSelect(isSelect);
-              }
-            },
-            onLongPress: () {
-              if (onSelect != null) {
-                onSelect(true);
-              }
-            },
-            title: Text(
-              transaction.sub.name,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.secondary
-                      : null),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: DecoratedCard(
+        color: isSelected ? Color(0xFF6F6F6F) : null,
+        elevation: Theme.of(context).cardTheme.elevation,
+        padding: 0,
+        child: ClipPath(
+          clipper: ShapeBorderClipper(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(CARD_RADIUS))),
+          child: CustomPaint(
+            foregroundPainter: IndicatorPainter(
+              color: transaction.tx.isExpense ? Colors.red : Colors.green,
+              thickness: 6,
+              side: transaction.tx.isExpense
+                  ? IndicatorSide.RIGHT
+                  : IndicatorSide.LEFT,
             ),
-            subtitle: Text(
-              transaction.sub.name,
-              style: TextStyle(color: isSelected ? Colors.white : null),
+            child: Container(
+              margin: const EdgeInsets.all(2),
+              child: ListTile(
+                dense: true,
+                onTap: () {
+                  bool isSelect = false;
+                  if (isSelected) {
+                    isSelect = false;
+                  } else if (isSelectionActive) {
+                    isSelect = true;
+                  }
+                  if (onSelect != null) {
+                    onSelect(isSelect);
+                  }
+                },
+                onLongPress: () {
+                  if (onSelect != null) {
+                    onSelect(true);
+                  }
+                },
+                title: Text(
+                  transaction.sub.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.secondary
+                          : null),
+                ),
+                subtitle: Text(
+                  transaction.sub.name,
+                  style: TextStyle(
+                      color: isSelected ? Colors.white : null, fontSize: 12),
+                ),
+                trailing: _buildAmountText(context),
+                leading: _buildItemIcon(context),
+              ),
             ),
-            trailing: _buildAmountText(context),
-            leading: _buildItemIcon(context),
           ),
         ),
       ),
