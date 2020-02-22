@@ -1,4 +1,4 @@
-import 'package:FineWallet/src/overview_page2/parts/week_overview_timeline.dart';
+import 'package:FineWallet/src/overview_page/parts/week_overview_timeline.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
