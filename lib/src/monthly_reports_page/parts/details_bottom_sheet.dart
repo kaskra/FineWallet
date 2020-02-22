@@ -69,7 +69,7 @@ class DetailsBottomSheet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         StructureTitle(
-          text: "Categories",
+          text: "Expenses per Category",
         ),
         SizedBox(
           height: 170,
