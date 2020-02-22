@@ -23,24 +23,27 @@ class DetailsBottomSheet extends StatelessWidget {
       },
       enableDrag: false,
       builder: (context) {
-        return SizedBox(
-          height: 350,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-              child: Column(
-                children: <Widget>[
-                  _buildTitle(context),
-                  StructureDivider(),
-                  OverallDetail(month: month),
-                  StructureSpace(),
-                  _buildCategoryChart(),
-                  _buildCategoryList(context)
-                ],
+        return Column(
+          children: <Widget>[
+            _buildTitle(context),
+            StructureDivider(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 8.0),
+                  child: Column(
+                    children: <Widget>[
+                      OverallDetail(month: month),
+                      StructureSpace(),
+                      _buildCategoryChart(),
+                      _buildCategoryList(context)
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         );
       },
       shape: RoundedRectangleBorder(
@@ -51,7 +54,7 @@ class DetailsBottomSheet extends StatelessWidget {
 
   Widget _buildTitle(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 2, bottom: 2),
+      padding: const EdgeInsets.only(top: 6),
       child: Text(
         getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate)
                 .month) +
