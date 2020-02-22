@@ -1,5 +1,5 @@
-import 'package:FineWallet/src/overview_page2/parts/row_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:flutter/material.dart';
 

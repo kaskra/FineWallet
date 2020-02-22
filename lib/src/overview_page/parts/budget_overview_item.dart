@@ -1,8 +1,8 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/src/overview_page2/parts/monthly_expense_item.dart';
-import 'package:FineWallet/src/overview_page2/parts/row_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/views/daily_budget.dart';
 import 'package:FineWallet/src/widgets/views/monthly_budget.dart';
 import 'package:FineWallet/utils.dart';

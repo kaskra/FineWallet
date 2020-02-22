@@ -1,6 +1,6 @@
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
-import 'package:FineWallet/src/overview_page2/parts/row_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:FineWallet/src/widgets/views/savings_difference.dart';

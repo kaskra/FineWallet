@@ -1,8 +1,8 @@
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
-import 'package:FineWallet/src/overview_page2/parts/row_item.dart';
 import 'package:FineWallet/src/statistics_page/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/result_arrow.dart';
+import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:flutter/material.dart';
