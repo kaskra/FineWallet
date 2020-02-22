@@ -69,6 +69,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
           if (widget.onError != null) {
             widget.onError(_foundError);
           }
+          _validateAndSend(value);
         },
         onFieldSubmitted: (value) {
           _validateAndSend(value);

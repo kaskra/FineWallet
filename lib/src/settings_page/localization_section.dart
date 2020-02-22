@@ -1,7 +1,7 @@
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/widgets/pages/selection_page.dart';
-import 'package:FineWallet/src/widgets/section.dart';
+import 'package:FineWallet/src/settings_page/parts/section.dart';
+import 'package:FineWallet/src/widgets/simple_pages/selection_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +99,8 @@ class _LocalizationSectionState extends State<LocalizationSection> {
             if (res != null) {
               UserSettings.setCurrency(res);
               // TODO get symbol from database and provide it
-              Provider.of<LocalizationNotifier>(context).setCurrencySymbol(res);
+              Provider.of<LocalizationNotifier>(context, listen: false)
+                  .setCurrencySymbol(res);
               setState(() {
                 _selectedCurrency = res;
               });

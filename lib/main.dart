@@ -7,16 +7,18 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
-import 'package:FineWallet/src/overview_page/overview.dart';
-import 'package:FineWallet/src/profile_page/profile.dart';
+import 'package:FineWallet/src/monthly_reports_page/monthly_reports_page.dart';
+import 'package:FineWallet/src/overview_page/overview_page.dart';
+import 'package:FineWallet/src/profile_page/profile_page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
-import 'package:FineWallet/src/statistics_page/month_pages.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,6 +65,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
+  bool _isBudgetLoaded = false;
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
@@ -82,11 +85,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
       onTabSelected: (int index) {
-        if (index != Provider.of<NavigationNotifier>(context).page) {
+        if (index !=
+            Provider.of<NavigationNotifier>(context, listen: false).page) {
           setState(() {
             _isSelectionModeActive = false;
           });
-          Provider.of<NavigationNotifier>(context).setPage(index);
+          Provider.of<NavigationNotifier>(context, listen: false)
+              .setPage(index);
         }
       },
       selectedIndex: Provider.of<NavigationNotifier>(context).page,
@@ -139,14 +144,28 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
 
+  Future<void> _loadBudget() async {
+    Month m = await Provider.of<AppDatabase>(context, listen: false)
+        .monthDao
+        .getCurrentMonth();
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
+    setState(() {
+      _isBudgetLoaded = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_isBudgetLoaded) {
+      _loadBudget();
+    }
+
     bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     var children = [
-      ProfilePage(),
-      const StatisticsPage(),
+      const ProfilePage(),
+      const MonthlyReportsPage(),
       const SizedBox(),
-      const OverviewPage(),
+      OverviewPage(),
       _buildHistory(),
     ];
 

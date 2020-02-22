@@ -1,7 +1,9 @@
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/src/widgets/indicator.dart';
+import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/standalone/indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +16,7 @@ class HistoryItem extends StatelessWidget {
       @required this.isSelectionActive})
       : super(key: key);
 
-  final TransactionsWithCategory transaction;
+  final TransactionWithCategory transaction;
   final Function(bool) onSelect;
   final bool isSelected;
   final bool isSelectionActive;
@@ -22,48 +24,63 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-      child: CustomPaint(
-        foregroundPainter: IndicatorPainter(
-          color: transaction.isExpense ? Colors.red : Colors.green,
-          thickness: 6,
-          side:
-              transaction.isExpense ? IndicatorSide.RIGHT : IndicatorSide.LEFT,
-        ),
-        child: Material(
-          color: isSelected ? Color(0xFF6F6F6F) : null,
-          elevation: Theme.of(context).cardTheme.elevation,
-          child: ListTile(
-            onTap: () {
-              bool isSelect = false;
-              if (isSelected) {
-                isSelect = false;
-              } else if (isSelectionActive) {
-                isSelect = true;
-              }
-              if (onSelect != null) {
-                onSelect(isSelect);
-              }
-            },
-            onLongPress: () {
-              if (onSelect != null) {
-                onSelect(true);
-              }
-            },
-            title: Text(
-              transaction.subcategoryName,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.secondary
-                      : null),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: DecoratedCard(
+        color: isSelected ? Color(0xFF6F6F6F) : null,
+        elevation: Theme.of(context).cardTheme.elevation,
+        padding: 0,
+        child: ClipPath(
+          clipper: ShapeBorderClipper(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(CARD_RADIUS))),
+          child: CustomPaint(
+            foregroundPainter: IndicatorPainter(
+              color: transaction.tx.isExpense ? Colors.red : Colors.green,
+              thickness: 6,
+              side: transaction.tx.isExpense
+                  ? IndicatorSide.RIGHT
+                  : IndicatorSide.LEFT,
             ),
-            subtitle: Text(
-              transaction.subcategoryName,
-              style: TextStyle(color: isSelected ? Colors.white : null),
+            child: Container(
+              margin: const EdgeInsets.all(2),
+              child: ListTile(
+                dense: true,
+                onTap: () {
+                  bool isSelect = false;
+                  if (isSelected) {
+                    isSelect = false;
+                  } else if (isSelectionActive) {
+                    isSelect = true;
+                  }
+                  if (onSelect != null) {
+                    onSelect(isSelect);
+                  }
+                },
+                onLongPress: () {
+                  if (onSelect != null) {
+                    onSelect(true);
+                  }
+                },
+                title: Text(
+                  transaction.sub.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.secondary
+                          : null),
+                ),
+                subtitle: Text(
+                  transaction.sub.name,
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: isSelected ? Colors.white : null,
+                      fontSize: 13),
+                ),
+                trailing: _buildAmountText(context),
+                leading: _buildItemIcon(context),
+              ),
             ),
-            trailing: _buildAmountText(context),
-            leading: _buildItemIcon(context),
           ),
         ),
       ),
@@ -75,7 +92,7 @@ class HistoryItem extends StatelessWidget {
       child: Icon(
         isSelected
             ? Icons.check
-            : CategoryIcon(transaction.categoryId - 1).data,
+            : CategoryIcon(transaction.sub.categoryId - 1).data,
         color: Theme.of(context).iconTheme.color,
       ),
       backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -86,7 +103,7 @@ class HistoryItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        transaction.isRecurring
+        transaction.tx.isRecurring
             ? Icon(
                 Icons.replay,
                 color: Theme.of(context).colorScheme.secondary,
@@ -94,12 +111,12 @@ class HistoryItem extends StatelessWidget {
               )
             : SizedBox(),
         Text(
-          " ${transaction.isExpense ? "-" : ""}${transaction.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          " ${transaction.tx.isExpense ? "-" : ""}${transaction.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
           style: TextStyle(
               fontSize: 16,
               color: isSelected
                   ? Colors.white
-                  : (transaction.isExpense ? Colors.red : Colors.green),
+                  : (transaction.tx.isExpense ? Colors.red : Colors.green),
               fontWeight: FontWeight.bold),
         ),
       ],

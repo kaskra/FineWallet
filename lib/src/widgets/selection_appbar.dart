@@ -7,6 +7,7 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:flutter/material.dart';
 
 class SelectionAppBar<T> extends StatefulWidget implements PreferredSizeWidget {
@@ -16,7 +17,8 @@ class SelectionAppBar<T> extends StatefulWidget implements PreferredSizeWidget {
       this.selectedItems,
       this.onDelete,
       this.onClose,
-      this.onEdit})
+      this.onEdit,
+      this.onShare})
       : preferredSize = Size.fromHeight(kToolbarHeight);
 
   final Map<int, T> selectedItems;
@@ -24,6 +26,7 @@ class SelectionAppBar<T> extends StatefulWidget implements PreferredSizeWidget {
   final void Function() onDelete;
   final void Function() onEdit;
   final void Function() onClose;
+  final void Function() onShare;
 
   @override
   final Size preferredSize;
@@ -48,6 +51,7 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
             Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
         elevation: APPBAR_ELEVATION,
         actions: <Widget>[
+          _buildShareAction(selectedItems),
           _buildEditAction(selectedItems),
           _buildDeleteAction()
         ],
@@ -73,6 +77,27 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
         child: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
       ),
     );
+  }
+
+  Widget _buildShareAction(Map<int, T> selectedItems) {
+    return selectedItems.length == 1 &&
+            widget.onShare != null &&
+            UserSettings.getTXShare()
+        ? Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () {
+                if (widget.onShare != null) {
+                  widget.onShare();
+                }
+              },
+              child: Icon(
+                Icons.share,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+          )
+        : Container();
   }
 
   Widget _buildEditAction(Map<int, T> selectedItems) {

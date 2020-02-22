@@ -9,6 +9,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Creates a wrapper for [Icon]s that need to be clipped and aligned.
+///
 class IconWrapper extends StatelessWidget {
   const IconWrapper({
     Key key,

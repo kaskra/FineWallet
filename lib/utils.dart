@@ -6,6 +6,8 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+// TODO do most of this as an extension for DateTime
+
 int dayInMillis(DateTime time) {
   DateTime newDay = DateTime.utc(time.year, time.month, time.day, 12);
   return newDay.millisecondsSinceEpoch;

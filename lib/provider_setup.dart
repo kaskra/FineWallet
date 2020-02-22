@@ -7,10 +7,10 @@
  */
 
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
-import 'package:FineWallet/src/profile_page/budget_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -28,14 +28,14 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider<NavigationNotifier>(
     create: (_) => NavigationNotifier(),
   ),
+  ChangeNotifierProvider<BudgetNotifier>(
+    create: (_) => BudgetNotifier(),
+  ),
 ];
 
 List<SingleChildWidget> dependentServices = [];
 
 List<SingleChildWidget> uiConsumableProviders = [
-  ChangeNotifierProvider<BudgetNotifier>(
-    create: (_) => BudgetNotifier(),
-  ),
   ChangeNotifierProvider<ThemeNotifier>(
     create: (_) => ThemeNotifier(),
   ),

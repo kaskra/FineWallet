@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 
 class ThemeNotifier extends ChangeNotifier {
   ThemeData _theme;
+  bool _isDarkMode;
 
   ThemeData get theme => _theme;
 
-  Future switchTheme({@required dark}) async {
+  bool get isDarkMode => _isDarkMode;
+
+  Future switchTheme({@required bool dark}) async {
+    _isDarkMode = dark;
     if (dark) {
       _theme = darkTheme;
       UserSettings.setDarkMode(true);
@@ -21,5 +25,6 @@ class ThemeNotifier extends ChangeNotifier {
 
   ThemeNotifier() {
     _theme = UserSettings.getDarkMode() ? darkTheme : standardTheme;
+    _isDarkMode = UserSettings.getDarkMode();
   }
 }

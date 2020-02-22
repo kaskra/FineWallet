@@ -1,4 +1,4 @@
-import 'package:FineWallet/src/widgets/section.dart';
+import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:flutter/material.dart';
 
 /// This class creates a [Section] which shows some remaining
@@ -9,9 +9,9 @@ class OthersSection extends StatelessWidget {
     return Section(
       title: "Other",
       children: <SectionItem>[
-        _buildPlaceHolder(),
-        _buildPlaceHolder(),
-        SectionItemDivider(),
+//        _buildPlaceHolder(),
+//        _buildPlaceHolder(),
+//        SectionItemDivider(),
         _buildImportExport(),
       ],
     );
