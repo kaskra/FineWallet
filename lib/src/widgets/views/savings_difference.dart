@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 class SavingsDifferenceView extends StatelessWidget {
   final TextStyle textStyle;
 
-  const SavingsDifferenceView({Key key, this.textStyle}) : super(key: key);
+  const SavingsDifferenceView({Key key, @required this.textStyle})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

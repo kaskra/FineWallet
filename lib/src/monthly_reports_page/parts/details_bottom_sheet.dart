@@ -1,8 +1,12 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/src/monthly_reports_page/parts/category_view.dart';
+import 'package:FineWallet/src/monthly_reports_page/parts/overall_section.dart';
 import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
-import 'package:FineWallet/src/statistics_page/used_budget_bar.dart';
+import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
+import 'package:FineWallet/src/widgets/structure/structure_space.dart';
+import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -28,14 +32,11 @@ class DetailsBottomSheet extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   _buildTitle(context),
-                  UsedBudgetBar(
-                    model: month,
-                    padding: const EdgeInsets.only(top: 0),
-                  ),
-                  // TODO more stats!
-                  Divider(),
+                  StructureDivider(),
+                  OverallDetail(month: month),
+                  StructureSpace(),
                   _buildCategoryChart(),
-                  Divider(),
+                  _buildCategoryList(context)
                 ],
               ),
             ),
@@ -50,7 +51,7 @@ class DetailsBottomSheet extends StatelessWidget {
 
   Widget _buildTitle(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 2, bottom: 10),
+      padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: Text(
         getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate)
                 .month) +
@@ -65,7 +66,11 @@ class DetailsBottomSheet extends StatelessWidget {
 
   Widget _buildCategoryChart() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        StructureTitle(
+          text: "Categories",
+        ),
         SizedBox(
           height: 170,
           child: ProfileChart(
@@ -76,11 +81,14 @@ class DetailsBottomSheet extends StatelessWidget {
             ),
           ),
         ),
-        Text(
-          "Categories",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-        )
       ],
+    );
+  }
+
+  Widget _buildCategoryList(BuildContext context) {
+    return CategoryListView(
+      model: month,
+      context: context,
     );
   }
 }
