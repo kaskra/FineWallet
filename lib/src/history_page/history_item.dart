@@ -73,7 +73,9 @@ class HistoryItem extends StatelessWidget {
                 subtitle: Text(
                   transaction.sub.name,
                   style: TextStyle(
-                      color: isSelected ? Colors.white : null, fontSize: 12),
+                      fontStyle: FontStyle.italic,
+                      color: isSelected ? Colors.white : null,
+                      fontSize: 13),
                 ),
                 trailing: _buildAmountText(context),
                 leading: _buildItemIcon(context),
