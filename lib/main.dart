@@ -165,7 +165,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _loadBudget();
     }
 
-    final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
     final children = [
       const ProfilePage(),
       const MonthlyReportsPage(),
@@ -179,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: _buildBottomBar(),
       body: children[Provider.of<NavigationNotifier>(context).page],
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: keyboardOpen
+      floatingActionButton: MediaQuery.of(context).viewInsets.bottom >= 50
           ? const SizedBox()
           : SlidingButtonMenu(
               onMenuFunction: _addTransaction,
