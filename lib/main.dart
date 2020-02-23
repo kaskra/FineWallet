@@ -128,10 +128,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   PreferredSizeWidget _buildDefaultAppBar() => AppBar(
-        centerTitle: CENTER_APPBAR,
-        elevation: APPBAR_ELEVATION,
+        centerTitle: isAppBarCentered,
+        elevation: appBarElevation,
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(

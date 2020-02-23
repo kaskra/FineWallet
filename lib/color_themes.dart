@@ -17,33 +17,33 @@ final ColorScheme colorScheme = ColorScheme(
   //
   secondary: Colors.orange,
   secondaryVariant: Colors.white,
-  onSecondary: Color(0xFF151515),
+  onSecondary: const Color(0xFF151515),
   //
-  surface: Color(0xFF151515),
+  surface: const Color(0xFF151515),
   onSurface: Colors.white,
   //
-  background: Color(0xFFFFFFFF),
-  onBackground: Color(0xFF151515),
+  background: const Color(0xFFFFFFFF),
+  onBackground: const Color(0xFF151515),
   //
   error: Colors.red,
-  onError: Color(0xFF151515),
+  onError: const Color(0xFF151515),
   //
   brightness: Brightness.light,
 );
 
 final ColorScheme darkColorScheme = ColorScheme(
-  primary: Color(0xFF212121),
-  primaryVariant: Color(0xFF1a1a1a),
+  primary: const Color(0xFF212121),
+  primaryVariant: const Color(0xFF1a1a1a),
   onPrimary: Colors.orange,
   //
   secondary: Colors.orange,
-  secondaryVariant: Color(0xFFc66900),
+  secondaryVariant: const Color(0xFFc66900),
   onSecondary: Colors.white,
   //
-  surface: Color(0xFF151515),
+  surface: const Color(0xFF151515),
   onSurface: Colors.white,
   //
-  background: Color(0xFF212121),
+  background: const Color(0xFF212121),
   onBackground: Colors.white,
   //
   error: Colors.red,
@@ -52,7 +52,7 @@ final ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
 );
 
-final TextTheme textTheme = TextTheme(
+const TextTheme textTheme = TextTheme(
   body2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   caption: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   display1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
@@ -68,7 +68,7 @@ final TextTheme textTheme = TextTheme(
   button: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
 );
 
-final TextTheme darkTextTheme = TextTheme(
+const TextTheme darkTextTheme = TextTheme(
   body2: TextStyle(color: Colors.white, fontFamily: "roboto"),
   caption: TextStyle(color: Colors.white, fontFamily: "roboto"),
   display1: TextStyle(color: Colors.white, fontFamily: "roboto"),
@@ -92,7 +92,7 @@ final ThemeData standardTheme = ThemeData(
   scaffoldBackgroundColor: colorScheme.secondaryVariant,
   buttonTheme: ButtonThemeData(
     textTheme: ButtonTextTheme.primary,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular((4))),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
       foregroundColor: colorScheme.secondary,
@@ -102,7 +102,7 @@ final ThemeData standardTheme = ThemeData(
   ),
   cardTheme: CardTheme(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(CARD_RADIUS),
+          borderRadius: BorderRadius.circular(cardRadius),
           side: BorderSide(width: 0, color: colorScheme.primary)),
       elevation: 4,
       color: colorScheme.background),
@@ -118,7 +118,7 @@ final ThemeData standardTheme = ThemeData(
   ),
   bottomAppBarColor: colorScheme.primary,
   iconTheme: IconThemeData(color: colorScheme.onSurface),
-  hintColor: Color(0xFF212121),
+  hintColor: const Color(0xFF212121),
   appBarTheme: AppBarTheme(
       textTheme: TextTheme(
           title: TextStyle(
@@ -137,7 +137,7 @@ final ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: darkColorScheme.primaryVariant,
   buttonTheme: ButtonThemeData(
     textTheme: ButtonTextTheme.primary,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular((4))),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
       foregroundColor: darkColorScheme.onSecondary),
@@ -146,7 +146,7 @@ final ThemeData darkTheme = ThemeData(
   ),
   cardTheme: CardTheme(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(CARD_RADIUS),
+          borderRadius: BorderRadius.circular(cardRadius),
           side: BorderSide(width: 0, color: darkColorScheme.primary)),
       elevation: 4,
       color: darkColorScheme.background),
@@ -162,8 +162,8 @@ final ThemeData darkTheme = ThemeData(
   ),
   bottomAppBarColor: darkColorScheme.primary,
   iconTheme: IconThemeData(color: colorScheme.onPrimary),
-  hintColor: Color(0xFF212121),
-  canvasColor: Color(0xFF292929),
+  hintColor: const Color(0xFF212121),
+  canvasColor: const Color(0xFF292929),
   dialogBackgroundColor: darkColorScheme.primary,
   appBarTheme: AppBarTheme(
       textTheme: TextTheme(

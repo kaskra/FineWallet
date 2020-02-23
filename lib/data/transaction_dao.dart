@@ -77,8 +77,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     // Make sure that every transaction has its correct month id assigned.
     final List<Insertable<db_file.Transaction>> txs = [];
 
-    if (tx.isRecurring) {
-      final List<db_file.Transaction> recurrences = generateRecurrences(tx);
+    if (tempTx.isRecurring) {
+      final List<db_file.Transaction> recurrences = generateRecurrences(tempTx);
       for (final t in recurrences) {
         final id = await db.monthDao.createOrGetMonth(t.date);
         txs.add(t.copyWith(monthId: id ?? t.monthId).createCompanion(true));
@@ -88,10 +88,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     // Add all transactions to database in SQL-transaction.
     return transaction(() async {
       await into(transactions).insert(
-        tx.createCompanion(true).copyWith(id: Value(nextId)),
+        tempTx.createCompanion(true).copyWith(id: Value(nextId)),
       );
 
-      if (tx.isRecurring) {
+      if (tempTx.isRecurring) {
         await batch((b) {
           b.insertAll(transactions, txs);
         });

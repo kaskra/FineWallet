@@ -67,7 +67,7 @@ class CategoryListView extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.circular(CARD_RADIUS)),
+              borderRadius: BorderRadius.circular(cardRadius)),
           height: MediaQuery.of(context).size.height * 0.8,
           width: MediaQuery.of(context).size.width * 0.8,
           child: Column(
@@ -100,8 +100,8 @@ class CategoryListView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(CARD_RADIUS),
-          topRight: Radius.circular(CARD_RADIUS),
+          topLeft: Radius.circular(cardRadius),
+          topRight: Radius.circular(cardRadius),
         ),
       ),
       padding: const EdgeInsets.only(bottom: 10),

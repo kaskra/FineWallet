@@ -29,7 +29,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           StreamBuilder<List<TransactionWithCategory>>(
             stream: Provider.of<AppDatabase>(context)
                 .transactionDao
-                .watchNLatestTransactions(NUMBER_OF_LATEST_TRANSACTIONS),
+                .watchNLatestTransactions(numLatestTransactions),
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return Center(child: CircularProgressIndicator(strokeWidth: 1));
@@ -48,7 +48,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           Positioned(
             bottom: 0,
             child: PageViewIndicator(
-              numberOfChildren: NUMBER_OF_LATEST_TRANSACTIONS,
+              numberOfChildren: numLatestTransactions,
               controller: controller,
             ),
           ),

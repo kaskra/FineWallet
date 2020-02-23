@@ -49,7 +49,7 @@ class DetailsBottomSheet extends StatelessWidget {
         );
       },
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(CARD_RADIUS),
+        borderRadius: BorderRadius.circular(cardRadius),
       ),
     );
   }

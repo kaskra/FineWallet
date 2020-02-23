@@ -63,10 +63,10 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   /// - The **DateTime**-domain chart shows a tick every 3 days.
   /// - The **int**-domain chart shows some specific hardcoded ticks.
   ///
-  /// Which chart to choose is decided by constant [USE_DATETIME_CHART].
+  /// Which chart to choose is decided by constant [useDateTimeChart].
   Widget _buildChartByDataType(
       AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
-    if (USE_DATETIME_CHART) {
+    if (useDateTimeChart) {
       return PredictionDateChart.withTransactions(
           _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
     } else {

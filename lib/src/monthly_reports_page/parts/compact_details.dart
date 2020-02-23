@@ -92,7 +92,7 @@ class CompactDetailsCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 14.0),
       child: MaterialButton(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         onPressed: () {
           _openDetails(context);
         },
@@ -119,7 +119,7 @@ class CompactDetailsCard extends StatelessWidget {
         );
       },
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(CARD_RADIUS),
+        borderRadius: BorderRadius.circular(cardRadius),
       ),
     );
   }

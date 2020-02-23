@@ -32,7 +32,7 @@ class HistoryItem extends StatelessWidget {
         child: ClipPath(
           clipper: ShapeBorderClipper(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(CARD_RADIUS))),
+                  borderRadius: BorderRadius.circular(cardRadius))),
           child: CustomPaint(
             foregroundPainter: IndicatorPainter(
               color: transaction.tx.isExpense ? Colors.red : Colors.green,

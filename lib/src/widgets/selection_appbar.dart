@@ -49,8 +49,8 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
   Widget _buildSelectionAppBar(Map<int, dynamic> selectedItems) {
     return AppBar(
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
-        elevation: APPBAR_ELEVATION,
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        elevation: appBarElevation,
         actions: <Widget>[
           _buildShareAction(selectedItems),
           _buildEditAction(selectedItems),

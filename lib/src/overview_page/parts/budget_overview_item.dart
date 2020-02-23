@@ -63,7 +63,7 @@ class BudgetOverviewItem extends StatelessWidget {
       margin: const EdgeInsets.only(top: 10),
       child: MaterialButton(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         onPressed: () {
           Provider.of<NavigationNotifier>(context, listen: false).setPage(0);
         },

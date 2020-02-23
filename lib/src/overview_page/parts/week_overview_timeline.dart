@@ -43,7 +43,7 @@ class WeekOverviewTimeline extends StatelessWidget {
     );
 
     return InkWell(
-      borderRadius: BorderRadius.circular(CARD_RADIUS),
+      borderRadius: BorderRadius.circular(cardRadius),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => _historyWithScaffold(date, context)));

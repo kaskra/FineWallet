@@ -6,9 +6,9 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-const double APPBAR_ELEVATION = 0; // default 4
-const double APPBAR_OPACITY = 1; // in [0, 1]
-const bool CENTER_APPBAR = true;
-const bool USE_DATETIME_CHART = true;
-const double CARD_RADIUS = 8;
-const int NUMBER_OF_LATEST_TRANSACTIONS = 4;
+const double appBarElevation = 0; // default 4
+const double appBarOpacity = 1; // in [0, 1]
+const bool isAppBarCentered = true;
+const bool useDateTimeChart = true;
+const double cardRadius = 8;
+const int numLatestTransactions = 4;

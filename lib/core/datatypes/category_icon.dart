@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class CategoryIcon {
   // Income icon always has to be the last one
-  final List<IconData> icons = const [
+  static const List<IconData> icons = [
     Icons.blur_on,
     Icons.person,
     Icons.restaurant,
@@ -23,11 +23,11 @@ class CategoryIcon {
     Icons.attach_money
   ];
 
-  const CategoryIcon(int id) : this.id = id;
+  const CategoryIcon(this.id);
 
   final int id;
 
   IconData get data => icons[id];
 
-  static int get amount => CategoryIcon(0).icons.length;
+  static int get amount => icons.length;
 }

@@ -44,7 +44,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       child: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         height: MediaQuery.of(context).size.height * 0.8,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Column(
@@ -96,8 +96,8 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(CARD_RADIUS),
-          topRight: Radius.circular(CARD_RADIUS),
+          topLeft: Radius.circular(cardRadius),
+          topRight: Radius.circular(cardRadius),
         ),
       ),
       height: 50,
@@ -210,7 +210,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           margin: const EdgeInsets.all(7),
           child: Material(
             color: color,
-            borderRadius: BorderRadius.circular(CARD_RADIUS),
+            borderRadius: BorderRadius.circular(cardRadius),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
               onTap: () => onTap(),

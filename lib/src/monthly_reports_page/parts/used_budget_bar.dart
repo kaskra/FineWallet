@@ -59,7 +59,7 @@ class UsedBudgetBar extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            borderRadius: BorderRadius.circular(CARD_RADIUS),
+            borderRadius: BorderRadius.circular(cardRadius),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6.0),
