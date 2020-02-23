@@ -38,15 +38,15 @@ class CategoryChartsItem extends StatelessWidget {
         _buildChartWrapper(
           context,
           "Monthly",
-          ProfileChart(
-            type: ProfileChart.MONTHLY_CHART,
+          const ProfileChart(
+            type: ProfileChart.monthlyChart,
           ),
         ),
         _buildChartWrapper(
           context,
           "Lifetime",
-          ProfileChart(
-            type: ProfileChart.LIFE_CHART,
+          const ProfileChart(
+            type: ProfileChart.lifeChart,
           ),
         ),
       ],
@@ -55,7 +55,7 @@ class CategoryChartsItem extends StatelessWidget {
 
   Widget _buildChartWrapper(BuildContext context, String title, Widget chart) {
     return Stack(
-      alignment: Alignment(-0.75, -1),
+      alignment: const Alignment(-0.75, -1),
       children: <Widget>[
         Text(
           title,

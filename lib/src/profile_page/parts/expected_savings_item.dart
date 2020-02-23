@@ -8,7 +8,7 @@ class ExpectedSavingsItem extends StatelessWidget {
     return InformationRow(
       padding:
           const EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0, right: 8.0),
-      text: Text(
+      text: const Text(
         "Expected savings: ",
         style: TextStyle(fontSize: 14),
       ),

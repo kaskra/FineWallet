@@ -1,4 +1,5 @@
 import 'package:FineWallet/utils.dart';
+import 'package:flutter/cupertino.dart';
 
 /// This abstract class is only used to be a parent of a generic type.
 abstract class FilterSettings {}
@@ -38,10 +39,10 @@ class TransactionFilterSettings extends FilterSettings {
   factory TransactionFilterSettings.byDay(int day) =>
       TransactionFilterSettings(day: day);
 
-  factory TransactionFilterSettings.byExpense(bool isExpense) =>
+  factory TransactionFilterSettings.byExpense({@required bool isExpense}) =>
       TransactionFilterSettings(expenses: isExpense);
 
-  factory TransactionFilterSettings.byIncome(bool isIncome) =>
+  factory TransactionFilterSettings.byIncome({@required bool isIncome}) =>
       TransactionFilterSettings(incomes: isIncome);
 
   factory TransactionFilterSettings.beforeDate(DateTime date) =>

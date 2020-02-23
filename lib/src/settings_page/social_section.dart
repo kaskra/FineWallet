@@ -34,7 +34,7 @@ class _SocialSectionState extends State<SocialSection> {
       trailing: Switch(
         value: _isEnabled,
         onChanged: (val) {
-          UserSettings.setTXShare(val);
+          UserSettings.setTXShare(val: val);
           setState(() {
             _isEnabled = val;
           });

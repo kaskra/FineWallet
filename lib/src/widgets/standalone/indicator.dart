@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum IndicatorSide { LEFT, RIGHT }
+enum IndicatorSide { left, right }
 
 class IndicatorPainter extends CustomPainter {
   final Color color;
@@ -11,16 +11,17 @@ class IndicatorPainter extends CustomPainter {
     IndicatorSide side,
     this.color,
     double thickness,
-  })  : this.thickness = thickness ?? 6,
-        this.side = side ?? IndicatorSide.LEFT;
+  })  : thickness = thickness ?? 6,
+        side = side ?? IndicatorSide.left;
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = color;
+    final paint = Paint()..color = color;
 
-    double startX = side == IndicatorSide.LEFT ? 0 : size.width - thickness;
+    final double startX =
+        side == IndicatorSide.left ? 0 : size.width - thickness;
 
-    Rect rect = Rect.fromLTWH(startX, 0, thickness, size.height);
+    final rect = Rect.fromLTWH(startX, 0, thickness, size.height);
 
     canvas.drawRect(rect, paint);
   }

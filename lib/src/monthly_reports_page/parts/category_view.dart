@@ -20,20 +20,16 @@ class CategoryListView extends StatelessWidget {
   final BuildContext context;
 
   CategoryListView({Key key, @required this.model, @required this.context})
-      : this.date = DateTime.fromMillisecondsSinceEpoch(model.month.firstDate),
+      : date = DateTime.fromMillisecondsSinceEpoch(model.month.firstDate),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: _buildCategoryListView(), //Text("No categories found!"),
-      ),
-    );
+    return Center(child: _buildCategoryListView());
   }
 
   Widget _buildCategoryListView() {
-    var settings = TransactionFilterSettings(
+    final settings = TransactionFilterSettings(
       dateInMonth: model.month.firstDate,
       expenses: true,
     );
@@ -53,7 +49,9 @@ class CategoryListView extends StatelessWidget {
             ],
           );
         } else {
-          return CircularProgressIndicator();
+          return const Center(
+            child: Text("Found no categories!"),
+          );
         }
       },
     );
@@ -77,15 +75,15 @@ class CategoryListView extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
-                  child: Text(
-                    "OK",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
                   padding: const EdgeInsets.all(5),
                   textColor: Theme.of(context).colorScheme.secondary,
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
               )
             ],

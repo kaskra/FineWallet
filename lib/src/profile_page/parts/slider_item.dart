@@ -19,7 +19,7 @@ class _SliderItemState extends State<SliderItem> {
   /// Load the current month and set the overall maximum budget,
   /// the current maximum available budget, update the parent by
   /// calling onChanged event callback.
-  void _loadCurrentMonth() async {
+  Future _loadCurrentMonth() async {
     final m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
@@ -141,11 +141,12 @@ class __ValueSliderState extends State<_ValueSlider> {
   bool _loaded = false;
 
   /// Load current maximum budget from current month.
-  void _loadCurrentBudget() async {
-    Month m = await Provider.of<AppDatabase>(context, listen: false)
+  Future _loadCurrentBudget() async {
+    final month = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
+    Provider.of<BudgetNotifier>(context, listen: false)
+        .setBudget(month.maxBudget);
     setState(() {
       _loaded = true;
     });

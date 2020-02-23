@@ -31,7 +31,7 @@ void main() {
   });
 
   test('Get month name', () {
-    List<String> months = [
+    final months = [
       "January",
       "February",
       "March",
@@ -47,7 +47,7 @@ void main() {
     ];
 
     for (int i = 1; i < 13; i++) {
-      var name = getMonthName(i);
+      final name = getMonthName(i);
       expect(months[i - 1], name);
     }
   });
@@ -55,8 +55,8 @@ void main() {
   testWidgets('Open statistics', (WidgetTester tester) async {
     await tester.pumpWidget(MyApp());
 
-    var name = getMonthName(DateTime.now().month).toUpperCase();
-    var statisticsBox = find.widgetWithText(InkWell, name);
+    final name = getMonthName(DateTime.now().month).toUpperCase();
+    final statisticsBox = find.widgetWithText(InkWell, name);
 
     expect(statisticsBox, findsOneWidget);
 

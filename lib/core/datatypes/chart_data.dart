@@ -11,7 +11,11 @@ class CategoryExpenses {
   final int categoryId;
   final String categoryName;
 
-  CategoryExpenses(this.amount, this.categoryId, this.categoryName);
+  CategoryExpenses({
+    this.amount,
+    this.categoryId,
+    this.categoryName,
+  });
 }
 
 class PredictionPoint {
@@ -19,8 +23,12 @@ class PredictionPoint {
   final double amount;
   final bool isPrediction;
   final bool isAboveMax;
-  PredictionPoint(
-      this.timestamp, this.amount, this.isPrediction, this.isAboveMax);
+  PredictionPoint({
+    this.timestamp,
+    this.amount,
+    this.isPrediction,
+    this.isAboveMax,
+  });
 }
 
 class PredictionPointDate {
@@ -28,6 +36,10 @@ class PredictionPointDate {
   final double amount;
   final bool isPrediction;
   final bool isAboveMax;
-  PredictionPointDate(
-      this.timestamp, this.amount, this.isPrediction, this.isAboveMax);
+  PredictionPointDate({
+    this.timestamp,
+    this.amount,
+    this.isPrediction,
+    this.isAboveMax,
+  });
 }

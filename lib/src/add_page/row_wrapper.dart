@@ -14,27 +14,29 @@ class RowWrapper extends StatelessWidget {
 
   const RowWrapper({
     Key key,
-    this.leadingIcon,
-    this.isExpandable,
-    this.iconSize,
+    @required this.leadingIcon,
+    @required this.isExpandable,
+    @required this.iconSize,
     this.isExpanded,
     this.onTap,
-    this.isChild,
+    @required this.isChild,
     this.child,
     this.onSwitch,
   })  : assert(leadingIcon != null),
         assert(isExpandable != null),
         assert(iconSize != null),
         assert(isChild != null),
+        // ignore: avoid_bool_literals_in_conditional_expressions
         assert(isExpandable ? isExpanded != null : true),
+        // ignore: avoid_bool_literals_in_conditional_expressions
         assert(isExpandable ? onSwitch != null : true),
         super(key: key);
 
-  final double _iconPadding = 8;
+  double get _iconPadding => 8;
 
   @override
   Widget build(BuildContext context) {
-    double leftInset = 10 * (isChild ? 4.0 : 1.0);
+    final double leftInset = 10 * (isChild ? 4.0 : 1.0);
 
     return Container(
       padding: EdgeInsets.fromLTRB(leftInset, 4, 10, 4),
@@ -42,7 +44,10 @@ class RowWrapper extends StatelessWidget {
       child: Row(
         children: <Widget>[
           _buildLeading(context),
-          isExpandable ? _buildExpandableSwitch() : _buildMainContent(context),
+          if (isExpandable)
+            _buildExpandableSwitch()
+          else
+            _buildMainContent(context),
         ],
       ),
     );

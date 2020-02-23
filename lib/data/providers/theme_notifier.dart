@@ -15,10 +15,10 @@ class ThemeNotifier extends ChangeNotifier {
     _isDarkMode = dark;
     if (dark) {
       _theme = darkTheme;
-      UserSettings.setDarkMode(true);
+      UserSettings.setDarkMode(val: true);
     } else {
       _theme = standardTheme;
-      UserSettings.setDarkMode(false);
+      UserSettings.setDarkMode(val: false);
     }
     notifyListeners();
   }

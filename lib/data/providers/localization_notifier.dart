@@ -9,13 +9,13 @@ class LocalizationNotifier extends ChangeNotifier {
 
   String get currency => _currencySymbol;
 
-  setLanguageCode(int c) async {
+  Future setLanguageCode(int c) async {
     UserSettings.setLanguage(c);
     _languageCode = mapIdToLanguage(c);
     notifyListeners();
   }
 
-  setCurrencySymbol(int c) {
+  Future setCurrencySymbol(int c) async {
     UserSettings.setCurrency(c);
     _currencySymbol = mapIdToCurrency(c);
     notifyListeners();

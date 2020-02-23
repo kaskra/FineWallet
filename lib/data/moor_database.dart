@@ -44,6 +44,7 @@ class Transactions extends Table {
 
   @override
   List<String> get customConstraints => [
+        // ignore: no_adjacent_strings_in_list
         "CHECK (is_recurring = 0 OR (recurring_until NOT NULL AND "
             "recurring_type NOT NULL AND "
             "original_id NOT NULL))"
@@ -98,8 +99,8 @@ class Recurrences extends Table {
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
-      : super((FlutterQueryExecutor.inDatabaseFolder(
-            path: 'db.sqlite', logStatements: true)));
+      : super(FlutterQueryExecutor.inDatabaseFolder(
+            path: 'db.sqlite', logStatements: true));
 
   @override
   int get schemaVersion => 1;
@@ -119,7 +120,7 @@ class AppDatabase extends _$AppDatabase {
             await batch((b) {
               b.insertAll(recurrences, moor_init.recurrences);
 
-              for (var catWithSubs in moor_init.categories) {
+              for (final catWithSubs in moor_init.categories) {
                 b.insert(categories, catWithSubs.category,
                     mode: InsertMode.insertOrReplace);
               }
@@ -128,7 +129,7 @@ class AppDatabase extends _$AppDatabase {
             // Has to be done in extra batch, because
             // otherwise it would not insert anything.
             await batch((b) {
-              for (var catWithSubs in moor_init.categories) {
+              for (final catWithSubs in moor_init.categories) {
                 b.insertAll(subcategories, catWithSubs.subcategories,
                     mode: InsertMode.insertOrReplace);
               }
@@ -157,7 +158,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Returns the current maximum AUTO INCREMENT value of table transactions.
   Future<int> maxTransactionId() {
-    var res = customSelectQuery(
+    final res = customSelectQuery(
         "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
     return res.map((row) => row.readInt("seq")).getSingle();
   }

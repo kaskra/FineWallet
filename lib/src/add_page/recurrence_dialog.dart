@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 /// Possible recurrence types are stored in the database table `recurrences`.
 ///
 class RecurrenceDialog extends StatefulWidget {
-  RecurrenceDialog({Key key, @required this.recurrenceType}) : super(key: key);
+  const RecurrenceDialog({Key key, @required this.recurrenceType})
+      : super(key: key);
 
   final int recurrenceType;
 

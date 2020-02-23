@@ -17,11 +17,11 @@ class SimpleSavingsItem extends StatelessWidget {
       child: Row(
         children: <Widget>[
           RowItem(
+            amountPadding: const EdgeInsets.symmetric(vertical: 4),
+            footerText: "Saved amount",
             child: SavingsView(
               textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
-            amountPadding: const EdgeInsets.symmetric(vertical: 4),
-            footerText: "Saved amount",
           )
         ],
       ),

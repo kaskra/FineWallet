@@ -54,10 +54,6 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(
-                child: Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 padding: const EdgeInsets.all(5),
                 textColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
@@ -67,6 +63,10 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                     Navigator.of(context).pop(null);
                   }
                 },
+                child: Text(
+                  "OK",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             )
           ],
@@ -128,7 +128,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       child: FutureBuilder<List<Category>>(
         future: Provider.of<AppDatabase>(context)
             .categoryDao
-            .getAllCategoriesByType(widget.isExpense),
+            .getAllCategoriesByType(isExpense: widget.isExpense),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return GridView.count(

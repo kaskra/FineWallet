@@ -14,7 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AddPage extends StatefulWidget {
-  AddPage({
+  const AddPage({
     Key key,
     @required this.isExpense,
     this.transaction,
@@ -45,10 +45,10 @@ class _AddPageState extends State<AddPage> {
 
   bool _isRecurring = false;
   Recurrence _recurrence;
-  int _untilDate = dayInMillis(DateTime.now().add(Duration(days: 1)));
+  int _untilDate = dayInMillis(DateTime.now().add(const Duration(days: 1)));
 
   /// State variables
-  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _hasError = false;
   bool _initialized = false;
 
@@ -73,7 +73,7 @@ class _AddPageState extends State<AddPage> {
         txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
         _date = txs.toList().last.date;
 
-        List<Recurrence> recurrenceName =
+        final List<Recurrence> recurrenceName =
             await Provider.of<AppDatabase>(context, listen: false)
                 .getRecurrences();
         _recurrence = recurrenceName
@@ -131,34 +131,40 @@ class _AddPageState extends State<AddPage> {
   /// if there is a problem.
   ///
   Tuple2<String, bool> _isValidTransaction() {
-    if (_amount == 0)
+    if (_amount == 0) {
       return Tuple2<String, bool>(
           "The specified amount has to be greater than Zero", false);
+    }
 
-    if (_amount < 0)
+    if (_amount < 0) {
       return Tuple2<String, bool>(
           "The specified amount can only be positive!", false);
+    }
 
-    if (_subcategory == null)
+    if (_subcategory == null) {
       return Tuple2<String, bool>("Please choose a category!", false);
+    }
 
-    if (_isRecurring && _recurrence == null)
+    if (_isRecurring && _recurrence == null) {
       return Tuple2<String, bool>(
           "Please specify which recurrence "
           "type you want to use!",
           false);
+    }
 
     // We don't need to check if date is at least a day before until date.
     // That is handled by the date picker.
-    if (_isRecurring && _untilDate == null)
+    if (_isRecurring && _untilDate == null) {
       return Tuple2<String, bool>(
           "Please choose an end date "
           "for the recurrence!",
           false);
+    }
 
-    if (_date == null)
+    if (_date == null) {
       return Tuple2<String, bool>(
           "Please choose a date for your transaction!", false);
+    }
 
     return Tuple2<String, bool>("", true);
   }
@@ -178,7 +184,7 @@ class _AddPageState extends State<AddPage> {
     }
 
     // Show snackbar with hints when not valid
-    Tuple2<String, bool> isValid = _isValidTransaction();
+    final Tuple2<String, bool> isValid = _isValidTransaction();
     if (!isValid.second) {
       _showSnackBar(isValid.first);
       return;
@@ -197,8 +203,8 @@ class _AddPageState extends State<AddPage> {
   /// Creates a [Transaction] object and adds it to the database table
   /// `transactions`.
   ///
-  void _addNewTransaction() async {
-    var tx = Transaction(
+  Future _addNewTransaction() async {
+    final tx = Transaction(
       id: null,
       date: _date,
       isExpense: widget.isExpense,
@@ -223,8 +229,8 @@ class _AddPageState extends State<AddPage> {
   /// have a unique `id` value, but the same `originalId`
   /// as the original transaction.
   ///
-  void _updateTransaction() async {
-    var tx = Transaction(
+  Future _updateTransaction() async {
+    final tx = Transaction(
       id: _transaction.tx.originalId,
       date: _date,
       isExpense: widget.isExpense,
@@ -244,7 +250,7 @@ class _AddPageState extends State<AddPage> {
   /// Shows a snackbar with a specified text.
   ///
   void _showSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(value),
       backgroundColor: Colors.grey,
     ));
@@ -252,11 +258,12 @@ class _AddPageState extends State<AddPage> {
 
   /// Builds the body structure .
   Widget _buildBody() {
-    List<Widget> items = []
-      ..addAll(_buildAmountRow())
-      ..addAll(_buildCategoryRow())
-      ..addAll(_buildDateRow())
-      ..addAll(_buildRecurrenceRow());
+    final List<Widget> items = [
+      ..._buildAmountRow(),
+      ..._buildCategoryRow(),
+      ..._buildDateRow(),
+      ..._buildRecurrenceRow()
+    ];
 
     if (_isRecurring) {
       items.addAll(_buildRecurrenceChoices());
@@ -270,9 +277,8 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildAmountRow() {
     return [
-      Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: RowTitle(title: "Amount")),
+      const Padding(
+          padding: EdgeInsets.only(top: 8), child: RowTitle(title: "Amount")),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.attach_money,
@@ -303,7 +309,7 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildCategoryRow() {
     return [
-      RowTitle(title: "Category"),
+      const RowTitle(title: "Category"),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.category,
@@ -313,7 +319,7 @@ class _AddPageState extends State<AddPage> {
           // Let the user choose a category and subcategory.
           // Returning the Subcategory is enough, because
           // it also holds the category id.
-          Subcategory res = await showDialog(
+          final Subcategory res = await showDialog(
             context: context,
             child: CategoryChoiceDialog(
               isExpense: widget.isExpense,
@@ -332,7 +338,7 @@ class _AddPageState extends State<AddPage> {
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
             _subcategory?.name ?? "",
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ),
       ),
@@ -340,12 +346,12 @@ class _AddPageState extends State<AddPage> {
   }
 
   List<Widget> _buildDateRow() {
-    var formatter = new DateFormat('dd.MM.yy');
-    String formattedDate =
+    final formatter = DateFormat('dd.MM.yy');
+    final String formattedDate =
         formatter.format(DateTime.fromMillisecondsSinceEpoch(_date));
 
     return [
-      RowTitle(title: "Date"),
+      const RowTitle(title: "Date"),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.calendar_today,
@@ -364,7 +370,8 @@ class _AddPageState extends State<AddPage> {
               _date = dayInMillis(pickedDate);
               if (_untilDate - dayInMillis(pickedDate) <
                   Duration.millisecondsPerDay) {
-                _untilDate = dayInMillis(pickedDate.add(Duration(days: 1)));
+                _untilDate =
+                    dayInMillis(pickedDate.add(const Duration(days: 1)));
               }
             });
             print(DateTime.fromMillisecondsSinceEpoch(_date));
@@ -374,7 +381,7 @@ class _AddPageState extends State<AddPage> {
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
             formattedDate,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ),
       ),
@@ -383,7 +390,7 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildRecurrenceRow() {
     return [
-      RowTitle(title: "Recurrence"),
+      const RowTitle(title: "Recurrence"),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.replay,
@@ -400,19 +407,19 @@ class _AddPageState extends State<AddPage> {
   }
 
   List<Widget> _buildRecurrenceChoices() {
-    var formatter = new DateFormat('dd.MM.yy');
-    String formattedDate =
+    final formatter = DateFormat('dd.MM.yy');
+    final String formattedDate =
         formatter.format(DateTime.fromMillisecondsSinceEpoch(_untilDate));
 
     return [
-      RowChildDivider(),
+      const RowChildDivider(),
       RowWrapper(
         leadingIcon: Icons.low_priority,
         iconSize: 20,
         isExpandable: false,
         isChild: true,
         onTap: () async {
-          Recurrence rec = await showDialog(
+          final Recurrence rec = await showDialog(
             context: context,
             child: RecurrenceDialog(
               recurrenceType: _recurrence?.type ?? -1,
@@ -428,7 +435,7 @@ class _AddPageState extends State<AddPage> {
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
             _recurrence?.name ?? "",
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ),
       ),
@@ -438,8 +445,8 @@ class _AddPageState extends State<AddPage> {
         isExpandable: false,
         isChild: true,
         onTap: () async {
-          DateTime date =
-              DateTime.fromMillisecondsSinceEpoch(_date).add(Duration(days: 1));
+          final DateTime date = DateTime.fromMillisecondsSinceEpoch(_date)
+              .add(const Duration(days: 1));
           final pickedDate = await showDatePicker(
             context: context,
             initialDate: DateTime.fromMillisecondsSinceEpoch(_untilDate),
@@ -457,7 +464,7 @@ class _AddPageState extends State<AddPage> {
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
             formattedDate,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ),
       )

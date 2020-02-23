@@ -11,22 +11,24 @@ import 'package:flutter/material.dart';
 
 class FloatingActionButtonBottomAppBarItem {
   FloatingActionButtonBottomAppBarItem(
-      {this.iconData, this.text: "", this.disabled: false});
+      {this.iconData, this.text = "", this.disabled = false});
+
   final IconData iconData;
   final String text;
   final bool disabled;
 }
 
 class FloatingActionButtonBottomAppBar extends StatefulWidget {
-  FloatingActionButtonBottomAppBar(
+  const FloatingActionButtonBottomAppBar(
       {@required this.items,
       @required this.onTabSelected,
       this.selectedIndex,
       this.selectedColor,
       this.unselectedColor,
-      this.height: 50,
-      this.iconSize: 24,
+      this.height = 50,
+      this.iconSize = 24,
       this.isVisible});
+
   final List<FloatingActionButtonBottomAppBarItem> items;
   final ValueChanged<int> onTabSelected;
   final int selectedIndex;
@@ -53,7 +55,7 @@ class _FloatingActionButtonBottomAppBarState
     });
   }
 
-  _updateIndex(int index) {
+  void _updateIndex(int index) {
     widget.onTabSelected(index);
     setState(() {
       _selectedIndex = index;
@@ -74,7 +76,7 @@ class _FloatingActionButtonBottomAppBarState
     ValueChanged<int> onPressed,
     bool isDisabled,
   }) {
-    Color color =
+    final color =
         _selectedIndex == index ? widget.selectedColor : widget.unselectedColor;
     return Expanded(
       child: SizedBox(
@@ -89,12 +91,10 @@ class _FloatingActionButtonBottomAppBarState
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Icon(item.iconData, color: color, size: widget.iconSize),
-                      _selectedIndex == index
-                          ? Text(
-                              item.text,
-                              style: TextStyle(color: color),
-                            )
-                          : Container()
+                      if (_selectedIndex == index)
+                        Text(item.text, style: TextStyle(color: color))
+                      else
+                        Container()
                     ],
                   ),
                 )
@@ -106,7 +106,7 @@ class _FloatingActionButtonBottomAppBarState
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> items = List.generate(widget.items.length, (int index) {
+    final List<Widget> items = List.generate(widget.items.length, (int index) {
       return _buildTabItem(
         index: index,
         item: widget.items[index],
@@ -118,7 +118,7 @@ class _FloatingActionButtonBottomAppBarState
     return BottomAppBar(
       color: Theme.of(context).bottomAppBarColor,
       elevation: 20,
-      shape: widget.isVisible ? CircularNotchedRectangle() : null,
+      shape: widget.isVisible ? const CircularNotchedRectangle() : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,

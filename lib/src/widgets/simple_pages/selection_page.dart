@@ -11,8 +11,8 @@ class SelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> items = [];
-    for (var l in data.keys) {
+    final items = <Widget>[];
+    for (final l in data.keys) {
       items.add(_buildItem(context, l, data[l]));
       items.add(_buildDivider());
     }
@@ -44,10 +44,6 @@ class SelectionPage extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return Divider(
-      endIndent: 12,
-      indent: 12,
-      height: 0,
-    );
+    return const Divider(endIndent: 12, indent: 12, height: 0);
   }
 }

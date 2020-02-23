@@ -52,7 +52,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
       trailing: Switch(
         value: _isFilterSettings,
         onChanged: (val) async {
-          UserSettings.setIsFilterSettings(val);
+          UserSettings.setIsFilterSettings(val: val);
           setState(() {
             _isFilterSettings = val;
           });

@@ -17,10 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileChart extends StatefulWidget {
-  ProfileChart({this.type = MONTHLY_CHART, this.filterSettings});
+  const ProfileChart({this.type = monthlyChart, this.filterSettings});
 
-  static const int LIFE_CHART = 2;
-  static const int MONTHLY_CHART = 1;
+  static const int lifeChart = 2;
+  static const int monthlyChart = 1;
 
   final int type;
   final TransactionFilterSettings filterSettings;
@@ -39,7 +39,7 @@ class _ProfileChartState extends State<ProfileChart> {
   StreamBuilder<List<Tuple3<int, String, double>>> _buildChartWithData() {
     // Check which chart should be displayed and load the correct data for it.
     TransactionFilterSettings settings;
-    if (widget.type == ProfileChart.MONTHLY_CHART) {
+    if (widget.type == ProfileChart.monthlyChart) {
       settings = widget.filterSettings ??
           TransactionFilterSettings(
             dateInMonth: dayInMillis(DateTime.now()),
@@ -101,8 +101,11 @@ class CircularProfileChart extends StatelessWidget {
     final List<CategoryExpenses> inputData = [];
     for (int i = 0; i < expenses.length; i++) {
       if (expenses[i] > 0) {
-        inputData.add(
-            CategoryExpenses(expenses[i], categories[i], categoryNames[i]));
+        inputData.add(CategoryExpenses(
+          amount: expenses[i],
+          categoryId: categories[i],
+          categoryName: categoryNames[i],
+        ));
       }
     }
 
@@ -122,7 +125,9 @@ class CircularProfileChart extends StatelessWidget {
     } else {
       data = [
         charts.Series<CategoryExpenses, int>(
-            data: [CategoryExpenses(0, 0, "0")],
+            data: [
+              CategoryExpenses(amount: 0, categoryId: 0, categoryName: "0")
+            ],
             id: "CategoryExpenses",
             domainFn: (CategoryExpenses ce, _) => 0,
             measureFn: (CategoryExpenses ce, _) => 1,

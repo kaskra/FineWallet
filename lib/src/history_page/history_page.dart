@@ -38,7 +38,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   TransactionFilterSettings _filterSettings;
-  Map<int, TransactionWithCategory> _selectedItems = new Map();
+  final Map<int, TransactionWithCategory> _selectedItems =
+      <int, TransactionWithCategory>{};
   bool _isSelectionActive = false;
 
   /// The history filter state that holds every filter setting.
@@ -64,17 +65,16 @@ class _HistoryPageState extends State<HistoryPage> {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: <Widget>[
-          _isSelectionActive ? _buildSelectionAppBar() : Container(),
-          (widget.showFilters ?? true)
-              ? _buildFilterSettingsRow()
-              : Container(),
+          if (_isSelectionActive) _buildSelectionAppBar() else Container(),
+          if (widget.showFilters ?? true)
+            _buildFilterSettingsRow()
+          else
+            Container(),
           Expanded(
-            child: Container(
-              child: MediaQuery.removePadding(
-                context: context,
-                child: _buildHistoryList(),
-                removeTop: true,
-              ),
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: _buildHistoryList(),
             ),
           ),
         ],
@@ -148,7 +148,7 @@ class _HistoryPageState extends State<HistoryPage> {
       builder: (BuildContext context,
           AsyncSnapshot<List<TransactionWithCategory>> snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data.length > 0) {
+          if (snapshot.data.isNotEmpty) {
             return _buildItems(snapshot.data);
           } else {
             return const SizedBox();
@@ -178,12 +178,12 @@ class _HistoryPageState extends State<HistoryPage> {
   /// and [HistoryDateTitle].
   ///
   Widget _buildItems(List<TransactionWithCategory> data) {
-    List<Widget> items = [];
+    final items = <Widget>[];
 
     DateTime lastDate = DateTime.fromMillisecondsSinceEpoch(data.first.tx.date);
     items.add(HistoryDateTitle(date: lastDate));
-    for (var d in data) {
-      var date = DateTime.fromMillisecondsSinceEpoch(d.tx.date);
+    for (final d in data) {
+      final date = DateTime.fromMillisecondsSinceEpoch(d.tx.date);
 
       // Visually divide transactions when the month changes.
       if (date.month != lastDate.month) {
@@ -200,8 +200,8 @@ class _HistoryPageState extends State<HistoryPage> {
     }
 
     return ListView(
-      children: items,
       shrinkWrap: true,
+      children: items,
     );
   }
 
@@ -218,7 +218,7 @@ class _HistoryPageState extends State<HistoryPage> {
   ///
   Widget _buildItem(TransactionWithCategory d) {
     return HistoryItem(
-      key: new Key(d.hashCode.toString()),
+      key: Key(d.hashCode.toString()),
       transaction: d,
       isSelected: _selectedItems.containsKey(d.tx.originalId),
       isSelectionActive: _isSelectionActive,
@@ -261,7 +261,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// The selection mode gets activated when some history item is pressed for a longer time.
   /// In selection mode the displayed app bar changes to the selection app bar.
   ///
-  void _checkSelectionMode() async {
+  Future _checkSelectionMode() async {
     if (widget.onChangeSelectionMode != null) {
       widget.onChangeSelectionMode(_isSelectionActive);
     }
@@ -272,10 +272,10 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Before deleting the transaction, a confirm dialog will show,
   /// requiring the user to authorize the deletion.
   ///
-  void _deleteItems() async {
+  Future _deleteItems() async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
-      for (TransactionWithCategory tx in _selectedItems.values) {
+      for (final tx in _selectedItems.values) {
         Provider.of<AppDatabase>(context, listen: false)
             .transactionDao
             .deleteTransactionById(tx.tx.originalId);

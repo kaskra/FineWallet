@@ -23,7 +23,7 @@ class MonthlyReportsPage extends StatelessWidget {
                   ListHeaderImage(
                     semanticLabel: "Monthly Reports",
                     subtitle: "Reports",
-                    image: Images.MONTHLY_REPORT,
+                    image: IMAGES.monthlyReport,
                   ),
                   // Only display previous months not the current one.
                   for (var m in snapshot.data.sublist(1))

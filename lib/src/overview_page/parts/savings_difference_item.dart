@@ -15,7 +15,7 @@ class SavingsDifferenceItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Image.asset(
-              Images.SAVINGS,
+              IMAGES.savings,
               height: 100,
               semanticLabel: "Savings",
             ),
@@ -24,20 +24,21 @@ class SavingsDifferenceItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               RowItem(
+                amountPadding: const EdgeInsets.symmetric(vertical: 4),
+                footerText: "Saved amount",
                 child: SavingsView(
                   textStyle:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
-                amountPadding: const EdgeInsets.symmetric(vertical: 4),
-                footerText: "Saved amount",
               ),
               RowItem(
+                amountPadding: const EdgeInsets.symmetric(vertical: 4),
+                // TODO: or Currently
+                footerText: "Current Difference",
                 child: SavingsDifferenceView(
                   textStyle:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
-                amountPadding: const EdgeInsets.symmetric(vertical: 4),
-                footerText: "Current Difference", // TODO: or Currently
               ),
             ],
           ),

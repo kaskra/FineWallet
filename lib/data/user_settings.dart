@@ -5,14 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// This class holds all keys needed to save and retrieve values
 /// from the [SharedPreferences] memory.
 ///
-class _Keys {
-  static const DARK_MODE = "dark_mode";
-  static const LANGUAGE = "language";
-  static const CURRENCY = "currency";
-  static const TX_SHARE = "tx_share";
-  static const PROFILE_CHART = "default_profile_chart";
-  static const IS_FILTER_SETTINGS = "is_filter_settings";
-  static const FILTER_SETTINGS = "default_filter_settings";
+class _KEYS {
+  static const darkMode = "dark_mode";
+  static const language = "language";
+  static const currency = "currency";
+  static const txShare = "tx_share";
+  static const profileChart = "default_profile_chart";
+  static const isFilterSettings = "is_filter_settings";
+  static const filterSettings = "default_filter_settings";
 }
 
 /// This class is used to save user settings/preferences to persistent
@@ -41,8 +41,8 @@ class UserSettings {
   /// -----
   /// Value as [bool] to save persistently.
   ///
-  static setDarkMode(bool val) {
-    _store.setBool(_Keys.DARK_MODE, val);
+  static void setDarkMode({bool val}) {
+    _store.setBool(_KEYS.darkMode, val);
   }
 
   /// Returns the value whether dark mode is enabled or not.
@@ -54,7 +54,7 @@ class UserSettings {
   /// True if dark mode is enabled, false otherwise.
   ///
   static bool getDarkMode() {
-    return _store.getBool(_Keys.DARK_MODE) ?? false;
+    return _store.getBool(_KEYS.darkMode) ?? false;
   }
 
   /// Sets the applications language code to the selected code and
@@ -66,8 +66,8 @@ class UserSettings {
   /// -----
   /// The selected language id.
   ///
-  static setLanguage(int languageId) {
-    _store.setInt(_Keys.LANGUAGE, languageId);
+  static void setLanguage(int languageId) {
+    _store.setInt(_KEYS.language, languageId);
   }
 
   /// Returns the applications language code saved in memory.
@@ -79,7 +79,7 @@ class UserSettings {
   /// The retrieved language id from user settings memory.
   ///
   static int getLanguage() {
-    return _store.getInt(_Keys.LANGUAGE) ?? 1;
+    return _store.getInt(_KEYS.language) ?? 1;
   }
 
   /// Sets the applications currency id to the selected symbol and
@@ -91,8 +91,8 @@ class UserSettings {
   /// -----
   /// The selected currency id.
   ///
-  static setCurrency(int currencySymbolId) {
-    _store.setInt(_Keys.CURRENCY, currencySymbolId);
+  static void setCurrency(int currencySymbolId) {
+    _store.setInt(_KEYS.currency, currencySymbolId);
   }
 
   /// Returns the applications currency id saved in memory.
@@ -104,7 +104,7 @@ class UserSettings {
   /// The retrieved currency id from user settings memory.
   ///
   static int getCurrency() {
-    return _store.getInt(_Keys.CURRENCY) ?? 1;
+    return _store.getInt(_KEYS.currency) ?? 1;
   }
 
   /// Sets the value whether TX SHARE is enabled or not.
@@ -115,8 +115,8 @@ class UserSettings {
   /// -----
   /// Value as [bool] to save persistently.
   ///
-  static setTXShare(bool val) {
-    _store.setBool(_Keys.TX_SHARE, val);
+  static void setTXShare({bool val}) {
+    _store.setBool(_KEYS.txShare, val);
   }
 
   /// Returns the value whether TX SHARE is enabled or not.
@@ -127,7 +127,7 @@ class UserSettings {
   /// ------
   /// True if TX SHARE is enabled, false otherwise.
   static bool getTXShare() {
-    return _store.getBool(_Keys.TX_SHARE) ?? true;
+    return _store.getBool(_KEYS.txShare) ?? true;
   }
 
   /// Sets the id of the default profile chart in the persistent store.
@@ -145,8 +145,8 @@ class UserSettings {
   /// ------
   /// Id as [int] of the profile chart.
   ///
-  static setDefaultProfileChart(int chartId) {
-    _store.setInt(_Keys.PROFILE_CHART, chartId);
+  static void setDefaultProfileChart(int chartId) {
+    _store.setInt(_KEYS.profileChart, chartId);
   }
 
   /// Returns the id of the default profile chart.
@@ -167,7 +167,7 @@ class UserSettings {
   static int getDefaultProfileChart() {
     // 1 = Categories
     // 2 = Prediction
-    return _store.getInt(_Keys.PROFILE_CHART) ?? 0;
+    return _store.getInt(_KEYS.profileChart) ?? 0;
   }
 
   /// Sets the value whether Filter Settings are enabled or not.
@@ -178,8 +178,8 @@ class UserSettings {
   /// -----
   /// Value as [bool] to save persistently.
   ///
-  static setIsFilterSettings(bool val) {
-    _store.setBool(_Keys.IS_FILTER_SETTINGS, val);
+  static void setIsFilterSettings({bool val}) {
+    _store.setBool(_KEYS.isFilterSettings, val);
   }
 
   /// Returns the value whether Filter Settings are enabled or not.
@@ -190,7 +190,7 @@ class UserSettings {
   /// ------
   /// True if Filter Settings are enabled, false otherwise.
   static bool getIsFilterSettings() {
-    return _store.getBool(_Keys.IS_FILTER_SETTINGS) ?? true;
+    return _store.getBool(_KEYS.isFilterSettings) ?? true;
   }
 
   /// Sets the default history filter values in the persistent store.
@@ -208,11 +208,11 @@ class UserSettings {
   /// ------
   /// [HistoryFilterState] to save.
   ///
-  static setDefaultFilterSettings(HistoryFilterState state) {
-    String onlyExp = state.onlyExpenses.toString();
-    String onlyInc = state.onlyIncomes.toString();
+  static void setDefaultFilterSettings(HistoryFilterState state) {
+    final onlyExp = state.onlyExpenses.toString();
+    final onlyInc = state.onlyIncomes.toString();
 
-    _store.setStringList(_Keys.FILTER_SETTINGS, [onlyExp, onlyInc]);
+    _store.setStringList(_KEYS.filterSettings, [onlyExp, onlyInc]);
   }
 
   /// Returns the the default history filter values.
@@ -231,17 +231,17 @@ class UserSettings {
   /// [HistoryFilterState] read from persistent storage.
   ///
   static HistoryFilterState getDefaultFilterSettings() {
-    List<String> values = _store.getStringList(_Keys.FILTER_SETTINGS);
+    final values = _store.getStringList(_KEYS.filterSettings);
 
     if (values != null) {
-      bool onlyExp = values[0].toBool();
-      bool onlyInc = values[1].toBool();
-      var filterState = HistoryFilterState()
+      final onlyExp = values[0].toBool();
+      final onlyInc = values[1].toBool();
+      final filterState = HistoryFilterState()
         ..onlyIncomes = onlyInc
         ..onlyExpenses = onlyExp;
       return filterState;
     } else {
-      var filterState = HistoryFilterState()
+      final filterState = HistoryFilterState()
         ..onlyIncomes = true
         ..onlyExpenses = true;
       return filterState;

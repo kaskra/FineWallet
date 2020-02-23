@@ -17,47 +17,45 @@ class MonthlyExpenseChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: StreamBuilder<MonthWithDetails>(
-          stream: Provider.of<AppDatabase>(context)
-              .monthDao
-              .watchCurrentMonthWithDetails(),
-          builder: (context, snapshot) {
-            double total = 0;
-            double value = 0;
-            if (snapshot.hasData) {
-              total = snapshot.data.month.maxBudget;
-              value = snapshot.data.expense;
-            }
-            return CustomPaint(
-              painter: MonthlyExpensePainter(
-                  backgroundColor: backgroundColor ?? Colors.transparent,
-                  activeColor: Theme.of(context).colorScheme.secondary,
-                  value: value,
-                  total: total,
-                  thickness: thickness),
-              size: Size.fromRadius(radius),
-              child: SizedBox(
-                height: radius * 2,
-                width: radius * 2,
-                child: Center(
-                    child: Padding(
-                  padding: EdgeInsets.all(thickness * 1.5),
-                  child: FittedBox(
-                    child: Text(
-                      "${value.toStringAsFixed(2)} /\n"
-                      "${total.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-                      maxLines: 2,
-                      softWrap: true,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    fit: BoxFit.fitWidth,
+    return StreamBuilder<MonthWithDetails>(
+        stream: Provider.of<AppDatabase>(context)
+            .monthDao
+            .watchCurrentMonthWithDetails(),
+        builder: (context, snapshot) {
+          double total = 0;
+          double value = 0;
+          if (snapshot.hasData) {
+            total = snapshot.data.month.maxBudget;
+            value = snapshot.data.expense;
+          }
+          return CustomPaint(
+            painter: MonthlyExpensePainter(
+                backgroundColor: backgroundColor ?? Colors.transparent,
+                activeColor: Theme.of(context).colorScheme.secondary,
+                value: value,
+                total: total,
+                thickness: thickness),
+            size: Size.fromRadius(radius),
+            child: SizedBox(
+              height: radius * 2,
+              width: radius * 2,
+              child: Center(
+                  child: Padding(
+                padding: EdgeInsets.all(thickness * 1.5),
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    "${value.toStringAsFixed(2)} /\n"
+                    "${total.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                    maxLines: 2,
+                    softWrap: true,
+                    style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                )),
-              ),
-            );
-          }),
-    );
+                ),
+              )),
+            ),
+          );
+        });
   }
 }
 
@@ -81,8 +79,8 @@ class MonthlyExpensePainter extends CustomPainter {
   final double _maxValue = 270;
 
   double calcArcValue() {
-    double ratio = (value / total).clamp(0, 1).toDouble();
-    double arcValue = _maxValue * ratio;
+    final ratio = (value / total).clamp(0, 1).toDouble();
+    final arcValue = _maxValue * ratio;
     return _maxValue - arcValue;
   }
 
@@ -92,7 +90,7 @@ class MonthlyExpensePainter extends CustomPainter {
     final paintInactive = Paint()..color = inactiveColor;
     final paintBackground = Paint()..color = backgroundColor;
 
-    Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     _drawArc(canvas, rect, _maxValue, paintActive);
     _drawArc(canvas, rect, calcArcValue(), paintInactive);
     canvas.drawCircle(

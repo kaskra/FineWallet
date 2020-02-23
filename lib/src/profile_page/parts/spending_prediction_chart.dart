@@ -117,8 +117,12 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
     for (int i = 0; i < days.length; i++) {
       final bool isPrediction = i > todayIdx;
       final bool isAboveMax = expense[i] > widget.monthlyBudget;
-      dataPoints
-          .add(PredictionPoint(days[i], expense[i], isPrediction, isAboveMax));
+      dataPoints.add(PredictionPoint(
+        timestamp: days[i],
+        amount: expense[i],
+        isPrediction: isPrediction,
+        isAboveMax: isAboveMax,
+      ));
     }
     return dataPoints;
   }
@@ -170,8 +174,12 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
     for (int i = 0; i < days.length; i++) {
       final bool isPrediction = i > todayIdx;
       final bool isAboveMax = expense[i] > widget.monthlyBudget;
-      dataPoints.add(
-          PredictionPointDate(days[i], expense[i], isPrediction, isAboveMax));
+      dataPoints.add(PredictionPointDate(
+        timestamp: days[i],
+        amount: expense[i],
+        isPrediction: isPrediction,
+        isAboveMax: isAboveMax,
+      ));
     }
     return dataPoints;
   }

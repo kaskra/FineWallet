@@ -1,4 +1,4 @@
-import 'package:FineWallet/data/moor_database.dart' as dbFile;
+import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/utils.dart';
 
 int _replayTypeToMillis(int replayType, int transactionDate) {
@@ -10,41 +10,43 @@ int _replayTypeToMillis(int replayType, int transactionDate) {
       return Duration.millisecondsPerDay * 7;
       break;
     case 3:
-      DateTime currentDate =
+      final DateTime currentDate =
           DateTime.fromMillisecondsSinceEpoch(transactionDate);
-      DateTime nextMonth = DateTime.utc(currentDate.year, currentDate.month, 1)
-          .add(Duration(days: 35));
-      int lastOfNextMonth = getLastDayOfMonth(nextMonth);
-      int lastOfNextMonthInMillis = dayInMillis(
+      final DateTime nextMonth =
+          DateTime.utc(currentDate.year, currentDate.month, 1)
+              .add(const Duration(days: 35));
+      final int lastOfNextMonth = getLastDayOfMonth(nextMonth);
+      final int lastOfNextMonthInMillis = dayInMillis(
           DateTime.utc(nextMonth.year, nextMonth.month, lastOfNextMonth));
-      DateTime sameDayNextMonth =
+      final DateTime sameDayNextMonth =
           DateTime.utc(nextMonth.year, nextMonth.month, currentDate.day);
-      if (dayInMillis(sameDayNextMonth) > lastOfNextMonthInMillis)
+      if (dayInMillis(sameDayNextMonth) > lastOfNextMonthInMillis) {
         return lastOfNextMonthInMillis - dayInMillis(currentDate);
+      }
       return dayInMillis(sameDayNextMonth) - dayInMillis(currentDate);
       break;
     case 4:
-      DateTime currentDate =
+      final DateTime currentDate =
           DateTime.fromMillisecondsSinceEpoch(transactionDate);
-      DateTime nextYear = DateTime.utc(
+      final DateTime nextYear = DateTime.utc(
           currentDate.year + 1, currentDate.month, currentDate.day);
-      int nextYearInt = dayInMillis(nextYear);
+      final int nextYearInt = dayInMillis(nextYear);
       return nextYearInt - transactionDate;
   }
   return -1;
 }
 
-/// Generates and returns all recurrences for a [dbFile.Transaction].
+/// Generates and returns all recurrences for a [db_file.Transaction].
 ///
 /// Input
 /// -----
-/// [dbFile.Transaction] recurring transaction.
+/// [db_file.Transaction] recurring transaction.
 ///
 /// Return
 /// ------
-/// list of [dbFile.Transaction], each is recurrence of the input transaction.
-List<dbFile.Transaction> generateRecurrences(dbFile.Transaction tx) {
-  List<dbFile.Transaction> recurrences = [];
+/// list of [db_file.Transaction], each is recurrence of the input transaction.
+List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
+  final List<db_file.Transaction> recurrences = [];
 
   int currentDate = tx.date;
   int interval = _replayTypeToMillis(tx.recurringType, currentDate);
@@ -79,7 +81,7 @@ List<dbFile.Transaction> generateRecurrences(dbFile.Transaction tx) {
 /// - [int] recurrence type to check <\br>
 ///
 bool isRecurrencePossible(int firstDate, int secondDate, int type) {
-  int difference = (secondDate - firstDate).abs();
-  int neededInterval = _replayTypeToMillis(type, firstDate);
+  final int difference = (secondDate - firstDate).abs();
+  final int neededInterval = _replayTypeToMillis(type, firstDate);
   return difference >= neededInterval;
 }
