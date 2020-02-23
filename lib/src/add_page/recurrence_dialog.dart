@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 /// Possible recurrence types are stored in the database table `recurrences`.
 ///
 class RecurrenceDialog extends StatefulWidget {
-  RecurrenceDialog({Key key, @required this.recurrenceType}) : super(key: key);
+  const RecurrenceDialog({Key key, @required this.recurrenceType})
+      : super(key: key);
 
   final int recurrenceType;
 
@@ -34,7 +35,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
       child: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         height: MediaQuery.of(context).size.height * 0.8,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Column(
@@ -44,10 +45,6 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(
-                child: Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 padding: const EdgeInsets.all(5),
                 textColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
@@ -60,6 +57,10 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                     print("Wrong Recurrence type or name!");
                   }
                 },
+                child: Text(
+                  "OK",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             )
           ],
@@ -73,8 +74,8 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(CARD_RADIUS),
-          topRight: Radius.circular(CARD_RADIUS),
+          topLeft: Radius.circular(cardRadius),
+          topRight: Radius.circular(cardRadius),
         ),
       ),
       height: 50,
@@ -96,7 +97,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   Widget _buildSubcategoryList() {
     return FutureBuilder(
       future: Provider.of<AppDatabase>(context).getRecurrences(),
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot<List<Recurrence>> snapshot) {
         if (snapshot.hasData) {
           return ListView(
             shrinkWrap: true,
@@ -105,7 +106,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             ],
           );
         } else {
-          return SizedBox();
+          return const SizedBox();
         }
       },
     );
@@ -132,13 +133,11 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
               });
             },
             child: Center(
-              child: Container(
-                child: Text(
-                  rec.name,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 16,
-                  ),
+              child: Text(
+                rec.name,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 16,
                 ),
               ),
             ),

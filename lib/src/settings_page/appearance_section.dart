@@ -33,7 +33,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     );
   }
 
-  Widget _buildDarkModeSwitch(BuildContext context) {
+  SectionItem _buildDarkModeSwitch(BuildContext context) {
     return SectionItem(
       title: "Enable Dark Mode",
       trailing: Switch(
@@ -46,13 +46,13 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     );
   }
 
-  Widget _buildFilterSettingsSwitch(BuildContext context) {
+  SectionItem _buildFilterSettingsSwitch(BuildContext context) {
     return SectionItem(
       title: "Enable Filtering of History",
       trailing: Switch(
         value: _isFilterSettings,
         onChanged: (val) async {
-          UserSettings.setIsFilterSettings(val);
+          UserSettings.setIsFilterSettings(val: val);
           setState(() {
             _isFilterSettings = val;
           });

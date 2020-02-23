@@ -20,23 +20,23 @@ class ProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StructureTitle(text: "Monthly Available Budget"),
+            const StructureTitle(text: "Monthly Available Budget"),
             SmallStructureSpace(),
             _buildMonthlyAvailableBudget(),
             StructureSpace(),
             //
-            StructureTitle(text: "Spending Prediction"),
+            const StructureTitle(text: "Spending Prediction"),
             SmallStructureSpace(),
             SpendingPredictionItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Expenses per Category"),
+            const StructureTitle(text: "Expenses per Category"),
             SmallStructureSpace(),
             CategoryChartsItem(),
             //
-            StructureTitle(text: "Savings"),
+            const StructureTitle(text: "Savings"),
             SmallStructureSpace(),
-            SimpleSavingsItem(),
+            const SimpleSavingsItem(),
             StructureSpace(),
           ],
         ),

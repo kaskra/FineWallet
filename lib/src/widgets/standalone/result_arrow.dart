@@ -17,11 +17,11 @@ class ResultArrow extends StatelessWidget {
 class CombinationPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
+    final paint = Paint()
       ..color = Colors.grey
       ..strokeWidth = 1;
 
-    Offset origin = Offset(0, 0);
+    const origin = Offset(0, 0);
     canvas.drawLine(size.centerLeft(origin), size.centerRight(origin), paint);
     canvas.drawLine(size.center(origin), size.bottomCenter(origin), paint);
   }

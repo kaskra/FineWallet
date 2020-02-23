@@ -9,7 +9,7 @@ class HistoryDateTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    intl.DateFormat d = intl.DateFormat.MMMEd();
+    final intl.DateFormat d = intl.DateFormat.MMMEd();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -20,20 +20,16 @@ class CategoryListView extends StatelessWidget {
   final BuildContext context;
 
   CategoryListView({Key key, @required this.model, @required this.context})
-      : this.date = DateTime.fromMillisecondsSinceEpoch(model.month.firstDate),
+      : date = DateTime.fromMillisecondsSinceEpoch(model.month.firstDate),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: _buildCategoryListView(), //Text("No categories found!"),
-      ),
-    );
+    return Center(child: _buildCategoryListView());
   }
 
   Widget _buildCategoryListView() {
-    var settings = TransactionFilterSettings(
+    final settings = TransactionFilterSettings(
       dateInMonth: model.month.firstDate,
       expenses: true,
     );
@@ -53,7 +49,9 @@ class CategoryListView extends StatelessWidget {
             ],
           );
         } else {
-          return CircularProgressIndicator();
+          return const Center(
+            child: Text("Found no categories!"),
+          );
         }
       },
     );
@@ -67,7 +65,7 @@ class CategoryListView extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.circular(CARD_RADIUS)),
+              borderRadius: BorderRadius.circular(cardRadius)),
           height: MediaQuery.of(context).size.height * 0.8,
           width: MediaQuery.of(context).size.width * 0.8,
           child: Column(
@@ -77,15 +75,15 @@ class CategoryListView extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
-                  child: Text(
-                    "OK",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
                   padding: const EdgeInsets.all(5),
                   textColor: Theme.of(context).colorScheme.secondary,
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
               )
             ],
@@ -100,8 +98,8 @@ class CategoryListView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(CARD_RADIUS),
-          topRight: Radius.circular(CARD_RADIUS),
+          topLeft: Radius.circular(cardRadius),
+          topRight: Radius.circular(cardRadius),
         ),
       ),
       padding: const EdgeInsets.only(bottom: 10),
@@ -137,7 +135,7 @@ class CategoryListView extends StatelessWidget {
   }
 
   Widget _buildDialogTransactionList(int id) {
-    var settings = TransactionFilterSettings(
+    final settings = TransactionFilterSettings(
         dateInMonth: model.month.firstDate, category: id);
 
     return Padding(
@@ -146,11 +144,13 @@ class CategoryListView extends StatelessWidget {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchTransactionsWithFilter(settings),
-        builder: (context, snapshot) {
+        builder:
+            (context, AsyncSnapshot<List<TransactionWithCategory>> snapshot) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-              for (var tx in snapshot.data ?? []) _buildTransactionRow(tx),
+              for (final TransactionWithCategory tx in snapshot.data ?? [])
+                _buildTransactionRow(tx),
             ],
           );
         },
@@ -160,7 +160,7 @@ class CategoryListView extends StatelessWidget {
 
   InformationRow _buildTransactionRow(TransactionWithCategory tx) {
     // Initialize date formatter for timestamp
-    var formatter = new DateFormat('E, dd.MM.yy');
+    final formatter = DateFormat('E, dd.MM.yy');
 
     return InformationRow(
       padding: const EdgeInsets.all(5),

@@ -15,7 +15,7 @@ class RowTitle extends StatelessWidget {
       padding: const EdgeInsets.only(left: 48),
       child: Text(
         title,
-        style: TextStyle(fontSize: 13),
+        style: const TextStyle(fontSize: 13),
       ),
     );
   }

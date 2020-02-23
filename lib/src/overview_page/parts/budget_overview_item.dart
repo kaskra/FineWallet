@@ -19,18 +19,18 @@ class BudgetOverviewItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               RowItem(
+                footerText: "Today",
                 child: DailyBudgetView(
                   textStyle:
                       TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                 ),
-                footerText: "Today",
               ),
               RowItem(
+                footerText: getMonthName(DateTime.now().month).toString(),
                 child: MonthlyBudgetView(
                   textStyle:
                       TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                 ),
-                footerText: getMonthName(DateTime.now().month).toString(),
               ),
             ],
           ),
@@ -63,16 +63,16 @@ class BudgetOverviewItem extends StatelessWidget {
       margin: const EdgeInsets.only(top: 10),
       child: MaterialButton(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         onPressed: () {
           Provider.of<NavigationNotifier>(context, listen: false).setPage(0);
         },
+        minWidth: MediaQuery.of(context).size.width * 0.9,
+        color: Theme.of(context).colorScheme.secondary,
         child: Text(
           "Change Available Budget",
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
-        minWidth: MediaQuery.of(context).size.width * 0.9,
-        color: Theme.of(context).colorScheme.secondary,
       ),
     );
   }

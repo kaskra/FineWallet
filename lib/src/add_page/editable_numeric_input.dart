@@ -52,7 +52,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         textInputAction: TextInputAction.done,
         enableInteractiveSelection: false,
         enableSuggestions: false,
-        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
         decoration: InputDecoration(
           suffixStyle: TextStyle(
             color: Theme.of(context).colorScheme.onBackground,
@@ -62,9 +62,9 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         ),
         onChanged: (String value) {
           value = value.replaceAll(",", ".");
-          var res = double.tryParse(value);
+          final res = double.tryParse(value);
           setState(() {
-            _foundError = (res == null);
+            _foundError = res == null;
           });
           if (widget.onError != null) {
             widget.onError(_foundError);
@@ -86,8 +86,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
 
   void _validateAndSend(String text) {
     if (widget.onChanged != null) {
-      text = text.replaceAll(",", ".");
-      var res = double.tryParse(text);
+      final res = double.tryParse(text.replaceAll(",", "."));
       if (res == null) {
         setState(() {
           _foundError = true;

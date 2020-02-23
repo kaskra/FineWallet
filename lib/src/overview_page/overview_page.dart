@@ -16,22 +16,22 @@ class OverviewPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StructureTitle(text: "Remaining Budget"),
+            const StructureTitle(text: "Remaining Budget"),
             SmallStructureSpace(),
             BudgetOverviewItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Latest Transactions"),
+            const StructureTitle(text: "Latest Transactions"),
             SmallStructureSpace(),
             LatestTransactionItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Savings"),
+            const StructureTitle(text: "Savings"),
             SmallStructureSpace(),
             SavingsDifferenceItem(),
             StructureSpace(),
             //
-            StructureTitle(text: "Last Week"),
+            const StructureTitle(text: "Last Week"),
             SmallStructureSpace(),
             TimelineItem(),
             StructureSpace(),

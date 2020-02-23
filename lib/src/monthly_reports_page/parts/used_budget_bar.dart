@@ -25,10 +25,10 @@ class UsedBudgetBar extends StatelessWidget {
       firstPart = model.expense / model.month.maxBudget * 100;
     }
 
-    Color backgroundColor = model.expense > 0 && model.month.maxBudget == 0
+    final backgroundColor = model.expense > 0 && model.month.maxBudget == 0
         ? Colors.redAccent
         : Colors.black.withOpacity(0.05);
-    Color progressColor = model.expense > model.month.maxBudget
+    final progressColor = model.expense > model.month.maxBudget
         ? Colors.redAccent
         : Theme.of(context).colorScheme.secondary;
 
@@ -59,7 +59,7 @@ class UsedBudgetBar extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            borderRadius: BorderRadius.circular(CARD_RADIUS),
+            borderRadius: BorderRadius.circular(cardRadius),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6.0),

@@ -10,7 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class SlidingButtonMenu extends StatefulWidget {
-  SlidingButtonMenu({@required this.onMenuFunction, this.tapCallback});
+  const SlidingButtonMenu({@required this.onMenuFunction, this.tapCallback});
 
   final ValueChanged<int> onMenuFunction;
   final Function(bool) tapCallback;
@@ -22,7 +22,7 @@ class SlidingButtonMenu extends StatefulWidget {
 class _SlidingButtonMenuState extends State<SlidingButtonMenu>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
-  Animation _animation;
+  Animation<Offset> _animation;
 
   double _width = 60;
 
@@ -34,14 +34,16 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
     _controller.value = 0.0;
     _controller.addListener(() {});
 
-    _animation = Tween<Offset>(begin: Offset(0.0, 0.0), end: Offset(1.5, 0.0))
+    _animation = Tween<Offset>(
+            begin: const Offset(0.0, 0.0), end: const Offset(1.5, 0.0))
         .animate(_controller);
   }
 
   @override
   void didUpdateWidget(SlidingButtonMenu oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _animation = Tween<Offset>(begin: Offset(0.0, 0.0), end: Offset(1.5, 0.0))
+    _animation = Tween<Offset>(
+            begin: const Offset(0.0, 0.0), end: const Offset(1.5, 0.0))
         .animate(_controller);
   }
 
@@ -52,8 +54,8 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
   }
 
   double offsetFromGlobalPos(Offset globalPosition) {
-    RenderBox box = context.findRenderObject() as RenderBox;
-    Offset local = box.globalToLocal(globalPosition);
+    final RenderBox box = context.findRenderObject() as RenderBox;
+    final Offset local = box.globalToLocal(globalPosition);
     return ((local.dx * 0.75) / box.size.width) - 0.4;
   }
 
@@ -81,8 +83,9 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    if (details.globalPosition.dx < 90 || details.globalPosition.dx > 290)
+    if (details.globalPosition.dx < 90 || details.globalPosition.dx > 290) {
       return;
+    }
     _controller.value = offsetFromGlobalPos(details.globalPosition);
   }
 
@@ -142,7 +145,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
                 position: _animation,
                 child: Material(
                   color: Colors.white,
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                   elevation: 5,
                   child: Center(
                       child: FloatingActionButton(

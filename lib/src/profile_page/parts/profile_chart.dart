@@ -17,10 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileChart extends StatefulWidget {
-  ProfileChart({this.type = MONTHLY_CHART, this.filterSettings});
+  const ProfileChart({this.type = monthlyChart, this.filterSettings});
 
-  static const int LIFE_CHART = 2;
-  static const int MONTHLY_CHART = 1;
+  static const int lifeChart = 2;
+  static const int monthlyChart = 1;
 
   final int type;
   final TransactionFilterSettings filterSettings;
@@ -38,8 +38,8 @@ class _ProfileChartState extends State<ProfileChart> {
   /// expense per category.
   StreamBuilder<List<Tuple3<int, String, double>>> _buildChartWithData() {
     // Check which chart should be displayed and load the correct data for it.
-    var settings;
-    if (widget.type == ProfileChart.MONTHLY_CHART) {
+    TransactionFilterSettings settings;
+    if (widget.type == ProfileChart.monthlyChart) {
       settings = widget.filterSettings ??
           TransactionFilterSettings(
             dateInMonth: dayInMillis(DateTime.now()),
@@ -82,33 +82,35 @@ class _ProfileChartState extends State<ProfileChart> {
       // Create the chart with expenses per category and category names.
       return CircularProfileChart.withTransactions(expenses, ids, names);
     }
-    return Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: _buildChartWithData(),
-      ),
+    return Center(
+      child: _buildChartWithData(),
     );
   }
 }
 
 class CircularProfileChart extends StatelessWidget {
-  CircularProfileChart(this.seriesList, {this.animate});
+  const CircularProfileChart(this.seriesList, {this.animate});
 
   factory CircularProfileChart.withTransactions(
       List<double> expenses, List<int> categories, List<String> categoryNames) {
-    List<CategoryExpenses> inputData = [];
+    final List<CategoryExpenses> inputData = [];
     for (int i = 0; i < expenses.length; i++) {
-      if (expenses[i] > 0)
-        inputData.add(
-            CategoryExpenses(expenses[i], categories[i], categoryNames[i]));
+      if (expenses[i] > 0) {
+        inputData.add(CategoryExpenses(
+          amount: expenses[i],
+          categoryId: categories[i],
+          categoryName: categoryNames[i],
+        ));
+      }
     }
 
     List<charts.Series<CategoryExpenses, int>> data = [];
-    if (inputData.length > 0) {
+    if (inputData.isNotEmpty) {
       data = [
         charts.Series<CategoryExpenses, int>(
             data: inputData,
@@ -123,7 +125,9 @@ class CircularProfileChart extends StatelessWidget {
     } else {
       data = [
         charts.Series<CategoryExpenses, int>(
-            data: [CategoryExpenses(0, 0, "0")],
+            data: [
+              CategoryExpenses(amount: 0, categoryId: 0, categoryName: "0")
+            ],
             id: "CategoryExpenses",
             domainFn: (CategoryExpenses ce, _) => 0,
             measureFn: (CategoryExpenses ce, _) => 1,
@@ -143,13 +147,13 @@ class CircularProfileChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.PieChart(
+    return charts.PieChart(
       seriesList,
       animate: animate,
       defaultInteractions: true,
-      defaultRenderer: new charts.ArcRendererConfig(
+      defaultRenderer: charts.ArcRendererConfig(
         arcRendererDecorators: [
-          new charts.ArcLabelDecorator(
+          charts.ArcLabelDecorator(
               leaderLineStyleSpec: charts.ArcLabelLeaderLineStyleSpec(
                   length: 10,
                   color: charts.ColorUtil.fromDartColor(

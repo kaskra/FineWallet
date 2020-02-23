@@ -25,33 +25,31 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Default Filter Settings"),
+        title: const Text("Default Filter Settings"),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            HistoryFilterItem(
-              initialValue: _filterState.onlyExpenses,
-              title: "Only show expenses",
-              onChanged: (b) {
-                setState(() {
-                  _filterState.onlyExpenses = b;
-                });
-                _handleFilterState();
-              },
-            ),
-            HistoryFilterItem(
-              initialValue: _filterState.onlyIncomes,
-              title: "Only show incomes",
-              onChanged: (b) {
-                setState(() {
-                  _filterState.onlyIncomes = b;
-                });
-                _handleFilterState();
-              },
-            )
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          HistoryFilterItem(
+            initialValue: _filterState.onlyExpenses,
+            title: "Only show expenses",
+            onChanged: (b) {
+              setState(() {
+                _filterState.onlyExpenses = b;
+              });
+              _handleFilterState();
+            },
+          ),
+          HistoryFilterItem(
+            initialValue: _filterState.onlyIncomes,
+            title: "Only show incomes",
+            onChanged: (b) {
+              setState(() {
+                _filterState.onlyIncomes = b;
+              });
+              _handleFilterState();
+            },
+          )
+        ],
       ),
     );
   }

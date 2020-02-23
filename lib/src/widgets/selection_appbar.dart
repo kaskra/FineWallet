@@ -19,7 +19,8 @@ class SelectionAppBar<T> extends StatefulWidget implements PreferredSizeWidget {
       this.onClose,
       this.onEdit,
       this.onShare})
-      : preferredSize = Size.fromHeight(kToolbarHeight);
+      : preferredSize = Size.fromHeight(kToolbarHeight),
+        super(key: key);
 
   final Map<int, T> selectedItems;
   final String title;
@@ -45,11 +46,11 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
   /// Has possible actions like Edit, Delete, Close.
   ///
   /// Returns: The built app bar.
-  Widget _buildSelectionAppBar(Map<int, T> selectedItems) {
+  Widget _buildSelectionAppBar(Map<int, dynamic> selectedItems) {
     return AppBar(
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
-        elevation: APPBAR_ELEVATION,
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        elevation: appBarElevation,
         actions: <Widget>[
           _buildShareAction(selectedItems),
           _buildEditAction(selectedItems),
@@ -79,7 +80,7 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
     );
   }
 
-  Widget _buildShareAction(Map<int, T> selectedItems) {
+  Widget _buildShareAction(Map<int, dynamic> selectedItems) {
     return selectedItems.length == 1 &&
             widget.onShare != null &&
             UserSettings.getTXShare()
@@ -100,7 +101,7 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
         : Container();
   }
 
-  Widget _buildEditAction(Map<int, T> selectedItems) {
+  Widget _buildEditAction(Map<int, dynamic> selectedItems) {
     return selectedItems.length == 1
         ? Padding(
             padding: const EdgeInsets.only(right: 20),

@@ -15,14 +15,15 @@ class MonthlyReportsPage extends StatelessWidget {
       stream: Provider.of<AppDatabase>(context)
           .monthDao
           .watchAllMonthsWithDetails(),
-      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+      builder: (BuildContext context,
+          AsyncSnapshot<List<MonthWithDetails>> snapshot) {
         return snapshot.hasData
             ? ListView(
                 children: <Widget>[
                   ListHeaderImage(
                     semanticLabel: "Monthly Reports",
                     subtitle: "Reports",
-                    image: Images.MONTHLY_REPORT,
+                    image: IMAGES.monthlyReport,
                   ),
                   // Only display previous months not the current one.
                   for (var m in snapshot.data.sublist(1))

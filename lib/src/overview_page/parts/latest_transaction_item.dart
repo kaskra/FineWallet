@@ -29,10 +29,12 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           StreamBuilder<List<TransactionWithCategory>>(
             stream: Provider.of<AppDatabase>(context)
                 .transactionDao
-                .watchNLatestTransactions(NUMBER_OF_LATEST_TRANSACTIONS),
+                .watchNLatestTransactions(numLatestTransactions),
             builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Center(child: CircularProgressIndicator(strokeWidth: 1));
+              if (!snapshot.hasData) {
+                return const Center(
+                    child: CircularProgressIndicator(strokeWidth: 1));
+              }
               return SizedBox(
                 height: 80,
                 child: PageView(
@@ -48,7 +50,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           Positioned(
             bottom: 0,
             child: PageViewIndicator(
-              numberOfChildren: NUMBER_OF_LATEST_TRANSACTIONS,
+              numberOfChildren: numLatestTransactions,
               controller: controller,
             ),
           ),
@@ -84,11 +86,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       children: <Widget>[
                         Text(
                           snapshot.sub.name,
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                         Text(
                           snapshot.sub.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 12, fontStyle: FontStyle.italic),
                         ),
                       ],
@@ -115,12 +117,12 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
 
   Widget _buildIcon(BuildContext context, IconData iconData) {
     return CircleAvatar(
+      radius: 20,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       child: Icon(
         iconData,
         color: Theme.of(context).iconTheme.color,
       ),
-      radius: 20,
-      backgroundColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
@@ -132,7 +134,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
         actions: <Widget>[
           ListTile(
             enabled: UserSettings.getTXShare(),
-            title: Text("Share"),
+            title: const Text("Share"),
             leading: Icon(
               Icons.share,
               color: Theme.of(context).colorScheme.secondary,
@@ -142,7 +144,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             },
           ),
           ListTile(
-            title: Text("Edit"),
+            title: const Text("Edit"),
             leading: Icon(
               Icons.edit,
               color: Theme.of(context).colorScheme.secondary,

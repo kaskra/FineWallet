@@ -37,7 +37,9 @@ class DetailsBottomSheet extends StatelessWidget {
                       OverallDetail(month: month),
                       StructureSpace(),
                       _buildCategoryChart(),
-                      _buildCategoryList(context)
+                      _buildCategoryList(context),
+                      StructureSpace(),
+                      StructureSpace(),
                     ],
                   ),
                 ),
@@ -47,7 +49,7 @@ class DetailsBottomSheet extends StatelessWidget {
         );
       },
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(CARD_RADIUS),
+        borderRadius: BorderRadius.circular(cardRadius),
       ),
     );
   }
@@ -56,9 +58,8 @@ class DetailsBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 6),
       child: Text(
-        getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate)
-                .month) +
-            ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
+        "${getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).month)} "
+        ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
         style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -71,13 +72,13 @@ class DetailsBottomSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        StructureTitle(
+        const StructureTitle(
           text: "Expenses per Category",
         ),
         SizedBox(
           height: 170,
           child: ProfileChart(
-            type: ProfileChart.MONTHLY_CHART,
+            type: ProfileChart.monthlyChart,
             filterSettings: TransactionFilterSettings(
               dateInMonth: month.month.firstDate,
               expenses: true,

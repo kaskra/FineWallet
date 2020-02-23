@@ -15,12 +15,12 @@ class OverallDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var savings = month.income - month.expense;
+    final savings = month.income - month.expense;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        StructureTitle(
+        const StructureTitle(
           text: "Overall",
         ),
         SmallStructureSpace(),
@@ -35,6 +35,9 @@ class OverallDetail extends StatelessWidget {
         Row(
           children: <Widget>[
             RowItem(
+              amountPadding: const EdgeInsets.symmetric(vertical: 4),
+              footerText: "Total Income",
+              footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: Text(
                 "+${month.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
                 style: TextStyle(
@@ -42,12 +45,12 @@ class OverallDetail extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: Colors.green),
               ),
-              amountPadding: const EdgeInsets.symmetric(vertical: 4),
-              footerText: "Total Income",
-              footerTextColor: Theme.of(context).colorScheme.onBackground,
             ),
-            ResultArrow(),
+            const ResultArrow(),
             RowItem(
+              amountPadding: const EdgeInsets.symmetric(vertical: 4),
+              footerText: "Total Expense",
+              footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: Text(
                 "-${month.expense.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
                 style: TextStyle(
@@ -55,9 +58,6 @@ class OverallDetail extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: Colors.red),
               ),
-              amountPadding: const EdgeInsets.symmetric(vertical: 4),
-              footerText: "Total Expense",
-              footerTextColor: Theme.of(context).colorScheme.onBackground,
             ),
           ],
         ),
@@ -65,6 +65,9 @@ class OverallDetail extends StatelessWidget {
         Row(
           children: <Widget>[
             RowItem(
+              amountPadding: const EdgeInsets.symmetric(vertical: 4),
+              footerText: "Savings",
+              footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: Text(
                 "${savings > 0 ? "+" : ""}${savings.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
                 style: TextStyle(
@@ -72,9 +75,6 @@ class OverallDetail extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: savings > 0 ? Colors.green : Colors.red),
               ),
-              amountPadding: const EdgeInsets.symmetric(vertical: 4),
-              footerText: "Savings",
-              footerTextColor: Theme.of(context).colorScheme.onBackground,
             ),
           ],
         ),

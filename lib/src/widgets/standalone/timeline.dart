@@ -23,17 +23,15 @@ class Timeline extends StatelessWidget {
   final Color selectionColor;
 
   Widget _buildTimelineItem(int index, Widget item, int childCount) {
-    return Container(
-      child: CustomPaint(
-        painter: TimelinePainter(
-            index: index,
-            childCount: childCount,
-            gradientColors: [selectionColor, color],
-            color: color),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25),
-          child: item,
-        ),
+    return CustomPaint(
+      painter: TimelinePainter(
+          index: index,
+          childCount: childCount,
+          gradientColors: [selectionColor, color],
+          color: color),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 25),
+        child: item,
       ),
     );
   }
@@ -72,18 +70,18 @@ class TimelinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
+    final paint = Paint()
       ..color = color
       ..strokeWidth = strokeWidth
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke;
 
-    double heightCenter = size.height / 2;
+    final heightCenter = size.height / 2;
 
     if (index == 0 && gradientColors != null) {
       paint
         ..style = PaintingStyle.fill
-        ..shader = ui.Gradient.linear(Offset(0.0, 0.0),
+        ..shader = ui.Gradient.linear(const Offset(0.0, 0.0),
             Offset(0.0, size.height), gradientColors, [0.8, 1]);
     }
 

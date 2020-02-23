@@ -6,6 +6,8 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 Future<bool> showConfirmDialog(
@@ -18,20 +20,25 @@ Future<bool> showConfirmDialog(
           content: Text(content),
           actions: <Widget>[
             FlatButton(
-              child: Text("Close"),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
+              child: const Text("Close"),
             ),
             FlatButton(
-              child: Text("Confirm"),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
+              child: const Text("Confirm"),
             )
           ],
         );
       }).then((v) {
-    return v ?? false;
+    // weird linting behaviour!
+    if (v == null) {
+      return false;
+    } else {
+      return v == true;
+    }
   });
 }

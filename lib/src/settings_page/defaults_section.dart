@@ -24,27 +24,27 @@ class _DefaultsSectionState extends State<DefaultsSection> {
     );
   }
 
-  Widget _buildDefaultProfileChart() {
+  SectionItem _buildDefaultProfileChart() {
     return SectionItem(
       title: "Default Expense Chart",
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: _selectedId,
           isDense: true,
-          onChanged: (val) {
+          onChanged: (int val) {
             UserSettings.setDefaultProfileChart(val);
             setState(() {
               _selectedId = val;
             });
           },
-          items: [
+          items: const [
             DropdownMenuItem(
-              child: Text("Monthly"),
               value: 0,
+              child: Text("Monthly"),
             ),
             DropdownMenuItem(
-              child: Text("Lifetime"),
               value: 1,
+              child: Text("Lifetime"),
             ),
           ],
         ),
@@ -52,7 +52,7 @@ class _DefaultsSectionState extends State<DefaultsSection> {
     );
   }
 
-  Widget _buildDefaultFilterSettings() {
+  SectionItem _buildDefaultFilterSettings() {
     return SectionItem(
       title: "Default Filter Settings",
       trailing: Material(

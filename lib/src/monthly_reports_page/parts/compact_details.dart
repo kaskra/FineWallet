@@ -28,10 +28,8 @@ class CompactDetailsCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: Center(
                     child: Text(
-                      getMonthName(DateTime.fromMillisecondsSinceEpoch(
-                                  month.month.firstDate)
-                              .month) +
-                          ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
+                      "${getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).month)} "
+                      ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -55,7 +53,7 @@ class CompactDetailsCard extends StatelessWidget {
   }
 
   Widget _buildDetails(BuildContext context) {
-    var value = month.income - month.expense;
+    final value = month.income - month.expense;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,12 +90,13 @@ class CompactDetailsCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 14.0),
       child: MaterialButton(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         onPressed: () {
           _openDetails(context);
         },
         elevation: 4,
         height: 30,
+        color: Theme.of(context).colorScheme.secondary,
         child: Text(
           "More Details",
           style: TextStyle(
@@ -105,12 +104,11 @@ class CompactDetailsCard extends StatelessWidget {
               fontSize: 13,
               fontWeight: FontWeight.w600),
         ),
-        color: Theme.of(context).colorScheme.secondary,
       ),
     );
   }
 
-  void _openDetails(BuildContext context) async {
+  Future _openDetails(BuildContext context) async {
     await showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -119,7 +117,7 @@ class CompactDetailsCard extends StatelessWidget {
         );
       },
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(CARD_RADIUS),
+        borderRadius: BorderRadius.circular(cardRadius),
       ),
     );
   }

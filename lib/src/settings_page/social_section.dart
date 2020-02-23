@@ -28,13 +28,13 @@ class _SocialSectionState extends State<SocialSection> {
     );
   }
 
-  Widget _buildShareToggle() {
+  SectionItem _buildShareToggle() {
     return SectionItem(
       title: "Enable TX SHARE (UNUSED)",
       trailing: Switch(
         value: _isEnabled,
         onChanged: (val) {
-          UserSettings.setTXShare(val);
+          UserSettings.setTXShare(val: val);
           setState(() {
             _isEnabled = val;
           });

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HistoryItem extends StatelessWidget {
-  HistoryItem(
+  const HistoryItem(
       {Key key,
       @required this.transaction,
       @required this.onSelect,
@@ -26,20 +26,20 @@ class HistoryItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: DecoratedCard(
-        color: isSelected ? Color(0xFF6F6F6F) : null,
+        color: isSelected ? const Color(0xFF6F6F6F) : null,
         elevation: Theme.of(context).cardTheme.elevation,
         padding: 0,
         child: ClipPath(
           clipper: ShapeBorderClipper(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(CARD_RADIUS))),
+                  borderRadius: BorderRadius.circular(cardRadius))),
           child: CustomPaint(
             foregroundPainter: IndicatorPainter(
               color: transaction.tx.isExpense ? Colors.red : Colors.green,
               thickness: 6,
               side: transaction.tx.isExpense
-                  ? IndicatorSide.RIGHT
-                  : IndicatorSide.LEFT,
+                  ? IndicatorSide.right
+                  : IndicatorSide.left,
             ),
             child: Container(
               margin: const EdgeInsets.all(2),
@@ -89,13 +89,13 @@ class HistoryItem extends StatelessWidget {
 
   Widget _buildItemIcon(BuildContext context) {
     return CircleAvatar(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       child: Icon(
         isSelected
             ? Icons.check
             : CategoryIcon(transaction.sub.categoryId - 1).data,
         color: Theme.of(context).iconTheme.color,
       ),
-      backgroundColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
@@ -103,13 +103,14 @@ class HistoryItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        transaction.tx.isRecurring
-            ? Icon(
-                Icons.replay,
-                color: Theme.of(context).colorScheme.secondary,
-                size: 18,
-              )
-            : SizedBox(),
+        if (transaction.tx.isRecurring)
+          Icon(
+            Icons.replay,
+            color: Theme.of(context).colorScheme.secondary,
+            size: 18,
+          )
+        else
+          const SizedBox(),
         Text(
           " ${transaction.tx.isExpense ? "-" : ""}${transaction.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
           style: TextStyle(

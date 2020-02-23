@@ -13,7 +13,7 @@ var _cat7 = CategoriesCompanion.insert(name: "Medical");
 var _cat8 = CategoriesCompanion.insert(name: "Clothes");
 var _cat9 = CategoriesCompanion.insert(name: "Gifts");
 var _cat10 =
-    CategoriesCompanion.insert(name: "Income", isExpense: Value(false));
+    CategoriesCompanion.insert(name: "Income", isExpense: const Value(false));
 
 List<SubcategoriesCompanion> _subcategories1 = [
   SubcategoriesCompanion.insert(categoryId: 1, name: "Debt"),
@@ -113,7 +113,7 @@ List<SubcategoriesCompanion> _subcategories10 = [
   SubcategoriesCompanion.insert(categoryId: 10, name: "Voucher"),
 ];
 
-var categories = [
+List<CategoryWithSubs> categories = [
   CategoryWithSubs(_cat1, _subcategories1),
   CategoryWithSubs(_cat2, _subcategories2),
   CategoryWithSubs(_cat3, _subcategories3),
@@ -126,13 +126,13 @@ var categories = [
   CategoryWithSubs(_cat10, _subcategories10),
 ];
 
-var currentMonth = MonthsCompanion.insert(
+MonthsCompanion currentMonth = MonthsCompanion.insert(
   maxBudget: 0,
   firstDate: getFirstDateOfMonthInMillis(DateTime.now()),
   lastDate: getLastDateOfMonthInMillis(DateTime.now()),
 );
 
-var recurrences = [
+List<RecurrencesCompanion> recurrences = [
   RecurrencesCompanion.insert(name: "Daily"),
   RecurrencesCompanion.insert(name: "Weekly"),
   RecurrencesCompanion.insert(name: "Monthly"),

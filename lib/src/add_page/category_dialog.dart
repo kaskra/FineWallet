@@ -44,7 +44,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       child: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(CARD_RADIUS)),
+            borderRadius: BorderRadius.circular(cardRadius)),
         height: MediaQuery.of(context).size.height * 0.8,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Column(
@@ -54,10 +54,6 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(
-                child: Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 padding: const EdgeInsets.all(5),
                 textColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
@@ -67,6 +63,10 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                     Navigator.of(context).pop(null);
                   }
                 },
+                child: Text(
+                  "OK",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             )
           ],
@@ -96,8 +96,8 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(CARD_RADIUS),
-          topRight: Radius.circular(CARD_RADIUS),
+          topLeft: Radius.circular(cardRadius),
+          topRight: Radius.circular(cardRadius),
         ),
       ),
       height: 50,
@@ -128,7 +128,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       child: FutureBuilder<List<Category>>(
         future: Provider.of<AppDatabase>(context)
             .categoryDao
-            .getAllCategoriesByType(widget.isExpense),
+            .getAllCategoriesByType(isExpense: widget.isExpense),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return GridView.count(
@@ -165,9 +165,9 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           ? Theme.of(context).colorScheme.secondary
           : Colors.grey,
       onTap: () async {
-        var res = await showDialog(
+        final res = await showDialog<Subcategory>(
           context: context,
-          child: SubcategoryDialog(
+          builder: (context) => SubcategoryDialog(
             category: c,
             subcategory: _subcategory,
           ),
@@ -210,14 +210,16 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           margin: const EdgeInsets.all(7),
           child: Material(
             color: color,
-            borderRadius: BorderRadius.circular(CARD_RADIUS),
+            borderRadius: BorderRadius.circular(cardRadius),
             clipBehavior: Clip.hardEdge,
             child: InkWell(
               onTap: () => onTap(),
               child: Container(
                 padding: const EdgeInsets.all(7),
-                constraints: BoxConstraints.expand(),
+                constraints: const BoxConstraints.expand(),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Icon(
                       iconData,
@@ -231,8 +233,6 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                       ),
                     )
                   ],
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                 ),
               ),
             ),

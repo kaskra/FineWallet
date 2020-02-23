@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SpendingPredictionChart extends StatefulWidget {
-  SpendingPredictionChart({this.monthlyBudget = 0});
+  const SpendingPredictionChart({this.monthlyBudget = 0});
 
   final double monthlyBudget;
 
@@ -31,7 +31,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
+    final DateTime now = DateTime.now();
     setState(() {
       _today = DateTime.utc(now.year, now.month, now.day);
     });
@@ -39,10 +39,8 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: _buildChart(),
-      ),
+    return Center(
+      child: _buildChart(),
     );
   }
 
@@ -51,11 +49,11 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchExpensesPerDayInMonth(DateTime.now()),
-      builder: (context, AsyncSnapshot snapshot) {
+      builder: (context, AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
         if (snapshot.hasData) {
           return _buildChartByDataType(snapshot);
         }
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -65,9 +63,10 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   /// - The **DateTime**-domain chart shows a tick every 3 days.
   /// - The **int**-domain chart shows some specific hardcoded ticks.
   ///
-  /// Which chart to choose is decided by constant [USE_DATETIME_CHART].
-  Widget _buildChartByDataType(AsyncSnapshot<List<Tuple2>> snapshot) {
-    if (USE_DATETIME_CHART) {
+  /// Which chart to choose is decided by constant [useDateTimeChart].
+  Widget _buildChartByDataType(
+      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
+    if (useDateTimeChart) {
       return PredictionDateChart.withTransactions(
           _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
     } else {
@@ -79,19 +78,18 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   List<PredictionPoint> _calcDataPoints(
       AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
     // all days of month as date in millis
-    List<double> data = getListOfMonthDays(_today);
+    final data = getListOfMonthDays(_today);
 
-    int todayInMillis = dayInMillis(_today);
+    final todayInMillis = dayInMillis(_today);
 
     // calc the step function by using all expenses of every day in the month
     double prev = 0;
-    List<double> expense = data.map((date) {
-      var t = snapshot.data.where((t) => t.first == date).toList();
-      if (t.length > 0) return t.first.second;
+    final List<double> expense = data.map((date) {
+      final t = snapshot.data.where((t) => t.first == date).toList();
+      if (t.isNotEmpty) return t.first.second;
       return 0.0;
     }).map((double d) {
-      prev += d;
-      return prev;
+      return prev += d;
     }).toList();
 
     double gradient = 0;
@@ -111,16 +109,20 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
       }
     }
 
-    List<int> days = data
+    final List<int> days = data
         .map((d) => DateTime.fromMillisecondsSinceEpoch(d.toInt()).day)
         .toList();
 
-    List<PredictionPoint> dataPoints = [];
+    final List<PredictionPoint> dataPoints = [];
     for (int i = 0; i < days.length; i++) {
-      bool isPrediction = i > todayIdx;
-      bool isAboveMax = expense[i] > widget.monthlyBudget;
-      dataPoints
-          .add(PredictionPoint(days[i], expense[i], isPrediction, isAboveMax));
+      final bool isPrediction = i > todayIdx;
+      final bool isAboveMax = expense[i] > widget.monthlyBudget;
+      dataPoints.add(PredictionPoint(
+        timestamp: days[i],
+        amount: expense[i],
+        isPrediction: isPrediction,
+        isAboveMax: isAboveMax,
+      ));
     }
     return dataPoints;
   }
@@ -128,24 +130,23 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   List<PredictionPointDate> _calcDateTimeDataPoints(
       AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
     // all days of month as date in millis
-    List<double> data = getListOfMonthDays(_today);
+    final List<double> data = getListOfMonthDays(_today);
 
     // finer day steps
     for (int i = 0; i < data.length - 1; i += 2) {
       data.insert(i + 1, data[i] + (data[i + 1] - data[i]) / 2);
     }
 
-    int todayInMillis = dayInMillis(_today);
+    final int todayInMillis = dayInMillis(_today);
 
     // calc the step function by using all expenses of every day in the month
     double prev = 0;
-    List<double> expense = data.map((date) {
-      var t = snapshot.data.where((t) => t.first == date).toList();
-      if (t.length > 0) return t.first.second;
+    final List<double> expense = data.map((date) {
+      final t = snapshot.data.where((t) => t.first == date).toList();
+      if (t.isNotEmpty) return t.first.second;
       return 0.0;
     }).map((double d) {
-      prev += d;
-      return prev;
+      return prev += d;
     }).toList();
 
     double gradient = 0;
@@ -165,30 +166,34 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
       }
     }
 
-    List<DateTime> days = data
+    final List<DateTime> days = data
         .map((d) => DateTime.fromMillisecondsSinceEpoch(d.toInt()))
         .toList();
 
-    List<PredictionPointDate> dataPoints = [];
+    final List<PredictionPointDate> dataPoints = [];
     for (int i = 0; i < days.length; i++) {
-      bool isPrediction = i > todayIdx;
-      bool isAboveMax = expense[i] > widget.monthlyBudget;
-      dataPoints.add(
-          PredictionPointDate(days[i], expense[i], isPrediction, isAboveMax));
+      final bool isPrediction = i > todayIdx;
+      final bool isAboveMax = expense[i] > widget.monthlyBudget;
+      dataPoints.add(PredictionPointDate(
+        timestamp: days[i],
+        amount: expense[i],
+        isPrediction: isPrediction,
+        isAboveMax: isAboveMax,
+      ));
     }
     return dataPoints;
   }
 }
 
 class PredictionDateChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
+  final List<charts.Series<dynamic, DateTime>> seriesList;
   final bool animate;
 
-  PredictionDateChart(this.seriesList, {this.animate});
+  const PredictionDateChart(this.seriesList, {this.animate});
 
   factory PredictionDateChart.withTransactions(
       List<PredictionPointDate> data, double monthlyMaxBudget) {
-    List<charts.Series<dynamic, DateTime>> outputData = [
+    final List<charts.Series<dynamic, DateTime>> outputData = [
       charts.Series<PredictionPointDate, DateTime>(
           data: data,
           id: "SpendingPrediction",
@@ -240,10 +245,10 @@ class PredictionDateChart extends StatelessWidget {
             lineStyle: charts.LineStyleSpec(
               color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
             )),
-        tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+        tickFormatterSpec: const charts.AutoDateTimeTickFormatterSpec(
           day: charts.TimeFormatterSpec(format: "d", transitionFormat: "d"),
         ),
-        tickProviderSpec: charts.DayTickProviderSpec(increments: [3]),
+        tickProviderSpec: const charts.DayTickProviderSpec(increments: [3]),
       ),
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
@@ -251,7 +256,7 @@ class PredictionDateChart extends StatelessWidget {
             color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
           ),
           lineStyle: charts.LineStyleSpec(
-            dashPattern: [6, 6],
+            dashPattern: const [6, 6],
             color: charts.ColorUtil.fromDartColor(Colors.grey.shade600),
           ),
         ),
@@ -264,11 +269,11 @@ class PredictionChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
 
-  PredictionChart(this.seriesList, {this.animate});
+  const PredictionChart(this.seriesList, {this.animate});
 
   factory PredictionChart.withTransactions(
       List<PredictionPoint> data, double monthlyMaxBudget) {
-    List<charts.Series<dynamic, int>> outputData = [
+    final List<charts.Series<dynamic, int>> outputData = [
       charts.Series<PredictionPoint, int>(
           data: data,
           id: "SpendingPrediction",
@@ -299,11 +304,11 @@ class PredictionChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.LineChart(seriesList,
+    return charts.LineChart(seriesList,
         animate: false,
         defaultRenderer: charts.LineRendererConfig(
             roundEndCaps: true, strokeWidthPx: 1.8, areaOpacity: 0.3),
-        domainAxis: charts.NumericAxisSpec(
+        domainAxis: const charts.NumericAxisSpec(
             tickProviderSpec:
                 charts.StaticNumericTickProviderSpec(<charts.TickSpec<int>>[
           charts.TickSpec<int>(1),
@@ -313,7 +318,7 @@ class PredictionChart extends StatelessWidget {
           charts.TickSpec<int>(24),
           charts.TickSpec<int>(30),
         ])),
-        primaryMeasureAxis: charts.NumericAxisSpec(
+        primaryMeasureAxis: const charts.NumericAxisSpec(
           renderSpec: charts.GridlineRendererSpec(
               lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
         ));

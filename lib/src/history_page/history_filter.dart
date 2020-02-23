@@ -6,7 +6,7 @@ class HistoryFilterState {
 }
 
 class HistoryFilter extends StatelessWidget {
-  HistoryFilter({Key key, this.items}) : super(key: key);
+  const HistoryFilter({Key key, this.items}) : super(key: key);
 
   final List<HistoryFilterItem> items;
 
@@ -22,7 +22,7 @@ class HistoryFilter extends StatelessWidget {
                 bottom: BorderSide(
                     color: Theme.of(context).colorScheme.secondary, width: 0))),
         child: ExpansionTile(
-          title: Text("Filter Settings"),
+          title: const Text("Filter Settings"),
           leading: Icon(Icons.filter_list),
           children: items,
         ),

@@ -28,6 +28,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+// ignore: avoid_void_async
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await UserSettings.init();
@@ -48,13 +49,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
       theme: Provider.of<ThemeNotifier>(context).theme,
-      home: MyHomePage(title: 'FineWallet'),
+      home: const MyHomePage(title: 'FineWallet'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -101,11 +102,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _addTransaction(int leftRight) {
     if (leftRight == -1) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddPage(isExpense: false)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const AddPage(isExpense: false)));
     } else if (leftRight == 1) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddPage(isExpense: true)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const AddPage(isExpense: true)));
     }
     return;
   }
@@ -127,11 +132,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildDefaultAppBar() => AppBar(
-        centerTitle: CENTER_APPBAR,
-        elevation: APPBAR_ELEVATION,
+  PreferredSizeWidget _buildDefaultAppBar() => AppBar(
+        centerTitle: isAppBarCentered,
+        elevation: appBarElevation,
         backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(APPBAR_OPACITY),
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
@@ -145,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   Future<void> _loadBudget() async {
-    Month m = await Provider.of<AppDatabase>(context, listen: false)
+    final Month m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
@@ -160,8 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _loadBudget();
     }
 
-    bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
-    var children = [
+    final children = [
       const ProfilePage(),
       const MonthlyReportsPage(),
       const SizedBox(),
@@ -174,8 +178,8 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: _buildBottomBar(),
       body: children[Provider.of<NavigationNotifier>(context).page],
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: keyboardOpen
-          ? SizedBox()
+      floatingActionButton: MediaQuery.of(context).viewInsets.bottom >= 50
+          ? const SizedBox()
           : SlidingButtonMenu(
               onMenuFunction: _addTransaction,
               tapCallback: _navCallback,

@@ -6,7 +6,7 @@ class PageViewIndicator extends StatefulWidget {
   final int numberOfChildren;
   final PageController controller;
 
-  PageViewIndicator(
+  const PageViewIndicator(
       {Key key, @required this.numberOfChildren, @required this.controller})
       : super(key: key);
 
@@ -33,10 +33,10 @@ class _PageViewIndicatorState extends State<PageViewIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    var items = <Widget>[];
+    final items = <Widget>[];
     for (int i = 0; i < widget.numberOfChildren; i++) {
       items.add(_buildDot(selectedPage == i));
-      items.add(SizedBox(width: 2));
+      items.add(const SizedBox(width: 2));
     }
 
     return Container(

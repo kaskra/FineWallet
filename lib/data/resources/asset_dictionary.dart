@@ -1,4 +1,4 @@
-class Images {
-  static const SAVINGS = "assets/savings.png";
-  static const MONTHLY_REPORT = "assets/monthly_reports.png";
+class IMAGES {
+  static const savings = "assets/savings.png";
+  static const monthlyReport = "assets/monthly_reports.png";
 }

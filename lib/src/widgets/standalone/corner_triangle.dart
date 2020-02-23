@@ -12,10 +12,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 enum Corner {
-  TOP_LEFT,
-  TOP_RIGHT,
-  BOTTOM_LEFT,
-  BOTTOM_RIGHT,
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight,
 }
 
 class CornerIcon {
@@ -46,16 +46,16 @@ class CornerTriangle extends StatelessWidget {
   BorderRadius _getBorderRadiusFromCorner() {
     assert(corner != null);
     switch (corner) {
-      case Corner.TOP_LEFT:
+      case Corner.topLeft:
         return BorderRadius.only(topLeft: borderRadius);
         break;
-      case Corner.TOP_RIGHT:
+      case Corner.topRight:
         return BorderRadius.only(topRight: borderRadius);
         break;
-      case Corner.BOTTOM_LEFT:
+      case Corner.bottomLeft:
         return BorderRadius.only(bottomLeft: borderRadius);
         break;
-      case Corner.BOTTOM_RIGHT:
+      case Corner.bottomRight:
         return BorderRadius.only(bottomRight: borderRadius);
         break;
     }
@@ -64,18 +64,18 @@ class CornerTriangle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Alignment iconAlignment =
-        (corner == Corner.TOP_LEFT || corner == Corner.TOP_RIGHT)
+    final Alignment iconAlignment =
+        (corner == Corner.topLeft || corner == Corner.topRight)
             ? Alignment.topCenter
             : Alignment.bottomCenter;
-    double iconSide =
-        (corner == Corner.BOTTOM_LEFT || corner == Corner.TOP_LEFT) ? -1 : 1;
+    final double iconSide =
+        (corner == Corner.bottomLeft || corner == Corner.topLeft) ? -1 : 1;
 
-    double triangleLongestSide =
+    final double triangleLongestSide =
         sqrt(size.width * size.width + size.height * size.height);
-    double triangleHeight =
+    final double triangleHeight =
         (size.width * size.height) / triangleLongestSide - sqrt2;
-    double iconRectSize = sqrt(pow(triangleHeight, 2) / 2);
+    final double iconRectSize = sqrt(pow(triangleHeight, 2) / 2);
 
     return ClipRRect(
       borderRadius: _getBorderRadiusFromCorner(),
@@ -112,27 +112,27 @@ class CornerTrianglePainter extends CustomPainter {
 
   Offset _getOffset(Size size) {
     switch (corner) {
-      case Corner.TOP_LEFT:
-        return Offset(0, 0);
+      case Corner.topLeft:
+        return const Offset(0, 0);
         break;
-      case Corner.TOP_RIGHT:
+      case Corner.topRight:
         return Offset(size.width, 0);
         break;
-      case Corner.BOTTOM_LEFT:
+      case Corner.bottomLeft:
         return Offset(0, size.height);
         break;
-      case Corner.BOTTOM_RIGHT:
+      case Corner.bottomRight:
         return Offset(size.width, size.height);
         break;
     }
-    return Offset(0, 0);
+    return const Offset(0, 0);
   }
 
   List<double> _getFirstPoint(Offset offset) {
-    List<double> res = [];
-    if (corner == Corner.TOP_LEFT || corner == Corner.TOP_RIGHT) {
+    final res = <double>[];
+    if (corner == Corner.topLeft || corner == Corner.topRight) {
       res.addAll([offset.dx, triangleSize.height]);
-    } else if (corner == Corner.BOTTOM_LEFT || corner == Corner.BOTTOM_RIGHT) {
+    } else if (corner == Corner.bottomLeft || corner == Corner.bottomRight) {
       res.addAll([offset.dx, offset.dy - triangleSize.height]);
     }
     assert(res.length == 2);
@@ -140,18 +140,18 @@ class CornerTrianglePainter extends CustomPainter {
   }
 
   List<double> _getSecondPoint(Offset offset) {
-    List<double> res = [];
+    final res = <double>[];
     switch (corner) {
-      case Corner.TOP_LEFT:
+      case Corner.topLeft:
         res.addAll([triangleSize.width, 0]);
         break;
-      case Corner.TOP_RIGHT:
+      case Corner.topRight:
         res.addAll([offset.dx - triangleSize.width, 0]);
         break;
-      case Corner.BOTTOM_LEFT:
+      case Corner.bottomLeft:
         res.addAll([triangleSize.width, offset.dy]);
         break;
-      case Corner.BOTTOM_RIGHT:
+      case Corner.bottomRight:
         res.addAll([offset.dx - triangleSize.width, offset.dy]);
         break;
     }
@@ -163,11 +163,11 @@ class CornerTrianglePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = color;
 
-    Offset offset = _getOffset(size);
-    List<double> firstCoordinates = _getFirstPoint(offset);
-    List<double> secondCoordinates = _getSecondPoint(offset);
+    final Offset offset = _getOffset(size);
+    final List<double> firstCoordinates = _getFirstPoint(offset);
+    final List<double> secondCoordinates = _getSecondPoint(offset);
 
-    var triangle = Path();
+    final triangle = Path();
     triangle.moveTo(offset.dx, offset.dy);
     triangle.lineTo(firstCoordinates[0], firstCoordinates[1]);
     triangle.lineTo(secondCoordinates[0], secondCoordinates[1]);

@@ -17,7 +17,7 @@ class SavingsDifferenceView extends StatelessWidget {
           .monthDao
           .watchCurrentMonthWithDetails(),
       builder: (context, AsyncSnapshot<MonthWithDetails> snapshot) {
-        var value = snapshot.hasData ? snapshot.data.savings : 0;
+        final value = snapshot.hasData ? snapshot.data.savings : 0;
         return Text(
             "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
             style: textStyle.copyWith(
