@@ -57,7 +57,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     );
   }
   factory Transaction.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return Transaction(
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
@@ -72,8 +73,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     );
   }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
@@ -396,13 +397,11 @@ class $TransactionsTable extends Transactions
     final context = VerificationContext();
     if (d.id.present) {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
     }
     if (d.amount.present) {
       context.handle(
           _amountMeta, amount.isAcceptableValue(d.amount.value, _amountMeta));
-    } else if (amount.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_amountMeta);
     }
     if (d.subcategoryId.present) {
@@ -410,54 +409,46 @@ class $TransactionsTable extends Transactions
           _subcategoryIdMeta,
           subcategoryId.isAcceptableValue(
               d.subcategoryId.value, _subcategoryIdMeta));
-    } else if (subcategoryId.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_subcategoryIdMeta);
     }
     if (d.monthId.present) {
       context.handle(_monthIdMeta,
           monthId.isAcceptableValue(d.monthId.value, _monthIdMeta));
-    } else if (monthId.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_monthIdMeta);
     }
     if (d.date.present) {
       context.handle(
           _dateMeta, date.isAcceptableValue(d.date.value, _dateMeta));
-    } else if (date.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_dateMeta);
     }
     if (d.isExpense.present) {
       context.handle(_isExpenseMeta,
           isExpense.isAcceptableValue(d.isExpense.value, _isExpenseMeta));
-    } else if (isExpense.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_isExpenseMeta);
     }
     if (d.isRecurring.present) {
       context.handle(_isRecurringMeta,
           isRecurring.isAcceptableValue(d.isRecurring.value, _isRecurringMeta));
-    } else if (isRecurring.isRequired && isInserting) {
-      context.missing(_isRecurringMeta);
     }
     if (d.recurringType.present) {
       context.handle(
           _recurringTypeMeta,
           recurringType.isAcceptableValue(
               d.recurringType.value, _recurringTypeMeta));
-    } else if (recurringType.isRequired && isInserting) {
-      context.missing(_recurringTypeMeta);
     }
     if (d.recurringUntil.present) {
       context.handle(
           _recurringUntilMeta,
           recurringUntil.isAcceptableValue(
               d.recurringUntil.value, _recurringUntilMeta));
-    } else if (recurringUntil.isRequired && isInserting) {
-      context.missing(_recurringUntilMeta);
     }
     if (d.originalId.present) {
       context.handle(_originalIdMeta,
           originalId.isAcceptableValue(d.originalId.value, _originalIdMeta));
-    } else if (originalId.isRequired && isInserting) {
-      context.missing(_originalIdMeta);
     }
     return context;
   }
@@ -531,7 +522,8 @@ class Category extends DataClass implements Insertable<Category> {
     );
   }
   factory Category.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return Category(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -539,8 +531,8 @@ class Category extends DataClass implements Insertable<Category> {
     );
   }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -656,20 +648,16 @@ class $CategoriesTable extends Categories
     final context = VerificationContext();
     if (d.id.present) {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
     }
     if (d.name.present) {
       context.handle(
           _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
-    } else if (name.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (d.isExpense.present) {
       context.handle(_isExpenseMeta,
           isExpense.isAcceptableValue(d.isExpense.value, _isExpenseMeta));
-    } else if (isExpense.isRequired && isInserting) {
-      context.missing(_isExpenseMeta);
     }
     return context;
   }
@@ -722,7 +710,8 @@ class Subcategory extends DataClass implements Insertable<Subcategory> {
     );
   }
   factory Subcategory.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return Subcategory(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -730,8 +719,8 @@ class Subcategory extends DataClass implements Insertable<Subcategory> {
     );
   }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -848,19 +837,17 @@ class $SubcategoriesTable extends Subcategories
     final context = VerificationContext();
     if (d.id.present) {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
     }
     if (d.name.present) {
       context.handle(
           _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
-    } else if (name.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (d.categoryId.present) {
       context.handle(_categoryIdMeta,
           categoryId.isAcceptableValue(d.categoryId.value, _categoryIdMeta));
-    } else if (categoryId.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_categoryIdMeta);
     }
     return context;
@@ -921,7 +908,8 @@ class Month extends DataClass implements Insertable<Month> {
     );
   }
   factory Month.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return Month(
       id: serializer.fromJson<int>(json['id']),
       maxBudget: serializer.fromJson<double>(json['maxBudget']),
@@ -930,8 +918,8 @@ class Month extends DataClass implements Insertable<Month> {
     );
   }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'maxBudget': serializer.toJson<double>(maxBudget),
@@ -1080,25 +1068,23 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
     final context = VerificationContext();
     if (d.id.present) {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
     }
     if (d.maxBudget.present) {
       context.handle(_maxBudgetMeta,
           maxBudget.isAcceptableValue(d.maxBudget.value, _maxBudgetMeta));
-    } else if (maxBudget.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_maxBudgetMeta);
     }
     if (d.firstDate.present) {
       context.handle(_firstDateMeta,
           firstDate.isAcceptableValue(d.firstDate.value, _firstDateMeta));
-    } else if (firstDate.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_firstDateMeta);
     }
     if (d.lastDate.present) {
       context.handle(_lastDateMeta,
           lastDate.isAcceptableValue(d.lastDate.value, _lastDateMeta));
-    } else if (lastDate.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_lastDateMeta);
     }
     return context;
@@ -1151,15 +1137,16 @@ class Recurrence extends DataClass implements Insertable<Recurrence> {
     );
   }
   factory Recurrence.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return Recurrence(
       type: serializer.fromJson<int>(json['type']),
       name: serializer.fromJson<String>(json['name']),
     );
   }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'type': serializer.toJson<int>(type),
       'name': serializer.toJson<String>(name),
@@ -1254,13 +1241,11 @@ class $RecurrencesTable extends Recurrences
     if (d.type.present) {
       context.handle(
           _typeMeta, type.isAcceptableValue(d.type.value, _typeMeta));
-    } else if (type.isRequired && isInserting) {
-      context.missing(_typeMeta);
     }
     if (d.name.present) {
       context.handle(
           _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
-    } else if (name.isRequired && isInserting) {
+    } else if (isInserting) {
       context.missing(_nameMeta);
     }
     return context;
@@ -1330,6 +1315,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   }
 
   @override
-  List<TableInfo> get allTables =>
+  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
       [transactions, categories, subcategories, months, recurrences];
 }
