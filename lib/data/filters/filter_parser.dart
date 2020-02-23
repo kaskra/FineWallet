@@ -76,20 +76,15 @@ class TransactionFilterParser
 
     final buffer = StringBuffer();
     buffer.write(" WHERE ");
-//    String whereQuery = " WHERE ";
     int index = 0;
-    for (final String query in args) {
+    for (final query in args) {
       if (index > 0) {
-//        whereQuery += " AND ";
         buffer.write(" AND ");
       }
-//      whereQuery += query;
       buffer.write(query);
       index++;
     }
-    // TODO Check back here
-//    whereQuery = whereQuery.split(" ").join(" ");
-    buffer.toString();
-    return buffer.toString().split(" ").join(" ");
+
+    return buffer.toString();
   }
 }
