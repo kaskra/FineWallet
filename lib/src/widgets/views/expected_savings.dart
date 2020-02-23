@@ -15,9 +15,9 @@ class ExpectedSavingsView extends StatelessWidget {
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchMonthlyIncome(DateTime.now()),
-      builder: (context, snapshot) {
-        double max = snapshot.hasData ? snapshot.data : 0;
-        var value = max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0);
+      builder: (context, AsyncSnapshot<double> snapshot) {
+        final double max = snapshot.hasData ? snapshot.data : 0;
+        final value = max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0);
         return Text(
           " ${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
           style: textStyle,

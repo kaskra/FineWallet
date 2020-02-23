@@ -33,6 +33,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   moor_generator: ^2.4.0
+  lint: ^1.1.1
   build_runner:
 
 # The following section is specific to Flutter.

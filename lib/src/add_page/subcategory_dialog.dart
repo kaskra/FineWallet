@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SubcategoryDialog extends StatefulWidget {
-  SubcategoryDialog({Key key, @required this.category, this.subcategory})
+  const SubcategoryDialog({Key key, @required this.category, this.subcategory})
       : super(key: key);
 
   final Category category;
@@ -48,15 +48,15 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(
-                child: Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 padding: const EdgeInsets.all(5),
                 textColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
                   Navigator.of(context).pop(_subcategory);
                 },
+                child: Text(
+                  "OK",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             )
           ],
@@ -95,7 +95,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       future: Provider.of<AppDatabase>(context)
           .categoryDao
           .getAllSubcategoriesOf(_category.id),
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot<List<Subcategory>> snapshot) {
         if (snapshot.hasData) {
           return ListView(
             shrinkWrap: true,
@@ -106,7 +106,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
             ],
           );
         } else {
-          return SizedBox();
+          return const SizedBox();
         }
       },
     );
@@ -151,13 +151,11 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
           child: InkWell(
             onTap: () => onTap(),
             child: Center(
-              child: Container(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 16,
-                  ),
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 16,
                 ),
               ),
             ),

@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildDefaultAppBar() => AppBar(
+  PreferredSizeWidget _buildDefaultAppBar() => AppBar(
         centerTitle: CENTER_APPBAR,
         elevation: APPBAR_ELEVATION,
         backgroundColor:
@@ -160,8 +160,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _loadBudget();
     }
 
-    bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
-    var children = [
+    final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom >= 50;
+    final children = [
       const ProfilePage(),
       const MonthlyReportsPage(),
       const SizedBox(),
@@ -175,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: children[Provider.of<NavigationNotifier>(context).page],
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: keyboardOpen
-          ? SizedBox()
+          ? const SizedBox()
           : SlidingButtonMenu(
               onMenuFunction: _addTransaction,
               tapCallback: _navCallback,

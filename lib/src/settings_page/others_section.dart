@@ -17,29 +17,29 @@ class OthersSection extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceHolder() {
-    return SectionItem(
+  SectionItem _buildPlaceHolder() {
+    return const SectionItem(
       title: "--- PLACEHOLDER",
       trailing: Text("---"),
     );
   }
 
-  Widget _buildImportExport() {
+  SectionItem _buildImportExport() {
     return SectionItem(
       title: "Transactions",
       trailing: Row(
         children: <Widget>[
           FlatButton(
-            child: Text("IMPORT"),
             onPressed: () {
               print("IMPORT!!");
             },
+            child: const Text("IMPORT"),
           ),
           FlatButton(
-            child: Text("EXPORT"),
             onPressed: () {
               print("EXPORT!!");
             },
+            child: const Text("EXPORT"),
           ),
         ],
       ),

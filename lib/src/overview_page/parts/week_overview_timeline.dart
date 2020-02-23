@@ -28,15 +28,15 @@ class WeekOverviewTimeline extends StatelessWidget {
   final double fontSize;
 
   Widget _buildDay(int day, double budget, DateTime date) {
-    bool isToday = day == DateTime.now().weekday;
+    final isToday = day == DateTime.now().weekday;
 
-    TextStyle textStyle = TextStyle(
+    final textStyle = TextStyle(
       color: isToday ? Theme.of(context).colorScheme.secondary : null,
       fontSize: isToday ? (fontSize + 4) : fontSize,
       fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
     );
 
-    TextStyle numberTextStyle = TextStyle(
+    final numberTextStyle = TextStyle(
       color: isToday ? Theme.of(context).colorScheme.secondary : null,
       fontSize: isToday ? (fontSize + 4) : fontSize,
       fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ class WeekOverviewTimeline extends StatelessWidget {
             builder: (context) => _historyWithScaffold(date, context)));
       },
       child: Container(
-        padding: EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
+        padding: const EdgeInsets.only(top: 6.0, bottom: 6.0, left: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -83,17 +83,18 @@ class WeekOverviewTimeline extends StatelessWidget {
   }
 
   Widget _buildDayName(int day, bool isToday, TextStyle textStyle) {
-    var formatter = new DateFormat('E, dd.MM.yy');
-    String today = formatter.format(DateTime.now());
+    final formatter = DateFormat('E, dd.MM.yy');
+    final today = formatter.format(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(isToday ? "TODAY" : getDayName(day),
             maxLines: 1, style: textStyle),
-        isToday
-            ? new Timestamp(color: textStyle.color, size: 12, today: today)
-            : const SizedBox(),
+        if (isToday)
+          Timestamp(color: textStyle.color, size: 12, today: today)
+        else
+          const SizedBox(),
       ],
     );
   }
@@ -112,11 +113,12 @@ class WeekOverviewTimeline extends StatelessWidget {
   /// the [DateTime] of each day.
   List<Tuple3<int, double, DateTime>> _generateMissingDays(
       AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
-    List<int> days = getLastWeekAsDates().map((t) => dayInMillis(t)).toList();
+    final List<int> days =
+        getLastWeekAsDates().map((t) => dayInMillis(t)).toList();
 
     return days.map((day) {
-      var date = DateTime.fromMillisecondsSinceEpoch(day);
-      int foundIndex = snapshot.data.indexWhere((t) => t.first == day);
+      final date = DateTime.fromMillisecondsSinceEpoch(day);
+      final foundIndex = snapshot.data.indexWhere((t) => t.first == day);
       if (foundIndex != -1) {
         return Tuple3<int, double, DateTime>(
             date.weekday, snapshot.data[foundIndex].second, date);
@@ -132,7 +134,7 @@ class WeekOverviewTimeline extends StatelessWidget {
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchLastWeeksTransactions(),
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
         if (snapshot.hasError) {
           return Center(
             heightFactor: 7,

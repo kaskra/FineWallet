@@ -137,7 +137,7 @@ class CategoryListView extends StatelessWidget {
   }
 
   Widget _buildDialogTransactionList(int id) {
-    var settings = TransactionFilterSettings(
+    final settings = TransactionFilterSettings(
         dateInMonth: model.month.firstDate, category: id);
 
     return Padding(
@@ -146,11 +146,13 @@ class CategoryListView extends StatelessWidget {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchTransactionsWithFilter(settings),
-        builder: (context, snapshot) {
+        builder:
+            (context, AsyncSnapshot<List<TransactionWithCategory>> snapshot) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-              for (var tx in snapshot.data ?? []) _buildTransactionRow(tx),
+              for (final TransactionWithCategory tx in snapshot.data ?? [])
+                _buildTransactionRow(tx),
             ],
           );
         },
@@ -160,7 +162,7 @@ class CategoryListView extends StatelessWidget {
 
   InformationRow _buildTransactionRow(TransactionWithCategory tx) {
     // Initialize date formatter for timestamp
-    var formatter = new DateFormat('E, dd.MM.yy');
+    final formatter = DateFormat('E, dd.MM.yy');
 
     return InformationRow(
       padding: const EdgeInsets.all(5),

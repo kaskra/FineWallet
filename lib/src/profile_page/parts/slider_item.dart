@@ -14,13 +14,13 @@ class _SliderItemState extends State<SliderItem> {
   Month _currentMonth;
 
   /// The text editor controller for the slider-depending textfield.
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   /// Load the current month and set the overall maximum budget,
   /// the current maximum available budget, update the parent by
   /// calling onChanged event callback.
   void _loadCurrentMonth() async {
-    Month m = await Provider.of<AppDatabase>(context, listen: false)
+    final m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
@@ -35,7 +35,7 @@ class _SliderItemState extends State<SliderItem> {
   ///
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
-    Month month = _currentMonth.copyWith(
+    final month = _currentMonth.copyWith(
         maxBudget: Provider.of<BudgetNotifier>(context, listen: false).budget);
     Provider.of<AppDatabase>(context, listen: false)
         .monthDao
@@ -57,7 +57,7 @@ class _SliderItemState extends State<SliderItem> {
             ),
             Text(
               "${Provider.of<LocalizationNotifier>(context).currency} ",
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             _buildDependingTextField(),
           ],
@@ -71,14 +71,15 @@ class _SliderItemState extends State<SliderItem> {
   /// Clamp the value to [0, max] and
   /// update the parent by calling onChanged event callback.
   void _setMaxMonthlyBudget(double value, double max) {
-    if (value >= max) {
-      value = max;
-    } else if (value < 0) {
-      value = 0;
+    double temp = value;
+    if (temp >= max) {
+      temp = max;
+    } else if (temp < 0) {
+      temp = 0;
     }
 
-    _textEditingController.text = value.toStringAsFixed(2);
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(value);
+    _textEditingController.text = temp.toStringAsFixed(2);
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(temp);
   }
 
   /// The depending textfield shows the current value of the slider.
@@ -91,13 +92,13 @@ class _SliderItemState extends State<SliderItem> {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchMonthlyIncome(DateTime.now()),
-        builder: (context, snapshot) {
-          double max = snapshot.hasData ? snapshot.data : 0;
+        builder: (context, AsyncSnapshot<double> snapshot) {
+          final double max = snapshot.hasData ? snapshot.data : 0;
 
           return TextField(
             decoration: InputDecoration(border: InputBorder.none),
             onSubmitted: (valueAsString) {
-              double value = double.parse(valueAsString);
+              final value = double.parse(valueAsString);
               _setMaxMonthlyBudget(value, max);
               _updateMonthModel();
             },
@@ -126,7 +127,7 @@ class _SliderItemState extends State<SliderItem> {
 }
 
 class _ValueSlider extends StatefulWidget {
-  _ValueSlider({this.onChangeEnd, this.onChange});
+  const _ValueSlider({this.onChangeEnd, this.onChange});
 
   @override
   __ValueSliderState createState() => __ValueSliderState();
@@ -140,7 +141,7 @@ class __ValueSliderState extends State<_ValueSlider> {
   bool _loaded = false;
 
   /// Load current maximum budget from current month.
-  _loadCurrentBudget() async {
+  void _loadCurrentBudget() async {
     Month m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
@@ -164,7 +165,7 @@ class __ValueSliderState extends State<_ValueSlider> {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchMonthlyIncome(DateTime.now()),
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot<double> snapshot) {
           // Make sure that max is not smaller than the value to be displayed.
           // Happens while loading the monthly transactions.
           double max = snapshot.hasData ? snapshot.data : 0;
@@ -188,7 +189,7 @@ class __ValueSliderState extends State<_ValueSlider> {
                   .setBudget(value);
             },
             onChangeStart: (value) {
-              FocusScope.of(context).requestFocus(new FocusNode());
+              FocusScope.of(context).requestFocus(FocusNode());
             },
             value:
                 Provider.of<BudgetNotifier>(context, listen: false)?.budget ??

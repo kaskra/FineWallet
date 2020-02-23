@@ -38,7 +38,7 @@ class _ProfileChartState extends State<ProfileChart> {
   /// expense per category.
   StreamBuilder<List<Tuple3<int, String, double>>> _buildChartWithData() {
     // Check which chart should be displayed and load the correct data for it.
-    var settings;
+    TransactionFilterSettings settings;
     if (widget.type == ProfileChart.MONTHLY_CHART) {
       settings = widget.filterSettings ??
           TransactionFilterSettings(
@@ -82,33 +82,32 @@ class _ProfileChartState extends State<ProfileChart> {
       // Create the chart with expenses per category and category names.
       return CircularProfileChart.withTransactions(expenses, ids, names);
     }
-    return Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: _buildChartWithData(),
-      ),
+    return Center(
+      child: _buildChartWithData(),
     );
   }
 }
 
 class CircularProfileChart extends StatelessWidget {
-  CircularProfileChart(this.seriesList, {this.animate});
+  const CircularProfileChart(this.seriesList, {this.animate});
 
   factory CircularProfileChart.withTransactions(
       List<double> expenses, List<int> categories, List<String> categoryNames) {
-    List<CategoryExpenses> inputData = [];
+    final List<CategoryExpenses> inputData = [];
     for (int i = 0; i < expenses.length; i++) {
-      if (expenses[i] > 0)
+      if (expenses[i] > 0) {
         inputData.add(
             CategoryExpenses(expenses[i], categories[i], categoryNames[i]));
+      }
     }
 
     List<charts.Series<CategoryExpenses, int>> data = [];
-    if (inputData.length > 0) {
+    if (inputData.isNotEmpty) {
       data = [
         charts.Series<CategoryExpenses, int>(
             data: inputData,
@@ -143,13 +142,13 @@ class CircularProfileChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.PieChart(
+    return charts.PieChart(
       seriesList,
       animate: animate,
       defaultInteractions: true,
-      defaultRenderer: new charts.ArcRendererConfig(
+      defaultRenderer: charts.ArcRendererConfig(
         arcRendererDecorators: [
-          new charts.ArcLabelDecorator(
+          charts.ArcLabelDecorator(
               leaderLineStyleSpec: charts.ArcLabelLeaderLineStyleSpec(
                   length: 10,
                   color: charts.ColorUtil.fromDartColor(

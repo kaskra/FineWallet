@@ -64,23 +64,23 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future insertTransaction(db_file.Transaction tx) async {
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
-    int maxTransactionID = await db.maxTransactionId();
-    int nextId = (maxTransactionID ?? 0) + 1;
-    tx = tx.copyWith(originalId: nextId);
+    final maxTransactionID = await db.maxTransactionId();
+    final nextId = (maxTransactionID ?? 0) + 1;
+    var tempTx = tx.copyWith(originalId: nextId);
 
     // Fill in month id
-    if (tx.monthId == null) {
-      int id = await db.monthDao.createOrGetMonth(tx.date);
-      tx = tx.copyWith(monthId: id);
+    if (tempTx.monthId == null) {
+      final int id = await db.monthDao.createOrGetMonth(tempTx.date);
+      tempTx = tempTx.copyWith(monthId: id);
     }
 
     // Make sure that every transaction has its correct month id assigned.
-    List<Insertable<db_file.Transaction>> txs = [];
+    final List<Insertable<db_file.Transaction>> txs = [];
 
     if (tx.isRecurring) {
-      List<db_file.Transaction> recurrences = generateRecurrences(tx);
-      for (var t in recurrences) {
-        int id = await db.monthDao.createOrGetMonth(t.date);
+      final List<db_file.Transaction> recurrences = generateRecurrences(tx);
+      for (final t in recurrences) {
+        final id = await db.monthDao.createOrGetMonth(t.date);
         txs.add(t.copyWith(monthId: id ?? t.monthId).createCompanion(true));
       }
     }
@@ -110,7 +110,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future updateTransaction(db_file.Transaction tx) async {
     await transaction(() async {
       await deleteTransactionById(tx.originalId, beforeInsert: true);
-      tx = db_file.Transaction(
+      final tempTx = db_file.Transaction(
           id: null,
           originalId: null,
           amount: tx.amount,
@@ -121,9 +121,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           isRecurring: tx.isRecurring,
           recurringUntil: tx.recurringUntil,
           recurringType: tx.recurringType);
-      await insertTransaction(tx);
+      await insertTransaction(tempTx);
     });
-    return await db.monthDao.syncMonths();
+    return db.monthDao.syncMonths();
   }
 
   Future deleteTransaction(db_file.Transaction transaction) async {
@@ -139,7 +139,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// Returns a [Stream] with the savings up to the current month.
   /// The stream is updated every time the database is changed.
   Stream<double> watchTotalSavings() {
-    int currentDate = getFirstDateOfMonthInMillis(DateTime.now());
+    final currentDate = getFirstDateOfMonthInMillis(DateTime.now());
     final savings = customSelectQuery(
             "SELECT IFNULL( (SELECT SUM(amount) FROM incomes "
             "WHERE date < $currentDate), 0) - "
@@ -161,7 +161,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   Stream<List<TransactionWithCategory>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
-    var txParser = new TransactionFilterParser(settings);
+    final txParser = TransactionFilterParser(settings);
 
     final query2 = customSelectQuery(
         "SELECT * FROM transactions_with_categories t"
@@ -169,8 +169,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         readsFrom: {transactions, subcategories});
 
     return query2.map((row) {
-      db_file.Transaction tx = db_file.Transaction.fromData(row.data, db);
-      Subcategory sub = Subcategory(
+      final tx = db_file.Transaction.fromData(row.data, db);
+      final sub = Subcategory(
           id: row.readInt("subcategory_id"),
           name: row.readString("name"),
           categoryId: row.readInt("category_id"));
@@ -269,8 +269,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
             "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT 1");
 
     return query.map((row) {
-      var tx = db_file.Transaction.fromData(row.data, db);
-      var sub = Subcategory(
+      final tx = db_file.Transaction.fromData(row.data, db);
+      final sub = Subcategory(
           id: row.readInt("subcategory_id"),
           categoryId: row.readInt("category_id"),
           name: row.readString("name"));
@@ -285,8 +285,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
             "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT $N");
 
     return query.map((row) {
-      var tx = db_file.Transaction.fromData(row.data, db);
-      var sub = Subcategory(
+      final tx = db_file.Transaction.fromData(row.data, db);
+      final sub = Subcategory(
           id: row.readInt("subcategory_id"),
           categoryId: row.readInt("category_id"),
           name: row.readString("name"));
@@ -340,20 +340,20 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchDailyBudget(DateTime date) {
-    int remainingDays = getRemainingDaysInMonth(date);
+    final remainingDays = getRemainingDaysInMonth(date);
 
-    String maxBudget = "(SELECT max_budget FROM months "
+    final maxBudget = "(SELECT max_budget FROM months "
         "WHERE first_date <= ${dayInMillis(date)} "
         "AND last_date >= ${dayInMillis(date)})";
-    String monthId = "(SELECT id FROM months "
+    final monthId = "(SELECT id FROM months "
         "WHERE first_date <= ${dayInMillis(date)} "
         "AND last_date >= ${dayInMillis(date)})";
 
-    String monthlyExpenses = "(SELECT SUM(amount) FROM expenses "
+    final monthlyExpenses = "(SELECT SUM(amount) FROM expenses "
         "WHERE month_id = $monthId "
         "AND NOT (date = ${dayInMillis(date)})"
         "AND (recurring_type = 1 OR is_recurring = 0))";
-    String todayExpenses = "(SELECT SUM(amount) FROM expenses "
+    final todayExpenses = "(SELECT SUM(amount) FROM expenses "
         "WHERE date = ${dayInMillis(date)} "
         "AND month_id = $monthId"
         "AND (recurring_type = 1 OR is_recurring = 0))";
@@ -376,8 +376,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// epoch and the sum of its expenses.
   Stream<List<Tuple2<int, double>>> watchLastWeeksTransactions() {
     // Set initial values.
-    int millisPerDay = Duration.millisecondsPerDay;
-    int currentDateInMillis = dayInMillis(DateTime.now());
+    final millisPerDay = Duration.millisecondsPerDay;
+    final currentDateInMillis = dayInMillis(DateTime.now());
 
     // Setup watch of last weeks transactions.
     final lastWeekQuery = customSelectQuery(

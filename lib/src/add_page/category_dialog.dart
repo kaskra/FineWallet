@@ -165,9 +165,9 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           ? Theme.of(context).colorScheme.secondary
           : Colors.grey,
       onTap: () async {
-        var res = await showDialog(
+        final res = await showDialog<Subcategory>(
           context: context,
-          child: SubcategoryDialog(
+          builder: (context) => SubcategoryDialog(
             category: c,
             subcategory: _subcategory,
           ),
@@ -216,8 +216,10 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
               onTap: () => onTap(),
               child: Container(
                 padding: const EdgeInsets.all(7),
-                constraints: BoxConstraints.expand(),
+                constraints: const BoxConstraints.expand(),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Icon(
                       iconData,
@@ -231,8 +233,6 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                       ),
                     )
                   ],
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                 ),
               ),
             ),

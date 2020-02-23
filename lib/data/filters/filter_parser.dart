@@ -21,46 +21,46 @@ class TransactionFilterParser
   TransactionFilterParser(TransactionFilterSettings settings) : super(settings);
 
   /// Parse the input to singular WHERE expressions.
-  Queue _getQueueOfArguments({String tableName = ""}) {
-    Queue queue = new Queue();
+  Queue<String> _getQueueOfArguments({String tableName = ""}) {
+    final Queue<String> queue = Queue<String>();
     if (settings.category != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}category_id = ${settings.category}");
+          "${tableName != "" ? "$tableName." : ""}category_id = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}subcategory_id = ${settings.subcategory}");
+          "${tableName != "" ? "$tableName." : ""}subcategory_id = ${settings.subcategory}");
     }
 
     if (settings.month != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}month_id = ${settings.month}");
+          "${tableName != "" ? "$tableName." : ""}month_id = ${settings.month}");
     }
 
     if (settings.day != null) {
-      queue.add(
-          "${tableName != "" ? tableName + "." : ""}date = ${settings.day}");
+      queue
+          .add("${tableName != "" ? "$tableName." : ""}date = ${settings.day}");
     }
 
     if (settings.before != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}date <= ${settings.before}");
+          "${tableName != "" ? "$tableName." : ""}date <= ${settings.before}");
     }
 
     if (settings.expenses != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}is_expense = ${settings.expenses ? 1 : 0}");
+          "${tableName != "" ? "$tableName." : ""}is_expense = ${settings.expenses ? 1 : 0}");
     }
 
     if (settings.incomes != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}is_expense = ${settings.incomes ? 0 : 1}");
+          "${tableName != "" ? "$tableName." : ""}is_expense = ${settings.incomes ? 0 : 1}");
     }
 
     if (settings.dateInMonth != null) {
       queue.add(
-          "${tableName != "" ? tableName + "." : ""}month_id = (SELECT months.id FROM months "
+          "${tableName != "" ? "$tableName." : ""}month_id = (SELECT months.id FROM months "
           "WHERE months.first_date <= ${settings.dateInMonth} "
           "AND months.last_date >= ${settings.dateInMonth})");
     }
@@ -71,20 +71,25 @@ class TransactionFilterParser
   /// into one WHERE-clause.
   @override
   String parse({String tableName = ""}) {
-    Queue args = _getQueueOfArguments(tableName: tableName);
-    if (args.length <= 0) return "";
+    final Queue<String> args = _getQueueOfArguments(tableName: tableName);
+    if (args.isEmpty) return "";
 
-    String whereQuery = " WHERE ";
+    final buffer = StringBuffer();
+    buffer.write(" WHERE ");
+//    String whereQuery = " WHERE ";
     int index = 0;
-    for (String query in args) {
+    for (final String query in args) {
       if (index > 0) {
-        whereQuery += " AND ";
+//        whereQuery += " AND ";
+        buffer.write(" AND ");
       }
-      whereQuery += query;
+//      whereQuery += query;
+      buffer.write(query);
       index++;
     }
-
-    whereQuery = whereQuery.split(" ").join(" ");
-    return whereQuery;
+    // TODO Check back here
+//    whereQuery = whereQuery.split(" ").join(" ");
+    buffer.toString();
+    return buffer.toString().split(" ").join(" ");
   }
 }

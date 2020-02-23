@@ -15,7 +15,8 @@ class MonthlyReportsPage extends StatelessWidget {
       stream: Provider.of<AppDatabase>(context)
           .monthDao
           .watchAllMonthsWithDetails(),
-      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+      builder: (BuildContext context,
+          AsyncSnapshot<List<MonthWithDetails>> snapshot) {
         return snapshot.hasData
             ? ListView(
                 children: <Widget>[

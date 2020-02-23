@@ -8,7 +8,6 @@
 
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/utils/month_utils.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
@@ -48,11 +47,11 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
   Future<int> getMonthIdByDate(int dateInMillis) async {
-    Month m = await (select(months)
+    final month = await (select(months)
           ..where((m) => m.firstDate.isSmallerOrEqualValue(dateInMillis))
           ..where((m) => m.lastDate.isBiggerOrEqualValue(dateInMillis)))
         .getSingle();
-    return m?.id;
+    return month?.id;
   }
 
   Future<Month> getCurrentMonth() => (select(months)
@@ -78,47 +77,49 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
       .watch();
 
   Future syncSingleMonth(Month month) async {
-    List<db_file.Transaction> txs = await (select(transactions)
+    final txs = await (select(transactions)
           ..where((t) => t.monthId.equals(month.id))
           ..where((t) => t.isExpense.equals(false)))
         .get();
 
-    double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
+    final double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
     if (sumIncomes < month.maxBudget) {
-      month = month.copyWith(maxBudget: sumIncomes);
-      await updateMonth(month.createCompanion(true));
+      final tempMonth = month.copyWith(maxBudget: sumIncomes);
+      await updateMonth(tempMonth.createCompanion(true));
     }
   }
 
   Future syncMonths() async {
-    List<Month> months = await getAllMonths();
-    for (Month m in months) await syncSingleMonth(m);
+    final List<Month> months = await getAllMonths();
+    for (final Month m in months) {
+      await syncSingleMonth(m);
+    }
   }
 
   /// Check months after last recorded month to see whether any are missing.
   Future checkLatestMonths() async {
-    Month lastRecordedMonth = await (select(months)
+    final lastRecordedMonth = await (select(months)
           ..orderBy([
             (m) => OrderingTerm(expression: m.lastDate, mode: OrderingMode.desc)
           ])
           ..limit(1))
         .getSingle();
 
-    List missingMonths = getMissingMonths(lastRecordedMonth);
-    List<Insertable<Month>> newMonths = [];
+    final missingMonths = getMissingMonths(lastRecordedMonth);
+    final List<Insertable<Month>> newMonths = [];
 
     /* TODO rework dates to be only year, month, day --> without
         any hours. Currently the month begins on 1st 12am and ends at
         1st 0:59 am next month.
     */
-    for (DateTime m in missingMonths) {
-      int first = getFirstDateOfMonthInMillis(m);
-      int last = getLastDateOfMonthInMillis(m);
+    for (final m in missingMonths) {
+      final first = getFirstDateOfMonthInMillis(m);
+      final last = getLastDateOfMonthInMillis(m);
       newMonths.add(MonthsCompanion.insert(
           maxBudget: 0, firstDate: first, lastDate: last));
     }
 
-    if (newMonths.length > 0) {
+    if (newMonths.isNotEmpty) {
       await batch((b) {
         b.insertAll(months, newMonths);
       });
@@ -127,11 +128,11 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future checkMonth(int date) async {
     if ((await db.monthDao.getMonthIdByDate(date)) == null) {
-      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-      int first = getFirstDateOfMonthInMillis(dateTime);
-      int last = getLastDateOfMonthInMillis(dateTime);
+      final dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+      final first = getFirstDateOfMonthInMillis(dateTime);
+      final last = getLastDateOfMonthInMillis(dateTime);
 
-      var newMonth = MonthsCompanion.insert(
+      final newMonth = MonthsCompanion.insert(
           maxBudget: 0, firstDate: first, lastDate: last);
       await insertMonth(newMonth);
     }

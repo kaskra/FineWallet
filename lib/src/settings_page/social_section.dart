@@ -28,7 +28,7 @@ class _SocialSectionState extends State<SocialSection> {
     );
   }
 
-  Widget _buildShareToggle() {
+  SectionItem _buildShareToggle() {
     return SectionItem(
       title: "Enable TX SHARE (UNUSED)",
       trailing: Switch(

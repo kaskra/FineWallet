@@ -38,9 +38,9 @@ class _LocalizationSectionState extends State<LocalizationSection> {
     );
   }
 
-  Widget _buildLanguage() {
+  SectionItem _buildLanguage() {
     // TODO remove, just placeholders
-    Map<int, String> items = Map();
+    final items = <int, String>{};
     items.putIfAbsent(1, () => "ENG");
     items.putIfAbsent(2, () => "GER");
 
@@ -50,7 +50,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
-            var res = await Navigator.of(context).push(MaterialPageRoute(
+            final int res = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SelectionPage(
                       pageTitle: "Languages",
                       selectedIndex: UserSettings.getLanguage(),
@@ -77,10 +77,10 @@ class _LocalizationSectionState extends State<LocalizationSection> {
     );
   }
 
-  Widget _buildCurrency() {
+  SectionItem _buildCurrency() {
     // TODO just placeholders
     // TODO String should be currency abbrev., not symbol
-    Map<int, String> items = Map();
+    final items = <int, String>{};
     items.putIfAbsent(1, () => "\$");
     items.putIfAbsent(2, () => "€");
 
@@ -90,7 +90,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
-            var res = await Navigator.of(context).push(MaterialPageRoute(
+            final int res = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SelectionPage(
                       pageTitle: "Currencies",
                       selectedIndex: UserSettings.getCurrency(),
