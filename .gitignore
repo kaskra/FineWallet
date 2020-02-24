@@ -28,6 +28,11 @@
 /build/
 pubspec.lock
 
+
+# Ignore generated .g.dart files
+**/*.g.dart
+
+
 # Android related
 .gradle
 **/android/**/gradle-wrapper.jar
