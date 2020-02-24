@@ -7,6 +7,7 @@ import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/overview_page/parts/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -128,38 +129,81 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
     );
   }
 
+  /// Deletes the selected items from database. Close selection mode afterwards.
+  ///
+  /// Before deleting the transaction, a confirm dialog will show,
+  /// requiring the user to authorize the deletion.
+  ///
+  Future _deleteItems(TransactionWithCategory tx) async {
+    if (await showConfirmDialog(
+        context, "Delete transaction?", "This will delete the transaction.")) {
+      Provider.of<AppDatabase>(context, listen: false)
+          .transactionDao
+          .deleteTransactionById(tx.tx.originalId);
+    }
+  }
+
   Future _showActions(
       BuildContext context, TransactionWithCategory snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(
+        itemHeight: 73,
         actions: <Widget>[
-          ListTile(
-            enabled: UserSettings.getTXShare(),
-            title: const Text("Share"),
-            leading: Icon(
-              Icons.share,
-              color: Theme.of(context).colorScheme.secondary,
+          DecoratedCard(
+            elevation: 0,
+            padding: 2,
+            color: Colors.red.shade400,
+            child: ListTile(
+              title: const Text(
+                "Delete",
+                style: TextStyle(color: Colors.white),
+              ),
+              leading: Icon(
+                Icons.delete_outline,
+                color: Colors.white,
+              ),
+              onTap: () async {
+                await _deleteItems(snapshot);
+                Navigator.pop(context);
+              },
             ),
-            onTap: () {
-              print("Tapped share");
-            },
           ),
-          ListTile(
-            title: const Text("Edit"),
-            leading: Icon(
-              Icons.edit,
-              color: Theme.of(context).colorScheme.secondary,
+          DecoratedCard(
+            elevation: 0,
+            padding: 2,
+            child: ListTile(
+              enabled: UserSettings.getTXShare(),
+              title: const Text("Share"),
+              leading: Icon(
+                Icons.share,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              onTap: () {
+                print("Tapped share");
+              },
             ),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddPage(
-                      isExpense: snapshot.tx.isExpense, transaction: snapshot),
-                ),
-              );
-            },
+          ),
+          DecoratedCard(
+            padding: 2,
+            elevation: 0,
+            child: ListTile(
+              title: const Text("Edit"),
+              leading: Icon(
+                Icons.edit,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddPage(
+                        isExpense: snapshot.tx.isExpense,
+                        transaction: snapshot),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
