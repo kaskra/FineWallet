@@ -348,7 +348,7 @@ class $TransactionsTable extends Transactions
       _recurringType ??= _constructRecurringType();
   GeneratedIntColumn _constructRecurringType() {
     return GeneratedIntColumn('recurring_type', $tableName, true,
-        $customConstraints: 'NULL REFERENCES recurrences(type)');
+        $customConstraints: 'NULL REFERENCES recurrence_types(type)');
   }
 
   final VerificationMeta _recurringUntilMeta =
@@ -1124,24 +1124,25 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
       const DateTimeConverter();
 }
 
-class Recurrence extends DataClass implements Insertable<Recurrence> {
+class RecurrenceType extends DataClass implements Insertable<RecurrenceType> {
   final int type;
   final String name;
-  Recurrence({@required this.type, @required this.name});
-  factory Recurrence.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  RecurrenceType({@required this.type, @required this.name});
+  factory RecurrenceType.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    return Recurrence(
+    return RecurrenceType(
       type: intType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
     );
   }
-  factory Recurrence.fromJson(Map<String, dynamic> json,
+  factory RecurrenceType.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return Recurrence(
+    return RecurrenceType(
       type: serializer.fromJson<int>(json['type']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -1156,20 +1157,20 @@ class Recurrence extends DataClass implements Insertable<Recurrence> {
   }
 
   @override
-  RecurrencesCompanion createCompanion(bool nullToAbsent) {
-    return RecurrencesCompanion(
+  RecurrenceTypesCompanion createCompanion(bool nullToAbsent) {
+    return RecurrenceTypesCompanion(
       type: type == null && nullToAbsent ? const Value.absent() : Value(type),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
     );
   }
 
-  Recurrence copyWith({int type, String name}) => Recurrence(
+  RecurrenceType copyWith({int type, String name}) => RecurrenceType(
         type: type ?? this.type,
         name: name ?? this.name,
       );
   @override
   String toString() {
-    return (StringBuffer('Recurrence(')
+    return (StringBuffer('RecurrenceType(')
           ..write('type: $type, ')
           ..write('name: $name')
           ..write(')'))
@@ -1181,35 +1182,35 @@ class Recurrence extends DataClass implements Insertable<Recurrence> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is Recurrence &&
+      (other is RecurrenceType &&
           other.type == this.type &&
           other.name == this.name);
 }
 
-class RecurrencesCompanion extends UpdateCompanion<Recurrence> {
+class RecurrenceTypesCompanion extends UpdateCompanion<RecurrenceType> {
   final Value<int> type;
   final Value<String> name;
-  const RecurrencesCompanion({
+  const RecurrenceTypesCompanion({
     this.type = const Value.absent(),
     this.name = const Value.absent(),
   });
-  RecurrencesCompanion.insert({
+  RecurrenceTypesCompanion.insert({
     this.type = const Value.absent(),
     @required String name,
   }) : name = Value(name);
-  RecurrencesCompanion copyWith({Value<int> type, Value<String> name}) {
-    return RecurrencesCompanion(
+  RecurrenceTypesCompanion copyWith({Value<int> type, Value<String> name}) {
+    return RecurrenceTypesCompanion(
       type: type ?? this.type,
       name: name ?? this.name,
     );
   }
 }
 
-class $RecurrencesTable extends Recurrences
-    with TableInfo<$RecurrencesTable, Recurrence> {
+class $RecurrenceTypesTable extends RecurrenceTypes
+    with TableInfo<$RecurrenceTypesTable, RecurrenceType> {
   final GeneratedDatabase _db;
   final String _alias;
-  $RecurrencesTable(this._db, [this._alias]);
+  $RecurrenceTypesTable(this._db, [this._alias]);
   final VerificationMeta _typeMeta = const VerificationMeta('type');
   GeneratedIntColumn _type;
   @override
@@ -1231,13 +1232,13 @@ class $RecurrencesTable extends Recurrences
   @override
   List<GeneratedColumn> get $columns => [type, name];
   @override
-  $RecurrencesTable get asDslTable => this;
+  $RecurrenceTypesTable get asDslTable => this;
   @override
-  String get $tableName => _alias ?? 'recurrences';
+  String get $tableName => _alias ?? 'recurrence_types';
   @override
-  final String actualTableName = 'recurrences';
+  final String actualTableName = 'recurrence_types';
   @override
-  VerificationContext validateIntegrity(RecurrencesCompanion d,
+  VerificationContext validateIntegrity(RecurrenceTypesCompanion d,
       {bool isInserting = false}) {
     final context = VerificationContext();
     if (d.type.present) {
@@ -1256,13 +1257,13 @@ class $RecurrencesTable extends Recurrences
   @override
   Set<GeneratedColumn> get $primaryKey => {type};
   @override
-  Recurrence map(Map<String, dynamic> data, {String tablePrefix}) {
+  RecurrenceType map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Recurrence.fromData(data, _db, prefix: effectivePrefix);
+    return RecurrenceType.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
-  Map<String, Variable> entityToSql(RecurrencesCompanion d) {
+  Map<String, Variable> entityToSql(RecurrenceTypesCompanion d) {
     final map = <String, Variable>{};
     if (d.type.present) {
       map['type'] = Variable<int, IntType>(d.type.value);
@@ -1274,8 +1275,410 @@ class $RecurrencesTable extends Recurrences
   }
 
   @override
-  $RecurrencesTable createAlias(String alias) {
-    return $RecurrencesTable(_db, alias);
+  $RecurrenceTypesTable createAlias(String alias) {
+    return $RecurrenceTypesTable(_db, alias);
+  }
+}
+
+class Language extends DataClass implements Insertable<Language> {
+  final String languageId;
+  final String name;
+  Language({@required this.languageId, @required this.name});
+  factory Language.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    return Language(
+      languageId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}language_id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+    );
+  }
+  factory Language.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Language(
+      languageId: serializer.fromJson<String>(json['languageId']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'languageId': serializer.toJson<String>(languageId),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  @override
+  LanguagesCompanion createCompanion(bool nullToAbsent) {
+    return LanguagesCompanion(
+      languageId: languageId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(languageId),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+    );
+  }
+
+  Language copyWith({String languageId, String name}) => Language(
+        languageId: languageId ?? this.languageId,
+        name: name ?? this.name,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Language(')
+          ..write('languageId: $languageId, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(languageId.hashCode, name.hashCode));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is Language &&
+          other.languageId == this.languageId &&
+          other.name == this.name);
+}
+
+class LanguagesCompanion extends UpdateCompanion<Language> {
+  final Value<String> languageId;
+  final Value<String> name;
+  const LanguagesCompanion({
+    this.languageId = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  LanguagesCompanion.insert({
+    @required String languageId,
+    @required String name,
+  })  : languageId = Value(languageId),
+        name = Value(name);
+  LanguagesCompanion copyWith({Value<String> languageId, Value<String> name}) {
+    return LanguagesCompanion(
+      languageId: languageId ?? this.languageId,
+      name: name ?? this.name,
+    );
+  }
+}
+
+class $LanguagesTable extends Languages
+    with TableInfo<$LanguagesTable, Language> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $LanguagesTable(this._db, [this._alias]);
+  final VerificationMeta _languageIdMeta = const VerificationMeta('languageId');
+  GeneratedTextColumn _languageId;
+  @override
+  GeneratedTextColumn get languageId => _languageId ??= _constructLanguageId();
+  GeneratedTextColumn _constructLanguageId() {
+    return GeneratedTextColumn('language_id', $tableName, false,
+        $customConstraints: 'UNIQUE');
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn('name', $tableName, false,
+        minTextLength: 2, maxTextLength: 40);
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [languageId, name];
+  @override
+  $LanguagesTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'languages';
+  @override
+  final String actualTableName = 'languages';
+  @override
+  VerificationContext validateIntegrity(LanguagesCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.languageId.present) {
+      context.handle(_languageIdMeta,
+          languageId.isAcceptableValue(d.languageId.value, _languageIdMeta));
+    } else if (isInserting) {
+      context.missing(_languageIdMeta);
+    }
+    if (d.name.present) {
+      context.handle(
+          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  @override
+  Language map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Language.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(LanguagesCompanion d) {
+    final map = <String, Variable>{};
+    if (d.languageId.present) {
+      map['language_id'] = Variable<String, StringType>(d.languageId.value);
+    }
+    if (d.name.present) {
+      map['name'] = Variable<String, StringType>(d.name.value);
+    }
+    return map;
+  }
+
+  @override
+  $LanguagesTable createAlias(String alias) {
+    return $LanguagesTable(_db, alias);
+  }
+}
+
+class Currency extends DataClass implements Insertable<Currency> {
+  final int id;
+  final String abbrev;
+  final String symbol;
+  final double exchangeRate;
+  Currency(
+      {@required this.id,
+      @required this.abbrev,
+      @required this.symbol,
+      @required this.exchangeRate});
+  factory Currency.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final doubleType = db.typeSystem.forDartType<double>();
+    return Currency(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      abbrev:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}abbrev']),
+      symbol:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}symbol']),
+      exchangeRate: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}exchange_rate']),
+    );
+  }
+  factory Currency.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Currency(
+      id: serializer.fromJson<int>(json['id']),
+      abbrev: serializer.fromJson<String>(json['abbrev']),
+      symbol: serializer.fromJson<String>(json['symbol']),
+      exchangeRate: serializer.fromJson<double>(json['exchangeRate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'abbrev': serializer.toJson<String>(abbrev),
+      'symbol': serializer.toJson<String>(symbol),
+      'exchangeRate': serializer.toJson<double>(exchangeRate),
+    };
+  }
+
+  @override
+  CurrenciesCompanion createCompanion(bool nullToAbsent) {
+    return CurrenciesCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      abbrev:
+          abbrev == null && nullToAbsent ? const Value.absent() : Value(abbrev),
+      symbol:
+          symbol == null && nullToAbsent ? const Value.absent() : Value(symbol),
+      exchangeRate: exchangeRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exchangeRate),
+    );
+  }
+
+  Currency copyWith(
+          {int id, String abbrev, String symbol, double exchangeRate}) =>
+      Currency(
+        id: id ?? this.id,
+        abbrev: abbrev ?? this.abbrev,
+        symbol: symbol ?? this.symbol,
+        exchangeRate: exchangeRate ?? this.exchangeRate,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Currency(')
+          ..write('id: $id, ')
+          ..write('abbrev: $abbrev, ')
+          ..write('symbol: $symbol, ')
+          ..write('exchangeRate: $exchangeRate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(abbrev.hashCode, $mrjc(symbol.hashCode, exchangeRate.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is Currency &&
+          other.id == this.id &&
+          other.abbrev == this.abbrev &&
+          other.symbol == this.symbol &&
+          other.exchangeRate == this.exchangeRate);
+}
+
+class CurrenciesCompanion extends UpdateCompanion<Currency> {
+  final Value<int> id;
+  final Value<String> abbrev;
+  final Value<String> symbol;
+  final Value<double> exchangeRate;
+  const CurrenciesCompanion({
+    this.id = const Value.absent(),
+    this.abbrev = const Value.absent(),
+    this.symbol = const Value.absent(),
+    this.exchangeRate = const Value.absent(),
+  });
+  CurrenciesCompanion.insert({
+    this.id = const Value.absent(),
+    @required String abbrev,
+    @required String symbol,
+    @required double exchangeRate,
+  })  : abbrev = Value(abbrev),
+        symbol = Value(symbol),
+        exchangeRate = Value(exchangeRate);
+  CurrenciesCompanion copyWith(
+      {Value<int> id,
+      Value<String> abbrev,
+      Value<String> symbol,
+      Value<double> exchangeRate}) {
+    return CurrenciesCompanion(
+      id: id ?? this.id,
+      abbrev: abbrev ?? this.abbrev,
+      symbol: symbol ?? this.symbol,
+      exchangeRate: exchangeRate ?? this.exchangeRate,
+    );
+  }
+}
+
+class $CurrenciesTable extends Currencies
+    with TableInfo<$CurrenciesTable, Currency> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $CurrenciesTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _abbrevMeta = const VerificationMeta('abbrev');
+  GeneratedTextColumn _abbrev;
+  @override
+  GeneratedTextColumn get abbrev => _abbrev ??= _constructAbbrev();
+  GeneratedTextColumn _constructAbbrev() {
+    return GeneratedTextColumn('abbrev', $tableName, false,
+        minTextLength: 2, maxTextLength: 40);
+  }
+
+  final VerificationMeta _symbolMeta = const VerificationMeta('symbol');
+  GeneratedTextColumn _symbol;
+  @override
+  GeneratedTextColumn get symbol => _symbol ??= _constructSymbol();
+  GeneratedTextColumn _constructSymbol() {
+    return GeneratedTextColumn('symbol', $tableName, false,
+        minTextLength: 1, maxTextLength: 1);
+  }
+
+  final VerificationMeta _exchangeRateMeta =
+      const VerificationMeta('exchangeRate');
+  GeneratedRealColumn _exchangeRate;
+  @override
+  GeneratedRealColumn get exchangeRate =>
+      _exchangeRate ??= _constructExchangeRate();
+  GeneratedRealColumn _constructExchangeRate() {
+    return GeneratedRealColumn(
+      'exchange_rate',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, abbrev, symbol, exchangeRate];
+  @override
+  $CurrenciesTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'currencies';
+  @override
+  final String actualTableName = 'currencies';
+  @override
+  VerificationContext validateIntegrity(CurrenciesCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    }
+    if (d.abbrev.present) {
+      context.handle(
+          _abbrevMeta, abbrev.isAcceptableValue(d.abbrev.value, _abbrevMeta));
+    } else if (isInserting) {
+      context.missing(_abbrevMeta);
+    }
+    if (d.symbol.present) {
+      context.handle(
+          _symbolMeta, symbol.isAcceptableValue(d.symbol.value, _symbolMeta));
+    } else if (isInserting) {
+      context.missing(_symbolMeta);
+    }
+    if (d.exchangeRate.present) {
+      context.handle(
+          _exchangeRateMeta,
+          exchangeRate.isAcceptableValue(
+              d.exchangeRate.value, _exchangeRateMeta));
+    } else if (isInserting) {
+      context.missing(_exchangeRateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Currency map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Currency.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(CurrenciesCompanion d) {
+    final map = <String, Variable>{};
+    if (d.id.present) {
+      map['id'] = Variable<int, IntType>(d.id.value);
+    }
+    if (d.abbrev.present) {
+      map['abbrev'] = Variable<String, StringType>(d.abbrev.value);
+    }
+    if (d.symbol.present) {
+      map['symbol'] = Variable<String, StringType>(d.symbol.value);
+    }
+    if (d.exchangeRate.present) {
+      map['exchange_rate'] = Variable<double, RealType>(d.exchangeRate.value);
+    }
+    return map;
+  }
+
+  @override
+  $CurrenciesTable createAlias(String alias) {
+    return $CurrenciesTable(_db, alias);
   }
 }
 
@@ -1291,8 +1694,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       _subcategories ??= $SubcategoriesTable(this);
   $MonthsTable _months;
   $MonthsTable get months => _months ??= $MonthsTable(this);
-  $RecurrencesTable _recurrences;
-  $RecurrencesTable get recurrences => _recurrences ??= $RecurrencesTable(this);
+  $RecurrenceTypesTable _recurrenceTypes;
+  $RecurrenceTypesTable get recurrenceTypes =>
+      _recurrenceTypes ??= $RecurrenceTypesTable(this);
+  $LanguagesTable _languages;
+  $LanguagesTable get languages => _languages ??= $LanguagesTable(this);
+  $CurrenciesTable _currencies;
+  $CurrenciesTable get currencies => _currencies ??= $CurrenciesTable(this);
   TransactionDao _transactionDao;
   TransactionDao get transactionDao =>
       _transactionDao ??= TransactionDao(this as AppDatabase);
@@ -1319,6 +1727,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [transactions, categories, subcategories, months, recurrences];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        transactions,
+        categories,
+        subcategories,
+        months,
+        recurrenceTypes,
+        languages,
+        currencies
+      ];
 }

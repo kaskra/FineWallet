@@ -44,7 +44,7 @@ class _AddPageState extends State<AddPage> {
   Subcategory _subcategory;
 
   bool _isRecurring = false;
-  Recurrence _recurrence;
+  RecurrenceType _recurrence;
 
   DateTime _untilDate = today().add(const Duration(days: 1));
 
@@ -74,7 +74,7 @@ class _AddPageState extends State<AddPage> {
         txs = txs.where((t) => t.date.isBeforeOrEqual(today())).toList();
         _date = txs.toList().last.date;
 
-        final List<Recurrence> recurrenceName =
+        final List<RecurrenceType> recurrenceName =
             await Provider.of<AppDatabase>(context, listen: false)
                 .getRecurrences();
         _recurrence = recurrenceName
@@ -415,7 +415,7 @@ class _AddPageState extends State<AddPage> {
         isExpandable: false,
         isChild: true,
         onTap: () async {
-          final Recurrence rec = await showDialog(
+          final RecurrenceType rec = await showDialog(
             context: context,
             child: RecurrenceDialog(
               recurrenceType: _recurrence?.type ?? -1,

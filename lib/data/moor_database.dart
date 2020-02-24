@@ -35,7 +35,7 @@ class Transactions extends Table {
 
   IntColumn get recurringType => integer()
       .nullable()
-      .customConstraint("NULL REFERENCES recurrences(type)")();
+      .customConstraint("NULL REFERENCES recurrence_types(type)")();
 
   TextColumn get recurringUntil =>
       text().map(const DateTimeConverter()).nullable()();
@@ -84,15 +84,41 @@ class Months extends Table {
   TextColumn get lastDate => text().map(const DateTimeConverter())();
 }
 
-@DataClassName('Recurrence')
-class Recurrences extends Table {
+@DataClassName('RecurrenceType')
+class RecurrenceTypes extends Table {
   IntColumn get type => integer().autoIncrement()();
 
   TextColumn get name => text().withLength(max: 40, min: 2)();
 }
 
+@DataClassName('Language')
+class Languages extends Table {
+  TextColumn get languageId => text().customConstraint("UNIQUE")();
+
+  TextColumn get name => text().withLength(max: 40, min: 2)();
+}
+
+@DataClassName('Currency')
+class Currencies extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  TextColumn get abbrev => text().withLength(max: 40, min: 2)();
+
+  TextColumn get symbol => text().withLength(max: 1, min: 1)();
+
+  RealColumn get exchangeRate => real()();
+}
+
 @UseMoor(
-  tables: [Transactions, Categories, Subcategories, Months, Recurrences],
+  tables: [
+    Transactions,
+    Categories,
+    Subcategories,
+    Months,
+    RecurrenceTypes,
+    Languages,
+    Currencies,
+  ],
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
     "getTimestamp":
@@ -120,7 +146,7 @@ class AppDatabase extends _$AppDatabase {
             await into(months).insert(moor_init.currentMonth);
 
             await batch((b) {
-              b.insertAll(recurrences, moor_init.recurrences);
+              b.insertAll(recurrenceTypes, moor_init.recurrences);
 
               for (final catWithSubs in moor_init.categories) {
                 b.insert(categories, catWithSubs.category,
@@ -170,5 +196,6 @@ class AppDatabase extends _$AppDatabase {
   /// Return
   /// ------
   /// list of all [Recurrence]s
-  Future<List<Recurrence>> getRecurrences() => select(recurrences).get();
+  Future<List<RecurrenceType>> getRecurrences() =>
+      select(recurrenceTypes).get();
 }

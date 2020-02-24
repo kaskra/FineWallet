@@ -132,9 +132,9 @@ MonthsCompanion currentMonth = MonthsCompanion.insert(
   lastDate: today().getLastDateOfMonth(),
 );
 
-List<RecurrencesCompanion> recurrences = [
-  RecurrencesCompanion.insert(name: "Daily"),
-  RecurrencesCompanion.insert(name: "Weekly"),
-  RecurrencesCompanion.insert(name: "Monthly"),
-  RecurrencesCompanion.insert(name: "Yearly"),
+List<RecurrenceTypesCompanion> recurrences = [
+  RecurrenceTypesCompanion.insert(name: "Daily"),
+  RecurrenceTypesCompanion.insert(name: "Weekly"),
+  RecurrenceTypesCompanion.insert(name: "Monthly"),
+  RecurrenceTypesCompanion.insert(name: "Yearly"),
 ];
