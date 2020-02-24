@@ -121,7 +121,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           isExpense: tx.isExpense,
           isRecurring: tx.isRecurring,
           until: tx.until,
-          recurrenceType: tx.recurrenceType);
+          recurrenceType: tx.recurrenceType,
+          currencyId: tx.currencyId,
+          label: tx.label);
       await insertTransaction(tempTx);
     });
     return db.monthDao.syncMonths();

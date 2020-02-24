@@ -31,7 +31,7 @@ String mapIdToCurrency(int id) {
   if (id == 1) {
     return "\$";
   } else if (id == 2) {
-    return "€";
+    return "\€";
   }
   return "\$";
 }

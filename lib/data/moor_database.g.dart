@@ -18,6 +18,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final int recurrenceType;
   final DateTime until;
   final int originalId;
+  final int currencyId;
+  final String label;
   Transaction(
       {@required this.id,
       @required this.amount,
@@ -28,7 +30,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       @required this.isRecurring,
       this.recurrenceType,
       this.until,
-      this.originalId});
+      this.originalId,
+      @required this.currencyId,
+      @required this.label});
   factory Transaction.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -56,6 +60,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}until'])),
       originalId: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}original_id']),
+      currencyId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}currency_id']),
+      label:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}label']),
     );
   }
   factory Transaction.fromJson(Map<String, dynamic> json,
@@ -72,6 +80,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       recurrenceType: serializer.fromJson<int>(json['recurrenceType']),
       until: serializer.fromJson<DateTime>(json['until']),
       originalId: serializer.fromJson<int>(json['originalId']),
+      currencyId: serializer.fromJson<int>(json['currencyId']),
+      label: serializer.fromJson<String>(json['label']),
     );
   }
   @override
@@ -88,6 +98,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'recurrenceType': serializer.toJson<int>(recurrenceType),
       'until': serializer.toJson<DateTime>(until),
       'originalId': serializer.toJson<int>(originalId),
+      'currencyId': serializer.toJson<int>(currencyId),
+      'label': serializer.toJson<String>(label),
     };
   }
 
@@ -118,6 +130,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       originalId: originalId == null && nullToAbsent
           ? const Value.absent()
           : Value(originalId),
+      currencyId: currencyId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currencyId),
+      label:
+          label == null && nullToAbsent ? const Value.absent() : Value(label),
     );
   }
 
@@ -131,7 +148,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           bool isRecurring,
           int recurrenceType,
           DateTime until,
-          int originalId}) =>
+          int originalId,
+          int currencyId,
+          String label}) =>
       Transaction(
         id: id ?? this.id,
         amount: amount ?? this.amount,
@@ -143,6 +162,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         recurrenceType: recurrenceType ?? this.recurrenceType,
         until: until ?? this.until,
         originalId: originalId ?? this.originalId,
+        currencyId: currencyId ?? this.currencyId,
+        label: label ?? this.label,
       );
   @override
   String toString() {
@@ -156,7 +177,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('isRecurring: $isRecurring, ')
           ..write('recurrenceType: $recurrenceType, ')
           ..write('until: $until, ')
-          ..write('originalId: $originalId')
+          ..write('originalId: $originalId, ')
+          ..write('currencyId: $currencyId, ')
+          ..write('label: $label')
           ..write(')'))
         .toString();
   }
@@ -178,8 +201,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
                               isRecurring.hashCode,
                               $mrjc(
                                   recurrenceType.hashCode,
-                                  $mrjc(until.hashCode,
-                                      originalId.hashCode))))))))));
+                                  $mrjc(
+                                      until.hashCode,
+                                      $mrjc(
+                                          originalId.hashCode,
+                                          $mrjc(currencyId.hashCode,
+                                              label.hashCode))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -193,7 +220,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.isRecurring == this.isRecurring &&
           other.recurrenceType == this.recurrenceType &&
           other.until == this.until &&
-          other.originalId == this.originalId);
+          other.originalId == this.originalId &&
+          other.currencyId == this.currencyId &&
+          other.label == this.label);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -207,6 +236,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int> recurrenceType;
   final Value<DateTime> until;
   final Value<int> originalId;
+  final Value<int> currencyId;
+  final Value<String> label;
   const TransactionsCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
@@ -218,6 +249,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.recurrenceType = const Value.absent(),
     this.until = const Value.absent(),
     this.originalId = const Value.absent(),
+    this.currencyId = const Value.absent(),
+    this.label = const Value.absent(),
   });
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
@@ -230,11 +263,15 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.recurrenceType = const Value.absent(),
     this.until = const Value.absent(),
     this.originalId = const Value.absent(),
+    @required int currencyId,
+    @required String label,
   })  : amount = Value(amount),
         subcategoryId = Value(subcategoryId),
         monthId = Value(monthId),
         date = Value(date),
-        isExpense = Value(isExpense);
+        isExpense = Value(isExpense),
+        currencyId = Value(currencyId),
+        label = Value(label);
   TransactionsCompanion copyWith(
       {Value<int> id,
       Value<double> amount,
@@ -245,7 +282,9 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<bool> isRecurring,
       Value<int> recurrenceType,
       Value<DateTime> until,
-      Value<int> originalId}) {
+      Value<int> originalId,
+      Value<int> currencyId,
+      Value<String> label}) {
     return TransactionsCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
@@ -257,6 +296,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       recurrenceType: recurrenceType ?? this.recurrenceType,
       until: until ?? this.until,
       originalId: originalId ?? this.originalId,
+      currencyId: currencyId ?? this.currencyId,
+      label: label ?? this.label,
     );
   }
 }
@@ -371,6 +412,24 @@ class $TransactionsTable extends Transactions
         $customConstraints: 'NULL REFERENCES transactions(id)');
   }
 
+  final VerificationMeta _currencyIdMeta = const VerificationMeta('currencyId');
+  GeneratedIntColumn _currencyId;
+  @override
+  GeneratedIntColumn get currencyId => _currencyId ??= _constructCurrencyId();
+  GeneratedIntColumn _constructCurrencyId() {
+    return GeneratedIntColumn('currency_id', $tableName, false,
+        $customConstraints: 'REFERENCES currencies(id)');
+  }
+
+  final VerificationMeta _labelMeta = const VerificationMeta('label');
+  GeneratedTextColumn _label;
+  @override
+  GeneratedTextColumn get label => _label ??= _constructLabel();
+  GeneratedTextColumn _constructLabel() {
+    return GeneratedTextColumn('label', $tableName, false,
+        minTextLength: 0, maxTextLength: 256);
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -382,7 +441,9 @@ class $TransactionsTable extends Transactions
         isRecurring,
         recurrenceType,
         until,
-        originalId
+        originalId,
+        currencyId,
+        label
       ];
   @override
   $TransactionsTable get asDslTable => this;
@@ -439,6 +500,18 @@ class $TransactionsTable extends Transactions
       context.handle(_originalIdMeta,
           originalId.isAcceptableValue(d.originalId.value, _originalIdMeta));
     }
+    if (d.currencyId.present) {
+      context.handle(_currencyIdMeta,
+          currencyId.isAcceptableValue(d.currencyId.value, _currencyIdMeta));
+    } else if (isInserting) {
+      context.missing(_currencyIdMeta);
+    }
+    if (d.label.present) {
+      context.handle(
+          _labelMeta, label.isAcceptableValue(d.label.value, _labelMeta));
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
     return context;
   }
 
@@ -486,6 +559,12 @@ class $TransactionsTable extends Transactions
     }
     if (d.originalId.present) {
       map['original_id'] = Variable<int, IntType>(d.originalId.value);
+    }
+    if (d.currencyId.present) {
+      map['currency_id'] = Variable<int, IntType>(d.currencyId.value);
+    }
+    if (d.label.present) {
+      map['label'] = Variable<String, StringType>(d.label.value);
     }
     return map;
   }
@@ -1545,10 +1624,9 @@ class CurrenciesCompanion extends UpdateCompanion<Currency> {
     this.id = const Value.absent(),
     @required String abbrev,
     @required String symbol,
-    @required double exchangeRate,
+    this.exchangeRate = const Value.absent(),
   })  : abbrev = Value(abbrev),
-        symbol = Value(symbol),
-        exchangeRate = Value(exchangeRate);
+        symbol = Value(symbol);
   CurrenciesCompanion copyWith(
       {Value<int> id,
       Value<String> abbrev,
@@ -1602,11 +1680,8 @@ class $CurrenciesTable extends Currencies
   GeneratedRealColumn get exchangeRate =>
       _exchangeRate ??= _constructExchangeRate();
   GeneratedRealColumn _constructExchangeRate() {
-    return GeneratedRealColumn(
-      'exchange_rate',
-      $tableName,
-      false,
-    );
+    return GeneratedRealColumn('exchange_rate', $tableName, false,
+        defaultValue: const Constant(1.0));
   }
 
   @override
@@ -1641,8 +1716,6 @@ class $CurrenciesTable extends Currencies
           _exchangeRateMeta,
           exchangeRate.isAcceptableValue(
               d.exchangeRate.value, _exchangeRateMeta));
-    } else if (isInserting) {
-      context.missing(_exchangeRateMeta);
     }
     return context;
   }

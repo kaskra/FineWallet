@@ -2,6 +2,7 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/category_dialog.dart';
 import 'package:FineWallet/src/add_page/editable_numeric_input.dart';
 import 'package:FineWallet/src/add_page/recurrence_dialog.dart';
@@ -216,6 +217,9 @@ class _AddPageState extends State<AddPage> {
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: null,
+      currencyId: UserSettings.getCurrency(),
+      // TODO add label once text field exists
+      label: "",
     );
 
     await Provider.of<AppDatabase>(context, listen: false)
@@ -242,6 +246,9 @@ class _AddPageState extends State<AddPage> {
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: _transaction.tx.originalId,
+      currencyId: UserSettings.getCurrency(),
+      // TODO add label once text field exists
+      label: "",
     );
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao

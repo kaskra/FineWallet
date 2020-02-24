@@ -43,6 +43,11 @@ class Transactions extends Table {
       .nullable()
       .customConstraint("NULL REFERENCES transactions(id)")();
 
+  IntColumn get currencyId =>
+      integer().customConstraint("REFERENCES currencies(id)")();
+
+  TextColumn get label => text().withLength(min: 0, max: 256)();
+
   @override
   List<String> get customConstraints => [
         // ignore: no_adjacent_strings_in_list
@@ -105,7 +110,7 @@ class Currencies extends Table {
 
   TextColumn get symbol => text().withLength(max: 1, min: 1)();
 
-  RealColumn get exchangeRate => real()();
+  RealColumn get exchangeRate => real().withDefault(const Constant(1.0))();
 }
 
 @UseMoor(
@@ -151,6 +156,9 @@ class AppDatabase extends _$AppDatabase {
                 b.insert(categories, catWithSubs.category,
                     mode: InsertMode.insertOrReplace);
               }
+
+              b.insertAll(currencies, moor_init.currencies);
+              b.insertAll(languages, moor_init.languages);
             });
 
             // Has to be done in extra batch, because
