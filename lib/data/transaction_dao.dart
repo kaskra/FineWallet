@@ -283,9 +283,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
   /// Watches the latest N non-recurrence transactions.
   Stream<List<TransactionWithCategory>> watchNLatestTransactions(int N) {
-    final query =
-        customSelectQuery("SELECT * FROM transactions_with_categories t "
-            "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT $N");
+    final query = customSelectQuery(
+        "SELECT * FROM transactions_with_categories t "
+        "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT $N",
+        readsFrom: {transactions});
 
     return query.map((row) {
       final tx = db_file.Transaction.fromData(row.data, db);
