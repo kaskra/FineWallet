@@ -17,22 +17,29 @@ class MonthlyReportsPage extends StatelessWidget {
           .watchAllMonthsWithDetails(),
       builder: (BuildContext context,
           AsyncSnapshot<List<MonthWithDetails>> snapshot) {
-        return snapshot.hasData
-            ? ListView(
-                children: <Widget>[
-                  const ListHeaderImage(
-                    semanticLabel: "Monthly Reports",
-                    subtitle: "Reports",
-                    image: IMAGES.monthlyReport,
+        if (snapshot.hasData) {
+          return ListView(
+            children: <Widget>[
+              const ListHeaderImage(
+                semanticLabel: "Monthly Reports",
+                subtitle: "Reports",
+                image: IMAGES.monthlyReport,
+              ),
+              // Only display previous months not the current one.
+              if (snapshot.data.sublist(1).isEmpty)
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: const Center(
+                    child: Text("Found no recorded months."),
                   ),
-                  // Only display previous months not the current one.
-                  for (var m in snapshot.data.sublist(1))
-                    CompactDetailsCard(month: m)
-                ],
-              )
-            : const Center(
-                child: Text("Found no recorded months!"),
-              );
+                ),
+              for (var m in snapshot.data.sublist(1))
+                CompactDetailsCard(month: m)
+            ],
+          );
+        } else {
+          return const Center(child: Text("Found no recorded months!"));
+        }
       },
     );
   }

@@ -49,9 +49,7 @@ class CategoryListView extends StatelessWidget {
             ],
           );
         } else {
-          return const Center(
-            child: Text("Found no categories!"),
-          );
+          return const SizedBox();
         }
       },
     );
