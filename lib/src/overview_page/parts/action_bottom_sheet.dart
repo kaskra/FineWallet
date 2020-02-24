@@ -9,9 +9,7 @@ class ActionBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomSheet(
       builder: (context) => _buildBody(context),
-      onClosing: () {
-        print("Closing!");
-      },
+      onClosing: () {},
       enableDrag: false,
     );
   }

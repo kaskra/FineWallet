@@ -18,9 +18,7 @@ class DetailsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
-      onClosing: () {
-        print("is_closing!");
-      },
+      onClosing: () {},
       enableDrag: false,
       builder: (context) {
         return Column(
