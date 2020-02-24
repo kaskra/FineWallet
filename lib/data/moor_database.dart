@@ -33,12 +33,11 @@ class Transactions extends Table {
 
   BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
 
-  IntColumn get recurringType => integer()
+  IntColumn get recurrenceType => integer()
       .nullable()
       .customConstraint("NULL REFERENCES recurrence_types(type)")();
 
-  TextColumn get recurringUntil =>
-      text().map(const DateTimeConverter()).nullable()();
+  TextColumn get until => text().map(const DateTimeConverter()).nullable()();
 
   IntColumn get originalId => integer()
       .nullable()
@@ -47,8 +46,8 @@ class Transactions extends Table {
   @override
   List<String> get customConstraints => [
         // ignore: no_adjacent_strings_in_list
-        "CHECK (is_recurring = 0 OR (recurring_until NOT NULL AND "
-            "recurring_type NOT NULL AND "
+        "CHECK (is_recurring = 0 OR (until NOT NULL AND "
+            "recurrence_type NOT NULL AND "
             "original_id NOT NULL))"
       ];
 }

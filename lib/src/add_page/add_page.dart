@@ -61,7 +61,7 @@ class _AddPageState extends State<AddPage> {
       _date = _transaction.tx.date;
       _subcategory = _transaction.sub;
       _isRecurring = _transaction.tx.isRecurring;
-      _untilDate = _transaction.tx.recurringUntil;
+      _untilDate = _transaction.tx.until;
 
       if (_isRecurring) {
         // If recurring, set the date to the first of the recurrence.
@@ -78,7 +78,7 @@ class _AddPageState extends State<AddPage> {
             await Provider.of<AppDatabase>(context, listen: false)
                 .getRecurrences();
         _recurrence = recurrenceName
-            .where((r) => r.type == _transaction.tx.recurringType)
+            .where((r) => r.type == _transaction.tx.recurrenceType)
             .first;
       }
     }
@@ -213,8 +213,8 @@ class _AddPageState extends State<AddPage> {
       amount: _amount,
       monthId: null,
       subcategoryId: _subcategory.id,
-      recurringType: _isRecurring ? _recurrence.type : null,
-      recurringUntil: _untilDate,
+      recurrenceType: _isRecurring ? _recurrence.type : null,
+      until: _untilDate,
       originalId: null,
     );
 
@@ -239,8 +239,8 @@ class _AddPageState extends State<AddPage> {
       amount: _amount,
       monthId: null,
       subcategoryId: _subcategory.id,
-      recurringType: _isRecurring ? _recurrence.type : null,
-      recurringUntil: _untilDate,
+      recurrenceType: _isRecurring ? _recurrence.type : null,
+      until: _untilDate,
       originalId: _transaction.tx.originalId,
     );
     await Provider.of<AppDatabase>(context, listen: false)

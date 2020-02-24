@@ -53,17 +53,17 @@ List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
   final List<db_file.Transaction> recurrences = [];
 
   DateTime currentDate = tx.date;
-  Duration interval = _replayTypeToDuration(tx.recurringType, currentDate);
+  Duration interval = _replayTypeToDuration(tx.recurrenceType, currentDate);
 
-  while (currentDate.add(interval).isBeforeOrEqual(tx.recurringUntil)) {
-    interval = _replayTypeToDuration(tx.recurringType, currentDate);
+  while (currentDate.add(interval).isBeforeOrEqual(tx.until)) {
+    interval = _replayTypeToDuration(tx.recurrenceType, currentDate);
     if (interval.inDays != null) {
       currentDate = currentDate.add(interval);
 
       recurrences.add(tx.copyWith(date: currentDate));
     } else {
       print(
-          "ERROR: Recurrence type is not in range. Got value: ${tx.recurringType}");
+          "ERROR: Recurrence type is not in range. Got value: ${tx.recurrenceType}");
     }
   }
 
