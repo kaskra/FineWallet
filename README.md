@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/kaskra/FineWallet/blob/master/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png">
+<img src="https://github.com/kaskra/FineWallet/blob/master/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" alt="logo">
 </p>
 
 # FineWallet
