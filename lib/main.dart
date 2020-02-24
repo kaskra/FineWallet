@@ -169,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
       const ProfilePage(),
       const MonthlyReportsPage(),
       const SizedBox(),
-      OverviewPage(),
+      const OverviewPage(),
       _buildHistory(),
     ];
 
