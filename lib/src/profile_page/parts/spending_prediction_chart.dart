@@ -61,34 +61,30 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
 
   List<PredictionPointDate> _calcDateTimeDataPoints(
       AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
-    // TODO rework with DateTime instead of double!
-    // all days of month as date in millis
-    final List<double> data = getListOfMonthDays(_todayDate);
+    // All days of month as date
+    final List<DateTime> days = getListOfMonthDays(_todayDate);
 
-    // finer day steps
-    for (int i = 0; i < data.length - 1; i += 2) {
-      data.insert(i + 1, data[i] + (data[i + 1] - data[i]) / 2);
-    }
-
-    final int todayInMillis = dayInMillis(_todayDate);
-
-    // calc the step function by using all expenses of every day in the month
+    // Calc the step function by using all expenses of every day in the month
     double prev = 0;
-    final List<double> expense = data.map((date) {
-      final t = snapshot.data
-          .where((t) => t.first.millisecondsSinceEpoch == date)
-          .toList();
-      if (t.isNotEmpty) return t.first.second;
+    final List<double> expense = days.map((date) {
+      final txs =
+          snapshot.data.where((t) => t.first.isAtSameMomentAs(date)).toList();
+      // If there are expense transactions on that day, return the amount.
+      if (txs.isNotEmpty) return txs.first.second;
+      // Otherwise Zero.
       return 0.0;
     }).map((double d) {
+      // Set each next day as previous day + amount of day.
       return prev += d;
     }).toList();
 
+    // Go over the expenses and add a prediction for future days.
     double gradient = 0;
     bool isToday = true;
     int todayIdx = 0;
-    for (int i = 0; i < data.length; i++) {
-      if (data[i] > todayInMillis) {
+    for (int i = 0; i < days.length; i++) {
+      // Once the days are after the current date, the values are a prediction
+      if (days[i].isAfter(_todayDate)) {
         if (isToday) {
           // expense[i] is the sum of all expenses up to day i
           gradient = expense[i] / (i + 1);
@@ -101,19 +97,13 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
       }
     }
 
-    final List<DateTime> days = data
-        .map((d) => DateTime.fromMillisecondsSinceEpoch(d.toInt()))
-        .toList();
-
     final List<PredictionPointDate> dataPoints = [];
     for (int i = 0; i < days.length; i++) {
-      final bool isPrediction = i > todayIdx;
-      final bool isAboveMax = expense[i] > widget.monthlyBudget;
       dataPoints.add(PredictionPointDate(
         timestamp: days[i],
         amount: expense[i],
-        isPrediction: isPrediction,
-        isAboveMax: isAboveMax,
+        isPrediction: days[i].isAfter(_todayDate),
+        isAboveMax: expense[i] > widget.monthlyBudget,
       ));
     }
     return dataPoints;

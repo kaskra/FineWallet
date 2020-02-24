@@ -176,7 +176,6 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           id: row.readInt("subcategory_id"),
           name: row.readString("name"),
           categoryId: row.readInt("category_id"));
-      print(tx);
       return TransactionWithCategory(sub: sub, tx: tx);
     }).watch();
   }
@@ -218,19 +217,19 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Stream<List<Tuple2<DateTime, double>>> watchExpensesPerDayInMonth(
       DateTime dateInMonth) {
     const converter = DateTimeConverter();
-    final expenses =
-        customSelectQuery("SELECT SUM(amount) as sumAmount, date FROM expenses "
-                "WHERE month_id = (SELECT id FROM months "
-                "WHERE first_date <= '${converter.mapToSql(dateInMonth)}' "
-                "AND last_date >= '${converter.mapToSql(dateInMonth)}')"
-                "GROUP BY date ORDER BY date")
-            .watch()
-            .map((r) => r
-                .map((row) => Tuple2<DateTime, double>(
-                    row.readDateTime("date"), row.readDouble("sumAmount")))
-                .toList());
-
-    return expenses;
+    return customSelectQuery(
+            "SELECT SUM(amount) as amount, date FROM expenses "
+            "WHERE month_id = (SELECT id FROM months "
+            "WHERE first_date <= '${converter.mapToSql(dateInMonth)}' "
+            "AND last_date >= '${converter.mapToSql(dateInMonth)}')"
+            "GROUP BY date ORDER BY date",
+            readsFrom: {transactions})
+        .watch()
+        .map((r) => r
+            .map((row) => Tuple2<DateTime, double>(
+                converter.mapToDart(row.readString("date")),
+                row.readDouble("amount")))
+            .toList());
   }
 
   /// Returns a [Stream] of categories and their corresponding
@@ -397,7 +396,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .watch()
         .map((rows) => rows
             .map((row) => Tuple2<DateTime, double>(
-                row.readDateTime("date"), row.readDouble("amount")))
+                converter.mapToDart(row.readString("date")),
+                row.readDouble("amount")))
             .toList());
 
     return lastWeekQuery;
