@@ -20,7 +20,7 @@ class MonthlyReportsPage extends StatelessWidget {
         return snapshot.hasData
             ? ListView(
                 children: <Widget>[
-                  ListHeaderImage(
+                  const ListHeaderImage(
                     semanticLabel: "Monthly Reports",
                     subtitle: "Reports",
                     image: IMAGES.monthlyReport,

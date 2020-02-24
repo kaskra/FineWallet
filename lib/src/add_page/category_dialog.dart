@@ -147,7 +147,9 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
     );
   }
 
-  /// UNUSED until adding of category/subcategory is implemented
+  // TODO
+  // UNUSED until adding of category/subcategory is implemented
+  // ignore: unused_element
   Widget _buildCategoryAddItem() {
     return _buildGeneralGridItem(
       color: Theme.of(context).colorScheme.secondary,
