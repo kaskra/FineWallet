@@ -53,16 +53,32 @@ class DetailsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 6),
-      child: Text(
-        "${month.month.firstDate.getMonthName()} "
-        ", ${month.month.firstDate.year}",
-        style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.secondary),
-      ),
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: <Widget>[
+        Positioned(
+          top: 4,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            width: 50,
+            height: 4,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text(
+            "${month.month.firstDate.getMonthName()} "
+            ", ${month.month.firstDate.year}",
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
+      ],
     );
   }
 
