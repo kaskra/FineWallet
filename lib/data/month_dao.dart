@@ -7,9 +7,10 @@
  */
 
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/converters/datetime_converter.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/utils/month_utils.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'month_dao.g.dart';
@@ -46,27 +47,31 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
-  Future<int> getMonthIdByDate(int dateInMillis) async {
-    final month = await (select(months)
-          ..where((m) => m.firstDate.isSmallerOrEqualValue(dateInMillis))
-          ..where((m) => m.lastDate.isBiggerOrEqualValue(dateInMillis)))
-        .getSingle();
+  Future<int> getMonthIdByDate(DateTime date) async {
+    const converter = DateTimeConverter();
+    final inMonth = CustomExpression<bool, BoolType>(
+        "first_date <= '${converter.mapToSql(date)}' AND "
+        "last_date >= '${converter.mapToSql(date)}'");
+    final month = await (select(months)..where((m) => inMonth)).getSingle();
     return month?.id;
   }
 
-  Future<Month> getCurrentMonth() => (select(months)
-        ..where((m) =>
-            m.firstDate.isSmallerOrEqualValue(dayInMillis(DateTime.now())))
-        ..where((m) =>
-            m.lastDate.isBiggerOrEqualValue(dayInMillis(DateTime.now()))))
-      .getSingle();
+  Future<Month> getCurrentMonth() {
+    const converter = DateTimeConverter();
+    final inMonth = CustomExpression<bool, BoolType>(
+        "first_date <= '${converter.mapToSql(today())}' AND "
+        "last_date >= '${converter.mapToSql(today())}'");
+    return (select(months)..where((m) => inMonth)).getSingle();
+  }
 
   Future<Month> getMonthById(int id) =>
       (select(months)..where((m) => m.id.equals(id))).getSingle();
 
   Stream<Month> watchCurrentMonth() {
-    const inMonth = CustomExpression<bool, BoolType>(
-        "first_date <= strftime('%s','now', 'localtime') * 1000 AND last_date >= strftime('%s','now', 'localtime') * 1000");
+    const converter = DateTimeConverter();
+    final inMonth = CustomExpression<bool, BoolType>(
+        "first_date <= '${converter.mapToSql(today())}' AND "
+        "last_date >= '${converter.mapToSql(today())}'");
     return (select(months)..where((month) => inMonth)).watchSingle();
   }
 
@@ -108,13 +113,9 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     final missingMonths = getMissingMonths(lastRecordedMonth);
     final List<Insertable<Month>> newMonths = [];
 
-    /* TODO rework dates to be only year, month, day --> without
-        any hours. Currently the month begins on 1st 12am and ends at
-        1st 0:59 am next month.
-    */
     for (final m in missingMonths) {
-      final first = getFirstDateOfMonthInMillis(m);
-      final last = getLastDateOfMonthInMillis(m);
+      final first = m.getFirstDateOfMonth();
+      final last = m.getLastDateOfMonth();
       newMonths.add(MonthsCompanion.insert(
           maxBudget: 0, firstDate: first, lastDate: last));
     }
@@ -126,11 +127,10 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     }
   }
 
-  Future checkMonth(int date) async {
+  Future checkMonth(DateTime date) async {
     if ((await db.monthDao.getMonthIdByDate(date)) == null) {
-      final dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-      final first = getFirstDateOfMonthInMillis(dateTime);
-      final last = getLastDateOfMonthInMillis(dateTime);
+      final first = date.getFirstDateOfMonth();
+      final last = date.getLastDateOfMonth();
 
       final newMonth = MonthsCompanion.insert(
           maxBudget: 0, firstDate: first, lastDate: last);
@@ -138,9 +138,9 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     }
   }
 
-  /// Returns the id of a month by date (in milliseconds since epoch).
+  /// Returns the id of a month by date.
   /// If no month month was found that included the date, every
-  Future<int> createOrGetMonth(int date) async {
+  Future<int> createOrGetMonth(DateTime date) async {
     int id = await getMonthIdByDate(date);
     if (id == null) {
       await checkMonth(date);
@@ -159,13 +159,14 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// monthly expenses and the monthly savings.
   ///
   Stream<List<MonthWithDetails>> watchAllMonthsWithDetails() {
+    const converter = DateTimeConverter();
     final query = customSelectQuery(
         "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
         "AS month_income, "
         "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
         "AS month_expense,  m.* "
         "FROM months m "
-        "WHERE ${dayInMillis(DateTime.now())} >= m.first_date "
+        "WHERE '${converter.mapToSql(today())}' >= m.first_date "
         "GROUP BY m.id "
         "ORDER BY m.first_date DESC",
         readsFrom: {
@@ -196,13 +197,14 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// monthly expenses and the monthly savings.
   ///
   Stream<MonthWithDetails> watchCurrentMonthWithDetails() {
+    const converter = DateTimeConverter();
     final query = customSelectQuery(
             "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
             "AS month_income, "
             "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
             "AS month_expense,  m.* "
             "FROM months m "
-            "WHERE ${dayInMillis(DateTime.now())} BETWEEN m.first_date AND m.last_date",
+            "WHERE '${converter.mapToSql(today())}' BETWEEN m.first_date AND m.last_date",
             readsFrom: {months, transactions}).watchSingle().map(
           (row) => MonthWithDetails(
               Month.fromData(row.data, db),

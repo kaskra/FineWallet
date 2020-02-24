@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
@@ -9,7 +10,6 @@ import 'package:FineWallet/src/history_page/history_item.dart';
 import 'package:FineWallet/src/history_page/history_month_divider.dart';
 import 'package:FineWallet/src/widgets/selection_appbar.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,7 +111,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void _handleFilterSettings() {
     setState(() {
-      _filterSettings = TransactionFilterSettings.beforeDate(DateTime.now());
+      _filterSettings = TransactionFilterSettings.beforeDate(today());
     });
     if (widget.showFilters) {
       if (_filterState.onlyExpenses && _filterState.onlyIncomes) {
@@ -119,7 +119,7 @@ class _HistoryPageState extends State<HistoryPage> {
       }
 
       _filterSettings = TransactionFilterSettings(
-        before: dayInMillis(DateTime.now()),
+        before: today(),
         incomes: _filterState.onlyIncomes,
         expenses: _filterState.onlyExpenses,
       );
@@ -180,10 +180,10 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildItems(List<TransactionWithCategory> data) {
     final items = <Widget>[];
 
-    DateTime lastDate = DateTime.fromMillisecondsSinceEpoch(data.first.tx.date);
+    DateTime lastDate = data.first.tx.date;
     items.add(HistoryDateTitle(date: lastDate));
     for (final d in data) {
-      final date = DateTime.fromMillisecondsSinceEpoch(d.tx.date);
+      final date = d.tx.date;
 
       // Visually divide transactions when the month changes.
       if (date.month != lastDate.month) {

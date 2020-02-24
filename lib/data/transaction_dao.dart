@@ -7,12 +7,13 @@
  */
 
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/converters/datetime_converter.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_parser.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/utils/recurrence_utils.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'transaction_dao.g.dart';
@@ -119,8 +120,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           subcategoryId: tx.subcategoryId,
           isExpense: tx.isExpense,
           isRecurring: tx.isRecurring,
-          recurringUntil: tx.recurringUntil,
-          recurringType: tx.recurringType);
+          until: tx.until,
+          recurrenceType: tx.recurrenceType,
+          currencyId: tx.currencyId,
+          label: tx.label);
       await insertTransaction(tempTx);
     });
     return db.monthDao.syncMonths();
@@ -139,12 +142,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// Returns a [Stream] with the savings up to the current month.
   /// The stream is updated every time the database is changed.
   Stream<double> watchTotalSavings() {
-    final currentDate = getFirstDateOfMonthInMillis(DateTime.now());
+    const converter = DateTimeConverter();
+    final currentDate = converter.mapToSql(today().getFirstDateOfMonth());
     final savings = customSelectQuery(
             "SELECT IFNULL( (SELECT SUM(amount) FROM incomes "
-            "WHERE date < $currentDate), 0) - "
+            "WHERE date < '$currentDate'), 0) - "
             "IFNULL((SELECT SUM(amount) FROM expenses "
-            "WHERE date < $currentDate), 0) AS savings",
+            "WHERE date < '$currentDate'), 0) AS savings",
             readsFrom: {transactions})
         .watchSingle()
         .map((row) => row.readDouble("savings"));
@@ -189,11 +193,12 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the monthly income.
   ///
   Stream<double> watchMonthlyIncome(DateTime date) {
+    const converter = DateTimeConverter();
     final income = customSelectQuery(
             "SELECT IFNULL( (SELECT SUM(amount) FROM incomes "
             "WHERE month_id = (SELECT id FROM months "
-            "WHERE first_date <= ${dayInMillis(date)} "
-            "AND last_date >= ${dayInMillis(date)}) ), 0) AS income",
+            "WHERE first_date <= '${converter.mapToSql(date)}' "
+            "AND last_date >= '${converter.mapToSql(date)}') ), 0) AS income",
             readsFrom: {transactions, months})
         .watchSingle()
         .map((row) => row.readDouble("income"));
@@ -211,21 +216,22 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// ------
   /// [Stream] of a list of [Tuple2]s with date and summed up expenses.
   ///
-  Stream<List<Tuple2<int, double>>> watchExpensesPerDayInMonth(
+  Stream<List<Tuple2<DateTime, double>>> watchExpensesPerDayInMonth(
       DateTime dateInMonth) {
-    final expenses =
-        customSelectQuery("SELECT SUM(amount) as sumAmount, date FROM expenses "
-                "WHERE month_id = (SELECT id FROM months "
-                "WHERE first_date <= ${dayInMillis(dateInMonth)} "
-                "AND last_date >= ${dayInMillis(dateInMonth)})"
-                "GROUP BY date ORDER BY date")
-            .watch()
-            .map((r) => r
-                .map((row) => Tuple2<int, double>(
-                    row.readInt("date"), row.readDouble("sumAmount")))
-                .toList());
-
-    return expenses;
+    const converter = DateTimeConverter();
+    return customSelectQuery(
+            "SELECT SUM(amount) as amount, date FROM expenses "
+            "WHERE month_id = (SELECT id FROM months "
+            "WHERE first_date <= '${converter.mapToSql(dateInMonth)}' "
+            "AND last_date >= '${converter.mapToSql(dateInMonth)}')"
+            "GROUP BY date ORDER BY date",
+            readsFrom: {transactions})
+        .watch()
+        .map((r) => r
+            .map((row) => Tuple2<DateTime, double>(
+                converter.mapToDart(row.readString("date")),
+                row.readDouble("amount")))
+            .toList());
   }
 
   /// Returns a [Stream] of categories and their corresponding
@@ -261,11 +267,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .toList());
   }
 
-  // TODO remove when done with overview page
   /// Watches the latest non-recurrence transaction.
   Stream<TransactionWithCategory> watchLatestTransaction() {
     final query =
-        customSelectQuery("SElECT * FROM transactions_with_categories t "
+        customSelectQuery("SELECT * FROM transactions_with_categories t "
             "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT 1");
 
     return query.map((row) {
@@ -280,9 +285,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
   /// Watches the latest N non-recurrence transactions.
   Stream<List<TransactionWithCategory>> watchNLatestTransactions(int N) {
-    final query =
-        customSelectQuery("SElECT * FROM transactions_with_categories t "
-            "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT $N");
+    final query = customSelectQuery(
+        "SELECT * FROM transactions_with_categories t "
+        "WHERE t.id = t.original_id ORDER BY t.id DESC LIMIT $N",
+        readsFrom: {transactions});
 
     return query.map((row) {
       final tx = db_file.Transaction.fromData(row.data, db);
@@ -309,15 +315,16 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchMonthlyBudget(DateTime date) {
+    const converter = DateTimeConverter();
     final budget = customSelectQuery(
             "SELECT IFNULL( (SELECT max_budget "
             "FROM months "
-            "WHERE first_date <= ${dayInMillis(date)} "
-            "AND last_date >= ${dayInMillis(date)}),0) - "
+            "WHERE first_date <= '${converter.mapToSql(date)}' "
+            "AND last_date >= '${converter.mapToSql(date)}'),0) - "
             "IFNULL( (SELECT SUM(amount) FROM expenses "
             "WHERE month_id = (SELECT id FROM months "
-            "WHERE first_date <= ${dayInMillis(date)} "
-            "AND last_date >= ${dayInMillis(date)}) ), 0) AS budget",
+            "WHERE first_date <= '${converter.mapToSql(date)}' "
+            "AND last_date >= '${converter.mapToSql(date)}') ), 0) AS budget",
             readsFrom: {transactions, months})
         .watchSingle()
         .map((row) => row.readDouble("budget"));
@@ -340,22 +347,23 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchDailyBudget(DateTime date) {
-    final remainingDays = getRemainingDaysInMonth(date);
+    const converter = DateTimeConverter();
+    final remainingDays = date.remainingDaysInMonth;
 
     final maxBudget = "(SELECT max_budget FROM months "
-        "WHERE first_date <= ${dayInMillis(date)} "
-        "AND last_date >= ${dayInMillis(date)})";
+        "WHERE first_date <= '${converter.mapToSql(date)}' "
+        "AND last_date >= '${converter.mapToSql(date)}')";
     final monthId = "(SELECT id FROM months "
-        "WHERE first_date <= ${dayInMillis(date)} "
-        "AND last_date >= ${dayInMillis(date)})";
+        "WHERE first_date <= '${converter.mapToSql(date)}' "
+        "AND last_date >= '${converter.mapToSql(date)}')";
 
     final monthlyExpenses = "(SELECT SUM(amount) FROM expenses "
         "WHERE month_id = $monthId "
-        "AND NOT (date = ${dayInMillis(date)})"
+        "AND NOT (date='${converter.mapToSql(date)}') "
         "AND (recurring_type = 1 OR is_recurring = 0))";
     final todayExpenses = "(SELECT SUM(amount) FROM expenses "
-        "WHERE date = ${dayInMillis(date)} "
-        "AND month_id = $monthId"
+        "WHERE date = '${converter.mapToSql(date)}' "
+        "AND month_id = $monthId "
         "AND (recurring_type = 1 OR is_recurring = 0))";
 
     final dailyBudget = customSelectQuery(
@@ -374,23 +382,25 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// ------
   /// [Stream] of a list of [Tuple2]s with a day's date in milliseconds since
   /// epoch and the sum of its expenses.
-  Stream<List<Tuple2<int, double>>> watchLastWeeksTransactions() {
-    // Set initial values.
-    final millisPerDay = Duration.millisecondsPerDay;
-    final currentDateInMillis = dayInMillis(DateTime.now());
+  Stream<List<Tuple2<DateTime, double>>> watchLastWeeksTransactions() {
+    // Get converter and compute date 7 days behind.
+    const converter = DateTimeConverter();
+    final dateLastWeek =
+        converter.mapToSql(today().subtract(const Duration(days: 7)));
 
     // Setup watch of last weeks transactions.
     final lastWeekQuery = customSelectQuery(
             "SELECT SUM(amount) AS amount, date FROM transactions "
             "WHERE is_expense = 1 "
-            "AND date > ${currentDateInMillis - 7 * millisPerDay} "
+            "AND date > '$dateLastWeek' "
             "GROUP BY date "
             "LIMIT 7",
             readsFrom: {transactions})
         .watch()
         .map((rows) => rows
-            .map((row) => Tuple2<int, double>(
-                row.readInt("date"), row.readDouble("amount")))
+            .map((row) => Tuple2<DateTime, double>(
+                converter.mapToDart(row.readString("date")),
+                row.readDouble("amount")))
             .toList());
 
     return lastWeekQuery;

@@ -51,7 +51,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                   // This should always be right, if it is
                   // not there is a problem.
                   if (_recurrenceType != -1 && _recurrenceName != "") {
-                    Navigator.of(context).pop(Recurrence(
+                    Navigator.of(context).pop(RecurrenceType(
                         type: _recurrenceType, name: _recurrenceName));
                   } else {
                     print("Wrong Recurrence type or name!");
@@ -97,7 +97,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   Widget _buildSubcategoryList() {
     return FutureBuilder(
       future: Provider.of<AppDatabase>(context).getRecurrences(),
-      builder: (context, AsyncSnapshot<List<Recurrence>> snapshot) {
+      builder: (context, AsyncSnapshot<List<RecurrenceType>> snapshot) {
         if (snapshot.hasData) {
           return ListView(
             shrinkWrap: true,
@@ -112,7 +112,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
     );
   }
 
-  Widget _buildRecurrenceItem(Recurrence rec) {
+  Widget _buildRecurrenceItem(RecurrenceType rec) {
     if (_recurrenceType == rec.type && _recurrenceName == "") {
       _recurrenceName = rec.name;
     }

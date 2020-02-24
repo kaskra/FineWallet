@@ -7,6 +7,7 @@
  */
 
 import 'package:FineWallet/data/category_dao.dart';
+import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
     as moor_init;
@@ -26,27 +27,32 @@ class Transactions extends Table {
   IntColumn get monthId =>
       integer().customConstraint("REFERENCES months(id)")();
 
-  IntColumn get date => integer()();
+  TextColumn get date => text().map(const DateTimeConverter())();
 
   BoolColumn get isExpense => boolean()();
 
   BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
 
-  IntColumn get recurringType => integer()
+  IntColumn get recurrenceType => integer()
       .nullable()
-      .customConstraint("NULL REFERENCES recurrences(type)")();
+      .customConstraint("NULL REFERENCES recurrence_types(type)")();
 
-  IntColumn get recurringUntil => integer().nullable()();
+  TextColumn get until => text().map(const DateTimeConverter()).nullable()();
 
   IntColumn get originalId => integer()
       .nullable()
       .customConstraint("NULL REFERENCES transactions(id)")();
 
+  IntColumn get currencyId =>
+      integer().customConstraint("REFERENCES currencies(id)")();
+
+  TextColumn get label => text().withLength(min: 0, max: 256)();
+
   @override
   List<String> get customConstraints => [
         // ignore: no_adjacent_strings_in_list
-        "CHECK (is_recurring = 0 OR (recurring_until NOT NULL AND "
-            "recurring_type NOT NULL AND "
+        "CHECK (is_recurring = 0 OR (until NOT NULL AND "
+            "recurrence_type NOT NULL AND "
             "original_id NOT NULL))"
       ];
 }
@@ -77,20 +83,46 @@ class Months extends Table {
   RealColumn get maxBudget =>
       real().customConstraint("CHECK (max_budget >= 0)")();
 
-  IntColumn get firstDate => integer()();
+  TextColumn get firstDate => text().map(const DateTimeConverter())();
 
-  IntColumn get lastDate => integer()();
+  TextColumn get lastDate => text().map(const DateTimeConverter())();
 }
 
-@DataClassName('Recurrence')
-class Recurrences extends Table {
+@DataClassName('RecurrenceType')
+class RecurrenceTypes extends Table {
   IntColumn get type => integer().autoIncrement()();
 
   TextColumn get name => text().withLength(max: 40, min: 2)();
 }
 
+@DataClassName('Language')
+class Languages extends Table {
+  TextColumn get languageId => text().customConstraint("UNIQUE")();
+
+  TextColumn get name => text().withLength(max: 40, min: 2)();
+}
+
+@DataClassName('Currency')
+class Currencies extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  TextColumn get abbrev => text().withLength(max: 40, min: 2)();
+
+  TextColumn get symbol => text().withLength(max: 1, min: 1)();
+
+  RealColumn get exchangeRate => real().withDefault(const Constant(1.0))();
+}
+
 @UseMoor(
-  tables: [Transactions, Categories, Subcategories, Months, Recurrences],
+  tables: [
+    Transactions,
+    Categories,
+    Subcategories,
+    Months,
+    RecurrenceTypes,
+    Languages,
+    Currencies,
+  ],
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
     "getTimestamp":
@@ -118,12 +150,15 @@ class AppDatabase extends _$AppDatabase {
             await into(months).insert(moor_init.currentMonth);
 
             await batch((b) {
-              b.insertAll(recurrences, moor_init.recurrences);
+              b.insertAll(recurrenceTypes, moor_init.recurrences);
 
               for (final catWithSubs in moor_init.categories) {
                 b.insert(categories, catWithSubs.category,
                     mode: InsertMode.insertOrReplace);
               }
+
+              b.insertAll(currencies, moor_init.currencies);
+              b.insertAll(languages, moor_init.languages);
             });
 
             // Has to be done in extra batch, because
@@ -168,5 +203,6 @@ class AppDatabase extends _$AppDatabase {
   /// Return
   /// ------
   /// list of all [Recurrence]s
-  Future<List<Recurrence>> getRecurrences() => select(recurrences).get();
+  Future<List<RecurrenceType>> getRecurrences() =>
+      select(recurrenceTypes).get();
 }

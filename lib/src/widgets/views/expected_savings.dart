@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
@@ -14,7 +15,7 @@ class ExpectedSavingsView extends StatelessWidget {
     return StreamBuilder(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
-          .watchMonthlyIncome(DateTime.now()),
+          .watchMonthlyIncome(today()),
       builder: (context, AsyncSnapshot<double> snapshot) {
         final double max = snapshot.hasData ? snapshot.data : 0;
         final value = max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0);

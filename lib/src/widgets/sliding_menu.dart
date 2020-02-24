@@ -24,7 +24,12 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
   AnimationController _controller;
   Animation<Offset> _animation;
 
-  double _width = 60;
+  static double floatingButtonRadius = 30.0;
+
+  double _screenWidth = -1;
+  double _width = floatingButtonRadius * 2.0;
+  final double _defaultWidth = floatingButtonRadius * 2.0;
+  final double _height = floatingButtonRadius * 2.0;
 
   @override
   void initState() {
@@ -66,7 +71,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
 
   void _onPanDown(DragDownDetails details) {
     setState(() {
-      _width = 280;
+      _width = _screenWidth * 0.7;
     });
     if (widget.tapCallback != null) {
       widget.tapCallback(false);
@@ -75,7 +80,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
 
   void _onPanCancel() {
     setState(() {
-      _width = 60;
+      _width = _defaultWidth;
     });
     if (widget.tapCallback != null) {
       widget.tapCallback(true);
@@ -83,7 +88,9 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    if (details.globalPosition.dx < 90 || details.globalPosition.dx > 290) {
+    final offset = offsetFromGlobalPos(details.globalPosition);
+
+    if (offset < -0.265 || offset > 0.265) {
       return;
     }
     _controller.value = offsetFromGlobalPos(details.globalPosition);
@@ -99,7 +106,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
 
     _controller.value = 0;
     setState(() {
-      _width = 60;
+      _width = _defaultWidth;
     });
     if (widget.tapCallback != null) {
       widget.tapCallback(true);
@@ -107,62 +114,67 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
   }
 
   Widget _buildSlider() {
+    setState(() {
+      _screenWidth = MediaQuery.of(context).size.width;
+    });
+
     return FittedBox(
-        child: Container(
-      width: _width,
-      height: 60,
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        type: MaterialType.canvas,
-        borderRadius: BorderRadius.circular(30),
-        color: Colors.black38,
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            Positioned(
-              left: 10,
-              bottom: null,
-              child: Icon(Icons.add,
-                  size: 26, color: Theme.of(context).iconTheme.color),
-            ),
-            Positioned(
-              right: 10,
-              bottom: null,
-              child: Icon(
-                Icons.remove,
-                size: 26,
-                color: Theme.of(context).iconTheme.color,
+      child: Container(
+        width: _width,
+        height: _height,
+        child: Material(
+          clipBehavior: Clip.antiAlias,
+          type: MaterialType.canvas,
+          borderRadius: BorderRadius.circular(floatingButtonRadius),
+          color: Colors.black38,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+                left: 10,
+                bottom: null,
+                child: Icon(Icons.add,
+                    size: 26, color: Theme.of(context).iconTheme.color),
               ),
-            ),
-            GestureDetector(
-              onHorizontalDragStart: _onPanStart,
-              onHorizontalDragUpdate: _onPanUpdate,
-              onHorizontalDragEnd: _onPanEnd,
-              onHorizontalDragDown: _onPanDown,
-              onHorizontalDragCancel: _onPanCancel,
-              dragStartBehavior: DragStartBehavior.down,
-              child: SlideTransition(
-                position: _animation,
-                child: Material(
-                  color: Colors.white,
-                  shape: const CircleBorder(),
-                  elevation: 5,
-                  child: Center(
-                      child: FloatingActionButton(
-                    heroTag: 'DockedFAB',
-                    onPressed: () {},
-                    child: Icon(
-                      Icons.swap_horiz,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                  )),
+              Positioned(
+                right: 10,
+                bottom: null,
+                child: Icon(
+                  Icons.remove,
+                  size: 26,
+                  color: Theme.of(context).iconTheme.color,
                 ),
               ),
-            )
-          ],
+              GestureDetector(
+                onHorizontalDragStart: _onPanStart,
+                onHorizontalDragUpdate: _onPanUpdate,
+                onHorizontalDragEnd: _onPanEnd,
+                onHorizontalDragDown: _onPanDown,
+                onHorizontalDragCancel: _onPanCancel,
+                dragStartBehavior: DragStartBehavior.down,
+                child: SlideTransition(
+                  position: _animation,
+                  child: Material(
+                    color: Colors.white,
+                    shape: const CircleBorder(),
+                    elevation: 5,
+                    child: Center(
+                        child: FloatingActionButton(
+                      heroTag: 'DockedFAB',
+                      onPressed: () {},
+                      child: Icon(
+                        Icons.swap_horiz,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                    )),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 
   @override

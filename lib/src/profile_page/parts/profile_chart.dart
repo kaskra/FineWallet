@@ -8,9 +8,9 @@
 
 import 'package:FineWallet/core/datatypes/chart_data.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class _ProfileChartState extends State<ProfileChart> {
     if (widget.type == ProfileChart.monthlyChart) {
       settings = widget.filterSettings ??
           TransactionFilterSettings(
-            dateInMonth: dayInMillis(DateTime.now()),
+            dateInMonth: today(),
             expenses: true,
           );
     } else {
@@ -74,6 +74,10 @@ class _ProfileChartState extends State<ProfileChart> {
   Widget _buildChart(
       AsyncSnapshot<List<Tuple3<int, String, double>>> transactionSnapshot) {
     if (transactionSnapshot.hasData) {
+      if (transactionSnapshot.data.isEmpty) {
+        return const Center(child: Text("Found no expenses."));
+      }
+
       // Get the summed up expenses, ids and names for each category.
       final ids = transactionSnapshot.data.map((l) => l.first).toList();
       final names = transactionSnapshot.data.map((l) => l.second).toList();
@@ -82,7 +86,7 @@ class _ProfileChartState extends State<ProfileChart> {
       // Create the chart with expenses per category and category names.
       return CircularProfileChart.withTransactions(expenses, ids, names);
     }
-    return const Center(child: CircularProgressIndicator());
+    return const Center(child: Text("Found no expenses."));
   }
 
   @override

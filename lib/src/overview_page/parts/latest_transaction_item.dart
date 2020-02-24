@@ -5,8 +5,9 @@ import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
-import 'package:FineWallet/src/overview_page/parts/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
+import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,19 +24,21 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: <Widget>[
-          StreamBuilder<List<TransactionWithCategory>>(
-            stream: Provider.of<AppDatabase>(context)
-                .transactionDao
-                .watchNLatestTransactions(numLatestTransactions),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                    child: CircularProgressIndicator(strokeWidth: 1));
-              }
-              return SizedBox(
+      child: StreamBuilder<List<TransactionWithCategory>>(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchNLatestTransactions(numLatestTransactions),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: Text("Found no transactions."));
+          }
+          if (snapshot.data.isEmpty) {
+            return const Center(child: Text("Found no transactions."));
+          }
+          return Stack(
+            alignment: Alignment.topCenter,
+            children: <Widget>[
+              SizedBox(
                 height: 80,
                 child: PageView(
                   controller: controller,
@@ -44,29 +47,29 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       _buildLatestTransactionItem(context, s),
                   ],
                 ),
-              );
-            },
-          ),
-          Positioned(
-            bottom: 0,
-            child: PageViewIndicator(
-              numberOfChildren: numLatestTransactions,
-              controller: controller,
-            ),
-          ),
-        ],
+              ),
+              Positioned(
+                bottom: 0,
+                child: PageViewIndicator(
+                  numberOfChildren: snapshot.data.length,
+                  controller: controller,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
   Widget _buildLatestTransactionItem(
-      BuildContext context, TransactionWithCategory snapshot) {
+      BuildContext context, TransactionWithCategory snapshotItem) {
     return DecoratedCard(
       padding: 0,
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () async {
-          await _showActions(context, snapshot);
+          await _showActions(context, snapshotItem);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
@@ -76,8 +79,8 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  _buildIcon(
-                      context, CategoryIcon(snapshot.sub.categoryId - 1).data),
+                  _buildIcon(context,
+                      CategoryIcon(snapshotItem.sub.categoryId - 1).data),
                   Padding(
                     padding: const EdgeInsets.only(left: 12.0),
                     child: Column(
@@ -85,11 +88,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          snapshot.sub.name,
+                          snapshotItem.sub.name,
                           style: const TextStyle(fontSize: 16),
                         ),
                         Text(
-                          snapshot.sub.name,
+                          snapshotItem.sub.name,
                           style: const TextStyle(
                               fontSize: 12, fontStyle: FontStyle.italic),
                         ),
@@ -99,11 +102,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 ],
               ),
               Text(
-                "${snapshot.tx.isExpense && snapshot.tx.amount > 0 ? "-" : ""}"
-                "${snapshot.tx.amount.toStringAsFixed(2)}"
+                "${snapshotItem.tx.isExpense && snapshotItem.tx.amount > 0 ? "-" : ""}"
+                "${snapshotItem.tx.amount.toStringAsFixed(2)}"
                 "${Provider.of<LocalizationNotifier>(context).currency}",
                 style: TextStyle(
-                  color: snapshot.tx.isExpense ? Colors.red : Colors.green,
+                  color: snapshotItem.tx.isExpense ? Colors.red : Colors.green,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -126,38 +129,81 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
     );
   }
 
+  /// Deletes the selected items from database. Close selection mode afterwards.
+  ///
+  /// Before deleting the transaction, a confirm dialog will show,
+  /// requiring the user to authorize the deletion.
+  ///
+  Future _deleteItems(TransactionWithCategory tx) async {
+    if (await showConfirmDialog(
+        context, "Delete transaction?", "This will delete the transaction.")) {
+      Provider.of<AppDatabase>(context, listen: false)
+          .transactionDao
+          .deleteTransactionById(tx.tx.originalId);
+    }
+  }
+
   Future _showActions(
       BuildContext context, TransactionWithCategory snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(
+        itemHeight: 73,
         actions: <Widget>[
-          ListTile(
-            enabled: UserSettings.getTXShare(),
-            title: const Text("Share"),
-            leading: Icon(
-              Icons.share,
-              color: Theme.of(context).colorScheme.secondary,
+          DecoratedCard(
+            elevation: 0,
+            padding: 2,
+            color: Colors.red.shade400,
+            child: ListTile(
+              title: const Text(
+                "Delete",
+                style: TextStyle(color: Colors.white),
+              ),
+              leading: Icon(
+                Icons.delete_outline,
+                color: Colors.white,
+              ),
+              onTap: () async {
+                await _deleteItems(snapshot);
+                Navigator.pop(context);
+              },
             ),
-            onTap: () {
-              print("Tapped share");
-            },
           ),
-          ListTile(
-            title: const Text("Edit"),
-            leading: Icon(
-              Icons.edit,
-              color: Theme.of(context).colorScheme.secondary,
+          DecoratedCard(
+            elevation: 0,
+            padding: 2,
+            child: ListTile(
+              enabled: UserSettings.getTXShare(),
+              title: const Text("Share"),
+              leading: Icon(
+                Icons.share,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              onTap: () {
+                print("Tapped share");
+              },
             ),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddPage(
-                      isExpense: snapshot.tx.isExpense, transaction: snapshot),
-                ),
-              );
-            },
+          ),
+          DecoratedCard(
+            padding: 2,
+            elevation: 0,
+            child: ListTile(
+              title: const Text("Edit"),
+              leading: Icon(
+                Icons.edit,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddPage(
+                        isExpense: snapshot.tx.isExpense,
+                        transaction: snapshot),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

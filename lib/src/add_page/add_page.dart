@@ -1,13 +1,14 @@
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/category_dialog.dart';
 import 'package:FineWallet/src/add_page/editable_numeric_input.dart';
 import 'package:FineWallet/src/add_page/recurrence_dialog.dart';
 import 'package:FineWallet/src/add_page/row_child_divider.dart';
 import 'package:FineWallet/src/add_page/row_title.dart';
 import 'package:FineWallet/src/add_page/row_wrapper.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,14 +39,15 @@ class _AddPageState extends State<AddPage> {
   double _amount = 0.00;
 
   /// The (original) transaction date.
-  int _date = dayInMillis(DateTime.now());
+  DateTime _date = today();
 
   /// The chosen subcategory, holds id, name and category id.
   Subcategory _subcategory;
 
   bool _isRecurring = false;
-  Recurrence _recurrence;
-  int _untilDate = dayInMillis(DateTime.now().add(const Duration(days: 1)));
+  RecurrenceType _recurrence;
+
+  DateTime _untilDate = today().add(const Duration(days: 1));
 
   /// State variables
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -60,7 +62,7 @@ class _AddPageState extends State<AddPage> {
       _date = _transaction.tx.date;
       _subcategory = _transaction.sub;
       _isRecurring = _transaction.tx.isRecurring;
-      _untilDate = _transaction.tx.recurringUntil;
+      _untilDate = _transaction.tx.until;
 
       if (_isRecurring) {
         // If recurring, set the date to the first of the recurrence.
@@ -70,14 +72,14 @@ class _AddPageState extends State<AddPage> {
                 .transactionDao
                 .getAllTransactions();
         txs = txs.where((tx) => tx.id == _transaction.tx.originalId).toList();
-        txs = txs.where((t) => t.date <= dayInMillis(DateTime.now())).toList();
+        txs = txs.where((t) => t.date.isBeforeOrEqual(today())).toList();
         _date = txs.toList().last.date;
 
-        final List<Recurrence> recurrenceName =
+        final List<RecurrenceType> recurrenceName =
             await Provider.of<AppDatabase>(context, listen: false)
                 .getRecurrences();
         _recurrence = recurrenceName
-            .where((r) => r.type == _transaction.tx.recurringType)
+            .where((r) => r.type == _transaction.tx.recurrenceType)
             .first;
       }
     }
@@ -212,9 +214,12 @@ class _AddPageState extends State<AddPage> {
       amount: _amount,
       monthId: null,
       subcategoryId: _subcategory.id,
-      recurringType: _isRecurring ? _recurrence.type : null,
-      recurringUntil: _untilDate,
+      recurrenceType: _isRecurring ? _recurrence.type : null,
+      until: _untilDate,
       originalId: null,
+      currencyId: UserSettings.getCurrency(),
+      // TODO add label once text field exists
+      label: "",
     );
 
     await Provider.of<AppDatabase>(context, listen: false)
@@ -238,9 +243,12 @@ class _AddPageState extends State<AddPage> {
       amount: _amount,
       monthId: null,
       subcategoryId: _subcategory.id,
-      recurringType: _isRecurring ? _recurrence.type : null,
-      recurringUntil: _untilDate,
+      recurrenceType: _isRecurring ? _recurrence.type : null,
+      until: _untilDate,
       originalId: _transaction.tx.originalId,
+      currencyId: UserSettings.getCurrency(),
+      // TODO add label once text field exists
+      label: "",
     );
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
@@ -347,8 +355,7 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildDateRow() {
     final formatter = DateFormat('dd.MM.yy');
-    final String formattedDate =
-        formatter.format(DateTime.fromMillisecondsSinceEpoch(_date));
+    final String formattedDate = formatter.format(_date);
 
     return [
       const RowTitle(title: "Date"),
@@ -360,21 +367,18 @@ class _AddPageState extends State<AddPage> {
         onTap: () async {
           final pickedDate = await showDatePicker(
             context: context,
-            initialDate: DateTime.fromMillisecondsSinceEpoch(_date),
+            initialDate: _date,
             firstDate: DateTime(2000, 1, 1),
             lastDate: DateTime(2050, 12, 31),
             initialDatePickerMode: DatePickerMode.day,
           );
           if (pickedDate != null) {
             setState(() {
-              _date = dayInMillis(pickedDate);
-              if (_untilDate - dayInMillis(pickedDate) <
-                  Duration.millisecondsPerDay) {
-                _untilDate =
-                    dayInMillis(pickedDate.add(const Duration(days: 1)));
+              _date = pickedDate;
+              if (_untilDate.difference(pickedDate).inDays.abs() < 1) {
+                _untilDate = pickedDate.add(const Duration(days: 1));
               }
             });
-            print(DateTime.fromMillisecondsSinceEpoch(_date));
           }
         },
         child: Padding(
@@ -408,8 +412,7 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildRecurrenceChoices() {
     final formatter = DateFormat('dd.MM.yy');
-    final String formattedDate =
-        formatter.format(DateTime.fromMillisecondsSinceEpoch(_untilDate));
+    final String formattedDate = formatter.format(_untilDate);
 
     return [
       const RowChildDivider(),
@@ -419,7 +422,7 @@ class _AddPageState extends State<AddPage> {
         isExpandable: false,
         isChild: true,
         onTap: () async {
-          final Recurrence rec = await showDialog(
+          final RecurrenceType rec = await showDialog(
             context: context,
             child: RecurrenceDialog(
               recurrenceType: _recurrence?.type ?? -1,
@@ -445,18 +448,17 @@ class _AddPageState extends State<AddPage> {
         isExpandable: false,
         isChild: true,
         onTap: () async {
-          final DateTime date = DateTime.fromMillisecondsSinceEpoch(_date)
-              .add(const Duration(days: 1));
+          final DateTime date = _date.add(const Duration(days: 1));
           final pickedDate = await showDatePicker(
             context: context,
-            initialDate: DateTime.fromMillisecondsSinceEpoch(_untilDate),
+            initialDate: _untilDate,
             firstDate: DateTime(date.year, date.month, date.day),
             lastDate: DateTime(2050, 12, 31),
             initialDatePickerMode: DatePickerMode.day,
           );
           if (pickedDate != null) {
             setState(() {
-              _untilDate = dayInMillis(pickedDate);
+              _untilDate = pickedDate;
             });
           }
         },

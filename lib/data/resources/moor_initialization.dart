@@ -1,6 +1,6 @@
 import 'package:FineWallet/data/category_dao.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:moor/moor.dart';
 
 var _cat1 = CategoriesCompanion.insert(name: "Various");
@@ -128,13 +128,23 @@ List<CategoryWithSubs> categories = [
 
 MonthsCompanion currentMonth = MonthsCompanion.insert(
   maxBudget: 0,
-  firstDate: getFirstDateOfMonthInMillis(DateTime.now()),
-  lastDate: getLastDateOfMonthInMillis(DateTime.now()),
+  firstDate: today().getFirstDateOfMonth(),
+  lastDate: today().getLastDateOfMonth(),
 );
 
-List<RecurrencesCompanion> recurrences = [
-  RecurrencesCompanion.insert(name: "Daily"),
-  RecurrencesCompanion.insert(name: "Weekly"),
-  RecurrencesCompanion.insert(name: "Monthly"),
-  RecurrencesCompanion.insert(name: "Yearly"),
+List<RecurrenceTypesCompanion> recurrences = [
+  RecurrenceTypesCompanion.insert(name: "Daily"),
+  RecurrenceTypesCompanion.insert(name: "Weekly"),
+  RecurrenceTypesCompanion.insert(name: "Monthly"),
+  RecurrenceTypesCompanion.insert(name: "Yearly"),
+];
+
+List<CurrenciesCompanion> currencies = [
+  CurrenciesCompanion.insert(abbrev: "USD", symbol: "\$"),
+  CurrenciesCompanion.insert(abbrev: "EUR", symbol: "\€"),
+];
+
+List<LanguagesCompanion> languages = [
+  LanguagesCompanion.insert(languageId: 'en_US', name: "English"),
+  LanguagesCompanion.insert(languageId: 'de_DE', name: "Deutsch"),
 ];
