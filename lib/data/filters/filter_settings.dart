@@ -1,4 +1,3 @@
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/cupertino.dart';
 
 /// This abstract class is only used to be a parent of a generic type.
@@ -10,11 +9,11 @@ class TransactionFilterSettings extends FilterSettings {
   final int category;
   final int subcategory;
   final int month;
-  final int day;
+  final DateTime day;
   final bool expenses;
   final bool incomes;
-  final int before;
-  final int dateInMonth;
+  final DateTime before;
+  final DateTime dateInMonth;
 
   TransactionFilterSettings({
     this.category,
@@ -36,7 +35,7 @@ class TransactionFilterSettings extends FilterSettings {
   factory TransactionFilterSettings.byMonth(int monthId) =>
       TransactionFilterSettings(month: monthId);
 
-  factory TransactionFilterSettings.byDay(int day) =>
+  factory TransactionFilterSettings.byDay(DateTime day) =>
       TransactionFilterSettings(day: day);
 
   factory TransactionFilterSettings.byExpense({@required bool isExpense}) =>
@@ -46,8 +45,8 @@ class TransactionFilterSettings extends FilterSettings {
       TransactionFilterSettings(incomes: isIncome);
 
   factory TransactionFilterSettings.beforeDate(DateTime date) =>
-      TransactionFilterSettings(before: dayInMillis(date));
+      TransactionFilterSettings(before: date);
 
   factory TransactionFilterSettings.inMonth(DateTime date) =>
-      TransactionFilterSettings(dateInMonth: dayInMillis(date));
+      TransactionFilterSettings(dateInMonth: date);
 }

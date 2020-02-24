@@ -6,6 +6,7 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class DailyBudgetView extends StatelessWidget {
     return StreamBuilder<double>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
-          .watchDailyBudget(DateTime.now()),
+          .watchDailyBudget(today()),
       initialData: 0.0,
       builder: (context, snapshot) {
         return Text(

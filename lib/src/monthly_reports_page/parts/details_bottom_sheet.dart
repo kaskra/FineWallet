@@ -1,4 +1,5 @@
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/category_view.dart';
@@ -7,7 +8,6 @@ import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
 import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 
 class DetailsBottomSheet extends StatelessWidget {
@@ -58,8 +58,8 @@ class DetailsBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 6),
       child: Text(
-        "${getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).month)} "
-        ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
+        "${month.month.firstDate.getMonthName()} "
+        ", ${month.month.firstDate.year}",
         style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,

@@ -1,6 +1,6 @@
 import 'package:FineWallet/data/category_dao.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:moor/moor.dart';
 
 var _cat1 = CategoriesCompanion.insert(name: "Various");
@@ -128,8 +128,8 @@ List<CategoryWithSubs> categories = [
 
 MonthsCompanion currentMonth = MonthsCompanion.insert(
   maxBudget: 0,
-  firstDate: getFirstDateOfMonthInMillis(DateTime.now()),
-  lastDate: getLastDateOfMonthInMillis(DateTime.now()),
+  firstDate: today().getFirstDateOfMonth(),
+  lastDate: today().getLastDateOfMonth(),
 );
 
 List<RecurrencesCompanion> recurrences = [

@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
@@ -91,7 +92,7 @@ class _SliderItemState extends State<SliderItem> {
       child: StreamBuilder(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
-            .watchMonthlyIncome(DateTime.now()),
+            .watchMonthlyIncome(today()),
         builder: (context, AsyncSnapshot<double> snapshot) {
           final double max = snapshot.hasData ? snapshot.data : 0;
 
@@ -165,7 +166,7 @@ class __ValueSliderState extends State<_ValueSlider> {
       child: StreamBuilder(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
-            .watchMonthlyIncome(DateTime.now()),
+            .watchMonthlyIncome(today()),
         builder: (context, AsyncSnapshot<double> snapshot) {
           // Make sure that max is not smaller than the value to be displayed.
           // Happens while loading the monthly transactions.

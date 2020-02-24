@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 
 /// This abstract class holds the structure for all filter parsers.
@@ -22,6 +23,7 @@ class TransactionFilterParser
 
   /// Parse the input to singular WHERE expressions.
   Queue<String> _getQueueOfArguments({String tableName = ""}) {
+    const converter = DateTimeConverter();
     final Queue<String> queue = Queue<String>();
     if (settings.category != null) {
       queue.add(
@@ -39,13 +41,13 @@ class TransactionFilterParser
     }
 
     if (settings.day != null) {
-      queue
-          .add("${tableName != "" ? "$tableName." : ""}date = ${settings.day}");
+      queue.add(
+          "${tableName != "" ? "$tableName." : ""}date = '${converter.mapToSql(settings.day)}'");
     }
 
     if (settings.before != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}date <= ${settings.before}");
+          "${tableName != "" ? "$tableName." : ""}date <= '${converter.mapToSql(settings.before)}'");
     }
 
     if (settings.expenses != null) {
@@ -61,8 +63,8 @@ class TransactionFilterParser
     if (settings.dateInMonth != null) {
       queue.add(
           "${tableName != "" ? "$tableName." : ""}month_id = (SELECT months.id FROM months "
-          "WHERE months.first_date <= ${settings.dateInMonth} "
-          "AND months.last_date >= ${settings.dateInMonth})");
+          "WHERE months.first_date <= '${converter.mapToSql(settings.dateInMonth)}' "
+          "AND months.last_date >= '${converter.mapToSql(settings.dateInMonth)}')");
     }
     return queue;
   }

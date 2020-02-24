@@ -1,11 +1,11 @@
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/details_bottom_sheet.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,8 +28,8 @@ class CompactDetailsCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: Center(
                     child: Text(
-                      "${getMonthName(DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).month)} "
-                      ", ${DateTime.fromMillisecondsSinceEpoch(month.month.firstDate).year}",
+                      "${month.month.firstDate.getMonthName()} "
+                      ", ${month.month.firstDate.year}",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

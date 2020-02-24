@@ -7,6 +7,7 @@
  */
 
 import 'package:FineWallet/data/category_dao.dart';
+import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
     as moor_init;
@@ -26,7 +27,7 @@ class Transactions extends Table {
   IntColumn get monthId =>
       integer().customConstraint("REFERENCES months(id)")();
 
-  IntColumn get date => integer()();
+  TextColumn get date => text().map(const DateTimeConverter())();
 
   BoolColumn get isExpense => boolean()();
 
@@ -36,7 +37,8 @@ class Transactions extends Table {
       .nullable()
       .customConstraint("NULL REFERENCES recurrences(type)")();
 
-  IntColumn get recurringUntil => integer().nullable()();
+  TextColumn get recurringUntil =>
+      text().map(const DateTimeConverter()).nullable()();
 
   IntColumn get originalId => integer()
       .nullable()
@@ -77,9 +79,9 @@ class Months extends Table {
   RealColumn get maxBudget =>
       real().customConstraint("CHECK (max_budget >= 0)")();
 
-  IntColumn get firstDate => integer()();
+  TextColumn get firstDate => text().map(const DateTimeConverter())();
 
-  IntColumn get lastDate => integer()();
+  TextColumn get lastDate => text().map(const DateTimeConverter())();
 }
 
 @DataClassName('Recurrence')

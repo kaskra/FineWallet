@@ -8,9 +8,9 @@
 
 import 'package:FineWallet/core/datatypes/chart_data.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class _ProfileChartState extends State<ProfileChart> {
     if (widget.type == ProfileChart.monthlyChart) {
       settings = widget.filterSettings ??
           TransactionFilterSettings(
-            dateInMonth: dayInMillis(DateTime.now()),
+            dateInMonth: today(),
             expenses: true,
           );
     } else {

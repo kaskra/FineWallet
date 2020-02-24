@@ -20,7 +20,7 @@ class CategoryListView extends StatelessWidget {
   final BuildContext context;
 
   CategoryListView({Key key, @required this.model, @required this.context})
-      : date = DateTime.fromMillisecondsSinceEpoch(model.month.firstDate),
+      : date = model.month.firstDate,
         super(key: key);
 
   @override
@@ -170,8 +170,7 @@ class CategoryListView extends StatelessWidget {
             text: "${tx.sub.name}",
             children: [
               TextSpan(
-                text:
-                    "\n${formatter.format(DateTime.fromMillisecondsSinceEpoch(tx.tx.date))}",
+                text: "\n${formatter.format(tx.tx.date)}",
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               )
             ],

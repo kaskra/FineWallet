@@ -6,9 +6,9 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/chart_data.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -26,14 +26,13 @@ class SpendingPredictionChart extends StatefulWidget {
 }
 
 class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
-  DateTime _today;
+  DateTime _todayDate;
 
   @override
   void initState() {
     super.initState();
-    final DateTime now = DateTime.now();
     setState(() {
-      _today = DateTime.utc(now.year, now.month, now.day);
+      _todayDate = today();
     });
   }
 
@@ -48,101 +47,37 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
     return StreamBuilder(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
-          .watchExpensesPerDayInMonth(DateTime.now()),
-      builder: (context, AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
+          .watchExpensesPerDayInMonth(today()),
+      builder:
+          (context, AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
         if (snapshot.hasData) {
-          return _buildChartByDataType(snapshot);
+          return PredictionDateChart.withTransactions(
+              _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
         }
         return const Center(child: CircularProgressIndicator());
       },
     );
   }
 
-  /// Build prediction chart using either DateTime's or int's as domain axis values.
-  ///
-  /// - The **DateTime**-domain chart shows a tick every 3 days.
-  /// - The **int**-domain chart shows some specific hardcoded ticks.
-  ///
-  /// Which chart to choose is decided by constant [useDateTimeChart].
-  Widget _buildChartByDataType(
-      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
-    if (useDateTimeChart) {
-      return PredictionDateChart.withTransactions(
-          _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
-    } else {
-      return PredictionChart.withTransactions(
-          _calcDataPoints(snapshot), widget.monthlyBudget);
-    }
-  }
-
-  List<PredictionPoint> _calcDataPoints(
-      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
-    // all days of month as date in millis
-    final data = getListOfMonthDays(_today);
-
-    final todayInMillis = dayInMillis(_today);
-
-    // calc the step function by using all expenses of every day in the month
-    double prev = 0;
-    final List<double> expense = data.map((date) {
-      final t = snapshot.data.where((t) => t.first == date).toList();
-      if (t.isNotEmpty) return t.first.second;
-      return 0.0;
-    }).map((double d) {
-      return prev += d;
-    }).toList();
-
-    double gradient = 0;
-    bool isToday = true;
-    int todayIdx = 0;
-    for (int i = 0; i < data.length; i++) {
-      if (data[i] > todayInMillis) {
-        if (isToday) {
-          // expense[i] is the sum of all expenses up to day i
-          gradient = expense[i] / (i + 1);
-          isToday = false;
-          todayIdx = i;
-        }
-        if (i > 0) {
-          expense[i] += gradient * (i - todayIdx);
-        }
-      }
-    }
-
-    final List<int> days = data
-        .map((d) => DateTime.fromMillisecondsSinceEpoch(d.toInt()).day)
-        .toList();
-
-    final List<PredictionPoint> dataPoints = [];
-    for (int i = 0; i < days.length; i++) {
-      final bool isPrediction = i > todayIdx;
-      final bool isAboveMax = expense[i] > widget.monthlyBudget;
-      dataPoints.add(PredictionPoint(
-        timestamp: days[i],
-        amount: expense[i],
-        isPrediction: isPrediction,
-        isAboveMax: isAboveMax,
-      ));
-    }
-    return dataPoints;
-  }
-
   List<PredictionPointDate> _calcDateTimeDataPoints(
-      AsyncSnapshot<List<Tuple2<int, double>>> snapshot) {
+      AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
+    // TODO rework with DateTime instead of double!
     // all days of month as date in millis
-    final List<double> data = getListOfMonthDays(_today);
+    final List<double> data = getListOfMonthDays(_todayDate);
 
     // finer day steps
     for (int i = 0; i < data.length - 1; i += 2) {
       data.insert(i + 1, data[i] + (data[i + 1] - data[i]) / 2);
     }
 
-    final int todayInMillis = dayInMillis(_today);
+    final int todayInMillis = dayInMillis(_todayDate);
 
     // calc the step function by using all expenses of every day in the month
     double prev = 0;
     final List<double> expense = data.map((date) {
-      final t = snapshot.data.where((t) => t.first == date).toList();
+      final t = snapshot.data
+          .where((t) => t.first.millisecondsSinceEpoch == date)
+          .toList();
       if (t.isNotEmpty) return t.first.second;
       return 0.0;
     }).map((double d) {
@@ -210,8 +145,8 @@ class PredictionDateChart extends StatelessWidget {
           data: [monthlyMaxBudget, monthlyMaxBudget],
           id: "MaxBudget",
           domainFn: (double d, int i) => i == 0
-              ? DateTime.utc(DateTime.now().year, DateTime.now().month, 1)
-              : getLastDateOfMonth(DateTime.now()),
+              ? DateTime.utc(today().year, today().month, 1)
+              : today().getLastDateOfMonth(),
           measureFn: (double d, _) => d,
           colorFn: (_, __) =>
               charts.MaterialPalette.red.shadeDefault.darker.darker,

@@ -12,11 +12,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final double amount;
   final int subcategoryId;
   final int monthId;
-  final int date;
+  final DateTime date;
   final bool isExpense;
   final bool isRecurring;
   final int recurringType;
-  final int recurringUntil;
+  final DateTime recurringUntil;
   final int originalId;
   Transaction(
       {@required this.id,
@@ -34,6 +34,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final doubleType = db.typeSystem.forDartType<double>();
+    final stringType = db.typeSystem.forDartType<String>();
     final boolType = db.typeSystem.forDartType<bool>();
     return Transaction(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
@@ -43,15 +44,16 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           .mapFromDatabaseResponse(data['${effectivePrefix}subcategory_id']),
       monthId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}month_id']),
-      date: intType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+      date: $TransactionsTable.$converter0.mapToDart(
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}date'])),
       isExpense: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_expense']),
       isRecurring: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_recurring']),
       recurringType: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}recurring_type']),
-      recurringUntil: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}recurring_until']),
+      recurringUntil: $TransactionsTable.$converter1.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}recurring_until'])),
       originalId: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}original_id']),
     );
@@ -64,11 +66,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       amount: serializer.fromJson<double>(json['amount']),
       subcategoryId: serializer.fromJson<int>(json['subcategoryId']),
       monthId: serializer.fromJson<int>(json['monthId']),
-      date: serializer.fromJson<int>(json['date']),
+      date: serializer.fromJson<DateTime>(json['date']),
       isExpense: serializer.fromJson<bool>(json['isExpense']),
       isRecurring: serializer.fromJson<bool>(json['isRecurring']),
       recurringType: serializer.fromJson<int>(json['recurringType']),
-      recurringUntil: serializer.fromJson<int>(json['recurringUntil']),
+      recurringUntil: serializer.fromJson<DateTime>(json['recurringUntil']),
       originalId: serializer.fromJson<int>(json['originalId']),
     );
   }
@@ -80,11 +82,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'amount': serializer.toJson<double>(amount),
       'subcategoryId': serializer.toJson<int>(subcategoryId),
       'monthId': serializer.toJson<int>(monthId),
-      'date': serializer.toJson<int>(date),
+      'date': serializer.toJson<DateTime>(date),
       'isExpense': serializer.toJson<bool>(isExpense),
       'isRecurring': serializer.toJson<bool>(isRecurring),
       'recurringType': serializer.toJson<int>(recurringType),
-      'recurringUntil': serializer.toJson<int>(recurringUntil),
+      'recurringUntil': serializer.toJson<DateTime>(recurringUntil),
       'originalId': serializer.toJson<int>(originalId),
     };
   }
@@ -125,11 +127,11 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           double amount,
           int subcategoryId,
           int monthId,
-          int date,
+          DateTime date,
           bool isExpense,
           bool isRecurring,
           int recurringType,
-          int recurringUntil,
+          DateTime recurringUntil,
           int originalId}) =>
       Transaction(
         id: id ?? this.id,
@@ -200,11 +202,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<double> amount;
   final Value<int> subcategoryId;
   final Value<int> monthId;
-  final Value<int> date;
+  final Value<DateTime> date;
   final Value<bool> isExpense;
   final Value<bool> isRecurring;
   final Value<int> recurringType;
-  final Value<int> recurringUntil;
+  final Value<DateTime> recurringUntil;
   final Value<int> originalId;
   const TransactionsCompanion({
     this.id = const Value.absent(),
@@ -223,7 +225,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     @required double amount,
     @required int subcategoryId,
     @required int monthId,
-    @required int date,
+    @required DateTime date,
     @required bool isExpense,
     this.isRecurring = const Value.absent(),
     this.recurringType = const Value.absent(),
@@ -239,11 +241,11 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       Value<double> amount,
       Value<int> subcategoryId,
       Value<int> monthId,
-      Value<int> date,
+      Value<DateTime> date,
       Value<bool> isExpense,
       Value<bool> isRecurring,
       Value<int> recurringType,
-      Value<int> recurringUntil,
+      Value<DateTime> recurringUntil,
       Value<int> originalId}) {
     return TransactionsCompanion(
       id: id ?? this.id,
@@ -304,11 +306,11 @@ class $TransactionsTable extends Transactions
   }
 
   final VerificationMeta _dateMeta = const VerificationMeta('date');
-  GeneratedIntColumn _date;
+  GeneratedTextColumn _date;
   @override
-  GeneratedIntColumn get date => _date ??= _constructDate();
-  GeneratedIntColumn _constructDate() {
-    return GeneratedIntColumn(
+  GeneratedTextColumn get date => _date ??= _constructDate();
+  GeneratedTextColumn _constructDate() {
+    return GeneratedTextColumn(
       'date',
       $tableName,
       false,
@@ -351,12 +353,12 @@ class $TransactionsTable extends Transactions
 
   final VerificationMeta _recurringUntilMeta =
       const VerificationMeta('recurringUntil');
-  GeneratedIntColumn _recurringUntil;
+  GeneratedTextColumn _recurringUntil;
   @override
-  GeneratedIntColumn get recurringUntil =>
+  GeneratedTextColumn get recurringUntil =>
       _recurringUntil ??= _constructRecurringUntil();
-  GeneratedIntColumn _constructRecurringUntil() {
-    return GeneratedIntColumn(
+  GeneratedTextColumn _constructRecurringUntil() {
+    return GeneratedTextColumn(
       'recurring_until',
       $tableName,
       true,
@@ -418,12 +420,7 @@ class $TransactionsTable extends Transactions
     } else if (isInserting) {
       context.missing(_monthIdMeta);
     }
-    if (d.date.present) {
-      context.handle(
-          _dateMeta, date.isAcceptableValue(d.date.value, _dateMeta));
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
+    context.handle(_dateMeta, const VerificationResult.success());
     if (d.isExpense.present) {
       context.handle(_isExpenseMeta,
           isExpense.isAcceptableValue(d.isExpense.value, _isExpenseMeta));
@@ -440,12 +437,7 @@ class $TransactionsTable extends Transactions
           recurringType.isAcceptableValue(
               d.recurringType.value, _recurringTypeMeta));
     }
-    if (d.recurringUntil.present) {
-      context.handle(
-          _recurringUntilMeta,
-          recurringUntil.isAcceptableValue(
-              d.recurringUntil.value, _recurringUntilMeta));
-    }
+    context.handle(_recurringUntilMeta, const VerificationResult.success());
     if (d.originalId.present) {
       context.handle(_originalIdMeta,
           originalId.isAcceptableValue(d.originalId.value, _originalIdMeta));
@@ -477,7 +469,9 @@ class $TransactionsTable extends Transactions
       map['month_id'] = Variable<int, IntType>(d.monthId.value);
     }
     if (d.date.present) {
-      map['date'] = Variable<int, IntType>(d.date.value);
+      final converter = $TransactionsTable.$converter0;
+      map['date'] =
+          Variable<String, StringType>(converter.mapToSql(d.date.value));
     }
     if (d.isExpense.present) {
       map['is_expense'] = Variable<bool, BoolType>(d.isExpense.value);
@@ -489,7 +483,9 @@ class $TransactionsTable extends Transactions
       map['recurring_type'] = Variable<int, IntType>(d.recurringType.value);
     }
     if (d.recurringUntil.present) {
-      map['recurring_until'] = Variable<int, IntType>(d.recurringUntil.value);
+      final converter = $TransactionsTable.$converter1;
+      map['recurring_until'] = Variable<String, StringType>(
+          converter.mapToSql(d.recurringUntil.value));
     }
     if (d.originalId.present) {
       map['original_id'] = Variable<int, IntType>(d.originalId.value);
@@ -501,6 +497,11 @@ class $TransactionsTable extends Transactions
   $TransactionsTable createAlias(String alias) {
     return $TransactionsTable(_db, alias);
   }
+
+  static TypeConverter<DateTime, String> $converter0 =
+      const DateTimeConverter();
+  static TypeConverter<DateTime, String> $converter1 =
+      const DateTimeConverter();
 }
 
 class Category extends DataClass implements Insertable<Category> {
@@ -885,8 +886,8 @@ class $SubcategoriesTable extends Subcategories
 class Month extends DataClass implements Insertable<Month> {
   final int id;
   final double maxBudget;
-  final int firstDate;
-  final int lastDate;
+  final DateTime firstDate;
+  final DateTime lastDate;
   Month(
       {@required this.id,
       @required this.maxBudget,
@@ -897,14 +898,15 @@ class Month extends DataClass implements Insertable<Month> {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final doubleType = db.typeSystem.forDartType<double>();
+    final stringType = db.typeSystem.forDartType<String>();
     return Month(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       maxBudget: doubleType
           .mapFromDatabaseResponse(data['${effectivePrefix}max_budget']),
-      firstDate:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}first_date']),
-      lastDate:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}last_date']),
+      firstDate: $MonthsTable.$converter0.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}first_date'])),
+      lastDate: $MonthsTable.$converter1.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_date'])),
     );
   }
   factory Month.fromJson(Map<String, dynamic> json,
@@ -913,8 +915,8 @@ class Month extends DataClass implements Insertable<Month> {
     return Month(
       id: serializer.fromJson<int>(json['id']),
       maxBudget: serializer.fromJson<double>(json['maxBudget']),
-      firstDate: serializer.fromJson<int>(json['firstDate']),
-      lastDate: serializer.fromJson<int>(json['lastDate']),
+      firstDate: serializer.fromJson<DateTime>(json['firstDate']),
+      lastDate: serializer.fromJson<DateTime>(json['lastDate']),
     );
   }
   @override
@@ -923,8 +925,8 @@ class Month extends DataClass implements Insertable<Month> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'maxBudget': serializer.toJson<double>(maxBudget),
-      'firstDate': serializer.toJson<int>(firstDate),
-      'lastDate': serializer.toJson<int>(lastDate),
+      'firstDate': serializer.toJson<DateTime>(firstDate),
+      'lastDate': serializer.toJson<DateTime>(lastDate),
     };
   }
 
@@ -944,7 +946,8 @@ class Month extends DataClass implements Insertable<Month> {
     );
   }
 
-  Month copyWith({int id, double maxBudget, int firstDate, int lastDate}) =>
+  Month copyWith(
+          {int id, double maxBudget, DateTime firstDate, DateTime lastDate}) =>
       Month(
         id: id ?? this.id,
         maxBudget: maxBudget ?? this.maxBudget,
@@ -978,8 +981,8 @@ class Month extends DataClass implements Insertable<Month> {
 class MonthsCompanion extends UpdateCompanion<Month> {
   final Value<int> id;
   final Value<double> maxBudget;
-  final Value<int> firstDate;
-  final Value<int> lastDate;
+  final Value<DateTime> firstDate;
+  final Value<DateTime> lastDate;
   const MonthsCompanion({
     this.id = const Value.absent(),
     this.maxBudget = const Value.absent(),
@@ -989,16 +992,16 @@ class MonthsCompanion extends UpdateCompanion<Month> {
   MonthsCompanion.insert({
     this.id = const Value.absent(),
     @required double maxBudget,
-    @required int firstDate,
-    @required int lastDate,
+    @required DateTime firstDate,
+    @required DateTime lastDate,
   })  : maxBudget = Value(maxBudget),
         firstDate = Value(firstDate),
         lastDate = Value(lastDate);
   MonthsCompanion copyWith(
       {Value<int> id,
       Value<double> maxBudget,
-      Value<int> firstDate,
-      Value<int> lastDate}) {
+      Value<DateTime> firstDate,
+      Value<DateTime> lastDate}) {
     return MonthsCompanion(
       id: id ?? this.id,
       maxBudget: maxBudget ?? this.maxBudget,
@@ -1031,11 +1034,11 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   }
 
   final VerificationMeta _firstDateMeta = const VerificationMeta('firstDate');
-  GeneratedIntColumn _firstDate;
+  GeneratedTextColumn _firstDate;
   @override
-  GeneratedIntColumn get firstDate => _firstDate ??= _constructFirstDate();
-  GeneratedIntColumn _constructFirstDate() {
-    return GeneratedIntColumn(
+  GeneratedTextColumn get firstDate => _firstDate ??= _constructFirstDate();
+  GeneratedTextColumn _constructFirstDate() {
+    return GeneratedTextColumn(
       'first_date',
       $tableName,
       false,
@@ -1043,11 +1046,11 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   }
 
   final VerificationMeta _lastDateMeta = const VerificationMeta('lastDate');
-  GeneratedIntColumn _lastDate;
+  GeneratedTextColumn _lastDate;
   @override
-  GeneratedIntColumn get lastDate => _lastDate ??= _constructLastDate();
-  GeneratedIntColumn _constructLastDate() {
-    return GeneratedIntColumn(
+  GeneratedTextColumn get lastDate => _lastDate ??= _constructLastDate();
+  GeneratedTextColumn _constructLastDate() {
+    return GeneratedTextColumn(
       'last_date',
       $tableName,
       false,
@@ -1075,18 +1078,8 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
     } else if (isInserting) {
       context.missing(_maxBudgetMeta);
     }
-    if (d.firstDate.present) {
-      context.handle(_firstDateMeta,
-          firstDate.isAcceptableValue(d.firstDate.value, _firstDateMeta));
-    } else if (isInserting) {
-      context.missing(_firstDateMeta);
-    }
-    if (d.lastDate.present) {
-      context.handle(_lastDateMeta,
-          lastDate.isAcceptableValue(d.lastDate.value, _lastDateMeta));
-    } else if (isInserting) {
-      context.missing(_lastDateMeta);
-    }
+    context.handle(_firstDateMeta, const VerificationResult.success());
+    context.handle(_lastDateMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1108,10 +1101,14 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
       map['max_budget'] = Variable<double, RealType>(d.maxBudget.value);
     }
     if (d.firstDate.present) {
-      map['first_date'] = Variable<int, IntType>(d.firstDate.value);
+      final converter = $MonthsTable.$converter0;
+      map['first_date'] =
+          Variable<String, StringType>(converter.mapToSql(d.firstDate.value));
     }
     if (d.lastDate.present) {
-      map['last_date'] = Variable<int, IntType>(d.lastDate.value);
+      final converter = $MonthsTable.$converter1;
+      map['last_date'] =
+          Variable<String, StringType>(converter.mapToSql(d.lastDate.value));
     }
     return map;
   }
@@ -1120,6 +1117,11 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   $MonthsTable createAlias(String alias) {
     return $MonthsTable(_db, alias);
   }
+
+  static TypeConverter<DateTime, String> $converter0 =
+      const DateTimeConverter();
+  static TypeConverter<DateTime, String> $converter1 =
+      const DateTimeConverter();
 }
 
 class Recurrence extends DataClass implements Insertable<Recurrence> {

@@ -1,11 +1,11 @@
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/src/overview_page/parts/monthly_expense_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/views/daily_budget.dart';
 import 'package:FineWallet/src/widgets/views/monthly_budget.dart';
-import 'package:FineWallet/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ class BudgetOverviewItem extends StatelessWidget {
                 ),
               ),
               RowItem(
-                footerText: getMonthName(DateTime.now().month).toString(),
+                footerText: today().getMonthName(),
                 child: MonthlyBudgetView(
                   textStyle:
                       TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
