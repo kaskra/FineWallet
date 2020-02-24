@@ -23,19 +23,21 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: <Widget>[
-          StreamBuilder<List<TransactionWithCategory>>(
-            stream: Provider.of<AppDatabase>(context)
-                .transactionDao
-                .watchNLatestTransactions(numLatestTransactions),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                    child: CircularProgressIndicator(strokeWidth: 1));
-              }
-              return SizedBox(
+      child: StreamBuilder<List<TransactionWithCategory>>(
+        stream: Provider.of<AppDatabase>(context)
+            .transactionDao
+            .watchNLatestTransactions(numLatestTransactions),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: Text("Found no transactions."));
+          }
+          if (snapshot.data.isEmpty) {
+            return const Center(child: Text("Found no transactions."));
+          }
+          return Stack(
+            alignment: Alignment.topCenter,
+            children: <Widget>[
+              SizedBox(
                 height: 80,
                 child: PageView(
                   controller: controller,
@@ -44,29 +46,29 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       _buildLatestTransactionItem(context, s),
                   ],
                 ),
-              );
-            },
-          ),
-          Positioned(
-            bottom: 0,
-            child: PageViewIndicator(
-              numberOfChildren: numLatestTransactions,
-              controller: controller,
-            ),
-          ),
-        ],
+              ),
+              Positioned(
+                bottom: 0,
+                child: PageViewIndicator(
+                  numberOfChildren: snapshot.data.length,
+                  controller: controller,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
   Widget _buildLatestTransactionItem(
-      BuildContext context, TransactionWithCategory snapshot) {
+      BuildContext context, TransactionWithCategory snapshotItem) {
     return DecoratedCard(
       padding: 0,
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () async {
-          await _showActions(context, snapshot);
+          await _showActions(context, snapshotItem);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
@@ -76,8 +78,8 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  _buildIcon(
-                      context, CategoryIcon(snapshot.sub.categoryId - 1).data),
+                  _buildIcon(context,
+                      CategoryIcon(snapshotItem.sub.categoryId - 1).data),
                   Padding(
                     padding: const EdgeInsets.only(left: 12.0),
                     child: Column(
@@ -85,11 +87,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          snapshot.sub.name,
+                          snapshotItem.sub.name,
                           style: const TextStyle(fontSize: 16),
                         ),
                         Text(
-                          snapshot.sub.name,
+                          snapshotItem.sub.name,
                           style: const TextStyle(
                               fontSize: 12, fontStyle: FontStyle.italic),
                         ),
@@ -99,11 +101,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 ],
               ),
               Text(
-                "${snapshot.tx.isExpense && snapshot.tx.amount > 0 ? "-" : ""}"
-                "${snapshot.tx.amount.toStringAsFixed(2)}"
+                "${snapshotItem.tx.isExpense && snapshotItem.tx.amount > 0 ? "-" : ""}"
+                "${snapshotItem.tx.amount.toStringAsFixed(2)}"
                 "${Provider.of<LocalizationNotifier>(context).currency}",
                 style: TextStyle(
-                  color: snapshot.tx.isExpense ? Colors.red : Colors.green,
+                  color: snapshotItem.tx.isExpense ? Colors.red : Colors.green,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
