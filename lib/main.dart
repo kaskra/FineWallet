@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final Month m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
     setState(() {
       _isBudgetLoaded = true;
     });

@@ -24,12 +24,12 @@ class _SliderItemState extends State<SliderItem> {
     final m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
 
     setState(() {
       _currentMonth = m;
     });
-    _textEditingController.text = m.maxBudget.toStringAsFixed(2);
+    _textEditingController.text = m?.maxBudget?.toStringAsFixed(2);
   }
 
   /// Update the current month by updating the current monthly available budget in the entity.
@@ -147,7 +147,7 @@ class __ValueSliderState extends State<_ValueSlider> {
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false)
-        .setBudget(month.maxBudget);
+        .setBudget(month?.maxBudget);
     setState(() {
       _loaded = true;
     });
