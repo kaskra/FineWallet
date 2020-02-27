@@ -223,7 +223,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
             "SELECT SUM(amount) as amount, date FROM expenses "
             "WHERE month_id = (SELECT id FROM months "
             "WHERE first_date <= '${converter.mapToSql(dateInMonth)}' "
-            "AND last_date >= '${converter.mapToSql(dateInMonth)}')"
+            "AND last_date >= '${converter.mapToSql(dateInMonth)}') "
             "GROUP BY date ORDER BY date",
             readsFrom: {transactions})
         .watch()
@@ -380,7 +380,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   /// Return
   /// ------
-  /// [Stream] of a list of [Tuple2]s with a day's date in milliseconds since
+  /// [Stream] of a list of [Tuple2]s with a day's date
   /// epoch and the sum of its expenses.
   Stream<List<Tuple2<DateTime, double>>> watchLastWeeksTransactions() {
     // Get converter and compute date 7 days behind.

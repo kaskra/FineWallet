@@ -105,7 +105,7 @@ class WeekOverviewTimeline extends StatelessWidget {
   /// Input
   /// -----
   /// [AsyncSnapshot] with the query result, which consists of the date
-  /// in milliseconds since epoch and the sum of all expenses on that day.
+  /// and the sum of all expenses on that day.
   ///
   /// Return
   /// ------
