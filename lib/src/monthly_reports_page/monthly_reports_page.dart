@@ -9,6 +9,13 @@ import 'package:provider/provider.dart';
 class MonthlyReportsPage extends StatelessWidget {
   const MonthlyReportsPage({Key key}) : super(key: key);
 
+  Widget _buildPlaceholder(BuildContext context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: const Center(
+          child: Text("Found no recorded months."),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<MonthWithDetails>>(
@@ -26,19 +33,15 @@ class MonthlyReportsPage extends StatelessWidget {
                 image: IMAGES.monthlyReport,
               ),
               // Only display previous months not the current one.
-              if (snapshot.data.sublist(1).isEmpty)
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  child: const Center(
-                    child: Text("Found no recorded months."),
-                  ),
-                ),
-              for (var m in snapshot.data.sublist(1))
-                CompactDetailsCard(month: m)
+              if (snapshot.data.length <= 1)
+                _buildPlaceholder(context),
+              if (snapshot.data.isNotEmpty)
+                for (var m in snapshot.data.sublist(1))
+                  CompactDetailsCard(month: m)
             ],
           );
         } else {
-          return const Center(child: Text("Found no recorded months!"));
+          return _buildPlaceholder(context);
         }
       },
     );
