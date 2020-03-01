@@ -132,7 +132,7 @@ class Currencies extends Table {
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super(FlutterQueryExecutor.inDatabaseFolder(
-            path: 'db.sqlite', logStatements: true));
+            path: 'database.sqlite', logStatements: true));
 
   @override
   int get schemaVersion => 1;
@@ -150,7 +150,7 @@ class AppDatabase extends _$AppDatabase {
             await into(months).insert(moor_init.currentMonth);
 
             await batch((b) {
-              b.insertAll(recurrenceTypes, moor_init.recurrences);
+              b.insertAll(recurrenceTypes, moor_init.recurrenceTypes);
 
               for (final catWithSubs in moor_init.categories) {
                 b.insert(categories, catWithSubs.category,

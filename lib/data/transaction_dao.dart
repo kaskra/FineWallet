@@ -360,11 +360,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     final monthlyExpenses = "(SELECT SUM(amount) FROM expenses "
         "WHERE month_id = $monthId "
         "AND NOT (date='${converter.mapToSql(date)}') "
-        "AND (recurring_type = 1 OR is_recurring = 0))";
+        "AND (recurrence_type = 1 OR is_recurring = 0))";
     final todayExpenses = "(SELECT SUM(amount) FROM expenses "
         "WHERE date = '${converter.mapToSql(date)}' "
         "AND month_id = $monthId "
-        "AND (recurring_type = 1 OR is_recurring = 0))";
+        "AND (recurrence_type = 1 OR is_recurring = 0))";
 
     final dailyBudget = customSelectQuery(
             "SELECT (IFNULL($maxBudget, 0) - IFNULL($monthlyExpenses, 0)) "
