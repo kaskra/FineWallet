@@ -49,7 +49,10 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
     final currency = await Provider.of<AppDatabase>(context)
         .currencyDao
         .getCurrencyById(UserSettings.getInputCurrency());
-    setState(() => _suffixSymbol = currency.symbol);
+    setState(() {
+      _suffixSymbol = currency.symbol;
+      _loadedSuffixSymbol = true;
+    });
   }
 
   @override
