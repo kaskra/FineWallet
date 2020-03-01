@@ -39,7 +39,7 @@ class OverallDetail extends StatelessWidget {
               footerText: "Total Income",
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: Text(
-                "+${month.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                "+${month.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -52,7 +52,7 @@ class OverallDetail extends StatelessWidget {
               footerText: "Total Expense",
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: Text(
-                "-${month.expense.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                "-${month.expense.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -69,7 +69,7 @@ class OverallDetail extends StatelessWidget {
               footerText: "Savings",
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: Text(
-                "${savings > 0 ? "+" : ""}${savings.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                "${savings > 0 ? "+" : ""}${savings.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,

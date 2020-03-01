@@ -91,8 +91,8 @@ class UserSettings {
   /// -----
   /// The selected currency id.
   ///
-  static void setCurrency(int currencySymbolId) {
-    _store.setInt(_KEYS.currency, currencySymbolId);
+  static void setInputCurrency(int currencyId) {
+    _store.setInt(_KEYS.currency, currencyId);
   }
 
   /// Returns the applications currency id saved in memory.
@@ -103,7 +103,7 @@ class UserSettings {
   /// -----
   /// The retrieved currency id from user settings memory.
   ///
-  static int getCurrency() {
+  static int getInputCurrency() {
     return _store.getInt(_KEYS.currency) ?? 1;
   }
 

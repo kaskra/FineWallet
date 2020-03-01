@@ -26,7 +26,7 @@ class DailyBudgetView extends StatelessWidget {
       initialData: 0.0,
       builder: (context, snapshot) {
         return Text(
-          "${snapshot.hasData ? snapshot.data.toStringAsFixed(2) : "0.00"}${Provider.of<LocalizationNotifier>(context).currency}",
+          "${snapshot.hasData ? snapshot.data.toStringAsFixed(2) : "0.00"}${Provider.of<LocalizationNotifier>(context).userCurrency}",
           style: textStyle,
         );
       },

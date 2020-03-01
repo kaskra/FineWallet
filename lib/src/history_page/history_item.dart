@@ -112,7 +112,7 @@ class HistoryItem extends StatelessWidget {
         else
           const SizedBox(),
         Text(
-          " ${transaction.tx.isExpense ? "-" : ""}${transaction.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          " ${transaction.tx.isExpense ? "-" : ""}${transaction.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
           style: TextStyle(
               fontSize: 16,
               color: isSelected

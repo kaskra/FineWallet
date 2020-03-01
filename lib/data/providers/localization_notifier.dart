@@ -7,7 +7,7 @@ class LocalizationNotifier extends ChangeNotifier {
 
   String get language => _languageCode;
 
-  String get currency => _currencySymbol;
+  String get userCurrency => _currencySymbol;
 
   Future setLanguageCode(int c) async {
     UserSettings.setLanguage(c);
@@ -15,25 +15,14 @@ class LocalizationNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future setCurrencySymbol(int c) async {
-    UserSettings.setCurrency(c);
-    _currencySymbol = mapIdToCurrency(c);
+  Future setUserCurrencySymbol(String symbol) async {
+    _currencySymbol = symbol;
     notifyListeners();
   }
 
   LocalizationNotifier() {
-    _currencySymbol = mapIdToCurrency(UserSettings.getCurrency());
     _languageCode = mapIdToLanguage(UserSettings.getLanguage());
   }
-}
-
-String mapIdToCurrency(int id) {
-  if (id == 1) {
-    return "\$";
-  } else if (id == 2) {
-    return "\€";
-  }
-  return "\$";
 }
 
 String mapIdToLanguage(int id) {

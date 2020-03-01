@@ -3,7 +3,10 @@ import 'package:moor/moor.dart';
 
 part 'currency_dao.g.dart';
 
-@UseDao(tables: [Currencies])
+@UseDao(tables: [
+  Currencies,
+  UserProfiles,
+])
 class CurrencyDao extends DatabaseAccessor<AppDatabase>
     with _$CurrencyDaoMixin {
   final AppDatabase db;
@@ -23,4 +26,9 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
 
   Future<Currency> getCurrencyById(int id) =>
       (select(currencies)..where((c) => c.id.equals(id))).getSingle();
+
+  Future<Currency> getUserCurrency() => (select(currencies).join([
+        innerJoin(
+            userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
+      ])).map((rows) => rows.readTable(currencies)).getSingle();
 }

@@ -183,7 +183,7 @@ class CategoryListView extends StatelessWidget {
         ),
       ),
       value: Text(
-        "-${tx.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+        "-${tx.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
         style: TextStyle(
           color: Theme.of(context).colorScheme.error,
           decoration: TextDecoration.none,
@@ -221,7 +221,7 @@ class CategoryListView extends StatelessWidget {
           ),
         ),
         trailing: Text(
-          "-${amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          "-${amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
           style: TextStyle(
               color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
         ),

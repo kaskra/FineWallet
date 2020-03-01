@@ -18,7 +18,7 @@ class AvailableBudgetView extends StatelessWidget {
         double maxBudget = snapshot.data ?? 0;
         maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
         return Text(
-          "${maxBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          "${maxBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
           style: textStyle,
         );
       },

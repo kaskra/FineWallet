@@ -76,7 +76,7 @@ class WeekOverviewTimeline extends StatelessWidget {
 
   Widget _buildAmountString(double budget, TextStyle textStyle) {
     return Text(
-      "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+      "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
       maxLines: 1,
       style: textStyle,
     );

@@ -9,6 +9,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
@@ -66,7 +67,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
+
   bool _isBudgetLoaded = false;
+  bool _isLocalizationLoaded = false;
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
@@ -159,10 +162,26 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future _loadLocalization() async {
+    final currency = await Provider.of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .getUserCurrency();
+
+    Provider.of<LocalizationNotifier>(context, listen: false)
+        .setUserCurrencySymbol(currency?.symbol ?? "");
+
+    setState(() {
+      _isLocalizationLoaded = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_isBudgetLoaded) {
       _loadBudget();
+    }
+    if (!_isLocalizationLoaded) {
+      _loadLocalization();
     }
 
     final children = [

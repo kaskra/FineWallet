@@ -18,7 +18,7 @@ class SavingsView extends StatelessWidget {
           Provider.of<AppDatabase>(context).transactionDao.watchTotalSavings(),
       builder: (context, snapshot) {
         return Text(
-          "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
           style: textStyle,
         );
       },

@@ -20,7 +20,7 @@ class ExpectedSavingsView extends StatelessWidget {
         final double max = snapshot.hasData ? snapshot.data : 0;
         final value = max - (Provider.of<BudgetNotifier>(context)?.budget ?? 0);
         return Text(
-          " ${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+          " ${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
           style: textStyle,
         );
       },

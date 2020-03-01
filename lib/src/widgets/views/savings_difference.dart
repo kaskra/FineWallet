@@ -19,7 +19,7 @@ class SavingsDifferenceView extends StatelessWidget {
       builder: (context, AsyncSnapshot<MonthWithDetails> snapshot) {
         final value = snapshot.hasData ? snapshot.data.savings : 0;
         return Text(
-            "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+            "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
             style: textStyle.copyWith(
                 color: value > 0 ? Colors.green : Colors.red));
       },

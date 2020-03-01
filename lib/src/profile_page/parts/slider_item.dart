@@ -57,7 +57,7 @@ class _SliderItemState extends State<SliderItem> {
                   _textEditingController.text = value.toStringAsFixed(2),
             ),
             Text(
-              "${Provider.of<LocalizationNotifier>(context).currency} ",
+              "${Provider.of<LocalizationNotifier>(context).userCurrency} ",
               style: const TextStyle(fontSize: 16),
             ),
             _buildDependingTextField(),

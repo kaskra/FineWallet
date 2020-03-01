@@ -64,7 +64,7 @@ class CompactDetailsCard extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text(
-                "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                 style: TextStyle(
                     color: value > 0 ? Colors.green : Colors.red,
                     fontSize: 18,

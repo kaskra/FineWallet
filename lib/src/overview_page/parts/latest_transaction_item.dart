@@ -104,7 +104,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               Text(
                 "${snapshotItem.tx.isExpense && snapshotItem.tx.amount > 0 ? "-" : ""}"
                 "${snapshotItem.tx.amount.toStringAsFixed(2)}"
-                "${Provider.of<LocalizationNotifier>(context).currency}",
+                "${Provider.of<LocalizationNotifier>(context).userCurrency}",
                 style: TextStyle(
                   color: snapshotItem.tx.isExpense ? Colors.red : Colors.green,
                   fontSize: 18,

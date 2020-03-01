@@ -217,7 +217,7 @@ class _AddPageState extends State<AddPage> {
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: null,
-      currencyId: UserSettings.getCurrency(),
+      currencyId: UserSettings.getInputCurrency(),
       // TODO add label once text field exists
       label: "",
     );
@@ -246,7 +246,7 @@ class _AddPageState extends State<AddPage> {
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: _transaction.tx.originalId,
-      currencyId: UserSettings.getCurrency(),
+      currencyId: UserSettings.getInputCurrency(),
       // TODO add label once text field exists
       label: "",
     );

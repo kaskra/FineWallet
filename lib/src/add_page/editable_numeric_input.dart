@@ -1,4 +1,5 @@
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,9 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
 
   bool _foundError = false;
 
+  bool _loadedSuffixSymbol = false;
+  String _suffixSymbol = "";
+
   @override
   void initState() {
     if (widget.defaultValue != null) {
@@ -37,11 +41,23 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
     }
     _controller.selection =
         TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+
     super.initState();
+  }
+
+  Future _loadSuffixSymbol() async {
+    final currency = await Provider.of<AppDatabase>(context)
+        .currencyDao
+        .getCurrencyById(UserSettings.getInputCurrency());
+    setState(() => _suffixSymbol = currency.symbol);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_loadedSuffixSymbol) {
+      _loadSuffixSymbol();
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: _foundError ? Colors.red.withOpacity(0.8) : Colors.transparent,
@@ -58,7 +74,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
             color: Theme.of(context).colorScheme.onBackground,
             fontSize: 16,
           ),
-          suffixText: Provider.of<LocalizationNotifier>(context).currency,
+          suffixText: _suffixSymbol,
         ),
         onChanged: (String value) {
           value = value.replaceAll(",", ".");
