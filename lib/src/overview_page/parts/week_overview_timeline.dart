@@ -143,7 +143,6 @@ class WeekOverviewTimeline extends StatelessWidget {
             ),
           );
         }
-
         return !snapshot.hasData
             ? const Center(
                 heightFactor: 7,
