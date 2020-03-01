@@ -36,6 +36,7 @@ class TransactionWithCategory {
     Categories,
     Subcategories,
     Months,
+    Currencies,
   ],
 )
 class TransactionDao extends DatabaseAccessor<AppDatabase>
@@ -66,8 +67,12 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
     final maxTransactionID = await db.maxTransactionId();
+    final double exchangeRate =
+        (await db.currencyDao.getCurrencyById(tx.currencyId)).exchangeRate ??
+            1.0;
     final nextId = (maxTransactionID ?? 0) + 1;
-    var tempTx = tx.copyWith(originalId: nextId);
+    var tempTx =
+        tx.copyWith(originalId: nextId, amount: tx.amount * exchangeRate);
 
     // Fill in month id
     if (tempTx.monthId == null) {

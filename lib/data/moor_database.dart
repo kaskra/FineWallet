@@ -8,7 +8,9 @@
 
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/converters/datetime_converter.dart';
+import 'package:FineWallet/data/currency_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/data/resources/migration.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
     as moor_init;
 import 'package:FineWallet/data/transaction_dao.dart';
@@ -132,7 +134,12 @@ class UserProfiles extends Table {
     Currencies,
     UserProfiles,
   ],
-  daos: [TransactionDao, CategoryDao, MonthDao],
+  daos: [
+    TransactionDao,
+    CategoryDao,
+    MonthDao,
+    CurrencyDao,
+  ],
   queries: {
     "getTimestamp":
         "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
@@ -153,9 +160,7 @@ class AppDatabase extends _$AppDatabase {
           return m.createAll();
         },
         onUpgrade: (migration, from, to) {
-          if (from == 1) {
-            migration.createTable(userProfiles);
-          }
+          migrate_1_2(migration, from, to, this);
           return;
         },
         beforeOpen: (details) async {
@@ -203,6 +208,7 @@ class AppDatabase extends _$AppDatabase {
           }
 
           // Set default main currency
+          // TODO remove once intro slider / tutorial is done
           if (details.hadUpgrade) {
             if (details.versionBefore == 1) {
               await into(userProfiles)
