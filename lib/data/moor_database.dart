@@ -113,6 +113,14 @@ class Currencies extends Table {
   RealColumn get exchangeRate => real().withDefault(const Constant(1.0))();
 }
 
+@DataClassName('UserProfile')
+class UserProfiles extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get currencyId =>
+      integer().customConstraint("REFERENCES currencies(id)")();
+}
+
 @UseMoor(
   tables: [
     Transactions,
@@ -122,11 +130,13 @@ class Currencies extends Table {
     RecurrenceTypes,
     Languages,
     Currencies,
+    UserProfiles,
   ],
   daos: [TransactionDao, CategoryDao, MonthDao],
   queries: {
     "getTimestamp":
-        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
+        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
+    "getUserProfile": "SELECT * FROM user_profiles WHERE id=1",
   },
 )
 class AppDatabase extends _$AppDatabase {
@@ -135,12 +145,18 @@ class AppDatabase extends _$AppDatabase {
             path: 'database.sqlite', logStatements: true));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (Migrator m) {
           return m.createAll();
+        },
+        onUpgrade: (migration, from, to) {
+          if (from == 1) {
+            migration.createTable(userProfiles);
+          }
+          return;
         },
         beforeOpen: (details) async {
           await customStatement("PRAGMA foreign_keys = ON");
@@ -184,6 +200,14 @@ class AppDatabase extends _$AppDatabase {
                 "AS SELECT * FROM transactions t "
                 "INNER JOIN months m "
                 "ON t.month_id = m.id");
+          }
+
+          // Set default main currency
+          if (details.hadUpgrade) {
+            if (details.versionBefore == 1) {
+              await into(userProfiles)
+                  .insert(UserProfilesCompanion.insert(currencyId: 1));
+            }
           }
 
           // Check if in new month and update accordingly
