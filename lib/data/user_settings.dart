@@ -85,7 +85,7 @@ class UserSettings {
   /// Sets the applications currency id to the selected symbol and
   /// saves it persistently in the user settings.
   ///
-  /// The default currency is '$'.
+  /// The default currency is USD.
   ///
   /// Input
   /// -----
@@ -97,7 +97,7 @@ class UserSettings {
 
   /// Returns the applications currency id saved in memory.
   ///
-  /// The default currency is '$'.
+  /// The default currency is USD.
   ///
   /// Returns
   /// -----
@@ -204,6 +204,8 @@ class UserSettings {
   ///
   ///  - only Incomes (by default: true)
   ///
+  ///  - show Future (by default : false)
+  ///
   /// Input
   /// ------
   /// [HistoryFilterState] to save.
@@ -226,6 +228,8 @@ class UserSettings {
   ///  - only Expenses (by default: true)
   ///
   ///  - only Incomes (by default: true)
+  ///
+  ///  - show Future (by default : false)
   ///
   /// Return
   /// ------
