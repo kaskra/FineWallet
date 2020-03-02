@@ -1,12 +1,11 @@
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/standalone/result_arrow.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class OverallDetail extends StatelessWidget {
   final MonthWithDetails month;
@@ -38,12 +37,11 @@ class OverallDetail extends StatelessWidget {
               amountPadding: const EdgeInsets.symmetric(vertical: 4),
               footerText: "Total Income",
               footerTextColor: Theme.of(context).colorScheme.onBackground,
-              child: Text(
-                "+${month.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.green),
+              child: AmountString(
+                month.income,
+                signed: true,
+                colored: true,
+                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
             const ResultArrow(),
@@ -51,12 +49,11 @@ class OverallDetail extends StatelessWidget {
               amountPadding: const EdgeInsets.symmetric(vertical: 4),
               footerText: "Total Expense",
               footerTextColor: Theme.of(context).colorScheme.onBackground,
-              child: Text(
-                "-${month.expense.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.red),
+              child: AmountString(
+                month.expense * -1,
+                signed: true,
+                colored: true,
+                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
           ],
@@ -68,12 +65,11 @@ class OverallDetail extends StatelessWidget {
               amountPadding: const EdgeInsets.symmetric(vertical: 4),
               footerText: "Savings",
               footerTextColor: Theme.of(context).colorScheme.onBackground,
-              child: Text(
-                "${savings > 0 ? "+" : ""}${savings.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: savings > 0 ? Colors.green : Colors.red),
+              child: AmountString(
+                savings,
+                signed: true,
+                colored: true,
+                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
           ],

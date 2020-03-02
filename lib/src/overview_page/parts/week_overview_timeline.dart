@@ -11,8 +11,8 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/timeline.dart';
 import 'package:FineWallet/src/widgets/standalone/timestamp.dart';
 import 'package:FineWallet/utils.dart';
@@ -55,7 +55,10 @@ class WeekOverviewTimeline extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildDayName(date, isToday, textStyle),
-            _buildAmountString(budget, numberTextStyle),
+            AmountString(
+              budget * -1,
+              textStyle: numberTextStyle,
+            ),
           ],
         ),
       ),
@@ -71,14 +74,6 @@ class WeekOverviewTimeline extends StatelessWidget {
         onChangeSelectionMode: (s) {},
         filterSettings: TransactionFilterSettings(day: date, expenses: true),
       ),
-    );
-  }
-
-  Widget _buildAmountString(double budget, TextStyle textStyle) {
-    return Text(
-      "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-      maxLines: 1,
-      style: textStyle,
     );
   }
 

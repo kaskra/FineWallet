@@ -1,6 +1,6 @@
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,11 +17,13 @@ class SavingsDifferenceView extends StatelessWidget {
           .monthDao
           .watchCurrentMonthWithDetails(),
       builder: (context, AsyncSnapshot<MonthWithDetails> snapshot) {
-        final value = snapshot.hasData ? snapshot.data.savings : 0;
-        return Text(
-            "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-            style: textStyle.copyWith(
-                color: value > 0 ? Colors.green : Colors.red));
+        final double value = snapshot.hasData ? snapshot.data.savings : 0;
+        return AmountString(
+          value,
+          textStyle: textStyle,
+          colored: true,
+          signed: true,
+        );
       },
     );
   }

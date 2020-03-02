@@ -1,5 +1,5 @@
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,10 +16,10 @@ class SavingsView extends StatelessWidget {
       initialData: 0.0,
       stream:
           Provider.of<AppDatabase>(context).transactionDao.watchTotalSavings(),
-      builder: (context, snapshot) {
-        return Text(
-          "${(snapshot.hasData ? snapshot.data : 0).toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-          style: textStyle,
+      builder: (context, AsyncSnapshot<double> snapshot) {
+        return AmountString(
+          snapshot.data,
+          textStyle: textStyle,
         );
       },
     );

@@ -53,7 +53,7 @@ class UsedBudgetBar extends StatelessWidget {
             percent: firstPart,
             height: 25,
             childCenter: Text(
-              "${model.expense.toStringAsFixed(2)} / ${model.month.maxBudget.toStringAsFixed(2)} ${Provider.of<LocalizationNotifier>(context).userCurrency}",
+              "${model.expense.toStringAsFixed(2)} / ${model.month.maxBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
               style: TextStyle(
                 color: Theme.of(context).hintColor,
                 fontWeight: FontWeight.bold,

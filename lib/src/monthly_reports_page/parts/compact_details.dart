@@ -1,13 +1,12 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/details_bottom_sheet.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CompactDetailsCard extends StatelessWidget {
   final MonthWithDetails month;
@@ -28,7 +27,7 @@ class CompactDetailsCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: Center(
                     child: Text(
-                      "${month.month.firstDate.getMonthName()} "
+                      "${month.month.firstDate.getMonthName()}"
                       ", ${month.month.firstDate.year}",
                       style: TextStyle(
                           fontSize: 16,
@@ -63,12 +62,11 @@ class CompactDetailsCard extends StatelessWidget {
           padding: const EdgeInsets.only(left: 14),
           child: Column(
             children: <Widget>[
-              Text(
-                "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                style: TextStyle(
-                    color: value > 0 ? Colors.green : Colors.red,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600),
+              AmountString(
+                value,
+                signed: true,
+                colored: true,
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Text(
                 "Saved Amount",

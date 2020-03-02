@@ -4,9 +4,9 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/icon_wrapper.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:flutter/material.dart';
@@ -182,10 +182,10 @@ class CategoryListView extends StatelessWidget {
           ),
         ),
       ),
-      value: Text(
-        "-${tx.tx.amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.error,
+      value: AmountString(
+        tx.tx.amount * -1,
+        colored: true,
+        textStyle: TextStyle(
           decoration: TextDecoration.none,
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -220,10 +220,10 @@ class CategoryListView extends StatelessWidget {
             ),
           ),
         ),
-        trailing: Text(
-          "-${amount.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-          style: TextStyle(
-              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
+        trailing: AmountString(
+          amount * -1,
+          colored: true,
+          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
         ),
         title: Text(categoryName),
       ),

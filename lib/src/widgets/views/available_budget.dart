@@ -1,6 +1,6 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,10 +17,7 @@ class AvailableBudgetView extends StatelessWidget {
       builder: (context, snapshot) {
         double maxBudget = snapshot.data ?? 0;
         maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
-        return Text(
-          "${maxBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-          style: textStyle,
-        );
+        return AmountString(maxBudget, textStyle: textStyle);
       },
     );
   }

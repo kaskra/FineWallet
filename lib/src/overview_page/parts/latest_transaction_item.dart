@@ -1,11 +1,11 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
@@ -101,12 +101,10 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                   ),
                 ],
               ),
-              Text(
-                "${snapshotItem.tx.isExpense && snapshotItem.tx.amount > 0 ? "-" : ""}"
-                "${snapshotItem.tx.amount.toStringAsFixed(2)}"
-                "${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                style: TextStyle(
-                  color: snapshotItem.tx.isExpense ? Colors.red : Colors.green,
+              AmountString(
+                snapshotItem.tx.amount * (snapshotItem.tx.isExpense ? -1 : 1),
+                colored: true,
+                textStyle: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
