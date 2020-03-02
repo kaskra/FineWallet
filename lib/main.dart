@@ -164,10 +164,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future _loadLocalizationAndCurrency() async {
-    setState(() {
-      _isLocalizationLoaded = true;
-    });
-
     final allCurrencies = await Provider.of<AppDatabase>(context, listen: false)
         .currencyDao
         .getAllCurrencies();
@@ -178,6 +174,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Load exchange rates and update currency table in database.
     if (currency != null) {
+      setState(() {
+        _isLocalizationLoaded = true;
+      });
       final rates = await fetchExchangeRates(
           currency.abbrev, allCurrencies.map((c) => c.abbrev).toList());
 
