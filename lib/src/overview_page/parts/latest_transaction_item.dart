@@ -167,21 +167,22 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               },
             ),
           ),
-          DecoratedCard(
-            elevation: 0,
-            padding: 2,
-            child: ListTile(
-              enabled: UserSettings.getTXShare(),
-              title: const Text("Share"),
-              leading: Icon(
-                Icons.share,
-                color: Theme.of(context).colorScheme.onSecondary,
+          if (UserSettings.getTXShare())
+            DecoratedCard(
+              elevation: 0,
+              padding: 2,
+              child: ListTile(
+                enabled: UserSettings.getTXShare(),
+                title: const Text("Share"),
+                leading: Icon(
+                  Icons.share,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+                onTap: () {
+                  print("Tapped share");
+                },
               ),
-              onTap: () {
-                print("Tapped share");
-              },
             ),
-          ),
           DecoratedCard(
             padding: 2,
             elevation: 0,
@@ -202,7 +203,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 );
               },
             ),
-          ),
+          )
         ],
       ),
     );
