@@ -7,6 +7,7 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
@@ -153,26 +154,40 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   Future<void> _loadBudget() async {
+    setState(() {
+      _isBudgetLoaded = true;
+    });
     final Month m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
-    setState(() {
-      _isBudgetLoaded = true;
-    });
   }
 
-  Future _loadLocalization() async {
+  Future _loadLocalizationAndCurrency() async {
+    setState(() {
+      _isLocalizationLoaded = true;
+    });
+
+    final allCurrencies = await Provider.of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .getAllCurrencies();
+
     final currency = await Provider.of<AppDatabase>(context, listen: false)
         .currencyDao
         .getUserCurrency();
 
-    Provider.of<LocalizationNotifier>(context, listen: false)
-        .setUserCurrencySymbol(currency?.symbol ?? "");
+    // Load exchange rates and update currency table in database.
+    if (currency != null) {
+      final rates = await fetchExchangeRates(
+          currency.abbrev, allCurrencies.map((c) => c.abbrev).toList());
 
-    setState(() {
-      _isLocalizationLoaded = true;
-    });
+      await Provider.of<AppDatabase>(context, listen: false)
+          .currencyDao
+          .updateExchangeRates(rates.rates, allCurrencies);
+
+      Provider.of<LocalizationNotifier>(context, listen: false)
+          .setUserCurrencySymbol(currency.symbol);
+    }
   }
 
   @override
@@ -181,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _loadBudget();
     }
     if (!_isLocalizationLoaded) {
-      _loadLocalization();
+      _loadLocalizationAndCurrency();
     }
 
     final children = [

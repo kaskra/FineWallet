@@ -212,7 +212,7 @@ class AppDatabase extends _$AppDatabase {
           if (details.hadUpgrade) {
             if (details.versionBefore == 1) {
               await into(userProfiles)
-                  .insert(UserProfilesCompanion.insert(currencyId: 1));
+                  .insert(UserProfilesCompanion.insert(currencyId: 2));
             }
           }
 

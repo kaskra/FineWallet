@@ -283,6 +283,7 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
+  // TODO add a hint when input currency != user currency when reworking add page!
   List<Widget> _buildAmountRow() {
     return [
       const Padding(

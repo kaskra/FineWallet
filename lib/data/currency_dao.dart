@@ -31,4 +31,26 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
         innerJoin(
             userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
       ])).map((rows) => rows.readTable(currencies)).getSingle();
+
+  /// Updates the currencies table with new exchange rates.
+  ///
+  /// Input
+  /// -----
+  /// - [Map] of rates that consist of the currency abbreviation
+  /// and the current exchange rate.
+  /// - list of [Currency] of all available and saved currencies.
+  ///
+  Future updateExchangeRates(
+      Map<String, double> rates, List<Currency> allCurrencies) async {
+    if (rates.isEmpty) return;
+
+    await batch((b) {
+      for (final curr in allCurrencies) {
+        if (rates.containsKey(curr.abbrev)) {
+          b.replace(
+              currencies, curr.copyWith(exchangeRate: rates[curr.abbrev]));
+        }
+      }
+    });
+  }
 }
