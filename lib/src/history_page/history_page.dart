@@ -104,7 +104,17 @@ class _HistoryPageState extends State<HistoryPage> {
             });
             _handleFilterSettings();
           },
-        )
+        ),
+        HistoryFilterItem(
+          initialValue: _filterState.showFuture,
+          title: "Future transactions",
+          onChanged: (b) {
+            setState(() {
+              _filterState.showFuture = b;
+            });
+            _handleFilterSettings();
+          },
+        ),
       ],
     );
   }
@@ -114,15 +124,19 @@ class _HistoryPageState extends State<HistoryPage> {
       _filterSettings = TransactionFilterSettings.beforeDate(today());
     });
     if (widget.showFilters) {
+      _filterSettings = TransactionFilterSettings();
+
+      if (!_filterState.showFuture) {
+        _filterSettings = _filterSettings.copyWith(before: today());
+      }
+
       if (_filterState.onlyExpenses && _filterState.onlyIncomes) {
         return;
       }
 
-      _filterSettings = TransactionFilterSettings(
-        before: today(),
-        incomes: _filterState.onlyIncomes,
-        expenses: _filterState.onlyExpenses,
-      );
+      _filterSettings = _filterSettings.copyWith(
+          incomes: _filterState.onlyIncomes,
+          expenses: _filterState.onlyExpenses);
     }
   }
 
