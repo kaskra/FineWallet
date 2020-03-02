@@ -180,6 +180,10 @@ class AppDatabase extends _$AppDatabase {
 
               b.insertAll(currencies, moor_init.currencies);
               b.insertAll(languages, moor_init.languages);
+
+              // TODO remove once intro slider / tutorial is done
+              b.insert(
+                  userProfiles, UserProfilesCompanion.insert(currencyId: 2));
             });
 
             // Has to be done in extra batch, because

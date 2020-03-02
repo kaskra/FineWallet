@@ -184,6 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .currencyDao
           .updateExchangeRates(rates.rates, allCurrencies);
 
+      UserSettings.setInputCurrency(currency.id);
       Provider.of<LocalizationNotifier>(context, listen: false)
           .setUserCurrencySymbol(currency.symbol);
     }
