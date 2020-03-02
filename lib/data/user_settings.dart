@@ -11,7 +11,7 @@ class _KEYS {
   static const currency = "currency";
   static const txShare = "tx_share";
   static const profileChart = "default_profile_chart";
-  static const isFilterSettings = "is_filter_settings";
+  static const showFilterSettings = "show_filter_settings";
   static const filterSettings = "default_filter_settings";
 }
 
@@ -178,8 +178,8 @@ class UserSettings {
   /// -----
   /// Value as [bool] to save persistently.
   ///
-  static void setIsFilterSettings({bool val}) {
-    _store.setBool(_KEYS.isFilterSettings, val);
+  static void setShowFilterSettings({bool val}) {
+    _store.setBool(_KEYS.showFilterSettings, val);
   }
 
   /// Returns the value whether Filter Settings are enabled or not.
@@ -189,8 +189,8 @@ class UserSettings {
   /// Return
   /// ------
   /// True if Filter Settings are enabled, false otherwise.
-  static bool getIsFilterSettings() {
-    return _store.getBool(_KEYS.isFilterSettings) ?? true;
+  static bool getShowFilterSettings() {
+    return _store.getBool(_KEYS.showFilterSettings) ?? true;
   }
 
   /// Sets the default history filter values in the persistent store.
