@@ -311,7 +311,7 @@ class _AddPageState extends State<AddPage> {
           },
           onError: (value) {
             if (value) {
-              print("Got error! No real double value!");
+              print("Got error! No real double value ${_amount.toString()}!");
             }
             setState(() {
               _hasError = value;
