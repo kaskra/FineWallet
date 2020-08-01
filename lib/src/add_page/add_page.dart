@@ -1,6 +1,8 @@
+import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/category_dialog.dart';
@@ -373,12 +375,28 @@ class _AddPageState extends State<AddPage> {
         isChild: false,
         onTap: () async {
           final pickedDate = await showDatePicker(
-            context: context,
-            initialDate: _date,
-            firstDate: DateTime(2000, 1, 1),
-            lastDate: DateTime(2050, 12, 31),
-            initialDatePickerMode: DatePickerMode.day,
-          );
+              context: context,
+              initialDate: _date,
+              firstDate: DateTime(2000, 1, 1),
+              lastDate: DateTime(2050, 12, 31),
+              initialDatePickerMode: DatePickerMode.day,
+              builder: (context, child) {
+                // Needed to correct the issue that the selection marker in
+                // date picker had the same color as the background.
+                return Theme(
+                  data: Provider.of<ThemeNotifier>(context).isDarkMode
+                      ? ThemeData.dark().copyWith(
+                          colorScheme: darkColorScheme,
+                        )
+                      : ThemeData.light().copyWith(
+                          colorScheme:
+                              colorScheme.copyWith(onSurface: Colors.black),
+                          buttonTheme: const ButtonThemeData(
+                              textTheme: ButtonTextTheme.primary),
+                        ),
+                  child: child,
+                );
+              });
           if (pickedDate != null) {
             setState(() {
               _date = pickedDate;
