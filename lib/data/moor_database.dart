@@ -227,7 +227,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Returns the current maximum AUTO INCREMENT value of table transactions.
   Future<int> maxTransactionId() {
-    final res = customSelectQuery(
+    final res = customSelect(
         "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
     return res.map((row) => row.readInt("seq")).getSingle();
   }
