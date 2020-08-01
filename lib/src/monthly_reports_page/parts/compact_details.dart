@@ -20,7 +20,6 @@ class CompactDetailsCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           DecoratedCard(
-            padding: 10,
             child: Column(
               children: <Widget>[
                 Padding(
@@ -37,8 +36,8 @@ class CompactDetailsCard extends StatelessWidget {
                   ),
                 ),
                 UsedBudgetBar(
-                  padding: const EdgeInsets.only(
-                      top: 0, left: 10, right: 10, bottom: 5),
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                   model: month,
                 ),
                 _buildDetails(context)
@@ -95,12 +94,21 @@ class CompactDetailsCard extends StatelessWidget {
         elevation: 4,
         height: 30,
         color: Theme.of(context).colorScheme.secondary,
-        child: Text(
-          "More Details",
-          style: TextStyle(
+        child: Row(
+          children: <Widget>[
+            Text(
+              "More Details",
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600),
+            ),
+            Icon(
+              Icons.expand_more,
+              size: 18,
               color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 13,
-              fontWeight: FontWeight.w600),
+            )
+          ],
         ),
       ),
     );

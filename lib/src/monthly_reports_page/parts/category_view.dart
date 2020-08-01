@@ -165,7 +165,7 @@ class CategoryListView extends StatelessWidget {
       text: Expanded(
         child: Text.rich(
           TextSpan(
-            text: "${tx.sub.name}",
+            text: tx.sub.name,
             children: [
               TextSpan(
                 text: "\n${formatter.format(tx.tx.date)}",

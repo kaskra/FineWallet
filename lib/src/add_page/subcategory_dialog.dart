@@ -77,7 +77,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       height: 50,
       child: Center(
         child: Text(
-          "${_category.name}",
+          _category.name,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             decoration: TextDecoration.none,

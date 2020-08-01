@@ -26,7 +26,7 @@ class AmountString extends StatelessWidget {
       value = 0.0;
     }
 
-    final sign = signed ? "${value < 0 ? "" : "+"}" : "";
+    final sign = signed ? (value < 0 ? "" : "+") : "";
     final color = value < 0 ? Colors.red : Colors.green;
 
     final currencySymbol =

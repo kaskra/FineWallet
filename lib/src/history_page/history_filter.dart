@@ -10,7 +10,7 @@ class HistoryFilterState {
     return 'HistoryFilterState{'
         'onlyExpenses: $onlyExpenses, '
         'onlyIncomes: $onlyIncomes, '
-        'showFuture: $showFuture'
+        'showFuture: $showFuture '
         '}';
   }
 }

@@ -40,7 +40,7 @@ class _SliderItemState extends State<SliderItem> {
         maxBudget: Provider.of<BudgetNotifier>(context, listen: false).budget);
     Provider.of<AppDatabase>(context, listen: false)
         .monthDao
-        .updateMonth(month.createCompanion(true));
+        .updateMonth(month.toCompanion(true));
   }
 
   /// Build the center row with slider, suffix and the slider-depending textfield.

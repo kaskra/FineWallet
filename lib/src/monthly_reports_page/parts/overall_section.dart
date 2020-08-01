@@ -27,7 +27,7 @@ class OverallDetail extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: UsedBudgetBar(
             model: month,
-            padding: const EdgeInsets.only(top: 0),
+            padding: const EdgeInsets.only(),
           ),
         ),
         StructureSpace(),
