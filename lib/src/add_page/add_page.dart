@@ -54,11 +54,17 @@ class _AddPageState extends State<AddPage> {
   bool _hasError = false;
   bool _initialized = false;
 
+  /// Get transaction if a transactions is given as input, then translate the
+  /// resulting values into the state variables.
+  ///
+  /// This function is only executed once.
+  ///
   Future _getTransactionValues() async {
     if (widget.transaction != null) {
       _transaction = widget.transaction;
       _editing = true;
-      _amount = _transaction.tx.amount;
+      // Make sure that currency-exchanged value is rounded to 2 decimals
+      _amount = double.parse(_transaction.tx.amount.toStringAsFixed(2));
       _date = _transaction.tx.date;
       _subcategory = _transaction.sub;
       _isRecurring = _transaction.tx.isRecurring;
