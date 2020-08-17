@@ -495,12 +495,6 @@ class _AddPageState extends State<AddPage> {
                   child: child,
                 );
               });
-            context: context,
-            initialDate: _untilDate,
-            firstDate: DateTime(date.year, date.month, date.day),
-            lastDate: DateTime(2050, 12, 31),
-            initialDatePickerMode: DatePickerMode.day,
-          );
           if (pickedDate != null) {
             setState(() {
               _untilDate = pickedDate;
