@@ -26,8 +26,7 @@ class TransactionFilterParser
     const converter = DateTimeConverter();
     final Queue<String> queue = Queue<String>();
     if (settings.category != null) {
-      queue.add(
-          "${tableName != "" ? "$tableName." : ""}category_id = ${settings.category}");
+      queue.add("subcategories.category_id = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
