@@ -199,16 +199,6 @@ class AppDatabase extends _$AppDatabase {
                 "AS SELECT * FROM transactions WHERE is_expense = 1");
             await customStatement("CREATE VIEW IF NOT EXISTS incomes "
                 "AS SELECT * FROM transactions WHERE is_expense = 0");
-            await customStatement(
-                "CREATE VIEW IF NOT EXISTS transactions_with_categories "
-                "AS SELECT * FROM transactions t "
-                "INNER JOIN subcategories s "
-                "ON s.id = t.subcategory_id");
-            await customStatement(
-                "CREATE VIEW IF NOT EXISTS transactions_with_months "
-                "AS SELECT * FROM transactions t "
-                "INNER JOIN months m "
-                "ON t.month_id = m.id");
           }
 
           // Set default main currency

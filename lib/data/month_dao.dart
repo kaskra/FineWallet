@@ -88,6 +88,15 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
         ]))
       .watch();
 
+  /// Returns every month id for which a (recursive) transaction is in the month.
+  Future<List<int>> getMonthIdsFromTransaction(int txOriginalId) {
+    return (selectOnly(transactions, distinct: true)
+          ..addColumns([transactions.monthId])
+          ..where(transactions.originalId.equals(txOriginalId)))
+        .map((r) => r.read(transactions.monthId))
+        .get();
+  }
+
   Future syncSingleMonth(Month month) async {
     final txs = await (select(transactions)
           ..where((t) => t.monthId.equals(month.id))
