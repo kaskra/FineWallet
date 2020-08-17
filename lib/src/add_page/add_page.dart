@@ -475,6 +475,26 @@ class _AddPageState extends State<AddPage> {
         onTap: () async {
           final DateTime date = _date.add(const Duration(days: 1));
           final pickedDate = await showDatePicker(
+              context: context,
+              initialDate: _untilDate,
+              firstDate: DateTime(date.year, date.month, date.day),
+              lastDate: DateTime(2050, 12, 31),
+              initialDatePickerMode: DatePickerMode.day,
+              builder: (context, child) {
+                return Theme(
+                  data: Provider.of<ThemeNotifier>(context).isDarkMode
+                      ? ThemeData.dark().copyWith(
+                          colorScheme: darkColorScheme,
+                        )
+                      : ThemeData.light().copyWith(
+                          colorScheme:
+                              colorScheme.copyWith(onSurface: Colors.black),
+                          buttonTheme: const ButtonThemeData(
+                              textTheme: ButtonTextTheme.primary),
+                        ),
+                  child: child,
+                );
+              });
             context: context,
             initialDate: _untilDate,
             firstDate: DateTime(date.year, date.month, date.day),
