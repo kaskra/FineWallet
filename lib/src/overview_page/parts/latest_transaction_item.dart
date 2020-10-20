@@ -20,11 +20,26 @@ class LatestTransactionItem extends StatefulWidget {
 class _LatestTransactionItemState extends State<LatestTransactionItem> {
   final PageController controller = PageController();
 
+  int _userCurrencyId = 1;
+
+  Future loadUserCurrency() async {
+    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .getUserCurrency())
+        ?.id;
+  }
+
+  @override
+  void initState() {
+    loadUserCurrency();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: StreamBuilder<List<TransactionWithCategory>>(
+      child: StreamBuilder<List<TransactionWithCategoryAndCurrency>>(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchNLatestTransactions(numLatestTransactions),
@@ -63,7 +78,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   }
 
   Widget _buildLatestTransactionItem(
-      BuildContext context, TransactionWithCategory snapshotItem) {
+      BuildContext context, TransactionWithCategoryAndCurrency snapshotItem) {
     return DecoratedCard(
       padding: 0,
       child: InkWell(
@@ -114,29 +129,18 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  FutureBuilder(
-                    future: Provider.of<AppDatabase>(context)
-                        .currencyDao
-                        .getUserCurrency(),
-                    builder: (context, AsyncSnapshot<Currency> snapshot) {
-                      if (snapshot.hasData) {
-                        return snapshot.data.id != snapshotItem.tx.currencyId
-                            ? ForeignAmountString(
-                                snapshotItem.tx.originalAmount *
-                                    (snapshotItem.tx.isExpense ? -1 : 1),
-                                currencyId: snapshotItem.tx.currencyId,
-                                textStyle: TextStyle(
-                                    fontSize: 10,
-                                    color: snapshotItem.tx.isExpense
-                                        ? Colors.red
-                                        : Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : Container();
-                      }
-                      return Container();
-                    },
-                  ),
+                  if (_userCurrencyId != snapshotItem.tx.currencyId)
+                    ForeignAmountString(
+                      snapshotItem.tx.originalAmount *
+                          (snapshotItem.tx.isExpense ? -1 : 1),
+                      currencySymbol: snapshotItem.currency.symbol,
+                      textStyle: TextStyle(
+                          fontSize: 10,
+                          color: snapshotItem.tx.isExpense
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold),
+                    )
                 ],
               ),
             ],
@@ -162,7 +166,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   /// Before deleting the transaction, a confirm dialog will show,
   /// requiring the user to authorize the deletion.
   ///
-  Future _deleteItems(TransactionWithCategory tx) async {
+  Future _deleteItems(TransactionWithCategoryAndCurrency tx) async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
       Provider.of<AppDatabase>(context, listen: false)
@@ -172,7 +176,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   }
 
   Future _showActions(
-      BuildContext context, TransactionWithCategory snapshot) async {
+      BuildContext context, TransactionWithCategoryAndCurrency snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(

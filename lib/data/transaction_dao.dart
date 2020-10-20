@@ -19,15 +19,16 @@ import 'package:rxdart/rxdart.dart';
 
 part 'transaction_dao.g.dart';
 
-class TransactionWithCategory {
+class TransactionWithCategoryAndCurrency {
   final db_file.Transaction tx;
   final db_file.Subcategory sub;
+  final db_file.Currency currency;
 
-  TransactionWithCategory({this.tx, this.sub});
+  TransactionWithCategoryAndCurrency({this.tx, this.sub, this.currency});
 
   @override
   String toString() {
-    return 'TransactionWithCategory{transaction: $tx, subcategory: $sub}';
+    return 'TransactionWithCategoryAndCurrency{tx: $tx, sub: $sub, currency: $currency}';
   }
 }
 
@@ -187,7 +188,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   ///  - [TransactionFilterSettings] to filter the query results.
   ///
-  Stream<List<TransactionWithCategory>> watchTransactionsWithFilter(
+  Stream<List<TransactionWithCategoryAndCurrency>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     final txParser = TransactionFilterParser(settings);
     final settingsContent = txParser.parse(
@@ -195,8 +196,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     final parsedSettings = CustomExpression<bool>(settingsContent);
 
     final query = select(transactions).join([
-      innerJoin(
-          subcategories, subcategories.id.equalsExp(transactions.subcategoryId))
+      innerJoin(subcategories,
+          subcategories.id.equalsExp(transactions.subcategoryId)),
+      innerJoin(currencies, currencies.id.equalsExp(transactions.currencyId)),
     ])
       ..orderBy([
         OrderingTerm.desc(transactions.date),
@@ -211,7 +213,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return query.map((row) {
       final tx = row.readTable(transactions);
       final sub = row.readTable(subcategories);
-      return TransactionWithCategory(tx: tx, sub: sub);
+      final currency = row.readTable(currencies);
+      return TransactionWithCategoryAndCurrency(
+          tx: tx, sub: sub, currency: currency);
     }).watch();
   }
 
@@ -312,10 +316,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Watches the latest non-recurrence transaction.
-  Stream<TransactionWithCategory> watchLatestTransaction() {
+  Stream<TransactionWithCategoryAndCurrency> watchLatestTransaction() {
     final query = select(transactions).join([
-      innerJoin(
-          subcategories, subcategories.id.equalsExp(transactions.subcategoryId))
+      innerJoin(subcategories,
+          subcategories.id.equalsExp(transactions.subcategoryId)),
+      innerJoin(currencies, currencies.id.equalsExp(transactions.currencyId)),
     ])
       ..where(transactions.id.equalsExp(transactions.originalId))
       ..orderBy([OrderingTerm.desc(transactions.id)])
@@ -324,15 +329,19 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return query.map((row) {
       final tx = row.readTable(transactions);
       final sub = row.readTable(subcategories);
-      return TransactionWithCategory(tx: tx, sub: sub);
+      final curr = row.readTable(currencies);
+      return TransactionWithCategoryAndCurrency(
+          tx: tx, sub: sub, currency: curr);
     }).watchSingle();
   }
 
   /// Watches the latest N non-recurrence transactions.
-  Stream<List<TransactionWithCategory>> watchNLatestTransactions(int N) {
+  Stream<List<TransactionWithCategoryAndCurrency>> watchNLatestTransactions(
+      int N) {
     final query = select(transactions).join([
-      innerJoin(
-          subcategories, subcategories.id.equalsExp(transactions.subcategoryId))
+      innerJoin(subcategories,
+          subcategories.id.equalsExp(transactions.subcategoryId)),
+      innerJoin(currencies, currencies.id.equalsExp(transactions.currencyId)),
     ])
       ..where(transactions.id.equalsExp(transactions.originalId))
       ..orderBy([OrderingTerm.desc(transactions.id)])
@@ -341,7 +350,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return query.map((row) {
       final tx = row.readTable(transactions);
       final sub = row.readTable(subcategories);
-      return TransactionWithCategory(tx: tx, sub: sub);
+      final curr = row.readTable(currencies);
+      return TransactionWithCategoryAndCurrency(
+          tx: tx, sub: sub, currency: curr);
     }).watch();
   }
 

@@ -24,7 +24,7 @@ class AddPage extends StatefulWidget {
   }) : super(key: key);
 
   final bool isExpense;
-  final TransactionWithCategory transaction;
+  final TransactionWithCategoryAndCurrency transaction;
 
   @override
   _AddPageState createState() => _AddPageState();
@@ -32,7 +32,7 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   /// The transactions that the user wants to edit.
-  TransactionWithCategory _transaction;
+  TransactionWithCategoryAndCurrency _transaction;
 
   /// The input currency id
   int _inputCurrencyId = UserSettings.getInputCurrency();

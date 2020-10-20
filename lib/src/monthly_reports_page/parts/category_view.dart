@@ -142,12 +142,13 @@ class CategoryListView extends StatelessWidget {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchTransactionsWithFilter(settings),
-        builder:
-            (context, AsyncSnapshot<List<TransactionWithCategory>> snapshot) {
+        builder: (context,
+            AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-              for (final TransactionWithCategory tx in snapshot.data ?? [])
+              for (final TransactionWithCategoryAndCurrency tx
+                  in snapshot.data ?? [])
                 _buildTransactionRow(tx),
             ],
           );
@@ -156,7 +157,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  InformationRow _buildTransactionRow(TransactionWithCategory tx) {
+  InformationRow _buildTransactionRow(TransactionWithCategoryAndCurrency tx) {
     // Initialize date formatter for timestamp
     final formatter = DateFormat('E, dd.MM.yy');
 

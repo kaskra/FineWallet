@@ -1,12 +1,10 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
-import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HistoryItem extends StatelessWidget {
   const HistoryItem(
@@ -14,13 +12,15 @@ class HistoryItem extends StatelessWidget {
       @required this.transaction,
       @required this.onSelect,
       @required this.isSelected,
-      @required this.isSelectionActive})
+      @required this.isSelectionActive,
+      this.userCurrencyId = 1})
       : super(key: key);
 
-  final TransactionWithCategory transaction;
+  final TransactionWithCategoryAndCurrency transaction;
   final Function(bool) onSelect;
   final bool isSelected;
   final bool isSelectionActive;
+  final int userCurrencyId;
 
   @override
   Widget build(BuildContext context) {
@@ -125,31 +125,20 @@ class HistoryItem extends StatelessWidget {
                       : (transaction.tx.isExpense ? Colors.red : Colors.green),
                   fontWeight: FontWeight.bold),
             ),
-            FutureBuilder(
-              future: Provider.of<AppDatabase>(context)
-                  .currencyDao
-                  .getUserCurrency(),
-              builder: (context, AsyncSnapshot<Currency> snapshot) {
-                if (snapshot.hasData) {
-                  return snapshot.data.id != transaction.tx.currencyId
-                      ? ForeignAmountString(
-                          transaction.tx.originalAmount *
-                              (transaction.tx.isExpense ? -1 : 1),
-                          currencyId: transaction.tx.currencyId,
-                          textStyle: TextStyle(
-                              fontSize: 10,
-                              color: isSelected
-                                  ? Colors.white
-                                  : (transaction.tx.isExpense
-                                      ? Colors.red
-                                      : Colors.green),
-                              fontWeight: FontWeight.bold),
-                        )
-                      : Container();
-                }
-                return Container();
-              },
-            ),
+            if (userCurrencyId != transaction.tx.currencyId)
+              ForeignAmountString(
+                transaction.tx.originalAmount *
+                    (transaction.tx.isExpense ? -1 : 1),
+                currencySymbol: transaction.currency.symbol,
+                textStyle: TextStyle(
+                    fontSize: 10,
+                    color: isSelected
+                        ? Colors.white
+                        : (transaction.tx.isExpense
+                            ? Colors.red
+                            : Colors.green),
+                    fontWeight: FontWeight.bold),
+              )
           ],
         ),
       ],
