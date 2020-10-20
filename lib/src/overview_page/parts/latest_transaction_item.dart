@@ -101,13 +101,43 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                   ),
                 ],
               ),
-              AmountString(
-                snapshotItem.tx.amount * (snapshotItem.tx.isExpense ? -1 : 1),
-                colored: true,
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AmountString(
+                    snapshotItem.tx.amount *
+                        (snapshotItem.tx.isExpense ? -1 : 1),
+                    colored: true,
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  FutureBuilder(
+                    future: Provider.of<AppDatabase>(context)
+                        .currencyDao
+                        .getUserCurrency(),
+                    builder: (context, AsyncSnapshot<Currency> snapshot) {
+                      if (snapshot.hasData) {
+                        return snapshot.data.id != snapshotItem.tx.currencyId
+                            ? ForeignAmountString(
+                                snapshotItem.tx.originalAmount *
+                                    (snapshotItem.tx.isExpense ? -1 : 1),
+                                currencyId: snapshotItem.tx.currencyId,
+                                textStyle: TextStyle(
+                                    fontSize: 10,
+                                    color: snapshotItem.tx.isExpense
+                                        ? Colors.red
+                                        : Colors.green,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            : Container();
+                      }
+                      return Container();
+                    },
+                  ),
+                ],
               ),
             ],
           ),

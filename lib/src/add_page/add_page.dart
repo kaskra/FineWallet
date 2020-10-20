@@ -310,6 +310,8 @@ class _AddPageState extends State<AddPage> {
   }
 
   Widget _buildWarning() {
+    print(_inputCurrencyId);
+    print(_userCurrencyId);
     return _inputCurrencyId != _userCurrencyId
         ? Container(
             height: 20,
