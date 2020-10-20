@@ -1,6 +1,6 @@
 extension ExtendedDateTime on DateTime {
   DateTime getFirstDateOfMonth() {
-    return DateTime.utc(year, month, 1);
+    return DateTime.utc(year, month);
   }
 
   DateTime getLastDateOfMonth() {

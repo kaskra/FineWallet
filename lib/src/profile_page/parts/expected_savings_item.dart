@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 class ExpectedSavingsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return InformationRow(
-      padding:
-          const EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0, right: 8.0),
-      text: const Text(
+    return const InformationRow(
+      padding: EdgeInsets.only(top: 8.0, bottom: 5.0, left: 8.0, right: 8.0),
+      text: Text(
         "Expected savings: ",
         style: TextStyle(fontSize: 14),
       ),

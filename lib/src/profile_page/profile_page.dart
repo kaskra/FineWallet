@@ -17,7 +17,6 @@ class ProfilePage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const StructureTitle(text: "Monthly Available Budget"),

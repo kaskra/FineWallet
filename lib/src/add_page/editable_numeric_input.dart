@@ -98,7 +98,6 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         onSaved: (value) {
           _validateAndSend(value);
         },
-        maxLines: 1,
         autofocus: true,
         autocorrect: false,
       ),

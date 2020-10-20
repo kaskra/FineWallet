@@ -25,7 +25,6 @@ class RowItem extends StatelessWidget {
       child: Container(
         padding: padding,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             FittedBox(
               fit: BoxFit.fitWidth,

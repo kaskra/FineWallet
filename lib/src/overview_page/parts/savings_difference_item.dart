@@ -22,9 +22,9 @@ class SavingsDifferenceItem extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
+            children: const <Widget>[
               RowItem(
-                amountPadding: const EdgeInsets.symmetric(vertical: 4),
+                amountPadding: EdgeInsets.symmetric(vertical: 4),
                 footerText: "Saved amount",
                 child: SavingsView(
                   textStyle:
@@ -32,7 +32,7 @@ class SavingsDifferenceItem extends StatelessWidget {
                 ),
               ),
               RowItem(
-                amountPadding: const EdgeInsets.symmetric(vertical: 4),
+                amountPadding: EdgeInsets.symmetric(vertical: 4),
                 // TODO: or Currently
                 footerText: "Current Difference",
                 child: SavingsDifferenceView(

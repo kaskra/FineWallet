@@ -97,7 +97,7 @@ class _SliderItemState extends State<SliderItem> {
           final double max = snapshot.hasData ? snapshot.data : 0;
 
           return TextField(
-            decoration: InputDecoration(border: InputBorder.none),
+            decoration: const InputDecoration(border: InputBorder.none),
             onSubmitted: (valueAsString) {
               final value = double.parse(valueAsString);
               _setMaxMonthlyBudget(value, max);
@@ -196,7 +196,6 @@ class __ValueSliderState extends State<_ValueSlider> {
             value:
                 Provider.of<BudgetNotifier>(context, listen: false)?.budget ??
                     0,
-            min: 0,
             max: max,
             divisions: 100,
           );

@@ -119,7 +119,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
     });
 
     return FittedBox(
-      child: Container(
+      child: SizedBox(
         width: _width,
         height: _height,
         child: Material(
@@ -131,7 +131,6 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
             children: <Widget>[
               Positioned(
                 left: 10,
-                bottom: null,
                 child: Icon(Icons.add,
                     size: 26, color: Theme.of(context).iconTheme.color),
               ),

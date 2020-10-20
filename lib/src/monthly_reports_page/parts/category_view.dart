@@ -78,7 +78,7 @@ class CategoryListView extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text(
+                  child: const Text(
                     "OK",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -169,7 +169,8 @@ class CategoryListView extends StatelessWidget {
             children: [
               TextSpan(
                 text: "\n${formatter.format(tx.tx.date)}",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.normal),
               )
             ],
             style: TextStyle(
@@ -185,7 +186,7 @@ class CategoryListView extends StatelessWidget {
       value: AmountString(
         tx.tx.amount * -1,
         colored: true,
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           decoration: TextDecoration.none,
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -223,7 +224,7 @@ class CategoryListView extends StatelessWidget {
         trailing: AmountString(
           amount * -1,
           colored: true,
-          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
         ),
         title: Text(categoryName),
       ),

@@ -18,11 +18,11 @@ class LatestTransactionItem extends StatefulWidget {
 }
 
 class _LatestTransactionItemState extends State<LatestTransactionItem> {
-  final PageController controller = PageController(initialPage: 0);
+  final PageController controller = PageController();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
       child: StreamBuilder<List<TransactionWithCategory>>(
         stream: Provider.of<AppDatabase>(context)

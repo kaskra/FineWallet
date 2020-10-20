@@ -18,7 +18,7 @@ class BudgetOverviewItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              RowItem(
+              const RowItem(
                 footerText: "Today",
                 child: DailyBudgetView(
                   textStyle:
@@ -27,7 +27,7 @@ class BudgetOverviewItem extends StatelessWidget {
               ),
               RowItem(
                 footerText: today().getMonthName(),
-                child: MonthlyBudgetView(
+                child: const MonthlyBudgetView(
                   textStyle:
                       TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                 ),

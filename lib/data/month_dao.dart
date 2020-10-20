@@ -82,11 +82,9 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     return (select(months)..where((month) => inMonthExp)).watchSingle();
   }
 
-  Stream<List<Month>> watchAllMonths() => (select(months)
-        ..orderBy([
-          (m) => OrderingTerm(expression: m.firstDate, mode: OrderingMode.asc)
-        ]))
-      .watch();
+  Stream<List<Month>> watchAllMonths() =>
+      (select(months)..orderBy([(m) => OrderingTerm(expression: m.firstDate)]))
+          .watch();
 
   /// Returns every month id for which a (recursive) transaction is in the month.
   Future<List<int>> getMonthIdsFromTransaction(int txOriginalId) {

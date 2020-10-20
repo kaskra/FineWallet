@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()));

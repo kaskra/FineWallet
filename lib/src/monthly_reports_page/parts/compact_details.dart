@@ -55,7 +55,6 @@ class CompactDetailsCard extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
           padding: const EdgeInsets.only(left: 14),
@@ -65,9 +64,10 @@ class CompactDetailsCard extends StatelessWidget {
                 value,
                 signed: true,
                 colored: true,
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                textStyle:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              Text(
+              const Text(
                 "Saved Amount",
                 style: TextStyle(
                   fontSize: 13,

@@ -235,7 +235,6 @@ class _AddPageState extends State<AddPage> {
       subcategoryId: _subcategory.id,
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
-      originalId: null,
       currencyId: _inputCurrencyId,
       // TODO add label once text field exists
       label: "",

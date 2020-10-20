@@ -41,7 +41,8 @@ class OverallDetail extends StatelessWidget {
                 month.income,
                 signed: true,
                 colored: true,
-                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                textStyle:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
             const ResultArrow(),
@@ -53,7 +54,8 @@ class OverallDetail extends StatelessWidget {
                 month.expense * -1,
                 signed: true,
                 colored: true,
-                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                textStyle:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
           ],
@@ -69,7 +71,8 @@ class OverallDetail extends StatelessWidget {
                 savings,
                 signed: true,
                 colored: true,
-                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                textStyle:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
           ],

@@ -134,7 +134,7 @@ class WeekOverviewTimeline extends StatelessWidget {
             heightFactor: 7,
             child: Text(
               "Could not load last weeks transactions! Error: ${snapshot.error.toString()}",
-              style: TextStyle(color: Colors.black54),
+              style: const TextStyle(color: Colors.black54),
             ),
           );
         }
@@ -144,7 +144,6 @@ class WeekOverviewTimeline extends StatelessWidget {
                 child: CircularProgressIndicator(),
               )
             : Timeline(
-                color: Colors.grey,
                 selectionColor: Theme.of(context).colorScheme.secondary,
                 items: <Widget>[
                   for (Tuple2<double, DateTime> tuple

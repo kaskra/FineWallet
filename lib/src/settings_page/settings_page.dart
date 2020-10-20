@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Settings'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -25,7 +25,6 @@ class SettingsPage extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               AppearanceSection(),

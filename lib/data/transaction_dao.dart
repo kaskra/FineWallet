@@ -122,7 +122,6 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       await deleteTransactionById(tx.originalId, beforeInsert: true);
       final tempTx = db_file.Transaction(
           id: null,
-          originalId: null,
           amount: tx.amount,
           originalAmount: tx.originalAmount,
           exchangeRate: tx.exchangeRate,
