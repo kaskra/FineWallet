@@ -113,7 +113,7 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_initialized && widget.transaction != null) {
+    if (!_initialized) {
       _getTransactionValues();
     }
 
