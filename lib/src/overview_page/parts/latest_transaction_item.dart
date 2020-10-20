@@ -1,11 +1,11 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
@@ -18,13 +18,28 @@ class LatestTransactionItem extends StatefulWidget {
 }
 
 class _LatestTransactionItemState extends State<LatestTransactionItem> {
-  final PageController controller = PageController(initialPage: 0);
+  final PageController controller = PageController();
+
+  int _userCurrencyId = 1;
+
+  Future loadUserCurrency() async {
+    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .getUserCurrency())
+        ?.id;
+  }
+
+  @override
+  void initState() {
+    loadUserCurrency();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
-      child: StreamBuilder<List<TransactionWithCategory>>(
+      child: StreamBuilder<List<TransactionWithCategoryAndCurrency>>(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchNLatestTransactions(numLatestTransactions),
@@ -63,7 +78,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   }
 
   Widget _buildLatestTransactionItem(
-      BuildContext context, TransactionWithCategory snapshotItem) {
+      BuildContext context, TransactionWithCategoryAndCurrency snapshotItem) {
     return DecoratedCard(
       padding: 0,
       child: InkWell(
@@ -101,15 +116,32 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                   ),
                 ],
               ),
-              Text(
-                "${snapshotItem.tx.isExpense && snapshotItem.tx.amount > 0 ? "-" : ""}"
-                "${snapshotItem.tx.amount.toStringAsFixed(2)}"
-                "${Provider.of<LocalizationNotifier>(context).currency}",
-                style: TextStyle(
-                  color: snapshotItem.tx.isExpense ? Colors.red : Colors.green,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AmountString(
+                    snapshotItem.tx.amount *
+                        (snapshotItem.tx.isExpense ? -1 : 1),
+                    colored: true,
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (_userCurrencyId != snapshotItem.tx.currencyId)
+                    ForeignAmountString(
+                      snapshotItem.tx.originalAmount *
+                          (snapshotItem.tx.isExpense ? -1 : 1),
+                      currencySymbol: snapshotItem.currency.symbol,
+                      textStyle: TextStyle(
+                          fontSize: 10,
+                          color: snapshotItem.tx.isExpense
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold),
+                    )
+                ],
               ),
             ],
           ),
@@ -134,7 +166,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   /// Before deleting the transaction, a confirm dialog will show,
   /// requiring the user to authorize the deletion.
   ///
-  Future _deleteItems(TransactionWithCategory tx) async {
+  Future _deleteItems(TransactionWithCategoryAndCurrency tx) async {
     if (await showConfirmDialog(
         context, "Delete transaction?", "This will delete the transaction.")) {
       Provider.of<AppDatabase>(context, listen: false)
@@ -144,7 +176,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   }
 
   Future _showActions(
-      BuildContext context, TransactionWithCategory snapshot) async {
+      BuildContext context, TransactionWithCategoryAndCurrency snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(
@@ -159,7 +191,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 "Delete",
                 style: TextStyle(color: Colors.white),
               ),
-              leading: Icon(
+              leading: const Icon(
                 Icons.delete_outline,
                 color: Colors.white,
               ),
@@ -169,21 +201,22 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               },
             ),
           ),
-          DecoratedCard(
-            elevation: 0,
-            padding: 2,
-            child: ListTile(
-              enabled: UserSettings.getTXShare(),
-              title: const Text("Share"),
-              leading: Icon(
-                Icons.share,
-                color: Theme.of(context).colorScheme.onSecondary,
+          if (UserSettings.getTXShare())
+            DecoratedCard(
+              elevation: 0,
+              padding: 2,
+              child: ListTile(
+                enabled: UserSettings.getTXShare(),
+                title: const Text("Share"),
+                leading: Icon(
+                  Icons.share,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+                onTap: () {
+                  print("Tapped share");
+                },
               ),
-              onTap: () {
-                print("Tapped share");
-              },
             ),
-          ),
           DecoratedCard(
             padding: 2,
             elevation: 0,
@@ -204,7 +237,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 );
               },
             ),
-          ),
+          )
         ],
       ),
     );

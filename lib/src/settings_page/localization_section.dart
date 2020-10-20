@@ -1,4 +1,4 @@
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:FineWallet/src/widgets/simple_pages/selection_page.dart';
@@ -21,7 +21,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
   @override
   void initState() {
     setState(() {
-      _selectedCurrency = UserSettings.getCurrency();
+      _selectedCurrency = UserSettings.getInputCurrency();
       _selectedLanguage = UserSettings.getLanguage();
     });
     super.initState();
@@ -78,46 +78,56 @@ class _LocalizationSectionState extends State<LocalizationSection> {
   }
 
   SectionItem _buildCurrency() {
-    // TODO just placeholders
-    // TODO String should be currency abbrev., not symbol
-    final items = <int, String>{};
-    items.putIfAbsent(1, () => "\$");
-    items.putIfAbsent(2, () => "€");
-
     return SectionItem(
-      title: "Currency Symbol",
-      trailing: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () async {
-            final int res = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SelectionPage(
-                      pageTitle: "Currencies",
-                      selectedIndex: UserSettings.getCurrency(),
-                      data: items,
-                    )));
-            if (res != null) {
-              UserSettings.setCurrency(res);
-              // TODO get symbol from database and provide it
-              Provider.of<LocalizationNotifier>(context, listen: false)
-                  .setCurrencySymbol(res);
-              setState(() {
-                _selectedCurrency = res;
-              });
+      title: "Input Currency",
+      trailing: FutureBuilder<List<Currency>>(
+          future:
+              Provider.of<AppDatabase>(context).currencyDao.getAllCurrencies(),
+          builder: (context, snapshot) {
+            final items = <int, String>{};
+
+            if (snapshot.hasData) {
+              items.addEntries(
+                  snapshot.data.map((c) => MapEntry(c.id, c.abbrev)));
             }
-          },
-          child: Row(
-            children: <Widget>[
-              // TODO display name of currency (abbrev) instead of symbol
-              Text(items[_selectedCurrency]),
-              Icon(
-                Icons.keyboard_arrow_right,
-                color: Theme.of(context).colorScheme.onBackground,
+
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () async {
+                  final int res = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SelectionPage(
+                        pageTitle: "Currencies",
+                        selectedIndex: UserSettings.getInputCurrency(),
+                        data: items,
+                      ),
+                    ),
+                  );
+                  if (res != null) {
+                    final currency = snapshot.data[res - 1];
+                    if (currency != null) {
+                      UserSettings.setInputCurrency(res);
+                      setState(() {
+                        _selectedCurrency = res;
+                      });
+                    }
+                  }
+                },
+                child: snapshot.hasData
+                    ? Row(
+                        children: <Widget>[
+                          Text(items[_selectedCurrency]),
+                          Icon(
+                            Icons.keyboard_arrow_right,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                        ],
+                      )
+                    : const Text("Loading..."),
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 }

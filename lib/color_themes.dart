@@ -10,40 +10,40 @@ import 'package:FineWallet/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-final ColorScheme colorScheme = ColorScheme(
+const ColorScheme colorScheme = ColorScheme(
   primary: Colors.orange,
   primaryVariant: Colors.orange,
   onPrimary: Colors.white,
   //
   secondary: Colors.orange,
   secondaryVariant: Colors.white,
-  onSecondary: const Color(0xFF151515),
+  onSecondary: Color(0xFF151515),
   //
-  surface: const Color(0xFF151515),
+  surface: Color(0xFF151515),
   onSurface: Colors.white,
   //
-  background: const Color(0xFFFFFFFF),
-  onBackground: const Color(0xFF151515),
+  background: Color(0xFFFFFFFF),
+  onBackground: Color(0xFF151515),
   //
   error: Colors.red,
-  onError: const Color(0xFF151515),
+  onError: Color(0xFF151515),
   //
   brightness: Brightness.light,
 );
 
-final ColorScheme darkColorScheme = ColorScheme(
-  primary: const Color(0xFF212121),
-  primaryVariant: const Color(0xFF1a1a1a),
+const ColorScheme darkColorScheme = ColorScheme(
+  primary: Color(0xFF212121),
+  primaryVariant: Color(0xFF1a1a1a),
   onPrimary: Colors.orange,
   //
   secondary: Colors.orange,
-  secondaryVariant: const Color(0xFFc66900),
+  secondaryVariant: Color(0xFFc66900),
   onSecondary: Colors.white,
   //
-  surface: const Color(0xFF151515),
+  surface: Color(0xFF151515),
   onSurface: Colors.white,
   //
-  background: const Color(0xFF212121),
+  background: Color(0xFF212121),
   onBackground: Colors.white,
   //
   error: Colors.red,
@@ -53,34 +53,34 @@ final ColorScheme darkColorScheme = ColorScheme(
 );
 
 const TextTheme textTheme = TextTheme(
-  body2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  bodyText1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   caption: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  display1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  display2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  display3: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  display4: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  headline4: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  headline3: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  headline2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  headline1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  headline5: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   overline: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  subhead: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  subtitle: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  title: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  body1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  subtitle1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  subtitle2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  headline6: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
+  bodyText2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
   button: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
 );
 
 const TextTheme darkTextTheme = TextTheme(
-  body2: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  bodyText1: TextStyle(color: Colors.white, fontFamily: "roboto"),
   caption: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  display1: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  display2: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  display3: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  display4: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline4: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline3: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline2: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline1: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline5: TextStyle(color: Colors.white, fontFamily: "roboto"),
   overline: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  subhead: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  subtitle: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  title: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  body1: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  subtitle1: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  subtitle2: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  headline6: TextStyle(color: Colors.white, fontFamily: "roboto"),
+  bodyText2: TextStyle(color: Colors.white, fontFamily: "roboto"),
   button: TextStyle(color: Colors.white, fontFamily: "roboto"),
 );
 
@@ -121,7 +121,7 @@ final ThemeData standardTheme = ThemeData(
   hintColor: const Color(0xFF212121),
   appBarTheme: AppBarTheme(
       textTheme: TextTheme(
-          title: TextStyle(
+          headline6: TextStyle(
               color: colorScheme.onSurface,
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -167,7 +167,7 @@ final ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: darkColorScheme.primary,
   appBarTheme: AppBarTheme(
       textTheme: TextTheme(
-          title: TextStyle(
+          headline6: TextStyle(
               color: colorScheme.onSurface,
               fontSize: 20,
               fontWeight: FontWeight.w600,

@@ -8,6 +8,7 @@
 
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/converters/datetime_converter.dart';
+import 'package:FineWallet/data/currency_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
     as moor_init;
@@ -20,6 +21,11 @@ class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   RealColumn get amount => real().customConstraint("CHECK (amount > 0)")();
+
+  RealColumn get originalAmount =>
+      real().customConstraint("CHECK (amount > 0)")();
+
+  RealColumn get exchangeRate => real()();
 
   IntColumn get subcategoryId =>
       integer().customConstraint("REFERENCES subcategories(id)")();
@@ -113,6 +119,14 @@ class Currencies extends Table {
   RealColumn get exchangeRate => real().withDefault(const Constant(1.0))();
 }
 
+@DataClassName('UserProfile')
+class UserProfiles extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get currencyId =>
+      integer().customConstraint("REFERENCES currencies(id)")();
+}
+
 @UseMoor(
   tables: [
     Transactions,
@@ -122,17 +136,24 @@ class Currencies extends Table {
     RecurrenceTypes,
     Languages,
     Currencies,
+    UserProfiles,
   ],
-  daos: [TransactionDao, CategoryDao, MonthDao],
+  daos: [
+    TransactionDao,
+    CategoryDao,
+    MonthDao,
+    CurrencyDao,
+  ],
   queries: {
     "getTimestamp":
-        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp"
+        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
+    "getUserProfile": "SELECT * FROM user_profiles WHERE id=1",
   },
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super(FlutterQueryExecutor.inDatabaseFolder(
-            path: 'db.sqlite', logStatements: true));
+            path: 'database.sqlite', logStatements: true));
 
   @override
   int get schemaVersion => 1;
@@ -142,6 +163,10 @@ class AppDatabase extends _$AppDatabase {
         onCreate: (Migrator m) {
           return m.createAll();
         },
+        onUpgrade: (migration, from, to) {
+          // migrate_1_2(migration, from, to, this);
+          return;
+        },
         beforeOpen: (details) async {
           await customStatement("PRAGMA foreign_keys = ON");
 
@@ -150,7 +175,7 @@ class AppDatabase extends _$AppDatabase {
             await into(months).insert(moor_init.currentMonth);
 
             await batch((b) {
-              b.insertAll(recurrenceTypes, moor_init.recurrences);
+              b.insertAll(recurrenceTypes, moor_init.recurrenceTypes);
 
               for (final catWithSubs in moor_init.categories) {
                 b.insert(categories, catWithSubs.category,
@@ -159,6 +184,10 @@ class AppDatabase extends _$AppDatabase {
 
               b.insertAll(currencies, moor_init.currencies);
               b.insertAll(languages, moor_init.languages);
+
+              // TODO remove once intro slider / tutorial is done
+              b.insert(
+                  userProfiles, UserProfilesCompanion.insert(currencyId: 2));
             });
 
             // Has to be done in extra batch, because
@@ -174,16 +203,6 @@ class AppDatabase extends _$AppDatabase {
                 "AS SELECT * FROM transactions WHERE is_expense = 1");
             await customStatement("CREATE VIEW IF NOT EXISTS incomes "
                 "AS SELECT * FROM transactions WHERE is_expense = 0");
-            await customStatement(
-                "CREATE VIEW IF NOT EXISTS transactions_with_categories "
-                "AS SELECT * FROM transactions t "
-                "INNER JOIN subcategories s "
-                "ON s.id = t.subcategory_id");
-            await customStatement(
-                "CREATE VIEW IF NOT EXISTS transactions_with_months "
-                "AS SELECT * FROM transactions t "
-                "INNER JOIN months m "
-                "ON t.month_id = m.id");
           }
 
           // Check if in new month and update accordingly
@@ -193,7 +212,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Returns the current maximum AUTO INCREMENT value of table transactions.
   Future<int> maxTransactionId() {
-    final res = customSelectQuery(
+    final res = customSelect(
         "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
     return res.map((row) => row.readInt("seq")).getSingle();
   }

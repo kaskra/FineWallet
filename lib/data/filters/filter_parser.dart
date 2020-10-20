@@ -26,8 +26,7 @@ class TransactionFilterParser
     const converter = DateTimeConverter();
     final Queue<String> queue = Queue<String>();
     if (settings.category != null) {
-      queue.add(
-          "${tableName != "" ? "$tableName." : ""}category_id = ${settings.category}");
+      queue.add("subcategories.category_id = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
@@ -72,12 +71,14 @@ class TransactionFilterParser
   /// Parse the whole [TransactionFilterSettings] object
   /// into one WHERE-clause.
   @override
-  String parse({String tableName = ""}) {
+  String parse({String tableName = "", bool useInCustomExp = false}) {
     final Queue<String> args = _getQueueOfArguments(tableName: tableName);
     if (args.isEmpty) return "";
 
     final buffer = StringBuffer();
-    buffer.write(" WHERE ");
+    if (!useInCustomExp) {
+      buffer.write(" WHERE ");
+    }
     int index = 0;
     for (final query in args) {
       if (index > 0) {

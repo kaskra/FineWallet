@@ -1,6 +1,8 @@
+import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/category_dialog.dart';
@@ -22,7 +24,7 @@ class AddPage extends StatefulWidget {
   }) : super(key: key);
 
   final bool isExpense;
-  final TransactionWithCategory transaction;
+  final TransactionWithCategoryAndCurrency transaction;
 
   @override
   _AddPageState createState() => _AddPageState();
@@ -30,7 +32,11 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   /// The transactions that the user wants to edit.
-  TransactionWithCategory _transaction;
+  TransactionWithCategoryAndCurrency _transaction;
+
+  /// The input currency id
+  int _inputCurrencyId = UserSettings.getInputCurrency();
+  int _userCurrencyId = 1;
 
   /// The flag that signals if the page is loaded in edit or normal mode.
   bool _editing = false;
@@ -54,11 +60,23 @@ class _AddPageState extends State<AddPage> {
   bool _hasError = false;
   bool _initialized = false;
 
+  /// Get transaction if a transactions is given as input, then translate the
+  /// resulting values into the state variables.
+  ///
+  /// This function is only executed once.
+  ///
   Future _getTransactionValues() async {
     if (widget.transaction != null) {
       _transaction = widget.transaction;
       _editing = true;
-      _amount = _transaction.tx.amount;
+
+      _inputCurrencyId = _transaction.tx.currencyId;
+
+      // Get the original value of the transaction (before exchanging to user currency)
+      _amount =
+          double.parse((_transaction.tx.originalAmount).toStringAsFixed(2));
+
+      // Make sure that currency-exchanged value is rounded to 2 decimals
       _date = _transaction.tx.date;
       _subcategory = _transaction.sub;
       _isRecurring = _transaction.tx.isRecurring;
@@ -83,6 +101,11 @@ class _AddPageState extends State<AddPage> {
             .first;
       }
     }
+    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .getUserCurrency())
+        ?.id;
+
     setState(() {
       _initialized = true;
     });
@@ -90,7 +113,7 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_initialized && widget.transaction != null) {
+    if (!_initialized) {
       _getTransactionValues();
     }
 
@@ -103,7 +126,6 @@ class _AddPageState extends State<AddPage> {
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: true,
         iconTheme: Theme.of(context).iconTheme,
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -212,12 +234,13 @@ class _AddPageState extends State<AddPage> {
       isExpense: widget.isExpense,
       isRecurring: _isRecurring,
       amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
       monthId: null,
       subcategoryId: _subcategory.id,
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
-      originalId: null,
-      currencyId: UserSettings.getCurrency(),
+      currencyId: _inputCurrencyId,
       // TODO add label once text field exists
       label: "",
     );
@@ -241,12 +264,14 @@ class _AddPageState extends State<AddPage> {
       isExpense: widget.isExpense,
       isRecurring: _isRecurring,
       amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
       monthId: null,
       subcategoryId: _subcategory.id,
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: _transaction.tx.originalId,
-      currencyId: UserSettings.getCurrency(),
+      currencyId: _inputCurrencyId,
       // TODO add label once text field exists
       label: "",
     );
@@ -267,6 +292,7 @@ class _AddPageState extends State<AddPage> {
   /// Builds the body structure .
   Widget _buildBody() {
     final List<Widget> items = [
+      _buildWarning(),
       ..._buildAmountRow(),
       ..._buildCategoryRow(),
       ..._buildDateRow(),
@@ -283,6 +309,24 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
+  Widget _buildWarning() {
+    print(_inputCurrencyId);
+    print(_userCurrencyId);
+    return _inputCurrencyId != _userCurrencyId
+        ? Container(
+            height: 20,
+            color: Theme.of(context).accentColor,
+            child: const Center(
+              child: Text(
+                "You are currently not using your home currency!",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          )
+        : Container();
+  }
+
+  // TODO add a hint when input currency != user currency when reworking add page!
   List<Widget> _buildAmountRow() {
     return [
       const Padding(
@@ -294,6 +338,7 @@ class _AddPageState extends State<AddPage> {
         isChild: false,
         child: EditableNumericInputText(
           defaultValue: _amount,
+          currencyId: _inputCurrencyId,
           onChanged: (value) {
             setState(() {
               _amount = value;
@@ -304,7 +349,7 @@ class _AddPageState extends State<AddPage> {
           },
           onError: (value) {
             if (value) {
-              print("Got error! No real double value!");
+              print("Got error! No real double value ${_amount.toString()}!");
             }
             setState(() {
               _hasError = value;
@@ -366,12 +411,27 @@ class _AddPageState extends State<AddPage> {
         isChild: false,
         onTap: () async {
           final pickedDate = await showDatePicker(
-            context: context,
-            initialDate: _date,
-            firstDate: DateTime(2000, 1, 1),
-            lastDate: DateTime(2050, 12, 31),
-            initialDatePickerMode: DatePickerMode.day,
-          );
+              context: context,
+              initialDate: _date,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2050, 12, 31),
+              builder: (context, child) {
+                // Needed to correct the issue that the selection marker in
+                // date picker had the same color as the background.
+                return Theme(
+                  data: Provider.of<ThemeNotifier>(context).isDarkMode
+                      ? ThemeData.dark().copyWith(
+                          colorScheme: darkColorScheme,
+                        )
+                      : ThemeData.light().copyWith(
+                          colorScheme:
+                              colorScheme.copyWith(onSurface: Colors.black),
+                          buttonTheme: const ButtonThemeData(
+                              textTheme: ButtonTextTheme.primary),
+                        ),
+                  child: child,
+                );
+              });
           if (pickedDate != null) {
             setState(() {
               _date = pickedDate;
@@ -450,12 +510,25 @@ class _AddPageState extends State<AddPage> {
         onTap: () async {
           final DateTime date = _date.add(const Duration(days: 1));
           final pickedDate = await showDatePicker(
-            context: context,
-            initialDate: _untilDate,
-            firstDate: DateTime(date.year, date.month, date.day),
-            lastDate: DateTime(2050, 12, 31),
-            initialDatePickerMode: DatePickerMode.day,
-          );
+              context: context,
+              initialDate: _untilDate,
+              firstDate: DateTime(date.year, date.month, date.day),
+              lastDate: DateTime(2050, 12, 31),
+              builder: (context, child) {
+                return Theme(
+                  data: Provider.of<ThemeNotifier>(context).isDarkMode
+                      ? ThemeData.dark().copyWith(
+                          colorScheme: darkColorScheme,
+                        )
+                      : ThemeData.light().copyWith(
+                          colorScheme:
+                              colorScheme.copyWith(onSurface: Colors.black),
+                          buttonTheme: const ButtonThemeData(
+                              textTheme: ButtonTextTheme.primary),
+                        ),
+                  child: child,
+                );
+              });
           if (pickedDate != null) {
             setState(() {
               _untilDate = pickedDate;

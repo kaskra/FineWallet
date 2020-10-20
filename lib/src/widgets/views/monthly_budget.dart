@@ -8,7 +8,7 @@
 
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,9 +25,9 @@ class MonthlyBudgetView extends StatelessWidget {
           .watchMonthlyBudget(today()),
       initialData: 0.0,
       builder: (context, snapshot) {
-        return Text(
-          "${snapshot.hasData ? snapshot.data.toStringAsFixed(2) : "0.00"}${Provider.of<LocalizationNotifier>(context).currency}",
-          style: textStyle,
+        return AmountString(
+          snapshot.data,
+          textStyle: textStyle,
         );
       },
     );

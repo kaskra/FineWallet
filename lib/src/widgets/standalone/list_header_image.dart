@@ -35,7 +35,8 @@ class ListHeaderImage extends StatelessWidget {
                   ),
                   Text(
                     subtitle ?? "",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w600),
                   )
                 ],
               ),

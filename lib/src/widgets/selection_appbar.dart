@@ -11,16 +11,16 @@ import 'package:FineWallet/data/user_settings.dart';
 import 'package:flutter/material.dart';
 
 class SelectionAppBar<T> extends StatefulWidget implements PreferredSizeWidget {
-  SelectionAppBar(
-      {Key key,
-      @required this.title,
-      this.selectedItems,
-      this.onDelete,
-      this.onClose,
-      this.onEdit,
-      this.onShare})
-      : preferredSize = Size.fromHeight(kToolbarHeight),
-        super(key: key);
+  const SelectionAppBar({
+    Key key,
+    @required this.title,
+    this.selectedItems,
+    this.onDelete,
+    this.onClose,
+    this.onEdit,
+    this.onShare,
+    this.preferredSize = const Size.fromHeight(kToolbarHeight),
+  }) : super(key: key);
 
   final Map<int, T> selectedItems;
   final String title;

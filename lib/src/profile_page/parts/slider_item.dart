@@ -24,12 +24,12 @@ class _SliderItemState extends State<SliderItem> {
     final m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
 
     setState(() {
       _currentMonth = m;
     });
-    _textEditingController.text = m.maxBudget.toStringAsFixed(2);
+    _textEditingController.text = m?.maxBudget?.toStringAsFixed(2);
   }
 
   /// Update the current month by updating the current monthly available budget in the entity.
@@ -40,7 +40,7 @@ class _SliderItemState extends State<SliderItem> {
         maxBudget: Provider.of<BudgetNotifier>(context, listen: false).budget);
     Provider.of<AppDatabase>(context, listen: false)
         .monthDao
-        .updateMonth(month.createCompanion(true));
+        .updateMonth(month.toCompanion(true));
   }
 
   /// Build the center row with slider, suffix and the slider-depending textfield.
@@ -57,7 +57,7 @@ class _SliderItemState extends State<SliderItem> {
                   _textEditingController.text = value.toStringAsFixed(2),
             ),
             Text(
-              "${Provider.of<LocalizationNotifier>(context).currency} ",
+              "${Provider.of<LocalizationNotifier>(context).userCurrency} ",
               style: const TextStyle(fontSize: 16),
             ),
             _buildDependingTextField(),
@@ -97,7 +97,7 @@ class _SliderItemState extends State<SliderItem> {
           final double max = snapshot.hasData ? snapshot.data : 0;
 
           return TextField(
-            decoration: InputDecoration(border: InputBorder.none),
+            decoration: const InputDecoration(border: InputBorder.none),
             onSubmitted: (valueAsString) {
               final value = double.parse(valueAsString);
               _setMaxMonthlyBudget(value, max);
@@ -147,7 +147,7 @@ class __ValueSliderState extends State<_ValueSlider> {
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false)
-        .setBudget(month.maxBudget);
+        .setBudget(month?.maxBudget);
     setState(() {
       _loaded = true;
     });
@@ -196,7 +196,6 @@ class __ValueSliderState extends State<_ValueSlider> {
             value:
                 Provider.of<BudgetNotifier>(context, listen: false)?.budget ??
                     0,
-            min: 0,
             max: max,
             divisions: 100,
           );

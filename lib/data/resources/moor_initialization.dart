@@ -132,7 +132,7 @@ MonthsCompanion currentMonth = MonthsCompanion.insert(
   lastDate: today().getLastDateOfMonth(),
 );
 
-List<RecurrenceTypesCompanion> recurrences = [
+List<RecurrenceTypesCompanion> recurrenceTypes = [
   RecurrenceTypesCompanion.insert(name: "Daily"),
   RecurrenceTypesCompanion.insert(name: "Weekly"),
   RecurrenceTypesCompanion.insert(name: "Monthly"),
@@ -141,7 +141,7 @@ List<RecurrenceTypesCompanion> recurrences = [
 
 List<CurrenciesCompanion> currencies = [
   CurrenciesCompanion.insert(abbrev: "USD", symbol: "\$"),
-  CurrenciesCompanion.insert(abbrev: "EUR", symbol: "\€"),
+  CurrenciesCompanion.insert(abbrev: "EUR", symbol: "€"),
 ];
 
 List<LanguagesCompanion> languages = [

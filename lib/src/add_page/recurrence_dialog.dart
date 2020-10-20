@@ -57,7 +57,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                     print("Wrong Recurrence type or name!");
                   }
                 },
-                child: Text(
+                child: const Text(
                   "OK",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -123,7 +123,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
         color: _recurrenceType == rec.type
             ? Theme.of(context).colorScheme.secondary
             : Colors.grey,
-        child: Container(
+        child: SizedBox(
           height: 35,
           child: InkWell(
             onTap: () {

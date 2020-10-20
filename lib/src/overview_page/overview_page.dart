@@ -7,13 +7,14 @@ import 'package:FineWallet/src/widgets/structure/structure_title.dart';
 import 'package:flutter/material.dart';
 
 class OverviewPage extends StatelessWidget {
+  const OverviewPage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const StructureTitle(text: "Remaining Budget"),

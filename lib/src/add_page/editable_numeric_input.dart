@@ -1,4 +1,4 @@
-import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/data/moor_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 class EditableNumericInputText extends StatefulWidget {
   final double defaultValue;
+  final int currencyId;
 
   final Function(double) onChanged;
   final Function(bool) onError;
@@ -13,9 +14,11 @@ class EditableNumericInputText extends StatefulWidget {
   const EditableNumericInputText({
     Key key,
     this.defaultValue = 0.0,
+    @required this.currencyId,
     @required this.onChanged,
     this.onError,
-  }) : super(key: key);
+  })  : assert(currencyId != null),
+        super(key: key);
 
   @override
   _EditableNumericInputTextState createState() =>
@@ -27,6 +30,9 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
 
   bool _foundError = false;
 
+  bool _loadedSuffixSymbol = false;
+  String _suffixSymbol = "";
+
   @override
   void initState() {
     if (widget.defaultValue != null) {
@@ -37,11 +43,26 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
     }
     _controller.selection =
         TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+
     super.initState();
+  }
+
+  Future _loadSuffixSymbol() async {
+    final currency = await Provider.of<AppDatabase>(context)
+        .currencyDao
+        .getCurrencyById(widget.currencyId);
+    setState(() {
+      _suffixSymbol = currency.symbol;
+      _loadedSuffixSymbol = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_loadedSuffixSymbol) {
+      _loadSuffixSymbol();
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: _foundError ? Colors.red.withOpacity(0.8) : Colors.transparent,
@@ -58,7 +79,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
             color: Theme.of(context).colorScheme.onBackground,
             fontSize: 16,
           ),
-          suffixText: Provider.of<LocalizationNotifier>(context).currency,
+          suffixText: _suffixSymbol,
         ),
         onChanged: (String value) {
           value = value.replaceAll(",", ".");
@@ -77,7 +98,6 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         onSaved: (value) {
           _validateAndSend(value);
         },
-        maxLines: 1,
         autofocus: true,
         autocorrect: false,
       ),

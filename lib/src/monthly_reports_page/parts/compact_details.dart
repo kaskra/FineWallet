@@ -1,13 +1,12 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/details_bottom_sheet.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CompactDetailsCard extends StatelessWidget {
   final MonthWithDetails month;
@@ -21,14 +20,13 @@ class CompactDetailsCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           DecoratedCard(
-            padding: 10,
             child: Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: Center(
                     child: Text(
-                      "${month.month.firstDate.getMonthName()} "
+                      "${month.month.firstDate.getMonthName()}"
                       ", ${month.month.firstDate.year}",
                       style: TextStyle(
                           fontSize: 16,
@@ -38,8 +36,8 @@ class CompactDetailsCard extends StatelessWidget {
                   ),
                 ),
                 UsedBudgetBar(
-                  padding: const EdgeInsets.only(
-                      top: 0, left: 10, right: 10, bottom: 5),
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                   model: month,
                 ),
                 _buildDetails(context)
@@ -57,20 +55,19 @@ class CompactDetailsCard extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
           padding: const EdgeInsets.only(left: 14),
           child: Column(
             children: <Widget>[
-              Text(
-                "${value > 0 ? "+" : ""}${value.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-                style: TextStyle(
-                    color: value > 0 ? Colors.green : Colors.red,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600),
+              AmountString(
+                value,
+                signed: true,
+                colored: true,
+                textStyle:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              Text(
+              const Text(
                 "Saved Amount",
                 style: TextStyle(
                   fontSize: 13,
@@ -97,12 +94,21 @@ class CompactDetailsCard extends StatelessWidget {
         elevation: 4,
         height: 30,
         color: Theme.of(context).colorScheme.secondary,
-        child: Text(
-          "More Details",
-          style: TextStyle(
+        child: Row(
+          children: <Widget>[
+            Text(
+              "More Details",
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600),
+            ),
+            Icon(
+              Icons.expand_more,
+              size: 18,
               color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 13,
-              fontWeight: FontWeight.w600),
+            )
+          ],
         ),
       ),
     );

@@ -11,8 +11,8 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
+import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/timeline.dart';
 import 'package:FineWallet/src/widgets/standalone/timestamp.dart';
 import 'package:FineWallet/utils.dart';
@@ -55,7 +55,10 @@ class WeekOverviewTimeline extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildDayName(date, isToday, textStyle),
-            _buildAmountString(budget, numberTextStyle),
+            AmountString(
+              budget * -1,
+              textStyle: numberTextStyle,
+            ),
           ],
         ),
       ),
@@ -71,14 +74,6 @@ class WeekOverviewTimeline extends StatelessWidget {
         onChangeSelectionMode: (s) {},
         filterSettings: TransactionFilterSettings(day: date, expenses: true),
       ),
-    );
-  }
-
-  Widget _buildAmountString(double budget, TextStyle textStyle) {
-    return Text(
-      "${budget > 0 ? "-" : ""}${budget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
-      maxLines: 1,
-      style: textStyle,
     );
   }
 
@@ -105,7 +100,7 @@ class WeekOverviewTimeline extends StatelessWidget {
   /// Input
   /// -----
   /// [AsyncSnapshot] with the query result, which consists of the date
-  /// in milliseconds since epoch and the sum of all expenses on that day.
+  /// and the sum of all expenses on that day.
   ///
   /// Return
   /// ------
@@ -139,18 +134,16 @@ class WeekOverviewTimeline extends StatelessWidget {
             heightFactor: 7,
             child: Text(
               "Could not load last weeks transactions! Error: ${snapshot.error.toString()}",
-              style: TextStyle(color: Colors.black54),
+              style: const TextStyle(color: Colors.black54),
             ),
           );
         }
-
         return !snapshot.hasData
             ? const Center(
                 heightFactor: 7,
                 child: CircularProgressIndicator(),
               )
             : Timeline(
-                color: Colors.grey,
                 selectionColor: Theme.of(context).colorScheme.secondary,
                 items: <Widget>[
                   for (Tuple2<double, DateTime> tuple

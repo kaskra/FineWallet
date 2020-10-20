@@ -38,8 +38,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   TransactionFilterSettings _filterSettings;
-  final Map<int, TransactionWithCategory> _selectedItems =
-      <int, TransactionWithCategory>{};
+  final Map<int, TransactionWithCategoryAndCurrency> _selectedItems =
+      <int, TransactionWithCategoryAndCurrency>{};
   bool _isSelectionActive = false;
 
   /// The history filter state that holds every filter setting.
@@ -47,8 +47,18 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Used to synchronize between the different setting rows.
   HistoryFilterState _filterState = HistoryFilterState();
 
+  int _userCurrencyId = 1;
+
+  Future loadUserCurrency() async {
+    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .getUserCurrency())
+        ?.id;
+  }
+
   @override
   void initState() {
+    loadUserCurrency();
     setState(() {
       _filterSettings = widget.filterSettings;
       if (widget.filterSettings == null) {
@@ -104,7 +114,17 @@ class _HistoryPageState extends State<HistoryPage> {
             });
             _handleFilterSettings();
           },
-        )
+        ),
+        HistoryFilterItem(
+          initialValue: _filterState.showFuture,
+          title: "Future transactions",
+          onChanged: (b) {
+            setState(() {
+              _filterState.showFuture = b;
+            });
+            _handleFilterSettings();
+          },
+        ),
       ],
     );
   }
@@ -114,22 +134,26 @@ class _HistoryPageState extends State<HistoryPage> {
       _filterSettings = TransactionFilterSettings.beforeDate(today());
     });
     if (widget.showFilters) {
+      _filterSettings = TransactionFilterSettings();
+
+      if (!_filterState.showFuture) {
+        _filterSettings = _filterSettings.copyWith(before: today());
+      }
+
       if (_filterState.onlyExpenses && _filterState.onlyIncomes) {
         return;
       }
 
-      _filterSettings = TransactionFilterSettings(
-        before: today(),
-        incomes: _filterState.onlyIncomes,
-        expenses: _filterState.onlyExpenses,
-      );
+      _filterSettings = _filterSettings.copyWith(
+          incomes: _filterState.onlyIncomes,
+          expenses: _filterState.onlyExpenses);
     }
   }
 
   Widget _buildSelectionAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: SelectionAppBar<TransactionWithCategory>(
+      child: SelectionAppBar<TransactionWithCategoryAndCurrency>(
         title: "FineWallet",
         selectedItems: _selectedItems,
         onClose: () => _closeSelection(),
@@ -141,12 +165,12 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildHistoryList() {
-    return StreamBuilder<List<TransactionWithCategory>>(
+    return StreamBuilder<List<TransactionWithCategoryAndCurrency>>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchTransactionsWithFilter(_filterSettings),
       builder: (BuildContext context,
-          AsyncSnapshot<List<TransactionWithCategory>> snapshot) {
+          AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.isNotEmpty) {
             return _buildItems(snapshot.data);
@@ -160,7 +184,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  /// Returns a [ListView] containing every queried [TransactionWithCategory].
+  /// Returns a [ListView] containing every queried [TransactionWithCategoryAndCurrency].
   ///
   /// Before every new date in the list, a [HistoryDateTitle] is added to
   /// show to which date the following [HistoryItem]s belong.
@@ -170,14 +194,14 @@ class _HistoryPageState extends State<HistoryPage> {
   ///
   /// Input
   /// -----
-  /// List of [TransactionWithCategory] to display.
+  /// List of [TransactionWithCategoryAndCurrency] to display.
   ///
   /// Return
   /// -----
   /// [ListView] containing [HistoryItem], [HistoryMonthDivider]
   /// and [HistoryDateTitle].
   ///
-  Widget _buildItems(List<TransactionWithCategory> data) {
+  Widget _buildItems(List<TransactionWithCategoryAndCurrency> data) {
     final items = <Widget>[];
 
     DateTime lastDate = data.first.tx.date;
@@ -205,21 +229,22 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  /// Returns the [HistoryItem] for a specific [TransactionWithCategory]
+  /// Returns the [HistoryItem] for a specific [TransactionWithCategoryAndCurrency]
   /// that is passed in.
   ///
   /// Input
   /// -----
-  /// [TransactionWithCategory] to display in history.
+  /// [TransactionWithCategoryAndCurrency] to display in history.
   ///
   /// Return
   /// ------
   /// [HistoryItem] with transaction information.
   ///
-  Widget _buildItem(TransactionWithCategory d) {
+  Widget _buildItem(TransactionWithCategoryAndCurrency d) {
     return HistoryItem(
       key: Key(d.hashCode.toString()),
       transaction: d,
+      userCurrencyId: _userCurrencyId,
       isSelected: _selectedItems.containsKey(d.tx.originalId),
       isSelectionActive: _isSelectionActive,
       onSelect: (selected) {
@@ -240,9 +265,10 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Input
   /// -----
   /// - [bool] received from a item.
-  /// - [TransactionWithCategory] which is displayed on the item.
+  /// - [TransactionWithCategoryAndCurrency] which is displayed on the item.
   ///
-  void _toggleSelectionMode(bool selected, TransactionWithCategory data) {
+  void _toggleSelectionMode(
+      bool selected, TransactionWithCategoryAndCurrency data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.tx.originalId)) {
         _selectedItems.putIfAbsent(data.tx.originalId, () => data);
@@ -286,7 +312,8 @@ class _HistoryPageState extends State<HistoryPage> {
 
   /// Edit an item on the add page. Close selection mode afterwards.
   ///
-  void _editItem(TransactionWithCategory tx) {
+  void _editItem(TransactionWithCategoryAndCurrency tx) {
+    print(tx);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -297,7 +324,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   /// Shares an item using TX SHARE. Closes selection mode afterwards.
   ///
-  void _shareItem(TransactionWithCategory tx) {
+  void _shareItem(TransactionWithCategoryAndCurrency tx) {
     showConfirmDialog(
         context, "TX SHARE", "The TX SHARE is not available right now.");
     _closeSelection();

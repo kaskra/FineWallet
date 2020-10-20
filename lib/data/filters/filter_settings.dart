@@ -49,4 +49,36 @@ class TransactionFilterSettings extends FilterSettings {
 
   factory TransactionFilterSettings.inMonth(DateTime date) =>
       TransactionFilterSettings(dateInMonth: date);
+
+  TransactionFilterSettings copyWith(
+          {int subcategory,
+          int category,
+          int month,
+          DateTime day,
+          bool expenses,
+          bool incomes,
+          DateTime before,
+          DateTime dateInMonth}) =>
+      TransactionFilterSettings(
+        subcategory: subcategory ?? this.subcategory,
+        category: category ?? this.category,
+        month: month ?? this.month,
+        day: day ?? this.day,
+        expenses: expenses ?? this.expenses,
+        incomes: incomes ?? this.incomes,
+        before: before ?? this.before,
+        dateInMonth: dateInMonth ?? this.dateInMonth,
+      );
+
+  @override
+  String toString() {
+    return 'TransactionFilterSettings{category: $category, '
+        'subcategory: $subcategory, '
+        'month: $month, '
+        'day: $day, '
+        'expenses: $expenses, '
+        'incomes: $incomes, '
+        'before: $before, '
+        'dateInMonth: $dateInMonth}';
+  }
 }

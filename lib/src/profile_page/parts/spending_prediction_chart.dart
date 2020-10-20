@@ -52,7 +52,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
           (context, AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
         if (snapshot.hasData) {
           return PredictionDateChart.withTransactions(
-              _calcDateTimeDataPoints(snapshot), widget.monthlyBudget);
+              _calcDateTimeDataPoints(snapshot), widget.monthlyBudget ?? 0.0);
         }
         return const Center(child: CircularProgressIndicator());
       },
@@ -103,7 +103,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
         timestamp: days[i],
         amount: expense[i],
         isPrediction: days[i].isAfter(_todayDate),
-        isAboveMax: expense[i] > widget.monthlyBudget,
+        isAboveMax: expense[i] > (widget.monthlyBudget ?? 0.0),
       ));
     }
     return dataPoints;
@@ -135,7 +135,7 @@ class PredictionDateChart extends StatelessWidget {
           data: [monthlyMaxBudget, monthlyMaxBudget],
           id: "MaxBudget",
           domainFn: (double d, int i) => i == 0
-              ? DateTime.utc(today().year, today().month, 1)
+              ? DateTime.utc(today().year, today().month)
               : today().getLastDateOfMonth(),
           measureFn: (double d, _) => d,
           colorFn: (_, __) =>
@@ -187,65 +187,5 @@ class PredictionDateChart extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class PredictionChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
-
-  const PredictionChart(this.seriesList, {this.animate});
-
-  factory PredictionChart.withTransactions(
-      List<PredictionPoint> data, double monthlyMaxBudget) {
-    final List<charts.Series<dynamic, int>> outputData = [
-      charts.Series<PredictionPoint, int>(
-          data: data,
-          id: "SpendingPrediction",
-          domainFn: (PredictionPoint ce, _) => ce.timestamp,
-          measureFn: (PredictionPoint ce, _) => ce.amount,
-          colorFn: (PredictionPoint ce, _) => ce.isAboveMax
-              ? charts.MaterialPalette.red.shadeDefault.darker.darker
-              : charts.MaterialPalette.deepOrange.shadeDefault,
-          strokeWidthPxFn: (PredictionPoint pp, _) => pp.isPrediction ? 1 : 1.8,
-          dashPatternFn: (PredictionPoint ce, _) =>
-              ce.isPrediction ? [3, 3] : null),
-      charts.Series<double, int>(
-          data: [monthlyMaxBudget, monthlyMaxBudget],
-          id: "MaxBudget",
-          domainFn: (double d, int i) => i == 0 ? 0 : data.length,
-          measureFn: (double d, _) => d,
-          colorFn: (_, __) =>
-              charts.MaterialPalette.red.shadeDefault.darker.darker,
-          strokeWidthPxFn: (_, __) => 1,
-          areaColorFn: (_, __) => charts.MaterialPalette.transparent)
-    ];
-
-    return PredictionChart(
-      outputData,
-      animate: false,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return charts.LineChart(seriesList,
-        animate: false,
-        defaultRenderer: charts.LineRendererConfig(
-            roundEndCaps: true, strokeWidthPx: 1.8, areaOpacity: 0.3),
-        domainAxis: const charts.NumericAxisSpec(
-            tickProviderSpec:
-                charts.StaticNumericTickProviderSpec(<charts.TickSpec<int>>[
-          charts.TickSpec<int>(1),
-          charts.TickSpec<int>(6),
-          charts.TickSpec<int>(12),
-          charts.TickSpec<int>(18),
-          charts.TickSpec<int>(24),
-          charts.TickSpec<int>(30),
-        ])),
-        primaryMeasureAxis: const charts.NumericAxisSpec(
-          renderSpec: charts.GridlineRendererSpec(
-              lineStyle: charts.LineStyleSpec(dashPattern: [6, 6])),
-        ));
   }
 }

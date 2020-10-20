@@ -11,7 +11,7 @@ class _KEYS {
   static const currency = "currency";
   static const txShare = "tx_share";
   static const profileChart = "default_profile_chart";
-  static const isFilterSettings = "is_filter_settings";
+  static const showFilterSettings = "show_filter_settings";
   static const filterSettings = "default_filter_settings";
 }
 
@@ -85,25 +85,25 @@ class UserSettings {
   /// Sets the applications currency id to the selected symbol and
   /// saves it persistently in the user settings.
   ///
-  /// The default currency is '$'.
+  /// The default currency is USD.
   ///
   /// Input
   /// -----
   /// The selected currency id.
   ///
-  static void setCurrency(int currencySymbolId) {
-    _store.setInt(_KEYS.currency, currencySymbolId);
+  static void setInputCurrency(int currencyId) {
+    _store.setInt(_KEYS.currency, currencyId);
   }
 
   /// Returns the applications currency id saved in memory.
   ///
-  /// The default currency is '$'.
+  /// The default currency is USD.
   ///
   /// Returns
   /// -----
   /// The retrieved currency id from user settings memory.
   ///
-  static int getCurrency() {
+  static int getInputCurrency() {
     return _store.getInt(_KEYS.currency) ?? 1;
   }
 
@@ -178,8 +178,8 @@ class UserSettings {
   /// -----
   /// Value as [bool] to save persistently.
   ///
-  static void setIsFilterSettings({bool val}) {
-    _store.setBool(_KEYS.isFilterSettings, val);
+  static void setShowFilterSettings({bool val}) {
+    _store.setBool(_KEYS.showFilterSettings, val);
   }
 
   /// Returns the value whether Filter Settings are enabled or not.
@@ -189,8 +189,8 @@ class UserSettings {
   /// Return
   /// ------
   /// True if Filter Settings are enabled, false otherwise.
-  static bool getIsFilterSettings() {
-    return _store.getBool(_KEYS.isFilterSettings) ?? true;
+  static bool getShowFilterSettings() {
+    return _store.getBool(_KEYS.showFilterSettings) ?? true;
   }
 
   /// Sets the default history filter values in the persistent store.
@@ -204,6 +204,8 @@ class UserSettings {
   ///
   ///  - only Incomes (by default: true)
   ///
+  ///  - show Future (by default : false)
+  ///
   /// Input
   /// ------
   /// [HistoryFilterState] to save.
@@ -211,8 +213,9 @@ class UserSettings {
   static void setDefaultFilterSettings(HistoryFilterState state) {
     final onlyExp = state.onlyExpenses.toString();
     final onlyInc = state.onlyIncomes.toString();
+    final showFuture = state.showFuture.toString();
 
-    _store.setStringList(_KEYS.filterSettings, [onlyExp, onlyInc]);
+    _store.setStringList(_KEYS.filterSettings, [onlyExp, onlyInc, showFuture]);
   }
 
   /// Returns the the default history filter values.
@@ -226,6 +229,8 @@ class UserSettings {
   ///
   ///  - only Incomes (by default: true)
   ///
+  ///  - show Future (by default : false)
+  ///
   /// Return
   /// ------
   /// [HistoryFilterState] read from persistent storage.
@@ -236,15 +241,13 @@ class UserSettings {
     if (values != null) {
       final onlyExp = values[0].toBool();
       final onlyInc = values[1].toBool();
+      final showFuture = values[2].toBool();
       final filterState = HistoryFilterState()
         ..onlyIncomes = onlyInc
-        ..onlyExpenses = onlyExp;
-      return filterState;
-    } else {
-      final filterState = HistoryFilterState()
-        ..onlyIncomes = true
-        ..onlyExpenses = true;
+        ..onlyExpenses = onlyExp
+        ..showFuture = showFuture;
       return filterState;
     }
+    return HistoryFilterState();
   }
 }

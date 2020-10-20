@@ -48,6 +48,16 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
               });
               _handleFilterState();
             },
+          ),
+          HistoryFilterItem(
+            initialValue: _filterState.showFuture,
+            title: "Future transactions",
+            onChanged: (b) {
+              setState(() {
+                _filterState.showFuture = b;
+              });
+              _handleFilterState();
+            },
           )
         ],
       ),

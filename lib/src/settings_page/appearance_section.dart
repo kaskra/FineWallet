@@ -17,7 +17,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
   @override
   void initState() {
     setState(() {
-      _isFilterSettings = UserSettings.getIsFilterSettings();
+      _isFilterSettings = UserSettings.getShowFilterSettings();
     });
     super.initState();
   }
@@ -52,7 +52,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
       trailing: Switch(
         value: _isFilterSettings,
         onChanged: (val) async {
-          UserSettings.setIsFilterSettings(val: val);
+          UserSettings.setShowFilterSettings(val: val);
           setState(() {
             _isFilterSettings = val;
           });

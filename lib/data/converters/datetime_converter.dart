@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:moor/moor.dart';
 
 class DateTimeConverter extends TypeConverter<DateTime, String> {
@@ -8,7 +9,8 @@ class DateTimeConverter extends TypeConverter<DateTime, String> {
     if (fromDb == null) {
       return null;
     } else {
-      return DateTime.parse(fromDb);
+      final date = DateTime.parse(fromDb);
+      return date;
     }
   }
 
@@ -18,9 +20,13 @@ class DateTimeConverter extends TypeConverter<DateTime, String> {
       final year = _fourDigits(value.year);
       final month = _twoDigits(value.month);
       final day = _twoDigits(value.day);
-      return "$year-$month-$day";
+      return "$year-$month-${day}T00Z";
     }
-    return DateTime.now().toUtc().toIso8601String();
+    final date = today();
+    final year = _fourDigits(date.year);
+    final month = _twoDigits(date.month);
+    final day = _twoDigits(date.day);
+    return "$year-$month-${day}T00Z";
   }
 
   String _twoDigits(int n) {

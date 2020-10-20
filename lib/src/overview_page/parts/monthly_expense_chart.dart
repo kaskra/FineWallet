@@ -46,10 +46,10 @@ class MonthlyExpenseChart extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                   child: Text(
                     "${value.toStringAsFixed(2)} /\n"
-                    "${total.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).currency}",
+                    "${total.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                     maxLines: 2,
                     softWrap: true,
-                    style: TextStyle(fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
               )),

@@ -39,12 +39,10 @@ class _PageViewIndicatorState extends State<PageViewIndicator> {
       items.add(const SizedBox(width: 2));
     }
 
-    return Container(
+    return SizedBox(
       height: 10,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
         children: items,
       ),
     );
@@ -53,7 +51,7 @@ class _PageViewIndicatorState extends State<PageViewIndicator> {
   Widget _buildDot(bool selected) {
     return Container(
       height: 7,
-      width: 7,
+      width: 10,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: selected ? Theme.of(context).colorScheme.secondary : Colors.grey,

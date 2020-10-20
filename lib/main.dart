@@ -7,8 +7,10 @@
  */
 
 import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
+import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
@@ -66,7 +68,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
+
   bool _isBudgetLoaded = false;
+  bool _isLocalizationLoaded = false;
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
@@ -128,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _isSelectionModeActive = b;
         });
       },
-      showFilters: UserSettings.getIsFilterSettings(),
+      showFilters: UserSettings.getShowFilterSettings(),
     );
   }
 
@@ -140,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()));
@@ -150,13 +154,40 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   Future<void> _loadBudget() async {
-    final Month m = await Provider.of<AppDatabase>(context, listen: false)
-        .monthDao
-        .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m.maxBudget);
     setState(() {
       _isBudgetLoaded = true;
     });
+    final Month m = await Provider.of<AppDatabase>(context, listen: false)
+        .monthDao
+        .getCurrentMonth();
+    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
+  }
+
+  Future _loadLocalizationAndCurrency() async {
+    final allCurrencies = await Provider.of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .getAllCurrencies();
+
+    final currency = await Provider.of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .getUserCurrency();
+
+    // Load exchange rates and update currency table in database.
+    if (currency != null) {
+      setState(() {
+        _isLocalizationLoaded = true;
+      });
+      final rates = await fetchExchangeRates(
+          currency.abbrev, allCurrencies.map((c) => c.abbrev).toList());
+
+      await Provider.of<AppDatabase>(context, listen: false)
+          .currencyDao
+          .updateExchangeRates(rates.rates, allCurrencies);
+
+      UserSettings.setInputCurrency(currency.id);
+      Provider.of<LocalizationNotifier>(context, listen: false)
+          .setUserCurrencySymbol(currency.symbol);
+    }
   }
 
   @override
@@ -164,12 +195,15 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!_isBudgetLoaded) {
       _loadBudget();
     }
+    if (!_isLocalizationLoaded) {
+      _loadLocalizationAndCurrency();
+    }
 
     final children = [
       const ProfilePage(),
       const MonthlyReportsPage(),
       const SizedBox(),
-      OverviewPage(),
+      const OverviewPage(),
       _buildHistory(),
     ];
 

@@ -119,12 +119,11 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
     });
 
     return FittedBox(
-      child: Container(
+      child: SizedBox(
         width: _width,
         height: _height,
         child: Material(
           clipBehavior: Clip.antiAlias,
-          type: MaterialType.canvas,
           borderRadius: BorderRadius.circular(floatingButtonRadius),
           color: Colors.black38,
           child: Stack(
@@ -132,13 +131,11 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
             children: <Widget>[
               Positioned(
                 left: 10,
-                bottom: null,
                 child: Icon(Icons.add,
                     size: 26, color: Theme.of(context).iconTheme.color),
               ),
               Positioned(
                 right: 10,
-                bottom: null,
                 child: Icon(
                   Icons.remove,
                   size: 26,
