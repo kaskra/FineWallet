@@ -301,6 +301,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Edit an item on the add page. Close selection mode afterwards.
   ///
   void _editItem(TransactionWithCategory tx) {
+    print(tx);
     Navigator.push(
         context,
         MaterialPageRoute(

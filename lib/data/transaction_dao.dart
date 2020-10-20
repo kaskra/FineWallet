@@ -72,8 +72,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         (await db.currencyDao.getCurrencyById(tx.currencyId)).exchangeRate ??
             1.0;
     final nextId = (maxTransactionID ?? 0) + 1;
-    var tempTx =
-        tx.copyWith(originalId: nextId, amount: tx.amount * exchangeRate);
+    var tempTx = tx.copyWith(
+      originalId: nextId,
+      amount: tx.amount * exchangeRate,
+      exchangeRate: exchangeRate,
+    );
 
     // Fill in month id
     if (tempTx.monthId == null) {
@@ -121,6 +124,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           id: null,
           originalId: null,
           amount: tx.amount,
+          originalAmount: tx.originalAmount,
+          exchangeRate: tx.exchangeRate,
           monthId: tx.monthId,
           date: tx.date,
           subcategoryId: tx.subcategoryId,

@@ -104,7 +104,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               AmountString(
                 snapshotItem.tx.amount * (snapshotItem.tx.isExpense ? -1 : 1),
                 colored: true,
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -157,7 +157,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 "Delete",
                 style: TextStyle(color: Colors.white),
               ),
-              leading: Icon(
+              leading: const Icon(
                 Icons.delete_outline,
                 color: Colors.white,
               ),

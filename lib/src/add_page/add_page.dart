@@ -34,6 +34,9 @@ class _AddPageState extends State<AddPage> {
   /// The transactions that the user wants to edit.
   TransactionWithCategory _transaction;
 
+  /// The input currency id
+  int _inputCurrencyId = UserSettings.getInputCurrency();
+
   /// The flag that signals if the page is loaded in edit or normal mode.
   bool _editing = false;
 
@@ -65,8 +68,14 @@ class _AddPageState extends State<AddPage> {
     if (widget.transaction != null) {
       _transaction = widget.transaction;
       _editing = true;
+
+      _inputCurrencyId = _transaction.tx.currencyId;
+
+      // Get the original value of the transaction (before exchanging to user currency)
+      _amount =
+          double.parse((_transaction.tx.originalAmount).toStringAsFixed(2));
+
       // Make sure that currency-exchanged value is rounded to 2 decimals
-      _amount = double.parse(_transaction.tx.amount.toStringAsFixed(2));
       _date = _transaction.tx.date;
       _subcategory = _transaction.sub;
       _isRecurring = _transaction.tx.isRecurring;
@@ -94,6 +103,7 @@ class _AddPageState extends State<AddPage> {
     setState(() {
       _initialized = true;
     });
+    print(_inputCurrencyId);
   }
 
   @override
@@ -111,7 +121,6 @@ class _AddPageState extends State<AddPage> {
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: true,
         iconTheme: Theme.of(context).iconTheme,
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -220,12 +229,14 @@ class _AddPageState extends State<AddPage> {
       isExpense: widget.isExpense,
       isRecurring: _isRecurring,
       amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
       monthId: null,
       subcategoryId: _subcategory.id,
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: null,
-      currencyId: UserSettings.getInputCurrency(),
+      currencyId: _inputCurrencyId,
       // TODO add label once text field exists
       label: "",
     );
@@ -249,12 +260,14 @@ class _AddPageState extends State<AddPage> {
       isExpense: widget.isExpense,
       isRecurring: _isRecurring,
       amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
       monthId: null,
       subcategoryId: _subcategory.id,
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       originalId: _transaction.tx.originalId,
-      currencyId: UserSettings.getInputCurrency(),
+      currencyId: _inputCurrencyId,
       // TODO add label once text field exists
       label: "",
     );
@@ -293,6 +306,7 @@ class _AddPageState extends State<AddPage> {
 
   // TODO add a hint when input currency != user currency when reworking add page!
   List<Widget> _buildAmountRow() {
+    print(_inputCurrencyId);
     return [
       const Padding(
           padding: EdgeInsets.only(top: 8), child: RowTitle(title: "Amount")),
@@ -303,6 +317,7 @@ class _AddPageState extends State<AddPage> {
         isChild: false,
         child: EditableNumericInputText(
           defaultValue: _amount,
+          currencyId: _inputCurrencyId,
           onChanged: (value) {
             setState(() {
               _amount = value;
@@ -377,9 +392,8 @@ class _AddPageState extends State<AddPage> {
           final pickedDate = await showDatePicker(
               context: context,
               initialDate: _date,
-              firstDate: DateTime(2000, 1, 1),
+              firstDate: DateTime(2000),
               lastDate: DateTime(2050, 12, 31),
-              initialDatePickerMode: DatePickerMode.day,
               builder: (context, child) {
                 // Needed to correct the issue that the selection marker in
                 // date picker had the same color as the background.
@@ -479,7 +493,6 @@ class _AddPageState extends State<AddPage> {
               initialDate: _untilDate,
               firstDate: DateTime(date.year, date.month, date.day),
               lastDate: DateTime(2050, 12, 31),
-              initialDatePickerMode: DatePickerMode.day,
               builder: (context, child) {
                 return Theme(
                   data: Provider.of<ThemeNotifier>(context).isDarkMode
