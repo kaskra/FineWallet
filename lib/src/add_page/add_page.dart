@@ -36,6 +36,7 @@ class _AddPageState extends State<AddPage> {
 
   /// The input currency id
   int _inputCurrencyId = UserSettings.getInputCurrency();
+  int _userCurrencyId = 1;
 
   /// The flag that signals if the page is loaded in edit or normal mode.
   bool _editing = false;
@@ -100,10 +101,14 @@ class _AddPageState extends State<AddPage> {
             .first;
       }
     }
+    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .getUserCurrency())
+        ?.id;
+
     setState(() {
       _initialized = true;
     });
-    print(_inputCurrencyId);
   }
 
   @override
@@ -287,6 +292,7 @@ class _AddPageState extends State<AddPage> {
   /// Builds the body structure .
   Widget _buildBody() {
     final List<Widget> items = [
+      _buildWarning(),
       ..._buildAmountRow(),
       ..._buildCategoryRow(),
       ..._buildDateRow(),
@@ -303,9 +309,23 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
+  Widget _buildWarning() {
+    return _inputCurrencyId != _userCurrencyId
+        ? Container(
+            height: 20,
+            color: Theme.of(context).accentColor,
+            child: const Center(
+              child: Text(
+                "You are currently not using your home currency!",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          )
+        : Container();
+  }
+
   // TODO add a hint when input currency != user currency when reworking add page!
   List<Widget> _buildAmountRow() {
-    print(_inputCurrencyId);
     return [
       const Padding(
           padding: EdgeInsets.only(top: 8), child: RowTitle(title: "Amount")),
