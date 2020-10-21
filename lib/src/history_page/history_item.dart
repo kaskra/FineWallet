@@ -30,62 +30,77 @@ class HistoryItem extends StatelessWidget {
         color: isSelected ? const Color(0xFF6F6F6F) : null,
         elevation: Theme.of(context).cardTheme.elevation,
         padding: 0,
-        child: ClipPath(
-          clipper: ShapeBorderClipper(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(cardRadius))),
-          child: CustomPaint(
-            foregroundPainter: IndicatorPainter(
-              color: transaction.tx.isExpense ? Colors.red : Colors.green,
-              thickness: 6,
-              side: transaction.tx.isExpense
-                  ? IndicatorSide.right
-                  : IndicatorSide.left,
-            ),
-            child: Container(
-              margin: const EdgeInsets.all(2),
-              child: ListTile(
-                dense: true,
-                onTap: () {
-                  bool isSelect = false;
-                  if (isSelected) {
-                    isSelect = false;
-                  } else if (isSelectionActive) {
-                    isSelect = true;
-                  }
-                  if (onSelect != null) {
-                    onSelect(isSelect);
-                  }
-                },
-                onLongPress: () {
-                  if (onSelect != null) {
-                    onSelect(true);
-                  }
-                },
-                title: Text(
-                  transaction.sub.name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.secondary
-                          : null),
+        child: Stack(
+          children: [
+            ClipPath(
+              clipper: ShapeBorderClipper(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(cardRadius))),
+              child: CustomPaint(
+                foregroundPainter: IndicatorPainter(
+                  color: transaction.tx.isExpense ? Colors.red : Colors.green,
+                  thickness: 6,
+                  side: transaction.tx.isExpense
+                      ? IndicatorSide.right
+                      : IndicatorSide.left,
                 ),
-                subtitle: Text(
-                  transaction.sub.name,
-                  style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: isSelected ? Colors.white : null,
-                      fontSize: 13),
+                child: Container(
+                  margin: const EdgeInsets.all(2),
+                  child: ListTile(
+                    dense: true,
+                    title: Text(
+                      transaction.sub.name,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.secondary
+                              : null),
+                    ),
+                    subtitle: Text(
+                      transaction.sub.name,
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: isSelected ? Colors.white : null,
+                          fontSize: 13),
+                    ),
+                    trailing: _buildAmountText(context),
+                    leading: _buildItemIcon(context),
+                  ),
                 ),
-                trailing: _buildAmountText(context),
-                leading: _buildItemIcon(context),
               ),
             ),
-          ),
+            _buildTappableLayer(),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildTappableLayer() {
+    return Positioned.fill(
+        child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(cardRadius),
+        onLongPress: () {
+          if (onSelect != null) {
+            onSelect(true);
+          }
+        },
+        onTap: () {
+          bool isSelect = false;
+          if (isSelected) {
+            isSelect = false;
+          } else if (isSelectionActive) {
+            isSelect = true;
+          }
+          if (onSelect != null) {
+            onSelect(isSelect);
+          }
+        },
+      ),
+    ));
   }
 
   Widget _buildItemIcon(BuildContext context) {
