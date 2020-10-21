@@ -46,5 +46,10 @@ flutter:
   assets:
     - assets/monthly_reports.png
     - assets/savings.png
+    - assets/welcome.png
+    - assets/done.png
+    - assets/travel2.png
+    - assets/dark_mode.png
+    - assets/language.png
 
 

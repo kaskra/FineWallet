@@ -89,7 +89,7 @@ final ThemeData standardTheme = ThemeData(
   primaryColor: colorScheme.primary,
   accentColor: colorScheme.secondary,
   backgroundColor: colorScheme.background,
-  scaffoldBackgroundColor: colorScheme.secondaryVariant,
+  scaffoldBackgroundColor: const Color(0xFFfaf0e6),
   buttonTheme: ButtonThemeData(
     textTheme: ButtonTextTheme.primary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
