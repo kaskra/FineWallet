@@ -7,14 +7,14 @@ import 'package:FineWallet/src/widgets/standalone/indicator.dart';
 import 'package:flutter/material.dart';
 
 class HistoryItem extends StatelessWidget {
-  const HistoryItem(
-      {Key key,
-      @required this.transaction,
-      @required this.onSelect,
-      @required this.isSelected,
-      @required this.isSelectionActive,
-      this.userCurrencyId = 1})
-      : super(key: key);
+  const HistoryItem({
+    Key key,
+    @required this.transaction,
+    @required this.onSelect,
+    @required this.isSelected,
+    @required this.isSelectionActive,
+    this.userCurrencyId = 1,
+  }) : super(key: key);
 
   final TransactionWithCategoryAndCurrency transaction;
   final Function(bool) onSelect;
@@ -104,21 +104,11 @@ class HistoryItem extends StatelessWidget {
                   fontSize: 13),
             ),
             trailing: _buildAmountText(context),
-            leading: _buildItemIcon(context),
+            leading: isSelected
+                ? const HistoryItemCheckmark()
+                : HistoryItemIcon(categoryId: transaction.sub.categoryId),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildItemIcon(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Theme.of(context).colorScheme.secondary,
-      child: Icon(
-        isSelected
-            ? Icons.check
-            : CategoryIcon(transaction.sub.categoryId - 1).data,
-        color: Theme.of(context).iconTheme.color,
       ),
     );
   }
@@ -165,6 +155,40 @@ class HistoryItem extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class HistoryItemIcon extends StatelessWidget {
+  final int categoryId;
+
+  const HistoryItemIcon({Key key, @required this.categoryId})
+      : assert(categoryId != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
+      child: Icon(
+        CategoryIcon(categoryId - 1).data,
+        color: Theme.of(context).iconTheme.color,
+      ),
+    );
+  }
+}
+
+class HistoryItemCheckmark extends StatelessWidget {
+  const HistoryItemCheckmark({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
+      child: Icon(
+        Icons.check,
+        color: Theme.of(context).iconTheme.color,
+      ),
     );
   }
 }
