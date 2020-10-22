@@ -184,10 +184,6 @@ class AppDatabase extends _$AppDatabase {
 
               b.insertAll(currencies, moor_init.currencies);
               b.insertAll(languages, moor_init.languages);
-
-              // TODO remove once intro slider / tutorial is done
-              b.insert(
-                  userProfiles, UserProfilesCompanion.insert(currencyId: 2));
             });
 
             // Has to be done in extra batch, because
@@ -224,4 +220,7 @@ class AppDatabase extends _$AppDatabase {
   /// list of all [Recurrence]s
   Future<List<RecurrenceType>> getRecurrences() =>
       select(recurrenceTypes).get();
+
+  Future addUserProfile(Insertable<UserProfile> profile) =>
+      into(userProfiles).insert(profile, mode: InsertMode.insertOrReplace);
 }
