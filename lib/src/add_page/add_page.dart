@@ -44,6 +44,9 @@ class _AddPageState extends State<AddPage> {
   /// The transaction money amount.
   double _amount = 0.00;
 
+  /// Label textediting controller
+  TextEditingController _labelController = TextEditingController();
+
   /// The (original) transaction date.
   DateTime _date = today();
 
@@ -79,6 +82,7 @@ class _AddPageState extends State<AddPage> {
       // Make sure that currency-exchanged value is rounded to 2 decimals
       _date = _transaction.tx.date;
       _subcategory = _transaction.sub;
+      _labelController.text = _transaction.tx.label;
       _isRecurring = _transaction.tx.isRecurring;
       _untilDate = _transaction.tx.until;
 
@@ -241,8 +245,7 @@ class _AddPageState extends State<AddPage> {
       recurrenceType: _isRecurring ? _recurrence.type : null,
       until: _untilDate,
       currencyId: _inputCurrencyId,
-      // TODO add label once text field exists
-      label: "",
+      label: _labelController.text.trim(),
     );
 
     await Provider.of<AppDatabase>(context, listen: false)
@@ -272,8 +275,7 @@ class _AddPageState extends State<AddPage> {
       until: _untilDate,
       originalId: _transaction.tx.originalId,
       currencyId: _inputCurrencyId,
-      // TODO add label once text field exists
-      label: "",
+      label: _labelController.text.trim(),
     );
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
@@ -295,6 +297,7 @@ class _AddPageState extends State<AddPage> {
       _buildWarning(),
       ..._buildAmountRow(),
       ..._buildCategoryRow(),
+      ..._buildLabelRow(),
       ..._buildDateRow(),
       ..._buildRecurrenceRow()
     ];
@@ -395,6 +398,25 @@ class _AddPageState extends State<AddPage> {
           ),
         ),
       ),
+    ];
+  }
+
+  List<Widget> _buildLabelRow() {
+    return [
+      const Padding(
+          padding: EdgeInsets.only(top: 8), child: RowTitle(title: "Label")),
+      RowWrapper(
+        iconSize: 24,
+        leadingIcon: Icons.label_important,
+        isExpandable: false,
+        isChild: false,
+        child: TextField(
+          controller: _labelController,
+          autocorrect: true,
+          keyboardType: TextInputType.text,
+          textAlign: TextAlign.right,
+        ),
+      )
     ];
   }
 
