@@ -10,7 +10,7 @@ class HistoryFilterState {
     return 'HistoryFilterState{'
         'onlyExpenses: $onlyExpenses, '
         'onlyIncomes: $onlyIncomes, '
-        'showFuture: $showFuture'
+        'showFuture: $showFuture '
         '}';
   }
 }
@@ -33,7 +33,7 @@ class HistoryFilter extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary, width: 0))),
         child: ExpansionTile(
           title: const Text("Filter Settings"),
-          leading: Icon(Icons.filter_list),
+          leading: const Icon(Icons.filter_list),
           children: items,
         ),
       ),

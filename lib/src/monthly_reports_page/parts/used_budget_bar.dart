@@ -61,8 +61,8 @@ class UsedBudgetBar extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(cardRadius),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 6.0),
             child: Text(
               "Used budget",
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),

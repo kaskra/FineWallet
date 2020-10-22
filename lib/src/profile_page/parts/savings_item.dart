@@ -15,9 +15,9 @@ class SimpleSavingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedCard(
       child: Row(
-        children: <Widget>[
+        children: const <Widget>[
           RowItem(
-            amountPadding: const EdgeInsets.symmetric(vertical: 4),
+            amountPadding: EdgeInsets.symmetric(vertical: 4),
             footerText: "Saved amount",
             child: SavingsView(
               textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),

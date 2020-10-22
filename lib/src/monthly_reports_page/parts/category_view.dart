@@ -78,7 +78,7 @@ class CategoryListView extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text(
+                  child: const Text(
                     "OK",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -142,12 +142,13 @@ class CategoryListView extends StatelessWidget {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchTransactionsWithFilter(settings),
-        builder:
-            (context, AsyncSnapshot<List<TransactionWithCategory>> snapshot) {
+        builder: (context,
+            AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-              for (final TransactionWithCategory tx in snapshot.data ?? [])
+              for (final TransactionWithCategoryAndCurrency tx
+                  in snapshot.data ?? [])
                 _buildTransactionRow(tx),
             ],
           );
@@ -156,7 +157,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  InformationRow _buildTransactionRow(TransactionWithCategory tx) {
+  InformationRow _buildTransactionRow(TransactionWithCategoryAndCurrency tx) {
     // Initialize date formatter for timestamp
     final formatter = DateFormat('E, dd.MM.yy');
 
@@ -165,11 +166,12 @@ class CategoryListView extends StatelessWidget {
       text: Expanded(
         child: Text.rich(
           TextSpan(
-            text: "${tx.sub.name}",
+            text: tx.sub.name,
             children: [
               TextSpan(
                 text: "\n${formatter.format(tx.tx.date)}",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.normal),
               )
             ],
             style: TextStyle(
@@ -185,7 +187,7 @@ class CategoryListView extends StatelessWidget {
       value: AmountString(
         tx.tx.amount * -1,
         colored: true,
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           decoration: TextDecoration.none,
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -223,7 +225,7 @@ class CategoryListView extends StatelessWidget {
         trailing: AmountString(
           amount * -1,
           colored: true,
-          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
         ),
         title: Text(categoryName),
       ),

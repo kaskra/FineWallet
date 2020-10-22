@@ -163,7 +163,6 @@ class CircularProfileChart extends StatelessWidget {
                   color: charts.ColorUtil.fromDartColor(
                       Theme.of(context).colorScheme.onSecondary),
                   thickness: 1),
-              showLeaderLines: true,
               outsideLabelStyleSpec: charts.TextStyleSpec(
                   fontSize: 12,
                   color: charts.ColorUtil.fromDartColor(

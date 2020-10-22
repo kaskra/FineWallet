@@ -63,7 +63,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                     Navigator.of(context).pop(null);
                   }
                 },
-                child: Text(
+                child: const Text(
                   "OK",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -221,7 +221,6 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                 constraints: const BoxConstraints.expand(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Icon(
                       iconData,

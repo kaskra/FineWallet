@@ -21,6 +21,7 @@ import 'package:FineWallet/src/monthly_reports_page/monthly_reports_page.dart';
 import 'package:FineWallet/src/overview_page/overview_page.dart';
 import 'package:FineWallet/src/profile_page/profile_page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
+import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
 import 'package:flutter/cupertino.dart';
@@ -46,12 +47,13 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-//    SystemChrome.setEnabledSystemUIOverlays([]);
+    // SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
       theme: Provider.of<ThemeNotifier>(context).theme,
-      home: const MyHomePage(title: 'FineWallet'),
+      // TODO check if UserSettings.initialized = true --> need to add
+      home: WelcomePage(), //const MyHomePage(title: 'FineWallet'),
     );
   }
 }
@@ -144,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()));

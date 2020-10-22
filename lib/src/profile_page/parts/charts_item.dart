@@ -38,9 +38,7 @@ class CategoryChartsItem extends StatelessWidget {
         _buildChartWrapper(
           context,
           "Monthly",
-          const ProfileChart(
-            type: ProfileChart.monthlyChart,
-          ),
+          const ProfileChart(),
         ),
         _buildChartWrapper(
           context,

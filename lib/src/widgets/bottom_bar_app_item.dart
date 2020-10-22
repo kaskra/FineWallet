@@ -120,7 +120,6 @@ class _FloatingActionButtonBottomAppBarState
       elevation: 20,
       shape: widget.isVisible ? const CircularNotchedRectangle() : null,
       child: Row(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items,
       ),

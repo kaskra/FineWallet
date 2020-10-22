@@ -135,7 +135,7 @@ class PredictionDateChart extends StatelessWidget {
           data: [monthlyMaxBudget, monthlyMaxBudget],
           id: "MaxBudget",
           domainFn: (double d, int i) => i == 0
-              ? DateTime.utc(today().year, today().month, 1)
+              ? DateTime.utc(today().year, today().month)
               : today().getLastDateOfMonth(),
           measureFn: (double d, _) => d,
           colorFn: (_, __) =>

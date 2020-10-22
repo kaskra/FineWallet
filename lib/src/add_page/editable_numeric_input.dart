@@ -1,5 +1,4 @@
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/user_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +6,7 @@ import 'package:provider/provider.dart';
 
 class EditableNumericInputText extends StatefulWidget {
   final double defaultValue;
+  final int currencyId;
 
   final Function(double) onChanged;
   final Function(bool) onError;
@@ -14,9 +14,11 @@ class EditableNumericInputText extends StatefulWidget {
   const EditableNumericInputText({
     Key key,
     this.defaultValue = 0.0,
+    @required this.currencyId,
     @required this.onChanged,
     this.onError,
-  }) : super(key: key);
+  })  : assert(currencyId != null),
+        super(key: key);
 
   @override
   _EditableNumericInputTextState createState() =>
@@ -48,7 +50,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
   Future _loadSuffixSymbol() async {
     final currency = await Provider.of<AppDatabase>(context)
         .currencyDao
-        .getCurrencyById(UserSettings.getInputCurrency());
+        .getCurrencyById(widget.currencyId);
     setState(() {
       _suffixSymbol = currency.symbol;
       _loadedSuffixSymbol = true;
@@ -96,7 +98,6 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         onSaved: (value) {
           _validateAndSend(value);
         },
-        maxLines: 1,
         autofocus: true,
         autocorrect: false,
       ),

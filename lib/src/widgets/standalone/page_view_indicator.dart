@@ -39,12 +39,10 @@ class _PageViewIndicatorState extends State<PageViewIndicator> {
       items.add(const SizedBox(width: 2));
     }
 
-    return Container(
+    return SizedBox(
       height: 10,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
         children: items,
       ),
     );

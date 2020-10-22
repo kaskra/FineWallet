@@ -10,7 +10,6 @@ import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/currency_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/data/resources/migration.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
     as moor_init;
 import 'package:FineWallet/data/transaction_dao.dart';
@@ -22,6 +21,11 @@ class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   RealColumn get amount => real().customConstraint("CHECK (amount > 0)")();
+
+  RealColumn get originalAmount =>
+      real().customConstraint("CHECK (amount > 0)")();
+
+  RealColumn get exchangeRate => real()();
 
   IntColumn get subcategoryId =>
       integer().customConstraint("REFERENCES subcategories(id)")();
@@ -152,7 +156,7 @@ class AppDatabase extends _$AppDatabase {
             path: 'database.sqlite', logStatements: true));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -160,7 +164,7 @@ class AppDatabase extends _$AppDatabase {
           return m.createAll();
         },
         onUpgrade: (migration, from, to) {
-          migrate_1_2(migration, from, to, this);
+          // migrate_1_2(migration, from, to, this);
           return;
         },
         beforeOpen: (details) async {
@@ -199,25 +203,6 @@ class AppDatabase extends _$AppDatabase {
                 "AS SELECT * FROM transactions WHERE is_expense = 1");
             await customStatement("CREATE VIEW IF NOT EXISTS incomes "
                 "AS SELECT * FROM transactions WHERE is_expense = 0");
-            await customStatement(
-                "CREATE VIEW IF NOT EXISTS transactions_with_categories "
-                "AS SELECT * FROM transactions t "
-                "INNER JOIN subcategories s "
-                "ON s.id = t.subcategory_id");
-            await customStatement(
-                "CREATE VIEW IF NOT EXISTS transactions_with_months "
-                "AS SELECT * FROM transactions t "
-                "INNER JOIN months m "
-                "ON t.month_id = m.id");
-          }
-
-          // Set default main currency
-          // TODO remove once intro slider / tutorial is done
-          if (details.hadUpgrade) {
-            if (details.versionBefore == 1) {
-              await into(userProfiles)
-                  .insert(UserProfilesCompanion.insert(currencyId: 2));
-            }
           }
 
           // Check if in new month and update accordingly
@@ -227,7 +212,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Returns the current maximum AUTO INCREMENT value of table transactions.
   Future<int> maxTransactionId() {
-    final res = customSelectQuery(
+    final res = customSelect(
         "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
     return res.map((row) => row.readInt("seq")).getSingle();
   }

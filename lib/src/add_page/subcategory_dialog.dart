@@ -53,7 +53,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                 onPressed: () {
                   Navigator.of(context).pop(_subcategory);
                 },
-                child: Text(
+                child: const Text(
                   "OK",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -77,7 +77,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       height: 50,
       child: Center(
         child: Text(
-          "${_category.name}",
+          _category.name,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             decoration: TextDecoration.none,
@@ -148,7 +148,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Material(
         color: color,
-        child: Container(
+        child: SizedBox(
           height: 35,
           child: InkWell(
             onTap: () => onTap(),

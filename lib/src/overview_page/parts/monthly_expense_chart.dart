@@ -49,7 +49,7 @@ class MonthlyExpenseChart extends StatelessWidget {
                     "${total.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                     maxLines: 2,
                     softWrap: true,
-                    style: TextStyle(fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
               )),
