@@ -47,6 +47,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Used to synchronize between the different setting rows.
   HistoryFilterState _filterState = HistoryFilterState();
 
+  /// The currency id of the user's home currency.
   int _userCurrencyId = 1;
 
   Future loadUserCurrency() async {
