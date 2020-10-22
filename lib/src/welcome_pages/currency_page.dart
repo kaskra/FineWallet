@@ -83,11 +83,20 @@ class CurrencyPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "Warning! You cannot change your home currency later on!",
+            "The home currency is the standard currency you use. When travelling "
+            "to another currency region, you can change the input currency "
+            "respectively. Every transaction will then be exchanged to your "
+            "home currency automatically.",
             style: Theme.of(context)
                 .primaryTextTheme
                 .subtitle2
                 .copyWith(fontWeight: FontWeight.normal),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Warning: You cannot change your home currency later on!",
+            style: Theme.of(context).primaryTextTheme.subtitle2.copyWith(
+                fontWeight: FontWeight.normal, color: Colors.redAccent),
           ),
         ],
       ),
