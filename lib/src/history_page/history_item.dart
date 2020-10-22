@@ -96,13 +96,14 @@ class HistoryItem extends StatelessWidget {
                       ? Theme.of(context).colorScheme.secondary
                       : null),
             ),
-            subtitle: Text(
-              transaction.sub.name,
+            subtitle: (transaction.tx.label.isNotEmpty)? Text(
+              transaction.tx.label,
               style: TextStyle(
                   fontStyle: FontStyle.italic,
                   color: isSelected ? Colors.white : null,
                   fontSize: 13),
-            ),
+              //TODO Push text down in the centre when no label is below
+            ):Container(),
             trailing: _buildAmountText(context),
             leading: isSelected
                 ? const HistoryItemCheckmark()
