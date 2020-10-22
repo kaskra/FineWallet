@@ -127,7 +127,8 @@ class CurrencySelectionDialog extends StatelessWidget {
                 final currency = currencies[index];
                 return ListTile(
                     visualDensity: VisualDensity.compact,
-                    title: Center(child: Text(currency.abbrev)),
+                    title: Center(
+                        child: Text("${currency.abbrev} (${currency.symbol})")),
                     onTap: () {
                       Navigator.of(context).pop(currency);
                     });

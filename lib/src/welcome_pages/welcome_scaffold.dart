@@ -34,10 +34,10 @@ class WelcomeScaffold extends StatelessWidget {
       };
 
   Map<String, String> get _welcomeChain => {
-        "welcome": "dark_mode",
-        "dark_mode": "currency",
-        "currency": "language",
-        "language": "finish",
+        "welcome": "language",
+        "language": "currency",
+        "currency": "dark_mode",
+        "dark_mode": "finish",
       };
 
   Route _continueRoute(String currentPage) =>
