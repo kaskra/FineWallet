@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/main.dart';
 import 'package:FineWallet/src/welcome_pages/currency_page.dart';
 import 'package:FineWallet/src/welcome_pages/dark_mode_page.dart';
@@ -123,6 +124,7 @@ class WelcomeScaffold extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: FlatButton(
                 onPressed: () {
+                  UserSettings.setInitialized(val: true);
                   Navigator.of(context).pushAndRemoveUntil(
                       _createRoute(const MyHomePage(title: 'FineWallet')),
                       (route) => false);

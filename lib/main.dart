@@ -52,8 +52,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
       theme: Provider.of<ThemeNotifier>(context).theme,
-      // TODO check if UserSettings.initialized = true --> need to add
-      home: WelcomePage(), //const MyHomePage(title: 'FineWallet'),
+      home: UserSettings.getInitialized()
+          ? const MyHomePage(title: 'FineWallet')
+          : WelcomePage(),
     );
   }
 }
