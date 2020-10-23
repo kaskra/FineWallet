@@ -47,10 +47,7 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
       child: Row(
         children: [
-          const Text(
-            "Your home currency: ",
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
+          const Text("Your home currency: "),
           FutureBuilder<Currency>(
             future:
                 Provider.of<AppDatabase>(context).currencyDao.getUserCurrency(),
@@ -59,7 +56,6 @@ class SettingsPage extends StatelessWidget {
                 snapshot.hasData ? snapshot.data.abbrev : "",
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontStyle: FontStyle.italic,
                 ),
               );
             },
