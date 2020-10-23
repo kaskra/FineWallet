@@ -13,6 +13,7 @@ class _KEYS {
   static const profileChart = "default_profile_chart";
   static const showFilterSettings = "show_filter_settings";
   static const filterSettings = "default_filter_settings";
+  static const initialized = "initialized";
 }
 
 /// This class is used to save user settings/preferences to persistent
@@ -31,6 +32,30 @@ class UserSettings {
   // Initialize shared preferences to be not async for future API calls.
   static Future init() async {
     _store = await SharedPreferences.getInstance();
+  }
+
+  /// Sets the value whether dark mode is enabled or not.
+  ///
+  /// The default value is FALSE.
+  ///
+  /// Input
+  /// -----
+  /// Value as [bool] to save persistently.
+  ///
+  static void setInitialized({bool val}) {
+    _store.setBool(_KEYS.initialized, val);
+  }
+
+  /// Returns the value whether dark mode is enabled or not.
+  ///
+  /// The default value is FALSE.
+  ///
+  /// Return
+  /// -----
+  /// True if dark mode is enabled, false otherwise.
+  ///
+  static bool getInitialized() {
+    return _store.getBool(_KEYS.initialized) ?? false;
   }
 
   /// Sets the value whether dark mode is enabled or not.

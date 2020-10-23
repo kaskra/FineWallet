@@ -5,4 +5,6 @@
              Flutter draws its first frame -->
         <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
+
+    <!-- Maybe add NormalTheme https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects -->
 </resources>

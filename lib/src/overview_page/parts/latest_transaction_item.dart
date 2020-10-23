@@ -87,61 +87,40 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           await _showActions(context, snapshotItem);
         },
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  _buildIcon(context,
-                      CategoryIcon(snapshotItem.sub.categoryId - 1).data),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
+              _buildIcon(
+                  context, CategoryIcon(snapshotItem.sub.categoryId - 1).data),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        snapshotItem.sub.name,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      if (snapshotItem.tx.label.isNotEmpty)
+                        const SizedBox(height: 4),
+                      if (snapshotItem.tx.label.isNotEmpty)
                         Text(
-                          snapshotItem.sub.name,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          snapshotItem.sub.name,
+                          snapshotItem.tx.label,
                           style: const TextStyle(
-                              fontSize: 12, fontStyle: FontStyle.italic),
-                        ),
-                      ],
-                    ),
+                              fontStyle: FontStyle.italic, fontSize: 13),
+                        )
+                    ],
                   ),
-                ],
+                ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AmountString(
-                    snapshotItem.tx.amount *
-                        (snapshotItem.tx.isExpense ? -1 : 1),
-                    colored: true,
-                    textStyle: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  if (_userCurrencyId != snapshotItem.tx.currencyId)
-                    ForeignAmountString(
-                      snapshotItem.tx.originalAmount *
-                          (snapshotItem.tx.isExpense ? -1 : 1),
-                      currencySymbol: snapshotItem.currency.symbol,
-                      textStyle: TextStyle(
-                          fontSize: 10,
-                          color: snapshotItem.tx.isExpense
-                              ? Colors.red
-                              : Colors.green,
-                          fontWeight: FontWeight.bold),
-                    )
-                ],
+              CombinedAmountString(
+                transaction: snapshotItem,
+                userCurrencyId: _userCurrencyId,
+                titleFontSize: 17,
+                subtitleFontSize: 11,
               ),
             ],
           ),

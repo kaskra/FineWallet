@@ -168,6 +168,13 @@ class CategoryListView extends StatelessWidget {
           TextSpan(
             text: tx.sub.name,
             children: [
+              if (tx.tx.label.isNotEmpty)
+                TextSpan(
+                    text: "\n${tx.tx.label}",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontStyle: FontStyle.italic,
+                    )),
               TextSpan(
                 text: "\n${formatter.format(tx.tx.date)}",
                 style: const TextStyle(

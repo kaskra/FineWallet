@@ -32,6 +32,11 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
             userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
       ])).map((rows) => rows.readTable(currencies)).getSingle();
 
+  Stream<Currency> watchUserCurrency() => (select(currencies).join([
+        innerJoin(
+            userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
+      ])).map((rows) => rows.readTable(currencies)).watchSingle();
+
   /// Updates the currencies table with new exchange rates.
   ///
   /// Input
