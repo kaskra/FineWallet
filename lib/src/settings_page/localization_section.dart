@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
@@ -85,10 +86,12 @@ class _LocalizationSectionState extends State<LocalizationSection> {
               Provider.of<AppDatabase>(context).currencyDao.getAllCurrencies(),
           builder: (context, snapshot) {
             final items = <int, String>{};
+            final currencies = <Currency>[];
 
             if (snapshot.hasData) {
               items.addEntries(
                   snapshot.data.map((c) => MapEntry(c.id, c.abbrev)));
+              currencies.addAll(snapshot.data);
             }
 
             return Material(
@@ -108,6 +111,7 @@ class _LocalizationSectionState extends State<LocalizationSection> {
                     final currency = snapshot.data[res - 1];
                     if (currency != null) {
                       UserSettings.setInputCurrency(res);
+                      _updateExchangeRates(currencies);
                       setState(() {
                         _selectedCurrency = res;
                       });
@@ -129,5 +133,19 @@ class _LocalizationSectionState extends State<LocalizationSection> {
             );
           }),
     );
+  }
+
+  Future _updateExchangeRates(List<Currency> allCurrencies) async {
+    final currency = await Provider.of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .getUserCurrency();
+
+    // Load exchange rates and update currency table in database.
+    final rates = await fetchExchangeRates(
+        currency.abbrev, allCurrencies.map((c) => c.abbrev).toList());
+
+    await Provider.of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .updateExchangeRates(rates.rates, allCurrencies);
   }
 }
