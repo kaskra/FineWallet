@@ -15,7 +15,7 @@ class SectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
       width: MediaQuery.of(context).size.width,
       child: RaisedButton.icon(
         color: Theme.of(context).accentColor,
