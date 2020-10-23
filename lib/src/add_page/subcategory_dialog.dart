@@ -45,20 +45,43 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
           children: <Widget>[
             _buildDialogHeader(),
             Expanded(child: _buildSubcategoryList()),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: FlatButton(
-                padding: const EdgeInsets.all(5),
-                textColor: Theme.of(context).colorScheme.secondary,
-                onPressed: () {
-                  Navigator.of(context).pop(_subcategory);
-                },
-                child: const Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
+            //children: [
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5),
+                    //textColor: Theme.of(context).colorScheme.secondary,
+                    onPressed: () async {
+                      final String addNewSubcategory = await showDialog(
+                          context: context,
+                          builder: (context) => CreateSubcategoryDialog());
+                          final subcategory = SubcategoriesCompanion.insert(categoryId: _category.id, name: addNewSubcategory);
+                          Provider.of<AppDatabase>(context, listen: false ).categoryDao.insertSubcategory(subcategory);
+                    },
+                    child: Icon(Icons.add),
+                  ),
                 ),
-              ),
-            )
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5),
+                    textColor: Theme.of(context).colorScheme.secondary,
+                    onPressed: () {
+                      Navigator.of(context).pop(_subcategory);
+                    },
+                    child: const Text(
+                      "OK",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            //  ],
           ],
         ),
       ),
@@ -100,8 +123,6 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-//              TODO implement adding of subcategories
-//              _buildAddSubcategoryItem(),
               for (var subs in snapshot.data) _buildSubcategoryListItem(subs)
             ],
           );
@@ -127,18 +148,6 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
     );
   }
 
-  // TODO
-  // UNUSED until adding of category/subcategory is implemented
-  // ignore: unused_element
-  Widget _buildAddSubcategoryItem() {
-    return _buildGeneralListItem(
-      text: "+",
-      color: Theme.of(context).colorScheme.secondary,
-      onTap: () {
-        print("Add new subcategory !! TODO !!");
-      },
-    );
-  }
 
   Widget _buildGeneralListItem(
       {@required String text,
@@ -167,3 +176,62 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
     );
   }
 }
+
+class CreateSubcategoryDialog extends StatelessWidget {
+  TextEditingController _addSubcategoryController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Add new subcategory',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            //schreibfeld
+            TextField(
+              controller: _addSubcategoryController,
+              keyboardType: TextInputType.text,
+              autofocus: true,
+              decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              )),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            //Button
+            Align(
+              alignment: Alignment.bottomRight,
+              child: FlatButton(
+                textColor: Theme.of(context).colorScheme.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop(_addSubcategoryController.text.trim());
+                },
+                child: const Text(
+                  "OK",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
