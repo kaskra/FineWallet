@@ -176,10 +176,12 @@ class _HistoryPageState extends State<HistoryPage> {
           if (snapshot.data.isNotEmpty) {
             return _buildItems(snapshot.data);
           } else {
-            return const SizedBox();
+            return const SizedBox(
+                child: Center(child: Text("Found no transactions.")));
           }
         } else {
-          return const SizedBox();
+          return const SizedBox(
+              child: Center(child: Text("Found no transactions.")));
         }
       },
     );
