@@ -7,6 +7,7 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WelcomeScaffold(
       pageName: "welcome",
+      enableContinue: true,
       headerImage: Image.asset(
         IMAGES.welcome,
         height: 150,

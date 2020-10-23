@@ -13,6 +13,7 @@ class DarkModePage extends StatelessWidget {
       pageName: "dark_mode",
       onContinue: () {},
       onBack: () {},
+      enableContinue: true,
       headerImage: Image.asset(
         IMAGES.darkMode,
         height: 150,

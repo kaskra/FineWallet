@@ -13,6 +13,7 @@ class WelcomeScaffold extends StatelessWidget {
   final Widget child;
   final void Function() onContinue;
   final void Function() onBack;
+  final bool enableContinue;
   final String pageName;
 
   const WelcomeScaffold({
@@ -22,6 +23,7 @@ class WelcomeScaffold extends StatelessWidget {
     @required this.onContinue,
     @required this.onBack,
     @required this.pageName,
+    this.enableContinue = false,
   })  : assert(pageName != null),
         assert(child != null),
         super(key: key);
@@ -71,7 +73,7 @@ class WelcomeScaffold extends StatelessWidget {
               ),
             ),
           ),
-          if (onContinue != null && !isLastPage)
+          if (onContinue != null && !isLastPage && enableContinue)
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(

@@ -6,13 +6,38 @@ import 'package:flutter/rendering.dart';
 import 'package:moor/moor.dart' hide Column;
 import 'package:provider/provider.dart';
 
-class CurrencyPage extends StatelessWidget {
+class CurrencyPage extends StatefulWidget {
+  @override
+  _CurrencyPageState createState() => _CurrencyPageState();
+}
+
+class _CurrencyPageState extends State<CurrencyPage> {
+  bool _selectedCurrency = false;
+
+  bool _initialized = false;
+
+  Future getUserCurrency() async {
+    final currency =
+        await Provider.of<AppDatabase>(context).currencyDao.getUserCurrency();
+    if (currency != null) {
+      setState(() {
+        _selectedCurrency = true;
+        _initialized = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_initialized) {
+      getUserCurrency();
+    }
+
     return WelcomeScaffold(
       pageName: "currency",
       onContinue: () {},
       onBack: () {},
+      enableContinue: _selectedCurrency,
       headerImage: Image.asset(
         IMAGES.savings,
         height: 150,
@@ -44,12 +69,17 @@ class CurrencyPage extends StatelessWidget {
                     final Currency selectedCurrency = await showDialog(
                         context: context,
                         builder: (context) => CurrencySelectionDialog());
+
                     if (selectedCurrency != null) {
                       await Provider.of<AppDatabase>(context, listen: false)
                           .addUserProfile(UserProfilesCompanion(
                         id: const Value<int>(1),
                         currencyId: Value<int>(selectedCurrency.id),
                       ));
+
+                      setState(() {
+                        _selectedCurrency = true;
+                      });
                     }
                   },
                   child: Row(
@@ -62,6 +92,7 @@ class CurrencyPage extends StatelessWidget {
                           builder: (context, AsyncSnapshot<Currency> snapshot) {
                             final currencyString =
                                 snapshot.hasData ? snapshot.data.abbrev : "";
+
                             return Text(
                               currencyString,
                               style: Theme.of(context)

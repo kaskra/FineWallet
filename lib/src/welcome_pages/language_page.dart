@@ -10,6 +10,7 @@ class LanguagePage extends StatelessWidget {
       pageName: "language",
       onContinue: () {},
       onBack: () {},
+      enableContinue: true,
       headerImage: Image.asset(
         IMAGES.language,
         height: 150,
