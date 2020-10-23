@@ -91,7 +91,7 @@ class _TravelButtonState extends State<TravelButton> {
           },
           icon: Icon(
             Icons.airplanemode_active,
-            color: Theme.of(context).textTheme.button.color,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           label: (_userCurrencyId == _selectedCurrency)
               ? "Travel to other currency area"

@@ -24,7 +24,7 @@ class SectionButton extends StatelessWidget {
         icon: icon,
         label: Text(
           label,
-          style: Theme.of(context).textTheme.button,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),
     );
