@@ -136,34 +136,9 @@ class HistoryItem extends StatelessWidget {
           )
         else
           const SizedBox(),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            AmountString(
-              transaction.tx.amount * (transaction.tx.isExpense ? -1 : 1),
-              textStyle: TextStyle(
-                  fontSize: 16,
-                  color: isSelected
-                      ? Colors.white
-                      : (transaction.tx.isExpense ? Colors.red : Colors.green),
-                  fontWeight: FontWeight.bold),
-            ),
-            if (userCurrencyId != transaction.tx.currencyId)
-              ForeignAmountString(
-                transaction.tx.originalAmount *
-                    (transaction.tx.isExpense ? -1 : 1),
-                currencySymbol: transaction.currency.symbol,
-                textStyle: TextStyle(
-                    fontSize: 10,
-                    color: isSelected
-                        ? Colors.white
-                        : (transaction.tx.isExpense
-                            ? Colors.red
-                            : Colors.green),
-                    fontWeight: FontWeight.bold),
-              )
-          ],
+        CombinedAmountString(
+          transaction: transaction,
+          userCurrencyId: userCurrencyId,
         ),
       ],
     );

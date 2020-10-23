@@ -116,32 +116,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                   ),
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AmountString(
-                    snapshotItem.tx.amount *
-                        (snapshotItem.tx.isExpense ? -1 : 1),
-                    colored: true,
-                    textStyle: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  if (_userCurrencyId != snapshotItem.tx.currencyId)
-                    ForeignAmountString(
-                      snapshotItem.tx.originalAmount *
-                          (snapshotItem.tx.isExpense ? -1 : 1),
-                      currencySymbol: snapshotItem.currency.symbol,
-                      textStyle: TextStyle(
-                          fontSize: 10,
-                          color: snapshotItem.tx.isExpense
-                              ? Colors.red
-                              : Colors.green,
-                          fontWeight: FontWeight.bold),
-                    )
-                ],
+              CombinedAmountString(
+                transaction: snapshotItem,
+                userCurrencyId: _userCurrencyId,
+                titleFontSize: 17,
+                subtitleFontSize: 11,
               ),
             ],
           ),
