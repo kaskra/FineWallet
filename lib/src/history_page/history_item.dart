@@ -87,23 +87,33 @@ class HistoryItem extends StatelessWidget {
           margin: const EdgeInsets.all(2),
           child: ListTile(
             dense: true,
-            title: Text(
-              transaction.sub.name,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.secondary
-                      : null),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  transaction.sub.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.secondary
+                          : null),
+                ),
+                if (transaction.tx.label.isNotEmpty) const SizedBox(height: 4),
+                if (transaction.tx.label.isNotEmpty)
+                  Text(
+                    transaction.tx.label,
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: isSelected ? Colors.white : null,
+                        fontSize: 13),
+                  )
+              ],
             ),
-            subtitle: (transaction.tx.label.isNotEmpty)? Text(
-              transaction.tx.label,
-              style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: isSelected ? Colors.white : null,
-                  fontSize: 13),
-              //TODO Push text down in the centre when no label is below
-            ):Container(),
             trailing: _buildAmountText(context),
             leading: isSelected
                 ? const HistoryItemCheckmark()
