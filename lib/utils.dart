@@ -33,8 +33,3 @@ List<DateTime> getLastWeekAsDates() {
   }
   return days;
 }
-
-// int getInputCurrencyIdFromTransaction(Transaction tx){
-//   int userInputCurrency =
-//   _transaction.tx.currencyId == UserSettings.getInputCurrency()
-// }

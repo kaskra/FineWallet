@@ -6,6 +6,8 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'dart:developer';
+
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -13,6 +15,7 @@ import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
@@ -24,6 +27,7 @@ import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
 import 'package:FineWallet/src/widgets/sliding_menu.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,34 +39,43 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await UserSettings.init();
-  runApp(MultiProvider(
-    providers: providers,
-    child: MyApp(),
+  runApp(EasyLocalization(
+    supportedLocales: const [
+      Locale('en'),
+      Locale('de'),
+    ],
+    fallbackLocale: const Locale('en'),
+    useOnlyLangCode: true,
+    path: 'resources/langs',
+    child: MultiProvider(
+      providers: providers,
+      child: MyApp(),
+    ),
   ));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    log("Starting up app.", name: "FineWallet");
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     // SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
       theme: Provider.of<ThemeNotifier>(context).theme,
-      home: UserSettings.getInitialized()
-          ? const MyHomePage(title: 'FineWallet')
-          : WelcomePage(),
+      home: UserSettings.getInitialized() ? const MyHomePage() : WelcomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -81,15 +94,15 @@ class _MyHomePageState extends State<MyHomePage> {
       selectedColor: Theme.of(context).colorScheme.onPrimary,
       items: [
         FloatingActionButtonBottomAppBarItem(
-            iconData: Icons.person, text: "Me"),
+            iconData: Icons.person, text: LocaleKeys.nav_me.tr()),
         FloatingActionButtonBottomAppBarItem(
-            iconData: Icons.equalizer, text: "Statistics"),
+            iconData: Icons.equalizer, text: LocaleKeys.nav_statistics.tr()),
         FloatingActionButtonBottomAppBarItem(disabled: true),
         FloatingActionButtonBottomAppBarItem(
-            iconData: Icons.home, text: "Home"),
+            iconData: Icons.home, text: LocaleKeys.nav_home.tr()),
         FloatingActionButtonBottomAppBarItem(
           iconData: Icons.list,
-          text: "History",
+          text: LocaleKeys.nav_history.tr(),
         ),
       ],
       onTabSelected: (int index) {
@@ -144,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: appBarElevation,
         backgroundColor:
             Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        title: Text(widget.title),
+        title: const Text("FineWallet"),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.settings),

@@ -1,0 +1,33 @@
+{
+  "nav" : {
+    "home": "Home",
+    "me": "Profile",
+    "history": "History",
+    "statistics": "Statistics"
+  },
+  "welcome_pages": {
+    "welcome" : {
+      "title" : "Welcome to FineWallet!",
+      "next_steps" : "In the next steps you will personalize the app to your liking.",
+      "data_1" : "All of your data is saved",
+      "data_bold" : "only",
+      "data_2" : "on your device."
+    },
+    "currency" : {
+      "title" : "Choose your home currency",
+      "text" : "The home currency is the standard currency you use. When travelling to another currency region, you can change the input currency respectively. Every transaction will then be exchanged to your home currency automatically.",
+      "warning" : "Warning: You cannot change your home currency later on!"
+    },
+    "dark_mode" : {
+      "title" : "Enable Dark Mode",
+      "text" : "You may enable dark mode if it is more relaxing for your eyes."
+    },
+    "finish" : {
+      "title" : "You have successfully set up your FineWallet profile!",
+      "text" : "Good luck and have fun saving your money!"
+    }
+  },
+  "continueText" : "Continue",
+  "backText" : "Back",
+  "doneText" : "Done"
+}

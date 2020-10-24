@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/main.dart';
 import 'package:FineWallet/src/welcome_pages/currency_page.dart';
@@ -7,6 +8,7 @@ import 'package:FineWallet/src/welcome_pages/dark_mode_page.dart';
 import 'package:FineWallet/src/welcome_pages/finish_page.dart';
 import 'package:FineWallet/src/welcome_pages/language_page.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +41,7 @@ class WelcomeScaffold extends StatelessWidget {
       };
 
   Map<String, String> get _welcomeChain => {
-        "welcome": "language",
+        "welcome": "currency",
         "language": "currency",
         "currency": "dark_mode",
         "dark_mode": "finish",
@@ -88,7 +90,7 @@ class WelcomeScaffold extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Continue",
+                      LocaleKeys.continueText.tr(),
                       style: Theme.of(context).primaryTextTheme.subtitle2,
                     ),
                     const SizedBox(width: 8),
@@ -117,7 +119,7 @@ class WelcomeScaffold extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      "Back",
+                      LocaleKeys.backText.tr(),
                       style: Theme.of(context).primaryTextTheme.subtitle2,
                     ),
                   ],
@@ -137,7 +139,7 @@ class WelcomeScaffold extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Finish",
+                      LocaleKeys.doneText.tr(),
                       style: Theme.of(context).primaryTextTheme.subtitle2,
                     ),
                     const SizedBox(width: 8),

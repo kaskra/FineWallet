@@ -1,0 +1,33 @@
+{
+  "nav" : {
+    "home": "Heimat",
+    "me": "Profil",
+    "history": "Historie",
+    "statistics": "Statistiken"
+  },
+  "welcome_pages": {
+    "welcome" : {
+      "title" : "Willkommen zu FineWallet!",
+      "next_steps" : "In den nächsten Schritte wirst du die App deinen Vorlieben anpassen.",
+      "data_1" : "Alle deine Daten sind",
+      "data_bold" : "nur",
+      "data_2" : "auf deinem Gerät gespeichert."
+    },
+    "currency" : {
+      "title" : "Wähle deine Heimatwährung",
+      "text" : "Die Heimatwährung ist die Währung die du meistens benutzt. Während des Reisens kannst du auf die lokale Währung umstellen, um in dieser den Betrag einzugeben. Jeder Betrag wird dann automatisch in deine Heimatwährung umgewandelt.",
+      "warning" : "Achtung: Du kannst deine Heimatwährung später nicht mehr ändern!"
+    },
+    "dark_mode" : {
+      "title" : "Aktiviere Dark Mode",
+      "text" : "Du kannst den Dark Mode aktivieren, falls es für deine Augen angenehmer ist."
+    },
+    "finish" : {
+      "title" : "Du hast erfolgreich dein FineWallet Profil erstellt!",
+      "text" : "Viel Erfolg und Spaß beim Geld sparen!"
+    }
+  },
+  "continueText" : "Weiter",
+  "backText" : "Zurück",
+  "doneText" : "Fertig"
+}

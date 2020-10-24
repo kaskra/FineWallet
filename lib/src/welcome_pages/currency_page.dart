@@ -1,6 +1,8 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_scaffold.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:moor/moor.dart' hide Column;
@@ -52,7 +54,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
               Expanded(
                 flex: 2,
                 child: Text(
-                  "Choose your home currency",
+                  LocaleKeys.welcome_pages_currency_title.tr(),
                   style: Theme.of(context)
                       .primaryTextTheme
                       .headline6
@@ -114,10 +116,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            "The home currency is the standard currency you use. When travelling "
-            "to another currency region, you can change the input currency "
-            "respectively. Every transaction will then be exchanged to your "
-            "home currency automatically.",
+            LocaleKeys.welcome_pages_currency_text.tr(),
             style: Theme.of(context)
                 .primaryTextTheme
                 .subtitle2
@@ -125,7 +124,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            "Warning: You cannot change your home currency later on!",
+            LocaleKeys.welcome_pages_currency_warning.tr(),
             style: Theme.of(context).primaryTextTheme.subtitle2.copyWith(
                 fontWeight: FontWeight.normal, color: Colors.redAccent),
           ),
