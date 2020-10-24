@@ -5,6 +5,7 @@ import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/category_dialog.dart';
 import 'package:FineWallet/src/add_page/editable_numeric_input.dart';
 import 'package:FineWallet/src/add_page/recurrence_dialog.dart';
@@ -14,7 +15,6 @@ import 'package:FineWallet/src/add_page/row_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 class AddPage extends StatefulWidget {
@@ -207,7 +207,7 @@ class _AddPageState extends State<AddPage> {
   void _handleSaving() {
     // Show snackbar with hints when error
     if (_hasError) {
-      logMessage("NOT WORKING WITH THIS!!");
+      logMsg("NOT WORKING WITH THIS!!");
       _showSnackBar("Your specified amount is not a number!");
       return;
     }
@@ -221,10 +221,10 @@ class _AddPageState extends State<AddPage> {
 
     if (_editing) {
       _updateTransaction();
-      logMessage("Save edited transaction!");
+      logMsg("Save edited transaction!");
     } else {
       _addNewTransaction();
-      logMessage("Save new transaction!");
+      logMsg("Save new transaction!");
     }
     Navigator.of(context).pop();
   }
@@ -351,8 +351,7 @@ class _AddPageState extends State<AddPage> {
           },
           onError: (value) {
             if (value) {
-              logMessage(
-                  "Got error! No real double value ${_amount.toString()}!");
+              logMsg("Got error! No real double value ${_amount.toString()}!");
             }
             setState(() {
               _hasError = value;
@@ -384,7 +383,7 @@ class _AddPageState extends State<AddPage> {
           );
 
           if (res != null) {
-            logMessage("Return from Category: $res");
+            logMsg("Return from Category: $res");
             setState(() {
               _subcategory = res;
             });

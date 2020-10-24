@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/main.dart';
 import 'package:FineWallet/src/welcome_pages/currency_page.dart';
@@ -56,6 +58,7 @@ class WelcomeScaffold extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
+          _randomBackdropCircle(context),
           Center(
             child: Align(
               alignment: const Alignment(0, -1 / 3),
@@ -128,8 +131,7 @@ class WelcomeScaffold extends StatelessWidget {
                 onPressed: () {
                   UserSettings.setInitialized(val: true);
                   Navigator.of(context).pushAndRemoveUntil(
-                      _createRoute(const MyHomePage(title: 'FineWallet')),
-                      (route) => false);
+                      _createRoute(const MyHomePage()), (route) => false);
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -166,6 +168,31 @@ class WelcomeScaffold extends StatelessWidget {
 
         return SlideTransition(position: animation.drive(tween), child: child);
       },
+    );
+  }
+
+  Widget _randomBackdropCircle(BuildContext context) {
+    final random = Random(42);
+    final double radius = random.nextInt(200) + 400.0;
+
+    final side = random.nextBool();
+
+    final double dx = side
+        ? random.nextDouble() * MediaQuery.of(context).size.width * 0.5
+        : 0 - radius / 2;
+    final double dy =
+        random.nextDouble() * MediaQuery.of(context).size.height * 0.5;
+
+    return Positioned(
+      left: dx,
+      top: dy,
+      child: Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).accentColor.withOpacity(0.2)),
+        width: radius,
+        height: radius,
+      ),
     );
   }
 }

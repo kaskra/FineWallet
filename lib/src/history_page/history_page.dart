@@ -3,6 +3,7 @@ import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_date_title.dart';
 import 'package:FineWallet/src/history_page/history_filter.dart';
@@ -11,7 +12,6 @@ import 'package:FineWallet/src/history_page/history_month_divider.dart';
 import 'package:FineWallet/src/widgets/selection_appbar.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 /// This class is used to create a page which shows all recorded transactions.
@@ -317,7 +317,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Edit an item on the add page. Close selection mode afterwards.
   ///
   void _editItem(TransactionWithCategoryAndCurrency tx) {
-    logMessage(tx.toString());
+    logMsg(tx.toString());
     Navigator.push(
         context,
         MaterialPageRoute(

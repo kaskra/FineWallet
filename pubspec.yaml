@@ -31,9 +31,8 @@ dependencies:
   http: ^0.12.2
   rxdart: ^0.24.1
   dartx: ^0.5.0
-  lumberdash: ^2.1.1
-  colorize_lumberdash: ^2.1.0
-  print_lumberdash: ^2.1.0
+  easy_localization: ^2.3.3
+  easy_localization_loader: ^0.0.2
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +46,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - resources/langs/
     - assets/monthly_reports.png
     - assets/savings.png
     - assets/welcome.png

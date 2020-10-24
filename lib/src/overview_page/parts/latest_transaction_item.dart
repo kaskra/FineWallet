@@ -3,6 +3,7 @@ import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
@@ -10,7 +11,6 @@ import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 class LatestTransactionItem extends StatefulWidget {
@@ -193,7 +193,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),
                 onTap: () {
-                  logMessage("Tapped share");
+                  logMsg("Tapped share");
                 },
               ),
             ),

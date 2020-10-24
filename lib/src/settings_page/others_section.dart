@@ -1,6 +1,6 @@
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:flutter/material.dart';
-import 'package:lumberdash/lumberdash.dart';
 
 /// This class creates a [Section] which shows some remaining
 /// settings, like exporting and importing the database.
@@ -22,13 +22,13 @@ class OthersSection extends StatelessWidget {
         children: <Widget>[
           FlatButton(
             onPressed: () {
-              logMessage("IMPORT!!");
+              logMsg("IMPORT!!");
             },
             child: const Text("IMPORT"),
           ),
           FlatButton(
             onPressed: () {
-              logMessage("EXPORT!!");
+              logMsg("EXPORT!!");
             },
             child: const Text("EXPORT"),
           ),
