@@ -6,8 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'dart:developer';
-
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -17,6 +15,7 @@ import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
@@ -57,7 +56,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    log("Starting up app.", name: "FineWallet");
+    logMsg("Starting up app.");
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
