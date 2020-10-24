@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:lumberdash/lumberdash.dart';
 
 Future<ExchangeRates> fetchExchangeRates(
     String base, List<String> currencies) async {
   final nonBaseCurrencies = currencies.where((c) => c != base).toList();
   final url = "https://api.exchangeratesapi.io/latest?base=$base";
 
-  print("Fetch exchange rates from $url...");
+  logMessage("Fetch exchange rates from $url...");
   final response = await http.get(url);
 
   if (response.statusCode == 200) {

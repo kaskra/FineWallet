@@ -29,10 +29,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lumberdash/lumberdash.dart';
+import 'package:print_lumberdash/print_lumberdash.dart';
 import 'package:provider/provider.dart';
 
 // ignore: avoid_void_async
 void main() async {
+  // Lumberdash Settings
+  putLumberdashToWork(withClients: [PrintLumberdash()]);
+
   WidgetsFlutterBinding.ensureInitialized();
   await UserSettings.init();
   runApp(MultiProvider(

@@ -1,6 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:flutter/material.dart';
+import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 class SubcategoryDialog extends StatefulWidget {
@@ -135,7 +136,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       text: "+",
       color: Theme.of(context).colorScheme.secondary,
       onTap: () {
-        print("Add new subcategory !! TODO !!");
+        logMessage("Add new subcategory !! TODO !!");
       },
     );
   }

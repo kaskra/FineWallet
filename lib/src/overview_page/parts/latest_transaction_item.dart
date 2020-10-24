@@ -10,6 +10,7 @@ import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 class LatestTransactionItem extends StatefulWidget {
@@ -192,7 +193,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),
                 onTap: () {
-                  print("Tapped share");
+                  logMessage("Tapped share");
                 },
               ),
             ),

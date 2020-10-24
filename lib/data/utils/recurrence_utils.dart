@@ -1,5 +1,6 @@
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
+import 'package:lumberdash/lumberdash.dart';
 
 /// Given a recurrence type and a transaction date, calculates the
 /// duration of the recurrence.
@@ -62,7 +63,7 @@ List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
 
       recurrences.add(tx.copyWith(date: currentDate));
     } else {
-      print(
+      logMessage(
           "ERROR: Recurrence type is not in range. Got value: ${tx.recurrenceType}");
     }
   }

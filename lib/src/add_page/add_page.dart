@@ -14,6 +14,7 @@ import 'package:FineWallet/src/add_page/row_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 class AddPage extends StatefulWidget {
@@ -206,7 +207,7 @@ class _AddPageState extends State<AddPage> {
   void _handleSaving() {
     // Show snackbar with hints when error
     if (_hasError) {
-      print("NOT WORKING WITH THIS!!");
+      logMessage("NOT WORKING WITH THIS!!");
       _showSnackBar("Your specified amount is not a number!");
       return;
     }
@@ -220,10 +221,10 @@ class _AddPageState extends State<AddPage> {
 
     if (_editing) {
       _updateTransaction();
-      print("Save edited transaction!");
+      logMessage("Save edited transaction!");
     } else {
       _addNewTransaction();
-      print("Save new transaction!");
+      logMessage("Save new transaction!");
     }
     Navigator.of(context).pop();
   }
@@ -350,7 +351,8 @@ class _AddPageState extends State<AddPage> {
           },
           onError: (value) {
             if (value) {
-              print("Got error! No real double value ${_amount.toString()}!");
+              logMessage(
+                  "Got error! No real double value ${_amount.toString()}!");
             }
             setState(() {
               _hasError = value;
@@ -382,7 +384,7 @@ class _AddPageState extends State<AddPage> {
           );
 
           if (res != null) {
-            print("Return from Category: $res");
+            logMessage("Return from Category: $res");
             setState(() {
               _subcategory = res;
             });

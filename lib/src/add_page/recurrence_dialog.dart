@@ -1,6 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:flutter/material.dart';
+import 'package:lumberdash/lumberdash.dart';
 import 'package:provider/provider.dart';
 
 /// This class creates a dialog that is used to choose a recurrence type.
@@ -54,7 +55,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                     Navigator.of(context).pop(RecurrenceType(
                         type: _recurrenceType, name: _recurrenceName));
                   } else {
-                    print("Wrong Recurrence type or name!");
+                    logMessage("Wrong Recurrence type or name!");
                   }
                 },
                 child: const Text(
