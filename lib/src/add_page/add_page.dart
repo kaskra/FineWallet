@@ -45,8 +45,8 @@ class _AddPageState extends State<AddPage> {
   /// The transaction money amount.
   double _amount = 0.00;
 
-  /// Label textediting controller
-  TextEditingController _labelController = TextEditingController();
+  /// Label text editing controller
+  final TextEditingController _labelController = TextEditingController();
 
   /// The (original) transaction date.
   DateTime _date = today();
@@ -412,7 +412,6 @@ class _AddPageState extends State<AddPage> {
         isChild: false,
         child: TextField(
           controller: _labelController,
-          autocorrect: true,
           keyboardType: TextInputType.text,
           textAlign: TextAlign.right,
         ),
