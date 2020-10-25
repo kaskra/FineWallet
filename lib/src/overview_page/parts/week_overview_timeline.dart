@@ -11,11 +11,13 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/timeline.dart';
 import 'package:FineWallet/src/widgets/standalone/timestamp.dart';
 import 'package:FineWallet/utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -66,9 +68,13 @@ class WeekOverviewTimeline extends StatelessWidget {
   }
 
   Scaffold _historyWithScaffold(DateTime date, BuildContext context) {
+    final formatter = DateFormat.MMMd(context.locale.toLanguageTag());
+    final todayString = formatter.format(date);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Expenses on ${date.day}.${date.month}.${date.year}"),
+        title:
+            Text(LocaleKeys.history_page_expenses_on.tr(args: [todayString])),
       ),
       body: HistoryPage(
         onChangeSelectionMode: (s) {},
@@ -78,13 +84,13 @@ class WeekOverviewTimeline extends StatelessWidget {
   }
 
   Widget _buildDayName(DateTime date, bool isToday, TextStyle textStyle) {
-    final formatter = DateFormat('E, dd.MM.yy');
+    final formatter = DateFormat.MEd(context.locale.toLanguageTag());
     final todayString = formatter.format(today());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(isToday ? "TODAY" : date.getDayName(),
+        Text(isToday ? LocaleKeys.today.tr().toUpperCase() : date.getDayName(),
             maxLines: 1, style: textStyle),
         if (isToday)
           Timestamp(color: textStyle.color, size: 12, today: todayString)
@@ -133,7 +139,7 @@ class WeekOverviewTimeline extends StatelessWidget {
           return Center(
             heightFactor: 7,
             child: Text(
-              "Could not load last weeks transactions! Error: ${snapshot.error.toString()}",
+              LocaleKeys.overview_page_last_week_load_error.tr(),
               style: const TextStyle(color: Colors.black54),
             ),
           );

@@ -1,6 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
@@ -10,6 +11,7 @@ import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,10 +48,10 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             .watchNLatestTransactions(numLatestTransactions),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: Text("Found no transactions."));
+            return Center(child: Text(LocaleKeys.found_no_transactions.tr()));
           }
           if (snapshot.data.isEmpty) {
-            return const Center(child: Text("Found no transactions."));
+            return Center(child: Text(LocaleKeys.found_no_transactions.tr()));
           }
           return Stack(
             alignment: Alignment.topCenter,
@@ -147,8 +149,8 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   /// requiring the user to authorize the deletion.
   ///
   Future _deleteItems(TransactionWithCategoryAndCurrency tx) async {
-    if (await showConfirmDialog(
-        context, "Delete transaction?", "This will delete the transaction.")) {
+    if (await showConfirmDialog(context, LocaleKeys.delete_dialog_title.tr(),
+        LocaleKeys.delete_dialog_text.tr())) {
       Provider.of<AppDatabase>(context, listen: false)
           .transactionDao
           .deleteTransactionById(tx.tx.originalId);
@@ -167,9 +169,9 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             padding: 2,
             color: Colors.red.shade400,
             child: ListTile(
-              title: const Text(
-                "Delete",
-                style: TextStyle(color: Colors.white),
+              title: Text(
+                LocaleKeys.delete.tr(),
+                style: const TextStyle(color: Colors.white),
               ),
               leading: const Icon(
                 Icons.delete_outline,
@@ -187,7 +189,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               padding: 2,
               child: ListTile(
                 enabled: UserSettings.getTXShare(),
-                title: const Text("Share"),
+                title: Text(LocaleKeys.share.tr()),
                 leading: Icon(
                   Icons.share,
                   color: Theme.of(context).colorScheme.onSecondary,
@@ -201,7 +203,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             padding: 2,
             elevation: 0,
             child: ListTile(
-              title: const Text("Edit"),
+              title: Text(LocaleKeys.edit.tr()),
               leading: Icon(
                 Icons.edit,
                 color: Theme.of(context).colorScheme.onSecondary,

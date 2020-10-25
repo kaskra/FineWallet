@@ -1,10 +1,31 @@
 {
+  "january" : "January",
+  "february" : "February",
+  "march" : "March",
+  "april" : "April",
+  "may" : "May",
+  "june" : "June",
+  "july" : "July",
+  "august" : "August",
+  "september" : "September",
+  "october" : "October",
+  "november" : "November",
+  "december" : "Dezember",
+  "monday" : "Monday",
+  "tuesday" : "Tueday",
+  "wednesday" : "Wednesday",
+  "thursday" : "Thursday",
+  "friday" : "Friday",
+  "saturday" : "Saturday",
+  "sunday" : "Sunday",
+  "today" : "Today",
   "nav" : {
     "home": "Home",
     "me": "Profile",
     "history": "History",
     "statistics": "Statistics"
   },
+
   "welcome_pages": {
     "welcome" : {
       "title" : "Welcome to FineWallet!",
@@ -27,9 +48,39 @@
       "text" : "Good luck and have fun saving your money!"
     }
   },
+
   "continueText" : "Continue",
   "backText" : "Back",
   "doneText" : "Done",
   "confirm" : "Confirm",
-  "cancel" : "Cancel"
+  "cancel" : "Cancel",
+  "delete" : "Delete",
+  "share" : "Share",
+  "edit" : "Edit",
+  "found_no_transactions" : "Found no transactions.",
+
+  "overview_page": {
+    "remaining_budget" : "Remaining Budget",
+    "latest_transactions" : "Last Transactions",
+    "savings" : "Savings",
+    "last_week" : "Last Week",
+    "last_week_load_error" : "Could not load last weeks transactions!"
+  },
+  "budget_overview" : {
+
+    "used_budget" : "Used Budget",
+    "change_avail_budget" : "Change Available Budget"
+  },
+  "delete_dialog" : {
+    "title" : "Delete transaction?",
+    "text" : "This will delete the transaction."
+  },
+  "savings" : {
+    "name": "Savings",
+    "saved_amount" : "Saved amount",
+    "difference" : "Current Difference"
+  },
+  "history_page" : {
+    "expenses_on" : "Expenses on {}"
+  }
 }

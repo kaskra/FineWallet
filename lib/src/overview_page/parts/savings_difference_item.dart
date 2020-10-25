@@ -1,9 +1,11 @@
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/views/savings.dart';
 import 'package:FineWallet/src/widgets/views/savings_difference.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SavingsDifferenceItem extends StatelessWidget {
@@ -17,25 +19,24 @@ class SavingsDifferenceItem extends StatelessWidget {
             child: Image.asset(
               IMAGES.savings,
               height: 100,
-              semanticLabel: "Savings",
+              semanticLabel: LocaleKeys.savings_name.tr(),
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const <Widget>[
+            children: <Widget>[
               RowItem(
-                amountPadding: EdgeInsets.symmetric(vertical: 4),
-                footerText: "Saved amount",
-                child: SavingsView(
+                amountPadding: const EdgeInsets.symmetric(vertical: 4),
+                footerText: LocaleKeys.savings_saved_amount.tr(),
+                child: const SavingsView(
                   textStyle:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
               ),
               RowItem(
-                amountPadding: EdgeInsets.symmetric(vertical: 4),
-                // TODO: or Currently
-                footerText: "Current Difference",
-                child: SavingsDifferenceView(
+                amountPadding: const EdgeInsets.symmetric(vertical: 4),
+                footerText: LocaleKeys.savings_difference.tr(),
+                child: const SavingsDifferenceView(
                   textStyle:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),

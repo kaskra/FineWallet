@@ -1,4 +1,24 @@
 {
+  "january" : "Januar",
+  "february" : "Februar",
+  "march" : "März",
+  "april" : "April",
+  "may" : "Mai",
+  "june" : "Juni",
+  "july" : "Juli",
+  "august" : "August",
+  "september" : "September",
+  "october" : "Oktober",
+  "november" : "November",
+  "december" : "Dezember",
+  "monday" : "Montag",
+  "tuesday" : "Dienstag",
+  "wednesday" : "Mittwoch",
+  "thursday" : "Donnerstag",
+  "friday" : "Freitag",
+  "saturday" : "Samstag",
+  "sunday" : "Sonntag",
+  "today" : "Heute",
   "nav" : {
     "home": "Home",
     "me": "Profil",
@@ -27,9 +47,38 @@
       "text" : "Viel Erfolg und Spaß beim Geld sparen!"
     }
   },
+
   "continueText" : "Weiter",
   "backText" : "Zurück",
   "doneText" : "Fertig",
   "confirm" : "Bestätigen",
-  "cancel" : "Abbrechen"
+  "cancel" : "Abbrechen",
+  "delete" : "Löschen",
+  "share" : "Teilen",
+  "edit" : "Bearbeiten",
+  "found_no_transactions" : "Konnte keine Einträge finden.",
+
+  "overview_page": {
+    "remaining_budget" : "Übriges Budget",
+    "latest_transactions" : "Letzte Transaktionen",
+    "savings" : "Ersparnisse",
+    "last_week" : "Letzte Woche",
+    "last_week_load_error" : "Konnte keine Transaktionen der letzten Woche laden!"
+  },
+  "budget_overview" : {
+    "used_budget" : "Verbrauchtes Budget",
+    "change_avail_budget" : "Verfügbares Budget ändern"
+  },
+  "delete_dialog" : {
+    "title" : "Transaktion löschen?",
+    "text" : "Dies wird ihre Transaktion löschen."
+  },
+  "savings" : {
+    "name": "Ersparnisse",
+    "saved_amount" : "Gesparter Betrag",
+    "difference" : "Aktueller Unterschied"
+  },
+  "history_page" : {
+    "expenses_on" : "Ausgaben am {}"
+  }
 }
