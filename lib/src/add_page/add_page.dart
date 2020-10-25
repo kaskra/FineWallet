@@ -13,8 +13,10 @@ import 'package:FineWallet/src/add_page/recurrence_dialog.dart';
 import 'package:FineWallet/src/add_page/row_child_divider.dart';
 import 'package:FineWallet/src/add_page/row_title.dart';
 import 'package:FineWallet/src/add_page/row_wrapper.dart';
+import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -318,12 +320,29 @@ class _AddPageState extends State<AddPage> {
   Widget _buildWarning() {
     return _inputCurrencyId != _userCurrencyId
         ? Container(
-            height: 20,
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
             color: Theme.of(context).accentColor,
             child: Center(
-              child: Text(
-                LocaleKeys.add_page_not_home_currency.tr(),
-                style: const TextStyle(fontWeight: FontWeight.w600),
+              child: RichText(
+                text: TextSpan(
+                    text: "${LocaleKeys.add_page_not_home_currency.tr()} ",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    children: [
+                      TextSpan(
+                          text:
+                              LocaleKeys.add_page_not_home_currency_change.tr(),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              logMsg("Change currency");
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (_) => SettingsPage()),
+                              );
+                            },
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                          )),
+                    ]),
               ),
             ),
           )

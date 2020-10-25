@@ -117,6 +117,7 @@
     "date_null" : "Bitte wähle ein Datum für die Transaktion.",
     "not_a_number" : "Der angegebene Betrag ist keine Zahl!",
     "not_home_currency" : "Du benutzt momentan nicht deine Heimatwährung!",
+    "not_home_currency_change" : "Wechsel hier zurück!",
     "amount" : "Betrag",
     "category" : "Kategorie",
     "label" : "Bezeichnung/Hinweis",

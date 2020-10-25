@@ -117,6 +117,7 @@
     "date_null" : "Please choose a date for your transaction!",
     "not_a_number" : "Your specified amount is not a number!",
     "not_home_currency" : "You are currently not using your home currency!",
+    "not_home_currency_change" : "Change back here!",
     "amount" : "Amount",
     "category" : "Category",
     "label" : "Label",
@@ -136,7 +137,7 @@
     "dark_mode" : "Enable Dark Mode",
     "enable_filter" : "Enable History Filter",
     "language" : {
-      "one" : "language",
+      "one" : "Language",
       "other" : "Languages"
     },
     "social" : "Social",
