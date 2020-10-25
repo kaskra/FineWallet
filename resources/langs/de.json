@@ -1,84 +1,91 @@
 {
-  "january" : "Januar",
-  "february" : "Februar",
-  "march" : "März",
-  "april" : "April",
-  "may" : "Mai",
-  "june" : "Juni",
-  "july" : "Juli",
-  "august" : "August",
-  "september" : "September",
-  "october" : "Oktober",
-  "november" : "November",
-  "december" : "Dezember",
-  "monday" : "Montag",
-  "tuesday" : "Dienstag",
-  "wednesday" : "Mittwoch",
-  "thursday" : "Donnerstag",
-  "friday" : "Freitag",
-  "saturday" : "Samstag",
-  "sunday" : "Sonntag",
-  "today" : "Heute",
-  "nav" : {
+  "january": "Januar",
+  "february": "Februar",
+  "march": "März",
+  "april": "April",
+  "may": "Mai",
+  "june": "Juni",
+  "july": "Juli",
+  "august": "August",
+  "september": "September",
+  "october": "Oktober",
+  "november": "November",
+  "december": "Dezember",
+  "monday": "Montag",
+  "tuesday": "Dienstag",
+  "wednesday": "Mittwoch",
+  "thursday": "Donnerstag",
+  "friday": "Freitag",
+  "saturday": "Samstag",
+  "sunday": "Sonntag",
+  "today": "Heute",
+  "nav": {
     "home": "Home",
     "me": "Profil",
     "history": "Historie",
     "statistics": "Statistiken"
   },
   "welcome_pages": {
-    "welcome" : {
-      "title" : "Willkommen zu FineWallet!",
-      "next_steps" : "In den nächsten Schritte wirst du die App deinen Vorlieben anpassen.",
-      "data_1" : "Alle deine Daten sind",
-      "data_bold" : "nur",
-      "data_2" : "auf deinem Gerät gespeichert."
+    "welcome": {
+      "title": "Willkommen zu FineWallet!",
+      "next_steps": "In den nächsten Schritte wirst du die App deinen Vorlieben anpassen.",
+      "data_1": "Alle deine Daten sind",
+      "data_bold": "nur",
+      "data_2": "auf deinem Gerät gespeichert."
     },
-    "currency" : {
-      "title" : "Wähle deine Heimatwährung",
-      "text" : "Die Heimatwährung ist die Währung die du meistens benutzt. Während des Reisens kannst du auf die lokale Währung umstellen, um in dieser den Betrag einzugeben. Jeder Betrag wird dann automatisch in deine Heimatwährung umgewandelt.",
-      "warning" : "Achtung: Du kannst deine Heimatwährung später nicht mehr ändern!"
+    "currency": {
+      "title": "Wähle deine Heimatwährung",
+      "text": "Die Heimatwährung ist die Währung die du meistens benutzt. Während des Reisens kannst du auf die lokale Währung umstellen, um in dieser den Betrag einzugeben. Jeder Betrag wird dann automatisch in deine Heimatwährung umgewandelt.",
+      "warning": "Achtung: Du kannst deine Heimatwährung später nicht mehr ändern!"
     },
-    "dark_mode" : {
-      "title" : "Aktiviere Dark Mode",
-      "text" : "Du kannst den Dark Mode aktivieren, falls es für deine Augen angenehmer ist."
+    "dark_mode": {
+      "title": "Aktiviere Dark Mode",
+      "text": "Du kannst den Dark Mode aktivieren, falls es für deine Augen angenehmer ist."
     },
-    "finish" : {
-      "title" : "Du hast erfolgreich dein FineWallet Profil erstellt!",
-      "text" : "Viel Erfolg und Spaß beim Geld sparen!"
+    "finish": {
+      "title": "Du hast erfolgreich dein FineWallet Profil erstellt!",
+      "text": "Viel Erfolg und Spaß beim Geld sparen!"
     }
   },
-
-  "continueText" : "Weiter",
-  "backText" : "Zurück",
-  "doneText" : "Fertig",
-  "confirm" : "Bestätigen",
-  "cancel" : "Abbrechen",
-  "delete" : "Löschen",
-  "share" : "Teilen",
-  "edit" : "Bearbeiten",
-  "found_no_transactions" : "Konnte keine Einträge finden.",
-
+  "continueText": "Weiter",
+  "backText": "Zurück",
+  "doneText": "Fertig",
+  "confirm": "Bestätigen",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "share": "Teilen",
+  "edit": "Bearbeiten",
+  "found_no_transactions": "Konnte keine Einträge finden.",
   "overview_page": {
-    "remaining_budget" : "Übriges Budget",
-    "latest_transactions" : "Letzte Transaktionen",
-    "savings" : "Ersparnisse",
-    "last_week" : "Letzte Woche",
-    "last_week_load_error" : "Konnte keine Transaktionen der letzten Woche laden!"
+    "remaining_budget": "Übriges Budget",
+    "latest_transactions": "Letzte Transaktionen",
+    "last_week": "Letzte Woche",
+    "last_week_load_error": "Konnte keine Transaktionen der letzten Woche laden!"
   },
-  "budget_overview" : {
-    "used_budget" : "Verbrauchtes Budget",
-    "change_avail_budget" : "Verfügbares Budget ändern"
+  "budget_overview": {
+    "used_budget": "Verbrauchtes Budget",
+    "change_avail_budget": "Verfügbares Budget ändern"
   },
-  "delete_dialog" : {
-    "title" : "Transaktion löschen?",
-    "text" : "Dies wird ihre Transaktion löschen."
+  "delete_dialog": {
+    "title": "Transaktion löschen?",
+    "text": "Dies wird ihre Transaktion löschen."
   },
-  "savings" : {
+  "savings": {
     "name": "Ersparnisse",
-    "saved_amount" : "Gesparter Betrag",
-    "difference" : "Aktueller Unterschied"
+    "saved_amount": "Gesparter Betrag",
+    "difference": "Aktueller Unterschied"
   },
-  "history_page" : {
-    "expenses_on" : "Ausgaben am {}"
+  "history_page": {
+    "expenses_on": "Ausgaben am {}"
+  },
+  "profile_page": {
+    "month_avail_budget": "Monatlich verfügbares Budget",
+    "spending_prediction": "Vorausgesagte Ausgaben",
+    "expenses_per_category": "Ausgaben pro Kategorie",
+    "total_avail_budget": "Verfügbares Gesamtbudget",
+    "expected_savings": "Erwartete Ersparnisse",
+    "monthly" : "Monatlich",
+    "lifetime" : "Insgesamt",
+    "no_expenses" : "Keine Ausgaben gefunden."
   }
 }

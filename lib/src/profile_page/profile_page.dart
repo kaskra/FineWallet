@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/profile_page/parts/available_budget_item.dart';
 import 'package:FineWallet/src/profile_page/parts/charts_item.dart';
 import 'package:FineWallet/src/profile_page/parts/expected_savings_item.dart';
@@ -6,6 +7,7 @@ import 'package:FineWallet/src/profile_page/parts/slider_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
 import 'package:FineWallet/src/widgets/structure/structure_title.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -19,21 +21,24 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const StructureTitle(text: "Monthly Available Budget"),
+            StructureTitle(
+                text: LocaleKeys.profile_page_month_avail_budget.tr()),
             SmallStructureSpace(),
             _buildMonthlyAvailableBudget(),
             StructureSpace(),
             //
-            const StructureTitle(text: "Spending Prediction"),
+            StructureTitle(
+                text: LocaleKeys.profile_page_spending_prediction.tr()),
             SmallStructureSpace(),
             SpendingPredictionItem(),
             StructureSpace(),
             //
-            const StructureTitle(text: "Expenses per Category"),
+            StructureTitle(
+                text: LocaleKeys.profile_page_expenses_per_category.tr()),
             SmallStructureSpace(),
             CategoryChartsItem(),
             //
-            const StructureTitle(text: "Savings"),
+            StructureTitle(text: LocaleKeys.savings_name.tr()),
             SmallStructureSpace(),
             const SimpleSavingsItem(),
             StructureSpace(),

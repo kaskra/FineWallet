@@ -34,7 +34,7 @@ class OverviewPage extends StatelessWidget {
             StructureSpace(),
             //
             StructureTitle(
-              text: LocaleKeys.overview_page_savings.tr(),
+              text: LocaleKeys.savings_name.tr(),
             ),
             SmallStructureSpace(),
             SavingsDifferenceItem(),

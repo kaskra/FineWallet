@@ -1,86 +1,91 @@
 {
-  "january" : "January",
-  "february" : "February",
-  "march" : "March",
-  "april" : "April",
-  "may" : "May",
-  "june" : "June",
-  "july" : "July",
-  "august" : "August",
-  "september" : "September",
-  "october" : "October",
-  "november" : "November",
-  "december" : "Dezember",
-  "monday" : "Monday",
-  "tuesday" : "Tueday",
-  "wednesday" : "Wednesday",
-  "thursday" : "Thursday",
-  "friday" : "Friday",
-  "saturday" : "Saturday",
-  "sunday" : "Sunday",
-  "today" : "Today",
-  "nav" : {
+  "january": "January",
+  "february": "February",
+  "march": "March",
+  "april": "April",
+  "may": "May",
+  "june": "June",
+  "july": "July",
+  "august": "August",
+  "september": "September",
+  "october": "October",
+  "november": "November",
+  "december": "Dezember",
+  "monday": "Monday",
+  "tuesday": "Tueday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "today": "Today",
+  "nav": {
     "home": "Home",
     "me": "Profile",
     "history": "History",
     "statistics": "Statistics"
   },
-
   "welcome_pages": {
-    "welcome" : {
-      "title" : "Welcome to FineWallet!",
-      "next_steps" : "In the next steps you will personalize the app to your liking.",
-      "data_1" : "All of your data is saved",
-      "data_bold" : "only",
-      "data_2" : "on your device."
+    "welcome": {
+      "title": "Welcome to FineWallet!",
+      "next_steps": "In the next steps you will personalize the app to your liking.",
+      "data_1": "All of your data is saved",
+      "data_bold": "only",
+      "data_2": "on your device."
     },
-    "currency" : {
-      "title" : "Choose your home currency",
-      "text" : "The home currency is the standard currency you use. When travelling to another currency region, you can change the input currency respectively. Every transaction will then be exchanged to your home currency automatically.",
-      "warning" : "Warning: You cannot change your home currency later on!"
+    "currency": {
+      "title": "Choose your home currency",
+      "text": "The home currency is the standard currency you use. When travelling to another currency region, you can change the input currency respectively. Every transaction will then be exchanged to your home currency automatically.",
+      "warning": "Warning: You cannot change your home currency later on!"
     },
-    "dark_mode" : {
-      "title" : "Enable Dark Mode",
-      "text" : "You may enable dark mode if it is more relaxing for your eyes."
+    "dark_mode": {
+      "title": "Enable Dark Mode",
+      "text": "You may enable dark mode if it is more relaxing for your eyes."
     },
-    "finish" : {
-      "title" : "You have successfully set up your FineWallet profile!",
-      "text" : "Good luck and have fun saving your money!"
+    "finish": {
+      "title": "You have successfully set up your FineWallet profile!",
+      "text": "Good luck and have fun saving your money!"
     }
   },
-
-  "continueText" : "Continue",
-  "backText" : "Back",
-  "doneText" : "Done",
-  "confirm" : "Confirm",
-  "cancel" : "Cancel",
-  "delete" : "Delete",
-  "share" : "Share",
-  "edit" : "Edit",
-  "found_no_transactions" : "Found no transactions.",
-
+  "continueText": "Continue",
+  "backText": "Back",
+  "doneText": "Done",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "share": "Share",
+  "edit": "Edit",
+  "found_no_transactions": "Found no transactions.",
   "overview_page": {
-    "remaining_budget" : "Remaining Budget",
-    "latest_transactions" : "Last Transactions",
-    "savings" : "Savings",
-    "last_week" : "Last Week",
-    "last_week_load_error" : "Could not load last weeks transactions!"
+    "remaining_budget": "Remaining Budget",
+    "latest_transactions": "Last Transactions",
+    "last_week": "Last Week",
+    "last_week_load_error": "Could not load last weeks transactions!"
   },
-  "budget_overview" : {
-
-    "used_budget" : "Used Budget",
-    "change_avail_budget" : "Change Available Budget"
+  "budget_overview": {
+    "used_budget": "Used Budget",
+    "change_avail_budget": "Change Available Budget"
   },
-  "delete_dialog" : {
-    "title" : "Delete transaction?",
-    "text" : "This will delete the transaction."
+  "delete_dialog": {
+    "title": "Delete transaction?",
+    "text": "This will delete the transaction."
   },
-  "savings" : {
+  "savings": {
     "name": "Savings",
-    "saved_amount" : "Saved amount",
-    "difference" : "Current Difference"
+    "saved_amount": "Saved amount",
+    "difference": "Current Difference"
   },
-  "history_page" : {
-    "expenses_on" : "Expenses on {}"
+  "history_page": {
+    "expenses_on": "Expenses on {}"
+  },
+  "profile_page": {
+    "month_avail_budget": "Monthly Available Budget",
+    "spending_prediction": "Spending Prediction",
+    "expenses_per_category": "Expenses per Category",
+    "total_avail_budget": "Total available budget",
+    "expected_savings": "Expected savings",
+    "monthly" : "Monthly",
+    "lifetime" : "Lifetime",
+    "no_expenses" : "Found no expenses."
   }
 }

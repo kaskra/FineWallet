@@ -54,7 +54,6 @@ abstract class  LocaleKeys {
   static const found_no_transactions = 'found_no_transactions';
   static const overview_page_remaining_budget = 'overview_page.remaining_budget';
   static const overview_page_latest_transactions = 'overview_page.latest_transactions';
-  static const overview_page_savings = 'overview_page.savings';
   static const overview_page_last_week = 'overview_page.last_week';
   static const overview_page_last_week_load_error = 'overview_page.last_week_load_error';
   static const overview_page = 'overview_page';
@@ -70,5 +69,14 @@ abstract class  LocaleKeys {
   static const savings = 'savings';
   static const history_page_expenses_on = 'history_page.expenses_on';
   static const history_page = 'history_page';
+  static const profile_page_month_avail_budget = 'profile_page.month_avail_budget';
+  static const profile_page_spending_prediction = 'profile_page.spending_prediction';
+  static const profile_page_expenses_per_category = 'profile_page.expenses_per_category';
+  static const profile_page_total_avail_budget = 'profile_page.total_avail_budget';
+  static const profile_page_expected_savings = 'profile_page.expected_savings';
+  static const profile_page_monthly = 'profile_page.monthly';
+  static const profile_page_lifetime = 'profile_page.lifetime';
+  static const profile_page_no_expenses = 'profile_page.no_expenses';
+  static const profile_page = 'profile_page';
 
 }
