@@ -21,19 +21,39 @@ class OthersSection extends StatelessWidget {
     return SectionItem(
       title: LocaleKeys.settings_page_your_data.tr(),
       trailing: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          // TODO in uppercase, there is overflow
-          FlatButton(
-            onPressed: () {
-              logMsg("IMPORT!!");
-            },
-            child: Text(LocaleKeys.settings_page_import.tr()),
+          SizedBox(
+            width: 100,
+            child: FlatButton(
+              onPressed: () {
+                logMsg("IMPORT!!");
+              },
+              visualDensity: VisualDensity.compact,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  LocaleKeys.settings_page_import.tr().toUpperCase(),
+                  maxLines: 1,
+                ),
+              ),
+            ),
           ),
-          FlatButton(
-            onPressed: () {
-              logMsg("EXPORT!!");
-            },
-            child: Text(LocaleKeys.settings_page_export.tr()),
+          SizedBox(
+            width: 100,
+            child: FlatButton(
+              onPressed: () {
+                logMsg("EXPORT!!");
+              },
+              visualDensity: VisualDensity.compact,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  LocaleKeys.settings_page_export.tr().toUpperCase(),
+                  maxLines: 1,
+                ),
+              ),
+            ),
           ),
         ],
       ),
