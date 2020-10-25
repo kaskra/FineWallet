@@ -8,6 +8,8 @@
 
 import 'dart:async';
 
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 Future<bool> showConfirmDialog(
@@ -23,13 +25,13 @@ Future<bool> showConfirmDialog(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: const Text("Close"),
+              child: Text(LocaleKeys.cancel.tr()),
             ),
             FlatButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: const Text("Confirm"),
+              child: Text(LocaleKeys.confirm.tr()),
             )
           ],
         );
