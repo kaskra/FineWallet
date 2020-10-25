@@ -68,6 +68,12 @@ abstract class  LocaleKeys {
   static const savings_difference = 'savings.difference';
   static const savings = 'savings';
   static const history_page_expenses_on = 'history_page.expenses_on';
+  static const history_page_filter_settings = 'history_page.filter_settings';
+  static const history_page_show_expenses = 'history_page.show_expenses';
+  static const history_page_show_incomes = 'history_page.show_incomes';
+  static const history_page_show_future = 'history_page.show_future';
+  static const history_page_share_title = 'history_page.share_title';
+  static const history_page_share_text = 'history_page.share_text';
   static const history_page = 'history_page';
   static const profile_page_month_avail_budget = 'profile_page.month_avail_budget';
   static const profile_page_spending_prediction = 'profile_page.spending_prediction';

@@ -1,3 +1,5 @@
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class HistoryFilterState {
@@ -32,7 +34,7 @@ class HistoryFilter extends StatelessWidget {
                 bottom: BorderSide(
                     color: Theme.of(context).colorScheme.secondary, width: 0))),
         child: ExpansionTile(
-          title: const Text("Filter Settings"),
+          title: Text(LocaleKeys.history_page_filter_settings.tr()),
           leading: const Icon(Icons.filter_list),
           children: items,
         ),

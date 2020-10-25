@@ -1,6 +1,7 @@
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
@@ -11,6 +12,7 @@ import 'package:FineWallet/src/history_page/history_item.dart';
 import 'package:FineWallet/src/history_page/history_month_divider.dart';
 import 'package:FineWallet/src/widgets/selection_appbar.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,7 +101,7 @@ class _HistoryPageState extends State<HistoryPage> {
       items: [
         HistoryFilterItem(
           initialValue: _filterState.onlyExpenses,
-          title: "Show expenses",
+          title: LocaleKeys.history_page_show_expenses.tr(),
           onChanged: (b) {
             setState(() {
               _filterState.onlyExpenses = b;
@@ -109,7 +111,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         HistoryFilterItem(
           initialValue: _filterState.onlyIncomes,
-          title: "Show incomes",
+          title: LocaleKeys.history_page_show_incomes.tr(),
           onChanged: (b) {
             setState(() {
               _filterState.onlyIncomes = b;
@@ -119,7 +121,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         HistoryFilterItem(
           initialValue: _filterState.showFuture,
-          title: "Future transactions",
+          title: LocaleKeys.history_page_show_future.tr(),
           onChanged: (b) {
             setState(() {
               _filterState.showFuture = b;
@@ -177,12 +179,14 @@ class _HistoryPageState extends State<HistoryPage> {
           if (snapshot.data.isNotEmpty) {
             return _buildItems(snapshot.data);
           } else {
-            return const SizedBox(
-                child: Center(child: Text("Found no transactions.")));
+            return SizedBox(
+                child:
+                    Center(child: Text(LocaleKeys.found_no_transactions.tr())));
           }
         } else {
-          return const SizedBox(
-              child: Center(child: Text("Found no transactions.")));
+          return SizedBox(
+              child:
+                  Center(child: Text(LocaleKeys.found_no_transactions.tr())));
         }
       },
     );
@@ -304,7 +308,10 @@ class _HistoryPageState extends State<HistoryPage> {
   ///
   Future _deleteItems() async {
     if (await showConfirmDialog(
-        context, "Delete transaction?", "This will delete the transaction.")) {
+      context,
+      LocaleKeys.delete_dialog_title.tr(),
+      LocaleKeys.delete_dialog_text.tr(),
+    )) {
       for (final tx in _selectedItems.values) {
         Provider.of<AppDatabase>(context, listen: false)
             .transactionDao
@@ -330,7 +337,10 @@ class _HistoryPageState extends State<HistoryPage> {
   ///
   void _shareItem(TransactionWithCategoryAndCurrency tx) {
     showConfirmDialog(
-        context, "TX SHARE", "The TX SHARE is not available right now.");
+      context,
+      LocaleKeys.history_page_share_title.tr(),
+      LocaleKeys.history_page_share_text.tr(),
+    );
     _closeSelection();
   }
 

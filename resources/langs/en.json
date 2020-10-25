@@ -76,7 +76,13 @@
     "difference": "Current Difference"
   },
   "history_page": {
-    "expenses_on": "Expenses on {}"
+    "expenses_on": "Expenses on {}",
+    "filter_settings" : "Filter Settings",
+    "show_expenses" : "Show expenses",
+    "show_incomes" : "Show incomes",
+    "show_future" : "Future transactions",
+    "share_title" : "TX SHARE",
+    "share_text" : "TX SHARE is not available right now."
   },
   "profile_page": {
     "month_avail_budget": "Monthly Available Budget",
