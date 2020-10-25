@@ -134,7 +134,6 @@ class UserProfiles extends Table {
     Subcategories,
     Months,
     RecurrenceTypes,
-    Languages,
     Currencies,
     UserProfiles,
   ],
