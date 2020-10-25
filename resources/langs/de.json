@@ -60,7 +60,7 @@
   "income" : "Einkommen",
   "found_no_transactions": "Konnte keine Einträge finden.",
   "overview_page": {
-    "remaining_budget": "Übriges Budget",
+    "remaining_budget": "Restliches Budget",
     "latest_transactions": "Letzte Transaktionen",
     "last_week": "Letzte Woche",
     "last_week_load_error": "Konnte keine Transaktionen der letzten Woche laden!"
