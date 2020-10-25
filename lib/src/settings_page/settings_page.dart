@@ -1,10 +1,12 @@
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/settings_page/appearance_section.dart';
 import 'package:FineWallet/src/settings_page/defaults_section.dart';
 import 'package:FineWallet/src/settings_page/others_section.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:FineWallet/src/settings_page/social_section.dart';
 import 'package:FineWallet/src/settings_page/travel_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +17,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(LocaleKeys.settings_page_title.tr()),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -47,7 +49,7 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
       child: Row(
         children: [
-          const Text("Your home currency: "),
+          Text("${LocaleKeys.settings_page_home_currency.tr()}: "),
           FutureBuilder<Currency>(
             future:
                 Provider.of<AppDatabase>(context).currencyDao.getUserCurrency(),

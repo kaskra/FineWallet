@@ -123,5 +123,30 @@
     "date" : "Date",
     "recurrence" : "Recurrence",
     "select_category" : "Select a category"
+  },
+  "settings_page" : {
+    "title" : "Settings",
+    "currencies" : "Currencies",
+    "snack_at_home" : "You are now using your home currency as your input currency.",
+    "snack_traveling" : "You are now using {} as your input currency. Every transaction will be converted to your home currency.",
+    "travel" : "Travel to other currency area",
+    "while_travel": "Traveling using {}",
+    "home_currency" : "Your home currency",
+    "appearance" : "Appearance",
+    "dark_mode" : "Enable Dark Mode",
+    "enable_filter" : "Enable History Filter",
+    "language" : {
+      "one" : "language",
+      "other" : "Languages"
+    },
+    "social" : "Social",
+    "tx_share" : "Enable TX SHARE",
+    "defaults" : "Default Settings",
+    "default_filter_settings" : "Filter Settings",
+    "default_expense_chart" : "Expense Chart",
+    "others" : "Others",
+    "your_data" : "Your Data",
+    "import" : "Import",
+    "export" : "Export"
   }
 }

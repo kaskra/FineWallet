@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/providers/theme_notifier.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:FineWallet/src/widgets/simple_pages/selection_page.dart';
@@ -30,7 +31,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
   @override
   Widget build(BuildContext context) {
     return Section(
-      title: "Appearance",
+      title: LocaleKeys.settings_page_appearance.tr(),
       children: <SectionItem>[
         _buildDarkModeSwitch(context),
         _buildFilterSettingsSwitch(context),
@@ -41,7 +42,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
 
   SectionItem _buildDarkModeSwitch(BuildContext context) {
     return SectionItem(
-      title: "Enable Dark Mode",
+      title: LocaleKeys.settings_page_dark_mode.tr(),
       trailing: Switch(
         value: UserSettings.getDarkMode(),
         onChanged: (val) async {
@@ -54,7 +55,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
 
   SectionItem _buildFilterSettingsSwitch(BuildContext context) {
     return SectionItem(
-      title: "Enable Filtering of History",
+      title: LocaleKeys.settings_page_enable_filter.tr(),
       trailing: Switch(
         value: _isFilterSettings,
         onChanged: (val) async {
@@ -74,14 +75,14 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     items.putIfAbsent(2, () => "GER");
 
     return SectionItem(
-      title: "Language (UNUSED)",
+      title: LocaleKeys.settings_page_language.plural(1),
       trailing: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
             final int res = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SelectionPage(
-                      pageTitle: "Languages",
+                      pageTitle: LocaleKeys.settings_page_language.plural(2),
                       selectedIndex: UserSettings.getLanguage(),
                       data: items,
                     )));

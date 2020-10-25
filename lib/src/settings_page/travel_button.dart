@@ -1,9 +1,11 @@
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:FineWallet/src/settings_page/parts/section_button.dart';
 import 'package:FineWallet/src/widgets/simple_pages/selection_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +58,7 @@ class _TravelButtonState extends State<TravelButton> {
             final int res = await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SelectionPage(
-                  pageTitle: "Currencies",
+                  pageTitle: LocaleKeys.settings_page_currencies.tr(),
                   selectedIndex: UserSettings.getInputCurrency(),
                   data: items,
                 ),
@@ -73,17 +75,16 @@ class _TravelButtonState extends State<TravelButton> {
                 if (_selectedCurrency == _userCurrencyId) {
                   Scaffold.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(const SnackBar(
-                      content: Text(
-                          "You are now using your home currency as your input currency."),
+                    ..showSnackBar(SnackBar(
+                      content:
+                          Text(LocaleKeys.settings_page_snack_at_home.tr()),
                     ));
                 } else {
                   Scaffold.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(SnackBar(
-                      content: Text(
-                          "You are now using $currencyString as your input currency. "
-                          "Every transaction will be converted to your home currency."),
+                      content: Text(LocaleKeys.settings_page_snack_traveling
+                          .tr(args: [items[_selectedCurrency]])),
                     ));
                 }
               }
@@ -94,8 +95,9 @@ class _TravelButtonState extends State<TravelButton> {
             color: Theme.of(context).colorScheme.onSurface,
           ),
           label: (_userCurrencyId == _selectedCurrency)
-              ? "Travel to other currency area"
-              : "Traveling using $currencyString",
+              ? LocaleKeys.settings_page_travel.tr()
+              : LocaleKeys.settings_page_while_travel
+                  .tr(args: [currencyString]),
         );
       },
     );

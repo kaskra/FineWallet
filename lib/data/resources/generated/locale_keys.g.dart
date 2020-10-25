@@ -112,5 +112,26 @@ abstract class  LocaleKeys {
   static const add_page_recurrence = 'add_page.recurrence';
   static const add_page_select_category = 'add_page.select_category';
   static const add_page = 'add_page';
+  static const settings_page_title = 'settings_page.title';
+  static const settings_page_currencies = 'settings_page.currencies';
+  static const settings_page_snack_at_home = 'settings_page.snack_at_home';
+  static const settings_page_snack_traveling = 'settings_page.snack_traveling';
+  static const settings_page_travel = 'settings_page.travel';
+  static const settings_page_while_travel = 'settings_page.while_travel';
+  static const settings_page_home_currency = 'settings_page.home_currency';
+  static const settings_page_appearance = 'settings_page.appearance';
+  static const settings_page_dark_mode = 'settings_page.dark_mode';
+  static const settings_page_enable_filter = 'settings_page.enable_filter';
+  static const settings_page_language = 'settings_page.language';
+  static const settings_page_social = 'settings_page.social';
+  static const settings_page_tx_share = 'settings_page.tx_share';
+  static const settings_page_defaults = 'settings_page.defaults';
+  static const settings_page_default_filter_settings = 'settings_page.default_filter_settings';
+  static const settings_page_default_expense_chart = 'settings_page.default_expense_chart';
+  static const settings_page_others = 'settings_page.others';
+  static const settings_page_your_data = 'settings_page.your_data';
+  static const settings_page_import = 'settings_page.import';
+  static const settings_page_export = 'settings_page.export';
+  static const settings_page = 'settings_page';
 
 }

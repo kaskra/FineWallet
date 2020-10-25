@@ -1,6 +1,8 @@
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/pages/filter_settings_page.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 /// This class creates a [Section] which shows the chart
@@ -16,7 +18,7 @@ class _DefaultsSectionState extends State<DefaultsSection> {
   @override
   Widget build(BuildContext context) {
     return Section(
-      title: "Defaults",
+      title: LocaleKeys.settings_page_defaults.tr(),
       children: <SectionItem>[
         _buildDefaultProfileChart(),
         _buildDefaultFilterSettings(),
@@ -26,7 +28,7 @@ class _DefaultsSectionState extends State<DefaultsSection> {
 
   SectionItem _buildDefaultProfileChart() {
     return SectionItem(
-      title: "Default Expense Chart",
+      title: LocaleKeys.settings_page_default_expense_chart.tr(),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: _selectedId,
@@ -37,14 +39,14 @@ class _DefaultsSectionState extends State<DefaultsSection> {
               _selectedId = val;
             });
           },
-          items: const [
+          items: [
             DropdownMenuItem(
               value: 0,
-              child: Text("Monthly"),
+              child: Text(LocaleKeys.profile_page_monthly.tr()),
             ),
             DropdownMenuItem(
               value: 1,
-              child: Text("Lifetime"),
+              child: Text(LocaleKeys.profile_page_lifetime.tr()),
             ),
           ],
         ),
@@ -54,7 +56,7 @@ class _DefaultsSectionState extends State<DefaultsSection> {
 
   SectionItem _buildDefaultFilterSettings() {
     return SectionItem(
-      title: "Default Filter Settings",
+      title: LocaleKeys.settings_page_default_filter_settings.tr(),
       trailing: Material(
         color: Colors.transparent,
         child: InkWell(

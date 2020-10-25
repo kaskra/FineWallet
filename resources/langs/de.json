@@ -22,7 +22,7 @@
   "nav": {
     "home": "Home",
     "me": "Profil",
-    "history": "Historie",
+    "history": "Verlauf",
     "statistics": "Statistiken"
   },
   "welcome_pages": {
@@ -123,5 +123,30 @@
     "date" : "Datum",
     "recurrence" : "Wiederholung",
     "select_category" : "Wähle eine Kategorie"
+  },
+  "settings_page" : {
+    "title" : "Einstellungen",
+    "currencies" : "Währungen",
+    "snack_at_home" : "Du benutzt nun wieder deine Heimatwährung als Eingabewährung.",
+    "snack_traveling" : "Du benutzt nun {} als deine Währung. Jede Eingabe wird zu deiner Heimatwährung umgerechnet.",
+    "travel" : "Reise in ein anderes Währungsgebiet",
+    "while_travel": "Du reist mit {} als Währung",
+    "home_currency" : "Deine Heimatwährung",
+    "appearance" : "Anzeige",
+    "dark_mode" : "Dark Mode aktiveren",
+    "enable_filter" : "Verlaufsfilter aktivieren",
+    "language" : {
+      "one" : "Sprache",
+      "other" : "Sprachen"
+    },
+    "social" : "Soziales",
+    "tx_share" : "TX SHARE aktiveren",
+    "defaults" : "Standardeinstellungen",
+    "default_filter_settings" : "Filtereinstellungen",
+    "default_expense_chart" : "Ausgabenanzeige",
+    "others" : "Weiteres",
+    "your_data" : "Deine Daten",
+    "import" : "Importieren",
+    "export" : "Exportieren"
   }
 }
