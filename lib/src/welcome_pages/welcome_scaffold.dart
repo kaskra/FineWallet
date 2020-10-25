@@ -175,19 +175,19 @@ class WelcomeScaffold extends StatelessWidget {
 
   Widget _randomBackdropCircle(BuildContext context) {
     final random = Random(42);
-    final double radius = random.nextInt(200) + 400.0;
+    final double radius = random.nextInt(200) + 700.0;
 
-    final side = random.nextBool();
+    // final side = random.nextBool();
 
-    final double dx = side
-        ? random.nextDouble() * MediaQuery.of(context).size.width * 0.5
-        : 0 - radius / 2;
-    final double dy =
-        random.nextDouble() * MediaQuery.of(context).size.height * 0.5;
+    // final double dx = side
+    //     ? random.nextDouble() * MediaQuery.of(context).size.width * 0.5
+    //     : 0 - radius / 2;
+    // final double dy =
+    //     random.nextDouble() * MediaQuery.of(context).size.height * 0.5;
 
     return Positioned(
-      left: dx,
-      top: dy,
+      left: -radius / 2,
+      top: -radius / 2,
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,

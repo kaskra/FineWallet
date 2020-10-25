@@ -29,5 +29,7 @@
   },
   "continueText" : "Weiter",
   "backText" : "Zurück",
-  "doneText" : "Fertig"
+  "doneText" : "Fertig",
+  "confirm" : "Bestätigen",
+  "cancel" : "Abbrechen"
 }

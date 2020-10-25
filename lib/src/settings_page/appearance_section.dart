@@ -2,6 +2,7 @@ import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/settings_page/parts/section.dart';
 import 'package:FineWallet/src/widgets/simple_pages/selection_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -89,6 +90,9 @@ class _AppearanceSectionState extends State<AppearanceSection> {
               setState(() {
                 _selectedLanguage = res;
               });
+              final langs = ["en", "de"];
+              EasyLocalization.of(context).locale =
+                  Locale(langs[_selectedLanguage - 1]);
             }
           },
           child: Row(

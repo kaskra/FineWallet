@@ -29,5 +29,7 @@
   },
   "continueText" : "Continue",
   "backText" : "Back",
-  "doneText" : "Done"
+  "doneText" : "Done",
+  "confirm" : "Confirm",
+  "cancel" : "Cancel"
 }

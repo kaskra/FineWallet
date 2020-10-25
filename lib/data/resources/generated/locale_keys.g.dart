@@ -26,5 +26,7 @@ abstract class  LocaleKeys {
   static const continueText = 'continueText';
   static const backText = 'backText';
   static const doneText = 'doneText';
+  static const confirm = 'confirm';
+  static const cancel = 'cancel';
 
 }
