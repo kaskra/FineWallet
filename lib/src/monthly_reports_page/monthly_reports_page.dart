@@ -1,8 +1,10 @@
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/compact_details.dart';
 import 'package:FineWallet/src/widgets/standalone/list_header_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,8 +13,8 @@ class MonthlyReportsPage extends StatelessWidget {
 
   Widget _buildPlaceholder(BuildContext context) => SizedBox(
         height: MediaQuery.of(context).size.height * 0.5,
-        child: const Center(
-          child: Text("Found no recorded months."),
+        child: Center(
+          child: Text(LocaleKeys.reports_page_found_none.tr()),
         ),
       );
 
@@ -27,14 +29,13 @@ class MonthlyReportsPage extends StatelessWidget {
         if (snapshot.hasData) {
           return ListView(
             children: <Widget>[
-              const ListHeaderImage(
-                semanticLabel: "Monthly Reports",
-                subtitle: "Reports",
+              ListHeaderImage(
+                semanticLabel: LocaleKeys.reports_page_name.tr(),
+                subtitle: LocaleKeys.reports_page_name.tr(),
                 image: IMAGES.monthlyReport,
               ),
               // Only display previous months not the current one.
-              if (snapshot.data.length <= 1)
-                _buildPlaceholder(context),
+              if (snapshot.data.length <= 1) _buildPlaceholder(context),
               if (snapshot.data.isNotEmpty)
                 for (var m in snapshot.data.sublist(1))
                   CompactDetailsCard(month: m)

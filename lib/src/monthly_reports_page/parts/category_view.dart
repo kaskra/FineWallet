@@ -4,11 +4,13 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/icon_wrapper.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -78,9 +80,10 @@ class CategoryListView extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: const Text(
-                    "OK",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  child: Text(
+                    LocaleKeys.ok.tr().toUpperCase(),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               )
@@ -159,7 +162,7 @@ class CategoryListView extends StatelessWidget {
 
   InformationRow _buildTransactionRow(TransactionWithCategoryAndCurrency tx) {
     // Initialize date formatter for timestamp
-    final formatter = DateFormat('E, dd.MM.yy');
+    final formatter = DateFormat.yMMMEd(context.locale.toLanguageTag());
 
     return InformationRow(
       padding: const EdgeInsets.all(5),

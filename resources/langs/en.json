@@ -50,6 +50,7 @@
   "continueText": "Continue",
   "backText": "Back",
   "doneText": "Done",
+  "ok" : "Ok",
   "confirm": "Confirm",
   "cancel": "Cancel",
   "delete": "Delete",
@@ -93,5 +94,13 @@
     "monthly" : "Monthly",
     "lifetime" : "Lifetime",
     "no_expenses" : "Found no expenses."
+  },
+  "reports_page" : {
+    "name": "Monthly Reports",
+    "found_none" : "Found no previous recorded months.",
+    "more_details" : "More Details",
+    "overall" : "Overall",
+    "total_income" : "Total Income",
+    "total_expense" : "Total Expense"
   }
 }

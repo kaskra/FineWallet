@@ -46,6 +46,7 @@ abstract class  LocaleKeys {
   static const continueText = 'continueText';
   static const backText = 'backText';
   static const doneText = 'doneText';
+  static const ok = 'ok';
   static const confirm = 'confirm';
   static const cancel = 'cancel';
   static const delete = 'delete';
@@ -84,5 +85,12 @@ abstract class  LocaleKeys {
   static const profile_page_lifetime = 'profile_page.lifetime';
   static const profile_page_no_expenses = 'profile_page.no_expenses';
   static const profile_page = 'profile_page';
+  static const reports_page_name = 'reports_page.name';
+  static const reports_page_found_none = 'reports_page.found_none';
+  static const reports_page_more_details = 'reports_page.more_details';
+  static const reports_page_overall = 'reports_page.overall';
+  static const reports_page_total_income = 'reports_page.total_income';
+  static const reports_page_total_expense = 'reports_page.total_expense';
+  static const reports_page = 'reports_page';
 
 }

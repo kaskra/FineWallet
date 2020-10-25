@@ -50,6 +50,7 @@
   "continueText": "Weiter",
   "backText": "Zurück",
   "doneText": "Fertig",
+  "ok" : "Ok",
   "confirm": "Bestätigen",
   "cancel": "Abbrechen",
   "delete": "Löschen",
@@ -93,5 +94,13 @@
     "monthly" : "Monatlich",
     "lifetime" : "Insgesamt",
     "no_expenses" : "Keine Ausgaben gefunden."
+  },
+  "reports_page" : {
+    "name": "Monatliche Berichte",
+    "found_none" : "Keine vergangenen Monate gefunden.",
+    "more_details" : "Mehr Details",
+    "overall" : "Zusammenfassung",
+    "total_income" : "Gesamtes Einkommen",
+    "total_expense" : "Gesamte Ausgaben"
   }
 }

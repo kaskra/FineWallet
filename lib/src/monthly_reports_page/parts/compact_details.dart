@@ -1,11 +1,12 @@
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/month_dao.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/details_bottom_sheet.dart';
 import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/structure/structure_space.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CompactDetailsCard extends StatelessWidget {
@@ -15,6 +16,8 @@ class CompactDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formatter = DateFormat.yMMMM(context.locale.toLanguageTag());
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
@@ -26,8 +29,7 @@ class CompactDetailsCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: Center(
                     child: Text(
-                      "${month.month.firstDate.getMonthName()}"
-                      ", ${month.month.firstDate.year}",
+                      formatter.format(month.month.firstDate),
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -67,9 +69,9 @@ class CompactDetailsCard extends StatelessWidget {
                 textStyle:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              const Text(
-                "Saved Amount",
-                style: TextStyle(
+              Text(
+                LocaleKeys.savings_saved_amount.tr(),
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -97,7 +99,7 @@ class CompactDetailsCard extends StatelessWidget {
         child: Row(
           children: <Widget>[
             Text(
-              "More Details",
+              LocaleKeys.reports_page_more_details.tr(),
               style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 13,
