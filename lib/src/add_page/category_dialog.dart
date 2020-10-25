@@ -1,7 +1,9 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/add_page/subcategory_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,9 +65,10 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                     Navigator.of(context).pop(null);
                   }
                 },
-                child: const Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                child: Text(
+                  LocaleKeys.ok.tr().toUpperCase(),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             )
@@ -103,7 +106,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
       height: 50,
       child: Center(
         child: Text(
-          "Select a category",
+          LocaleKeys.add_page_select_category.tr(),
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             decoration: TextDecoration.none,

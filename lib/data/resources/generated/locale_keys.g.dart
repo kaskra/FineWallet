@@ -52,6 +52,8 @@ abstract class  LocaleKeys {
   static const delete = 'delete';
   static const share = 'share';
   static const edit = 'edit';
+  static const expense = 'expense';
+  static const income = 'income';
   static const found_no_transactions = 'found_no_transactions';
   static const overview_page_remaining_budget = 'overview_page.remaining_budget';
   static const overview_page_latest_transactions = 'overview_page.latest_transactions';
@@ -92,5 +94,23 @@ abstract class  LocaleKeys {
   static const reports_page_total_income = 'reports_page.total_income';
   static const reports_page_total_expense = 'reports_page.total_expense';
   static const reports_page = 'reports_page';
+  static const add_page_title = 'add_page.title';
+  static const add_page_fab_tooltip = 'add_page.fab_tooltip';
+  static const add_page_fab_label = 'add_page.fab_label';
+  static const add_page_amount_equals_zero = 'add_page.amount_equals_zero';
+  static const add_page_amount_smaller_zero = 'add_page.amount_smaller_zero';
+  static const add_page_subcategory_null = 'add_page.subcategory_null';
+  static const add_page_recurrence_null = 'add_page.recurrence_null';
+  static const add_page_recurrence_no_end = 'add_page.recurrence_no_end';
+  static const add_page_date_null = 'add_page.date_null';
+  static const add_page_not_a_number = 'add_page.not_a_number';
+  static const add_page_not_home_currency = 'add_page.not_home_currency';
+  static const add_page_amount = 'add_page.amount';
+  static const add_page_category = 'add_page.category';
+  static const add_page_label = 'add_page.label';
+  static const add_page_date = 'add_page.date';
+  static const add_page_recurrence = 'add_page.recurrence';
+  static const add_page_select_category = 'add_page.select_category';
+  static const add_page = 'add_page';
 
 }

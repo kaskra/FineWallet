@@ -56,6 +56,8 @@
   "delete": "Löschen",
   "share": "Teilen",
   "edit": "Bearbeiten",
+  "expense" : "Ausgabe",
+  "income" : "Einkommen",
   "found_no_transactions": "Konnte keine Einträge finden.",
   "overview_page": {
     "remaining_budget": "Übriges Budget",
@@ -102,5 +104,24 @@
     "overall" : "Zusammenfassung",
     "total_income" : "Gesamtes Einkommen",
     "total_expense" : "Gesamte Ausgaben"
+  },
+  "add_page" : {
+    "title": "{} hinzufügen",
+    "fab_tooltip" : "Speichere Transaktion",
+    "fab_label" : "Speichern",
+    "amount_equals_zero": "Der angegebene Betrag muss größer als Null sein.",
+    "amount_smaller_zero": "Der angegebene Betrag muss positiv sein!",
+    "subcategory_null" : "Bitte wähle eine Kategorie!",
+    "recurrence_null" : "Bitte wähle eine Wiederholungsfrequenz aus!",
+    "recurrence_no_end" : "Bitte wähle aus, wann die Wiederholung enden soll.",
+    "date_null" : "Bitte wähle ein Datum für die Transaktion.",
+    "not_a_number" : "Der angegebene Betrag ist keine Zahl!",
+    "not_home_currency" : "Du benutzt momentan nicht deine Heimatwährung!",
+    "amount" : "Betrag",
+    "category" : "Kategorie",
+    "label" : "Bezeichnung/Hinweis",
+    "date" : "Datum",
+    "recurrence" : "Wiederholung",
+    "select_category" : "Wähle eine Kategorie"
   }
 }

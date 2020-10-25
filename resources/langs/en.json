@@ -56,6 +56,8 @@
   "delete": "Delete",
   "share": "Share",
   "edit": "Edit",
+  "expense" : "Expense",
+  "income" : "Income",
   "found_no_transactions": "Found no transactions.",
   "overview_page": {
     "remaining_budget": "Remaining Budget",
@@ -102,5 +104,24 @@
     "overall" : "Overall",
     "total_income" : "Total Income",
     "total_expense" : "Total Expense"
+  },
+  "add_page" : {
+    "title": "Add {}",
+    "fab_tooltip" : "Save transaction",
+    "fab_label" : "Save",
+    "amount_equals_zero": "The specified amount has to be greater than Zero.",
+    "amount_smaller_zero": "The specified amount can only be positive!",
+    "subcategory_null" : "Please choose a category!",
+    "recurrence_null" : "Please specify which recurrence type you want to use!",
+    "recurrence_no_end" : "Please choose an end date for the recurrence!",
+    "date_null" : "Please choose a date for your transaction!",
+    "not_a_number" : "Your specified amount is not a number!",
+    "not_home_currency" : "You are currently not using your home currency!",
+    "amount" : "Amount",
+    "category" : "Category",
+    "label" : "Label",
+    "date" : "Date",
+    "recurrence" : "Recurrence",
+    "select_category" : "Select a category"
   }
 }
