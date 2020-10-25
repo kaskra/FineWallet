@@ -43,7 +43,6 @@ void main() async {
       Locale('en'),
       Locale('de'),
     ],
-    startLocale: const Locale('en'),
     fallbackLocale: const Locale('en'),
     useOnlyLangCode: true,
     path: 'resources/langs',
