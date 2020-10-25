@@ -183,7 +183,6 @@ class AppDatabase extends _$AppDatabase {
               }
 
               b.insertAll(currencies, moor_init.currencies);
-              b.insertAll(languages, moor_init.languages);
             });
 
             // Has to be done in extra batch, because

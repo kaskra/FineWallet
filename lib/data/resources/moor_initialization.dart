@@ -215,8 +215,3 @@ List<CurrenciesCompanion> currencies = [
   CurrenciesCompanion.insert(abbrev: "USD", symbol: "\$"),
   CurrenciesCompanion.insert(abbrev: "EUR", symbol: "€"),
 ];
-
-List<LanguagesCompanion> languages = [
-  LanguagesCompanion.insert(languageId: 'en', name: "English"),
-  LanguagesCompanion.insert(languageId: 'de', name: "Deutsch"),
-];
