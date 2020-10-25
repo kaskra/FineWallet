@@ -154,6 +154,14 @@
     "finish": {
       "title": "Du hast erfolgreich dein FineWallet Profil erstellt!",
       "text": "Viel Erfolg und Spaß beim Geld sparen!"
+    },
+    "language": {
+      "semantic_label": "Sprache",
+      "title": "Wähle deine Sprache",
+      "text": "Die Sprache kannst du später jederzeit in den Einstellungen ändern!",
+      "warning" : "Achtung: Die hier ausgewählte Sprache entscheidet in welcher Sprache die vorgefertigten Kategorien abgespeichert werden. Diese werden nach einer späteren Änderung der Sprache nicht übersetzt!",
+      "confirm_title": "Diese Sprache nutzen?",
+      "confirm_text": "Bist du sicher, dass du diese Sprache zur Initialisierung nutzen willst?"
     }
   },
   "continueText": "Weiter",

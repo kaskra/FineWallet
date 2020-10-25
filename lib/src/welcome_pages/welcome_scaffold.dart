@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
@@ -18,6 +19,7 @@ class WelcomeScaffold extends StatelessWidget {
   final void Function() onContinue;
   final void Function() onBack;
   final bool enableContinue;
+  final Future<bool> Function() confirmContinue;
   final String pageName;
 
   const WelcomeScaffold({
@@ -28,6 +30,7 @@ class WelcomeScaffold extends StatelessWidget {
     @required this.onBack,
     @required this.pageName,
     this.enableContinue = false,
+    this.confirmContinue,
   })  : assert(pageName != null),
         assert(child != null),
         super(key: key);
@@ -41,7 +44,7 @@ class WelcomeScaffold extends StatelessWidget {
       };
 
   Map<String, String> get _welcomeChain => {
-        "welcome": "currency",
+        "welcome": "language",
         "language": "currency",
         "currency": "dark_mode",
         "dark_mode": "finish",
@@ -78,13 +81,23 @@ class WelcomeScaffold extends StatelessWidget {
               ),
             ),
           ),
-          if (onContinue != null && !isLastPage && enableContinue)
+          if ((onContinue != null || confirmContinue != null) &&
+              !isLastPage &&
+              enableContinue)
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(
-                onPressed: () {
-                  onContinue();
-                  Navigator.of(context).push(_continueRoute(pageName));
+                onPressed: () async {
+                  var continueAvailable = false;
+                  if (confirmContinue != null) {
+                    continueAvailable = await confirmContinue();
+                  } else {
+                    continueAvailable = true;
+                    onContinue();
+                  }
+                  if (continueAvailable) {
+                    Navigator.of(context).push(_continueRoute(pageName));
+                  }
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

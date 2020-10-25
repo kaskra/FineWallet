@@ -125,8 +125,10 @@ class _CurrencyPageState extends State<CurrencyPage> {
           const SizedBox(height: 8),
           Text(
             LocaleKeys.welcome_pages_currency_warning.tr(),
-            style: Theme.of(context).primaryTextTheme.subtitle2.copyWith(
-                fontWeight: FontWeight.normal, color: Colors.redAccent),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .subtitle2
+                .copyWith(fontWeight: FontWeight.normal, color: Colors.red),
           ),
         ],
       ),

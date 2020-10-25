@@ -154,6 +154,14 @@
     "finish": {
       "title": "You have successfully set up your FineWallet profile!",
       "text": "Good luck and have fun saving your money!"
+    },
+    "language": {
+      "semantic_label": "Language",
+      "title": "Choose your language",
+      "text": "You can change the language later on in the settings.",
+      "warning" : "Warning: The selected language decides in which language the preset categories are saved. Even after a change of language later on, these will not be translated!",
+      "confirm_title": "Apply this language?",
+      "confirm_text": "Are you sure that you want to initialize the preset categories in this language?"
     }
   },
   "continueText": "Continue",
