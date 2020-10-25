@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const january = 'january';
   static const february = 'february';
   static const march = 'march';
@@ -21,23 +21,114 @@ abstract class LocaleKeys {
   static const saturday = 'saturday';
   static const sunday = 'sunday';
   static const today = 'today';
+  static const moor_various = 'moor.various';
+  static const moor_myself = 'moor.myself';
+  static const moor_food = 'moor.food';
+  static const moor_home = 'moor.home';
+  static const moor_spare_time = 'moor.spare_time';
+  static const moor_transport = 'moor.transport';
+  static const moor_medical = 'moor.medical';
+  static const moor_clothes = 'moor.clothes';
+  static const moor_gifts = 'moor.gifts';
+  static const moor_income = 'moor.income';
+  static const moor_cat1_debt = 'moor.cat1.debt';
+  static const moor_cat1_tuition = 'moor.cat1.tuition';
+  static const moor_cat1_computer = 'moor.cat1.computer';
+  static const moor_cat1_mail = 'moor.cat1.mail';
+  static const moor_cat1_gadget = 'moor.cat1.gadget';
+  static const moor_cat1 = 'moor.cat1';
+  static const moor_cat2_mobile = 'moor.cat2.mobile';
+  static const moor_cat2_tax = 'moor.cat2.tax';
+  static const moor_cat2_pet = 'moor.cat2.pet';
+  static const moor_cat2_education = 'moor.cat2.education';
+  static const moor_cat2_fitness = 'moor.cat2.fitness';
+  static const moor_cat2_subscription = 'moor.cat2.subscription';
+  static const moor_cat2 = 'moor.cat2';
+  static const moor_cat3_groceries = 'moor.cat3.groceries';
+  static const moor_cat3_sweets = 'moor.cat3.sweets';
+  static const moor_cat3_bakery = 'moor.cat3.bakery';
+  static const moor_cat3_fast_food = 'moor.cat3.fast_food';
+  static const moor_cat3_take_away = 'moor.cat3.take_away';
+  static const moor_cat3_cafe = 'moor.cat3.cafe';
+  static const moor_cat3_dining_out = 'moor.cat3.dining_out';
+  static const moor_cat3_drinks = 'moor.cat3.drinks';
+  static const moor_cat3_fruits = 'moor.cat3.fruits';
+  static const moor_cat3_breakfast = 'moor.cat3.breakfast';
+  static const moor_cat3_ice_cream = 'moor.cat3.ice_cream';
+  static const moor_cat3_baking = 'moor.cat3.baking';
+  static const moor_cat3_bbq = 'moor.cat3.bbq';
+  static const moor_cat3 = 'moor.cat3';
+  static const moor_cat4_rent = 'moor.cat4.rent';
+  static const moor_cat4_laundry = 'moor.cat4.laundry';
+  static const moor_cat4_electricity = 'moor.cat4.electricity';
+  static const moor_cat4_internet = 'moor.cat4.internet';
+  static const moor_cat4_cable = 'moor.cat4.cable';
+  static const moor_cat4_water = 'moor.cat4.water';
+  static const moor_cat4_repairs = 'moor.cat4.repairs';
+  static const moor_cat4_plants = 'moor.cat4.plants';
+  static const moor_cat4_furniture = 'moor.cat4.furniture';
+  static const moor_cat4_heating = 'moor.cat4.heating';
+  static const moor_cat4_hotel = 'moor.cat4.hotel';
+  static const moor_cat4 = 'moor.cat4';
+  static const moor_cat5_going_out = 'moor.cat5.going_out';
+  static const moor_cat5_event = 'moor.cat5.event';
+  static const moor_cat5_cinema = 'moor.cat5.cinema';
+  static const moor_cat5_sport = 'moor.cat5.sport';
+  static const moor_cat5_cultural = 'moor.cat5.cultural';
+  static const moor_cat5_book = 'moor.cat5.book';
+  static const moor_cat5_music = 'moor.cat5.music';
+  static const moor_cat5_app = 'moor.cat5.app';
+  static const moor_cat5_software = 'moor.cat5.software';
+  static const moor_cat5_shopping = 'moor.cat5.shopping';
+  static const moor_cat5 = 'moor.cat5';
+  static const moor_cat6_gas = 'moor.cat6.gas';
+  static const moor_cat6_maintenance = 'moor.cat6.maintenance';
+  static const moor_cat6_public_transport = 'moor.cat6.public_transport';
+  static const moor_cat6_taxi = 'moor.cat6.taxi';
+  static const moor_cat6_car_insurance = 'moor.cat6.car_insurance';
+  static const moor_cat6_flight = 'moor.cat6.flight';
+  static const moor_cat6_parking = 'moor.cat6.parking';
+  static const moor_cat6_car_rental = 'moor.cat6.car_rental';
+  static const moor_cat6_penalty = 'moor.cat6.penalty';
+  static const moor_cat6 = 'moor.cat6';
+  static const moor_cat7_medicine = 'moor.cat7.medicine';
+  static const moor_cat7_doctors_visit = 'moor.cat7.doctors_visit';
+  static const moor_cat7_hospital = 'moor.cat7.hospital';
+  static const moor_cat7_medical_insurance = 'moor.cat7.medical_insurance';
+  static const moor_cat7 = 'moor.cat7';
+  static const moor_cat8_clothes = 'moor.cat8.clothes';
+  static const moor_cat8_shoes = 'moor.cat8.shoes';
+  static const moor_cat8_accessories = 'moor.cat8.accessories';
+  static const moor_cat8_underwear = 'moor.cat8.underwear';
+  static const moor_cat8_bag = 'moor.cat8.bag';
+  static const moor_cat8 = 'moor.cat8';
+  static const moor_cat9_gift = 'moor.cat9.gift';
+  static const moor_cat9_souvenir = 'moor.cat9.souvenir';
+  static const moor_cat9 = 'moor.cat9';
+  static const moor_cat10_payment = 'moor.cat10.payment';
+  static const moor_cat10_money_gift = 'moor.cat10.money_gift';
+  static const moor_cat10_voucher = 'moor.cat10.voucher';
+  static const moor_cat10 = 'moor.cat10';
+  static const moor_recurrence_daily = 'moor.recurrence.daily';
+  static const moor_recurrence_weekly = 'moor.recurrence.weekly';
+  static const moor_recurrence_monthly = 'moor.recurrence.monthly';
+  static const moor_recurrence_yearly = 'moor.recurrence.yearly';
+  static const moor_recurrence = 'moor.recurrence';
+  static const moor = 'moor';
   static const nav_home = 'nav.home';
   static const nav_me = 'nav.me';
   static const nav_history = 'nav.history';
   static const nav_statistics = 'nav.statistics';
   static const nav = 'nav';
   static const welcome_pages_welcome_title = 'welcome_pages.welcome.title';
-  static const welcome_pages_welcome_next_steps =
-      'welcome_pages.welcome.next_steps';
+  static const welcome_pages_welcome_next_steps = 'welcome_pages.welcome.next_steps';
   static const welcome_pages_welcome_data_1 = 'welcome_pages.welcome.data_1';
-  static const welcome_pages_welcome_data_bold =
-      'welcome_pages.welcome.data_bold';
+  static const welcome_pages_welcome_data_bold = 'welcome_pages.welcome.data_bold';
   static const welcome_pages_welcome_data_2 = 'welcome_pages.welcome.data_2';
   static const welcome_pages_welcome = 'welcome_pages.welcome';
   static const welcome_pages_currency_title = 'welcome_pages.currency.title';
   static const welcome_pages_currency_text = 'welcome_pages.currency.text';
-  static const welcome_pages_currency_warning =
-      'welcome_pages.currency.warning';
+  static const welcome_pages_currency_warning = 'welcome_pages.currency.warning';
   static const welcome_pages_currency = 'welcome_pages.currency';
   static const welcome_pages_dark_mode_title = 'welcome_pages.dark_mode.title';
   static const welcome_pages_dark_mode_text = 'welcome_pages.dark_mode.text';
@@ -58,17 +149,13 @@ abstract class LocaleKeys {
   static const expense = 'expense';
   static const income = 'income';
   static const found_no_transactions = 'found_no_transactions';
-  static const overview_page_remaining_budget =
-      'overview_page.remaining_budget';
-  static const overview_page_latest_transactions =
-      'overview_page.latest_transactions';
+  static const overview_page_remaining_budget = 'overview_page.remaining_budget';
+  static const overview_page_latest_transactions = 'overview_page.latest_transactions';
   static const overview_page_last_week = 'overview_page.last_week';
-  static const overview_page_last_week_load_error =
-      'overview_page.last_week_load_error';
+  static const overview_page_last_week_load_error = 'overview_page.last_week_load_error';
   static const overview_page = 'overview_page';
   static const budget_overview_used_budget = 'budget_overview.used_budget';
-  static const budget_overview_change_avail_budget =
-      'budget_overview.change_avail_budget';
+  static const budget_overview_change_avail_budget = 'budget_overview.change_avail_budget';
   static const budget_overview = 'budget_overview';
   static const delete_dialog_title = 'delete_dialog.title';
   static const delete_dialog_text = 'delete_dialog.text';
@@ -85,14 +172,10 @@ abstract class LocaleKeys {
   static const history_page_share_title = 'history_page.share_title';
   static const history_page_share_text = 'history_page.share_text';
   static const history_page = 'history_page';
-  static const profile_page_month_avail_budget =
-      'profile_page.month_avail_budget';
-  static const profile_page_spending_prediction =
-      'profile_page.spending_prediction';
-  static const profile_page_expenses_per_category =
-      'profile_page.expenses_per_category';
-  static const profile_page_total_avail_budget =
-      'profile_page.total_avail_budget';
+  static const profile_page_month_avail_budget = 'profile_page.month_avail_budget';
+  static const profile_page_spending_prediction = 'profile_page.spending_prediction';
+  static const profile_page_expenses_per_category = 'profile_page.expenses_per_category';
+  static const profile_page_total_avail_budget = 'profile_page.total_avail_budget';
   static const profile_page_expected_savings = 'profile_page.expected_savings';
   static const profile_page_monthly = 'profile_page.monthly';
   static const profile_page_lifetime = 'profile_page.lifetime';
@@ -116,8 +199,7 @@ abstract class LocaleKeys {
   static const add_page_date_null = 'add_page.date_null';
   static const add_page_not_a_number = 'add_page.not_a_number';
   static const add_page_not_home_currency = 'add_page.not_home_currency';
-  static const add_page_not_home_currency_change =
-      'add_page.not_home_currency_change';
+  static const add_page_not_home_currency_change = 'add_page.not_home_currency_change';
   static const add_page_amount = 'add_page.amount';
   static const add_page_category = 'add_page.category';
   static const add_page_label = 'add_page.label';
@@ -139,13 +221,12 @@ abstract class LocaleKeys {
   static const settings_page_social = 'settings_page.social';
   static const settings_page_tx_share = 'settings_page.tx_share';
   static const settings_page_defaults = 'settings_page.defaults';
-  static const settings_page_default_filter_settings =
-      'settings_page.default_filter_settings';
-  static const settings_page_default_expense_chart =
-      'settings_page.default_expense_chart';
+  static const settings_page_default_filter_settings = 'settings_page.default_filter_settings';
+  static const settings_page_default_expense_chart = 'settings_page.default_expense_chart';
   static const settings_page_others = 'settings_page.others';
   static const settings_page_your_data = 'settings_page.your_data';
   static const settings_page_import = 'settings_page.import';
   static const settings_page_export = 'settings_page.export';
   static const settings_page = 'settings_page';
+
 }

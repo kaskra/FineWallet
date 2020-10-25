@@ -19,6 +19,115 @@
   "saturday": "Saturday",
   "sunday": "Sunday",
   "today": "Today",
+
+  "moor" : {
+    "various": "Various",
+    "myself" : "Myself",
+    "food": "Food & Drinks",
+    "home" : "Home",
+    "spare_time": "Spare Time",
+    "transport": "Transport",
+    "medical": "Medical",
+    "clothes": "Clothes",
+    "gifts": "Gifts",
+    "income": "Income",
+    "cat1": {
+      "debt" : "Debt",
+      "tuition" : "Tuition",
+      "computer": "Computer & Supply",
+      "mail": "Mail",
+      "gadget" : "Gadget"
+    },
+    "cat2": {
+      "mobile": "Mobile",
+      "tax" : "Tax",
+      "pet": "Pet",
+      "education": "Education",
+      "fitness": "Fitness",
+      "subscription" : "Subscription"
+    },
+    "cat3": {
+      "groceries": "Grocieres",
+      "sweets": "Sweets",
+      "bakery": "Bakery",
+      "fast_food": "Fast Food",
+      "take_away": "Take Away",
+      "cafe": "Cafè",
+      "dining_out": "Dining Out",
+      "drinks": "Drinks",
+      "fruits": "Fruits",
+      "breakfast": "Breakfast",
+      "ice_cream": "Ice Cream",
+      "baking": "Baking",
+      "bbq": "BBQ"
+    },
+    "cat4": {
+      "rent": "Rent",
+      "laundry": "Laundry",
+      "electricity": "Electricity",
+      "internet": "Internet",
+      "cable": "Cable",
+      "water": "Water",
+      "repairs": "Repairs",
+      "plants": "Plants",
+      "furniture": "Furniture",
+      "heating": "Heating",
+      "hotel": "Hotel"
+    },
+    "cat5": {
+      "going_out": "Going Out",
+      "event": "Event",
+      "cinema": "Cinema",
+      "sport": "Sport",
+      "cultural": "Cultural",
+      "book": "Book",
+      "music": "Music",
+      "app": "App",
+      "software": "Software",
+      "shopping": "Shopping"
+    },
+    "cat6": {
+      "gas": "Gas",
+      "maintenance": "Maintenance",
+      "public_transport": "Public Transport",
+      "taxi": "Taxi",
+      "car_insurance": "Car Insurance",
+      "flight": "Flight",
+      "parking": "Parking",
+      "car_rental": "Car Rental",
+      "penalty": "Penalty"
+    },
+    "cat7":{
+      "medicine": "Medicine",
+      "doctors_visit": "Doctors Visit",
+      "hospital": "Hospital",
+      "medical_insurance": "Medical Insurance"
+    },
+    "cat8": {
+      "clothes": "Clothes",
+      "shoes": "Shoes",
+      "accessories": "Accessories",
+      "underwear": "Underwear",
+      "bag": "Bag"
+    },
+    "cat9": {
+      "gift": "Gift",
+      "souvenir": "Souvenir"
+    },
+    "cat10": {
+      "payment" : "Payment",
+      "money_gift": "Money Gift",
+      "voucher": "Voucher"
+    },
+    "recurrence": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    }
+  },
+
+
   "nav": {
     "home": "Home",
     "me": "Profile",

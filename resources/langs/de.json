@@ -19,6 +19,115 @@
   "saturday": "Samstag",
   "sunday": "Sonntag",
   "today": "Heute",
+
+  "moor" : {
+    "various": "Verschiedenes",
+    "myself" : "Ich",
+    "food": "Essen & Trinken",
+    "home" : "Zuhause",
+    "spare_time": "Freizeit",
+    "transport": "Transport",
+    "medical": "Medizinisches",
+    "clothes": "Kleidung",
+    "gifts": "Geschenke",
+    "income": "Einkommen",
+    "cat1": {
+      "debt" : "Schulden",
+      "tuition" : "Nachhilfe",
+      "computer": "Computer & Zubehör",
+      "mail": "Mail",
+      "gadget" : "Spielzeug"
+    },
+    "cat2": {
+      "mobile": "Handy",
+      "tax" : "Steuer",
+      "pet": "Haustier",
+      "education": "Bildung",
+      "fitness": "Fitness",
+      "subscription" : "Abonnement"
+    },
+    "cat3": {
+      "groceries": "Lebensmittel",
+      "sweets": "Süßigkeiten",
+      "bakery": "Bäcker",
+      "fast_food": "Fast Food",
+      "take_away": "Zum Mitnehmen",
+      "cafe": "Cafè",
+      "dining_out": "Essen gehen",
+      "drinks": "Drinks",
+      "fruits": "Früchte",
+      "breakfast": "Frühstück",
+      "ice_cream": "Eiscreme",
+      "baking": "Backen",
+      "bbq": "BBQ"
+    },
+    "cat4": {
+      "rent": "Miete",
+      "laundry": "Wäsche",
+      "electricity": "Strom",
+      "internet": "Internet",
+      "cable": "Kabel",
+      "water": "Wasser",
+      "repairs": "Reparatur",
+      "plants": "Pflanzen",
+      "furniture": "Möbel",
+      "heating": "Heizung",
+      "hotel": "Hotel"
+    },
+    "cat5": {
+      "going_out": "Ausgehen",
+      "event": "Event",
+      "cinema": "Kino",
+      "sport": "Sport",
+      "cultural": "Kultur",
+      "book": "Buch",
+      "music": "Musik",
+      "app": "App",
+      "software": "Software",
+      "shopping": "Shopping"
+    },
+    "cat6": {
+      "gas": "Benzin/Sprit",
+      "maintenance": "Instandhaltung",
+      "public_transport": "Öffentliches Transportmittel",
+      "taxi": "Taxi",
+      "car_insurance": "Versicherung",
+      "flight": "Flug",
+      "parking": "Parken",
+      "car_rental": "Autovermietung",
+      "penalty": "Strafzettel"
+    },
+    "cat7":{
+      "medicine": "Medizin",
+      "doctors_visit": "Doktorbesuch",
+      "hospital": "Krankenhaus",
+      "medical_insurance": "Krankenversicherung"
+    },
+    "cat8": {
+      "clothes": "Kleidung",
+      "shoes": "Schuhe",
+      "accessories": "Accessories",
+      "underwear": "Unterwäsche",
+      "bag": "Tasche"
+    },
+    "cat9": {
+      "gift": "Geschenk",
+      "souvenir": "Souvenir"
+    },
+    "cat10": {
+      "payment" : "Gehalt",
+      "money_gift": "Geldgeschenk",
+      "voucher": "Gutschein"
+    },
+    "recurrence": {
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich",
+      "yearly": "Jährlich"
+    }
+  },
+
+
   "nav": {
     "home": "Home",
     "me": "Profil",
