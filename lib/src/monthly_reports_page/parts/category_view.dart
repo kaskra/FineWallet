@@ -10,6 +10,7 @@ import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/icon_wrapper.dart';
 import 'package:FineWallet/src/widgets/information_row.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -169,7 +170,7 @@ class CategoryListView extends StatelessWidget {
       text: Expanded(
         child: Text.rich(
           TextSpan(
-            text: tx.sub.name,
+            text: tryTranslatePreset(tx.sub),
             children: [
               if (tx.tx.label.isNotEmpty)
                 TextSpan(

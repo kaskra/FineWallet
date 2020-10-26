@@ -70,6 +70,8 @@ class Categories extends Table {
   TextColumn get name => text().withLength(min: 1, max: 20)();
 
   BoolColumn get isExpense => boolean().withDefault(const Constant(true))();
+
+  BoolColumn get isPreset => boolean().withDefault(const Constant(false))();
 }
 
 @DataClassName('Subcategory')
@@ -80,6 +82,8 @@ class Subcategories extends Table {
 
   IntColumn get categoryId =>
       integer().customConstraint("REFERENCES categories(id)")();
+
+  BoolColumn get isPreset => boolean().withDefault(const Constant(false))();
 }
 
 @DataClassName('Month')
@@ -97,13 +101,6 @@ class Months extends Table {
 @DataClassName('RecurrenceType')
 class RecurrenceTypes extends Table {
   IntColumn get type => integer().autoIncrement()();
-
-  TextColumn get name => text().withLength(max: 40, min: 2)();
-}
-
-@DataClassName('Language')
-class Languages extends Table {
-  TextColumn get languageId => text().customConstraint("UNIQUE")();
 
   TextColumn get name => text().withLength(max: 40, min: 2)();
 }

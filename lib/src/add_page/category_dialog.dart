@@ -3,6 +3,7 @@ import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/add_page/subcategory_dialog.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -199,7 +200,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           });
         }
       },
-      text: c.name,
+      text: tryTranslatePreset(c),
       iconData: CategoryIcon(c.id - 1).data,
     );
   }

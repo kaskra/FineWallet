@@ -11,6 +11,7 @@ import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -103,7 +104,9 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        snapshotItem.sub.name,
+                        tryTranslatePreset(snapshotItem.sub),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),

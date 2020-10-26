@@ -1,187 +1,333 @@
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:moor/moor.dart';
 
 import 'generated/locale_keys.g.dart';
 
-var _cat1 = CategoriesCompanion.insert(name: LocaleKeys.moor_various.tr());
-var _cat2 = CategoriesCompanion.insert(name: LocaleKeys.moor_myself.tr());
-var _cat3 = CategoriesCompanion.insert(name: LocaleKeys.moor_food.tr());
-var _cat4 = CategoriesCompanion.insert(name: LocaleKeys.moor_home.tr());
-var _cat5 = CategoriesCompanion.insert(name: LocaleKeys.moor_spare_time.tr());
-var _cat6 = CategoriesCompanion.insert(name: LocaleKeys.moor_transport.tr());
-var _cat7 = CategoriesCompanion.insert(name: LocaleKeys.moor_medical.tr());
-var _cat8 = CategoriesCompanion.insert(name: LocaleKeys.moor_clothes.tr());
-var _cat9 = CategoriesCompanion.insert(name: LocaleKeys.moor_gifts.tr());
+var _cat1 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_various, isPreset: const Value(true));
+var _cat2 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_myself, isPreset: const Value(true));
+var _cat3 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_food, isPreset: const Value(true));
+var _cat4 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_home, isPreset: const Value(true));
+var _cat5 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_spare_time, isPreset: const Value(true));
+var _cat6 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_transport, isPreset: const Value(true));
+var _cat7 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_medical, isPreset: const Value(true));
+var _cat8 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_clothes, isPreset: const Value(true));
+var _cat9 = CategoriesCompanion.insert(
+    name: LocaleKeys.moor_gifts, isPreset: const Value(true));
 var _cat10 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_income.tr(), isExpense: const Value(false));
+    name: LocaleKeys.moor_income,
+    isPreset: const Value(true),
+    isExpense: const Value(false));
 
 List<SubcategoriesCompanion> _subcategories1 = [
   SubcategoriesCompanion.insert(
-      categoryId: 1, name: LocaleKeys.moor_cat1_debt.tr()),
+      categoryId: 1,
+      name: LocaleKeys.moor_cat1_debt,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 1, name: LocaleKeys.moor_cat1_tuition.tr()),
+      categoryId: 1,
+      name: LocaleKeys.moor_cat1_tuition,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 1, name: LocaleKeys.moor_cat1_computer.tr()),
+      categoryId: 1,
+      name: LocaleKeys.moor_cat1_computer,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 1, name: LocaleKeys.moor_cat1_mail.tr()),
+      categoryId: 1,
+      name: LocaleKeys.moor_cat1_mail,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 1, name: LocaleKeys.moor_cat1_gadget.tr())
+      categoryId: 1,
+      name: LocaleKeys.moor_cat1_gadget,
+      isPreset: const Value(true))
 ];
 
 List<SubcategoriesCompanion> _subcategories2 = [
   SubcategoriesCompanion.insert(
-      categoryId: 2, name: LocaleKeys.moor_cat2_mobile.tr()),
+      categoryId: 2,
+      name: LocaleKeys.moor_cat2_mobile,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 2, name: LocaleKeys.moor_cat2_tax.tr()),
+      categoryId: 2,
+      name: LocaleKeys.moor_cat2_tax,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 2, name: LocaleKeys.moor_cat2_pet.tr()),
+      categoryId: 2,
+      name: LocaleKeys.moor_cat2_pet,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 2, name: LocaleKeys.moor_cat2_education.tr()),
+      categoryId: 2,
+      name: LocaleKeys.moor_cat2_education,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 2, name: LocaleKeys.moor_cat2_fitness.tr()),
+      categoryId: 2,
+      name: LocaleKeys.moor_cat2_fitness,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 2, name: LocaleKeys.moor_cat2_subscription.tr())
+      categoryId: 2,
+      name: LocaleKeys.moor_cat2_subscription,
+      isPreset: const Value(true))
 ];
 
 List<SubcategoriesCompanion> _subcategories3 = [
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_groceries.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_groceries,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_sweets.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_sweets,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_bakery.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_bakery,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_fast_food.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_fast_food,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_take_away.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_take_away,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_cafe.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_cafe,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_dining_out.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_dining_out,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_drinks.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_drinks,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_fruits.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_fruits,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_breakfast.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_breakfast,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_ice_cream.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_ice_cream,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_baking.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_baking,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 3, name: LocaleKeys.moor_cat3_bbq.tr()),
+      categoryId: 3,
+      name: LocaleKeys.moor_cat3_bbq,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories4 = [
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_rent.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_rent,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_laundry.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_laundry,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_electricity.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_electricity,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_internet.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_internet,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_cable.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_cable,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_water.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_water,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_repairs.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_repairs,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_plants.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_plants,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_furniture.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_furniture,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_heating.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_heating,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 4, name: LocaleKeys.moor_cat4_hotel.tr()),
+      categoryId: 4,
+      name: LocaleKeys.moor_cat4_hotel,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories5 = [
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_going_out.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_going_out,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_event.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_event,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_cinema.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_cinema,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_sport.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_sport,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_cultural.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_cultural,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_book.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_book,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_music.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_music,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_app.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_app,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_software.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_software,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 5, name: LocaleKeys.moor_cat5_shopping.tr()),
+      categoryId: 5,
+      name: LocaleKeys.moor_cat5_shopping,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories6 = [
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_gas.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_gas,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_maintenance.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_maintenance,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_public_transport.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_public_transport,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_taxi.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_taxi,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_car_insurance.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_car_insurance,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_flight.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_flight,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_parking.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_parking,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_car_rental.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_car_rental,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 6, name: LocaleKeys.moor_cat6_penalty.tr()),
+      categoryId: 6,
+      name: LocaleKeys.moor_cat6_penalty,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories7 = [
   SubcategoriesCompanion.insert(
-      categoryId: 7, name: LocaleKeys.moor_cat7_medicine.tr()),
+      categoryId: 7,
+      name: LocaleKeys.moor_cat7_medicine,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 7, name: LocaleKeys.moor_cat7_doctors_visit.tr()),
+      categoryId: 7,
+      name: LocaleKeys.moor_cat7_doctors_visit,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 7, name: LocaleKeys.moor_cat7_hospital.tr()),
+      categoryId: 7,
+      name: LocaleKeys.moor_cat7_hospital,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 7, name: LocaleKeys.moor_cat7_medical_insurance.tr()),
+      categoryId: 7,
+      name: LocaleKeys.moor_cat7_medical_insurance,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories8 = [
   SubcategoriesCompanion.insert(
-      categoryId: 8, name: LocaleKeys.moor_cat8_clothes.tr()),
+      categoryId: 8,
+      name: LocaleKeys.moor_cat8_clothes,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 8, name: LocaleKeys.moor_cat8_shoes.tr()),
+      categoryId: 8,
+      name: LocaleKeys.moor_cat8_shoes,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 8, name: LocaleKeys.moor_cat8_accessories.tr()),
+      categoryId: 8,
+      name: LocaleKeys.moor_cat8_accessories,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 8, name: LocaleKeys.moor_cat8_underwear.tr()),
+      categoryId: 8,
+      name: LocaleKeys.moor_cat8_underwear,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 8, name: LocaleKeys.moor_cat8_bag.tr()),
+      categoryId: 8,
+      name: LocaleKeys.moor_cat8_bag,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories9 = [
   SubcategoriesCompanion.insert(
-      categoryId: 9, name: LocaleKeys.moor_cat9_gift.tr()),
+      categoryId: 9,
+      name: LocaleKeys.moor_cat9_gift,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 9, name: LocaleKeys.moor_cat9_souvenir.tr()),
+      categoryId: 9,
+      name: LocaleKeys.moor_cat9_souvenir,
+      isPreset: const Value(true)),
 ];
 
 List<SubcategoriesCompanion> _subcategories10 = [
   SubcategoriesCompanion.insert(
-      categoryId: 10, name: LocaleKeys.moor_cat10_payment.tr()),
+      categoryId: 10,
+      name: LocaleKeys.moor_cat10_payment,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 10, name: LocaleKeys.moor_cat10_money_gift.tr()),
+      categoryId: 10,
+      name: LocaleKeys.moor_cat10_money_gift,
+      isPreset: const Value(true)),
   SubcategoriesCompanion.insert(
-      categoryId: 10, name: LocaleKeys.moor_cat10_voucher.tr()),
+      categoryId: 10,
+      name: LocaleKeys.moor_cat10_voucher,
+      isPreset: const Value(true)),
 ];
 
 List<CategoryWithSubs> categories = [
@@ -204,11 +350,10 @@ MonthsCompanion currentMonth = MonthsCompanion.insert(
 );
 
 List<RecurrenceTypesCompanion> recurrenceTypes = [
-  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_daily.tr()),
-  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_weekly.tr()),
-  RecurrenceTypesCompanion.insert(
-      name: LocaleKeys.moor_recurrence_monthly.tr()),
-  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_yearly.tr()),
+  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_daily),
+  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_weekly),
+  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_monthly),
+  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_yearly),
 ];
 
 List<CurrenciesCompanion> currencies = [

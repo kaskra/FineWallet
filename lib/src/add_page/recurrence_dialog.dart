@@ -138,7 +138,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             },
             child: Center(
               child: Text(
-                rec.name,
+                rec.name.tr(),
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 16,

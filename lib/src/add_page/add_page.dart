@@ -14,6 +14,7 @@ import 'package:FineWallet/src/add_page/row_child_divider.dart';
 import 'package:FineWallet/src/add_page/row_title.dart';
 import 'package:FineWallet/src/add_page/row_wrapper.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -414,7 +415,7 @@ class _AddPageState extends State<AddPage> {
         child: Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
-            _subcategory?.name ?? "",
+            tryTranslatePreset(_subcategory), //?.name ?? ""),
             style: const TextStyle(fontSize: 16),
           ),
         ),
@@ -541,7 +542,7 @@ class _AddPageState extends State<AddPage> {
         child: Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
-            _recurrence?.name ?? "",
+            _recurrence?.name?.tr() ?? "",
             style: const TextStyle(fontSize: 16),
           ),
         ),

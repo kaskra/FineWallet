@@ -1,7 +1,6 @@
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_scaffold.dart';
-import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,14 +10,7 @@ class LanguagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WelcomeScaffold(
       pageName: "language",
-      onContinue: null,
-      confirmContinue: () async {
-        return showConfirmDialog(
-          context,
-          LocaleKeys.welcome_pages_language_confirm_title.tr(),
-          LocaleKeys.welcome_pages_language_confirm_text.tr(),
-        );
-      },
+      onContinue: () {},
       onBack: () {},
       enableContinue: true,
       headerImage: Image.asset(
@@ -84,15 +76,7 @@ class LanguagePage extends StatelessWidget {
                 .primaryTextTheme
                 .subtitle2
                 .copyWith(fontWeight: FontWeight.normal),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            LocaleKeys.welcome_pages_language_warning.tr(),
-            style: Theme.of(context)
-                .primaryTextTheme
-                .subtitle2
-                .copyWith(fontWeight: FontWeight.normal, color: Colors.red),
-          ),
+          )
         ],
       ),
     );

@@ -7,6 +7,8 @@
  */
 
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 List<DateTime> getListOfMonthDays(DateTime month) {
   final DateTime date = month ?? today();
@@ -32,4 +34,16 @@ List<DateTime> getLastWeekAsDates() {
     days.add(lastDay);
   }
   return days;
+}
+
+String tryTranslatePreset(dynamic data) {
+  var returnString = "";
+  if (data is Subcategory) {
+    returnString = data.isPreset ? data.name.tr() : data.name;
+  } else if (data is Category) {
+    returnString = data.isPreset ? data.name.tr() : data.name;
+  } else if (data is String && data.isNotEmpty) {
+    returnString = data.tr();
+  }
+  return returnString;
 }

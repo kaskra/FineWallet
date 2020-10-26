@@ -1,6 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +81,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       height: 50,
       child: Center(
         child: Text(
-          _category.name,
+          tryTranslatePreset(_category),
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             decoration: TextDecoration.none,
@@ -117,7 +118,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 
   Widget _buildSubcategoryListItem(Subcategory sub) {
     return _buildGeneralListItem(
-      text: sub.name,
+      text: tryTranslatePreset(sub),
       color: _selectedSubcategory == sub.id
           ? Theme.of(context).colorScheme.secondary
           : Colors.grey,
