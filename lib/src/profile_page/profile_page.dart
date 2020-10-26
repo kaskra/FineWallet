@@ -1,12 +1,6 @@
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
-import 'package:FineWallet/src/profile_page/parts/available_budget_item.dart';
-import 'package:FineWallet/src/profile_page/parts/charts_item.dart';
-import 'package:FineWallet/src/profile_page/parts/expected_savings_item.dart';
-import 'package:FineWallet/src/profile_page/parts/savings_item.dart';
-import 'package:FineWallet/src/profile_page/parts/slider_item.dart';
-import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/structure/structure_space.dart';
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
+import 'package:FineWallet/src/profile_page/page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 

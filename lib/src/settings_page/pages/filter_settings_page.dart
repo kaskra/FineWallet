@@ -1,6 +1,7 @@
+import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/history_page/history_filter.dart';
+import 'package:FineWallet/src/history_page/page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 

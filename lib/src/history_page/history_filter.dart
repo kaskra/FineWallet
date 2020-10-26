@@ -1,21 +1,4 @@
-import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-
-class HistoryFilterState {
-  bool onlyExpenses = true;
-  bool onlyIncomes = true;
-  bool showFuture = false;
-
-  @override
-  String toString() {
-    return 'HistoryFilterState{'
-        'onlyExpenses: $onlyExpenses, '
-        'onlyIncomes: $onlyIncomes, '
-        'showFuture: $showFuture '
-        '}';
-  }
-}
+part of 'history_page.dart';
 
 class HistoryFilter extends StatelessWidget {
   const HistoryFilter({Key key, this.items}) : super(key: key);

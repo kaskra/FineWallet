@@ -1,5 +1,5 @@
+import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/extensions/string_extension.dart';
-import 'package:FineWallet/src/history_page/history_filter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// This class holds all keys needed to save and retrieve values

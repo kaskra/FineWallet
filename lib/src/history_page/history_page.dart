@@ -1,3 +1,6 @@
+import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
+import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -6,15 +9,16 @@ import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
-import 'package:FineWallet/src/history_page/history_date_title.dart';
-import 'package:FineWallet/src/history_page/history_filter.dart';
-import 'package:FineWallet/src/history_page/history_item.dart';
-import 'package:FineWallet/src/history_page/history_month_divider.dart';
-import 'package:FineWallet/src/widgets/selection_appbar.dart';
-import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+part 'history_date_title.dart';
+part 'history_filter.dart';
+part 'history_item.dart';
+part 'history_month_divider.dart';
 
 /// This class is used to create a page which shows all recorded transactions.
 ///

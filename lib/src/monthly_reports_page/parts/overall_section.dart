@@ -1,11 +1,7 @@
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
-import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
-import 'package:FineWallet/src/widgets/formatted_strings.dart';
-import 'package:FineWallet/src/widgets/row_item.dart';
-import 'package:FineWallet/src/widgets/standalone/result_arrow.dart';
-import 'package:FineWallet/src/widgets/structure/structure_space.dart';
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
+import 'package:FineWallet/src/monthly_reports_page/page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 

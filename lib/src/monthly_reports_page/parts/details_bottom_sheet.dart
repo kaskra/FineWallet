@@ -2,12 +2,9 @@ import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
-import 'package:FineWallet/src/monthly_reports_page/parts/category_view.dart';
-import 'package:FineWallet/src/monthly_reports_page/parts/overall_section.dart';
-import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
-import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
-import 'package:FineWallet/src/widgets/structure/structure_space.dart';
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
+import 'package:FineWallet/src/monthly_reports_page/page.dart';
+import 'package:FineWallet/src/profile_page/page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 

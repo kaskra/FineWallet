@@ -1,5 +1,4 @@
-import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
-import 'package:flutter/material.dart';
+part of 'history_page.dart';
 
 class HistoryMonthDivider extends StatelessWidget {
   @override

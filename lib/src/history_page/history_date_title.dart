@@ -1,7 +1,4 @@
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+part of 'history_page.dart';
 
 class HistoryDateTitle extends StatelessWidget {
   final DateTime date;

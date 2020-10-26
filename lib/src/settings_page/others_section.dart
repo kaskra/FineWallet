@@ -1,8 +1,4 @@
-import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
-import 'package:FineWallet/logger.dart';
-import 'package:FineWallet/src/settings_page/parts/section.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
+part of 'settings_page.dart';
 
 /// This class creates a [Section] which shows some remaining
 /// settings, like exporting and importing the database.
