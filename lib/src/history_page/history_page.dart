@@ -133,6 +133,16 @@ class _HistoryPageState extends State<HistoryPage> {
             _handleFilterSettings();
           },
         ),
+        HistoryFilterTextField(
+          iconData: Icons.search,
+          initialData: _filterState.label,
+          onChanged: (text) {
+            setState(() {
+              _filterState.label = text;
+            });
+            _handleFilterSettings();
+          },
+        ),
       ],
     );
   }
@@ -180,8 +190,12 @@ class _HistoryPageState extends State<HistoryPage> {
       builder: (BuildContext context,
           AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data.isNotEmpty) {
-            return _buildItems(snapshot.data);
+          final foundTransactions = snapshot.data
+              .where((element) =>
+                  element.tx.label.contains(RegExp(_filterState.label)))
+              .toList();
+          if (foundTransactions.isNotEmpty) {
+            return _buildItems(foundTransactions);
           } else {
             return SizedBox(
                 child:

@@ -145,6 +145,7 @@ abstract class  LocaleKeys {
   static const backText = 'backText';
   static const doneText = 'doneText';
   static const ok = 'ok';
+  static const search = 'search';
   static const confirm = 'confirm';
   static const cancel = 'cancel';
   static const delete = 'delete';
