@@ -1,26 +1,22 @@
 part of 'history_page.dart';
 
 class HistoryFilter extends StatelessWidget {
-  const HistoryFilter({Key key, this.items}) : super(key: key);
+  const HistoryFilter({Key key, this.onTap}) : super(key: key);
 
-  final List<Widget> items;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        unselectedWidgetColor: Theme.of(context).colorScheme.onBackground,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-                    color: Theme.of(context).colorScheme.secondary, width: 0))),
-        child: ExpansionTile(
-          title: Text(LocaleKeys.history_page_filter_settings.tr()),
-          leading: const Icon(Icons.filter_list),
-          children: items,
-        ),
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+        bottom: BorderSide(
+            width: 0, color: Theme.of(context).colorScheme.onBackground),
+      )),
+      child: ListTile(
+        leading: const Icon(Icons.filter_alt),
+        onTap: onTap,
+        title: Text(LocaleKeys.history_page_filter_settings.tr()),
       ),
     );
   }
@@ -57,6 +53,7 @@ class _HistoryFilterItemState extends State<HistoryFilterItem> {
         children: <Widget>[
           Text(widget.title ?? "EMPTY"),
           Switch(
+            activeColor: Theme.of(context).accentColor,
               value: _active,
               onChanged: (s) {
                 widget.onChanged(s);
@@ -95,7 +92,7 @@ class _HistoryFilterTextFieldState extends State<HistoryFilterTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
       child: TextField(
         controller: _textEditingController,
         decoration: InputDecoration(

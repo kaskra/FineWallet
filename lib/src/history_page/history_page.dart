@@ -46,7 +46,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   TransactionFilterSettings _filterSettings;
   final Map<int, TransactionWithCategoryAndCurrency> _selectedItems =
-      <int, TransactionWithCategoryAndCurrency>{};
+  <int, TransactionWithCategoryAndCurrency>{};
   bool _isSelectionActive = false;
 
   /// The history filter state that holds every filter setting.
@@ -58,9 +58,10 @@ class _HistoryPageState extends State<HistoryPage> {
   int _userCurrencyId = 1;
 
   Future loadUserCurrency() async {
-    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
-            .currencyDao
-            .getUserCurrency())
+    _userCurrencyId = (await Provider
+        .of<AppDatabase>(context, listen: false)
+        .currencyDao
+        .getUserCurrency())
         ?.id;
   }
 
@@ -80,10 +81,13 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme
+          .of(context)
+          .scaffoldBackgroundColor,
       child: Column(
         children: <Widget>[
-          if (_isSelectionActive) _buildSelectionAppBar() else Container(),
+          if (_isSelectionActive) _buildSelectionAppBar() else
+            Container(),
           if (widget.showFilters ?? true)
             _buildFilterSettingsRow()
           else
@@ -100,50 +104,86 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Future _buildModalSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(cardRadius),
+      ),
+      builder: (context) {
+        bool isKeyboardOpen = MediaQuery
+            .of(context)
+            .viewInsets
+            .bottom != 0;
+        return Material(
+          borderRadius: BorderRadius.circular(cardRadius),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery
+                    .of(context)
+                    .viewInsets
+                    .bottom),
+                child: HistoryFilterTextField(
+                  iconData: Icons.search,
+                  initialData: _filterState.label,
+                  onChanged: (text) {
+                    setState(() {
+                      _filterState.label = text;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              ),
+              if (!isKeyboardOpen) const Divider(),
+              if (!isKeyboardOpen)
+                HistoryFilterItem(
+                  initialValue: _filterState.onlyExpenses,
+                  title: LocaleKeys.history_page_show_expenses.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState.onlyExpenses = b;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              if (!isKeyboardOpen)
+                HistoryFilterItem(
+                  initialValue: _filterState.onlyIncomes,
+                  title: LocaleKeys.history_page_show_incomes.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState.onlyIncomes = b;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              if (!isKeyboardOpen)
+                HistoryFilterItem(
+                  initialValue: _filterState.showFuture,
+                  title: LocaleKeys.history_page_show_future.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState.showFuture = b;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              const SizedBox(height: 16)
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildFilterSettingsRow() {
     return HistoryFilter(
-      items: [
-        HistoryFilterItem(
-          initialValue: _filterState.onlyExpenses,
-          title: LocaleKeys.history_page_show_expenses.tr(),
-          onChanged: (b) {
-            setState(() {
-              _filterState.onlyExpenses = b;
-            });
-            _handleFilterSettings();
-          },
-        ),
-        HistoryFilterItem(
-          initialValue: _filterState.onlyIncomes,
-          title: LocaleKeys.history_page_show_incomes.tr(),
-          onChanged: (b) {
-            setState(() {
-              _filterState.onlyIncomes = b;
-            });
-            _handleFilterSettings();
-          },
-        ),
-        HistoryFilterItem(
-          initialValue: _filterState.showFuture,
-          title: LocaleKeys.history_page_show_future.tr(),
-          onChanged: (b) {
-            setState(() {
-              _filterState.showFuture = b;
-            });
-            _handleFilterSettings();
-          },
-        ),
-        HistoryFilterTextField(
-          iconData: Icons.search,
-          initialData: _filterState.label,
-          onChanged: (text) {
-            setState(() {
-              _filterState.label = text;
-            });
-            _handleFilterSettings();
-          },
-        ),
-      ],
+      onTap: () {
+        _buildModalSheet();
+      },
     );
   }
 
@@ -170,7 +210,10 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildSelectionAppBar() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       child: SelectionAppBar<TransactionWithCategoryAndCurrency>(
         title: "FineWallet",
         selectedItems: _selectedItems,
@@ -184,7 +227,8 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildHistoryList() {
     return StreamBuilder<List<TransactionWithCategoryAndCurrency>>(
-      stream: Provider.of<AppDatabase>(context)
+      stream: Provider
+          .of<AppDatabase>(context)
           .transactionDao
           .watchTransactionsWithFilter(_filterSettings),
       builder: (BuildContext context,
@@ -192,19 +236,20 @@ class _HistoryPageState extends State<HistoryPage> {
         if (snapshot.hasData) {
           final foundTransactions = snapshot.data
               .where((element) =>
-                  element.tx.label.contains(RegExp(_filterState.label, caseSensitive: false)))
+              element.tx.label
+                  .contains(RegExp(_filterState.label, caseSensitive: false)))
               .toList();
           if (foundTransactions.isNotEmpty) {
             return _buildItems(foundTransactions);
           } else {
             return SizedBox(
                 child:
-                    Center(child: Text(LocaleKeys.found_no_transactions.tr())));
+                Center(child: Text(LocaleKeys.found_no_transactions.tr())));
           }
         } else {
           return SizedBox(
               child:
-                  Center(child: Text(LocaleKeys.found_no_transactions.tr())));
+              Center(child: Text(LocaleKeys.found_no_transactions.tr())));
         }
       },
     );
@@ -293,8 +338,8 @@ class _HistoryPageState extends State<HistoryPage> {
   /// - [bool] received from a item.
   /// - [TransactionWithCategoryAndCurrency] which is displayed on the item.
   ///
-  void _toggleSelectionMode(
-      bool selected, TransactionWithCategoryAndCurrency data) {
+  void _toggleSelectionMode(bool selected,
+      TransactionWithCategoryAndCurrency data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.tx.originalId)) {
         _selectedItems.putIfAbsent(data.tx.originalId, () => data);
@@ -331,7 +376,8 @@ class _HistoryPageState extends State<HistoryPage> {
       LocaleKeys.delete_dialog_text.tr(),
     )) {
       for (final tx in _selectedItems.values) {
-        Provider.of<AppDatabase>(context, listen: false)
+        Provider
+            .of<AppDatabase>(context, listen: false)
             .transactionDao
             .deleteTransactionById(tx.tx.originalId);
       }
