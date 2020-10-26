@@ -192,7 +192,7 @@ class _HistoryPageState extends State<HistoryPage> {
         if (snapshot.hasData) {
           final foundTransactions = snapshot.data
               .where((element) =>
-                  element.tx.label.contains(RegExp(_filterState.label)))
+                  element.tx.label.contains(RegExp(_filterState.label, caseSensitive: false)))
               .toList();
           if (foundTransactions.isNotEmpty) {
             return _buildItems(foundTransactions);
