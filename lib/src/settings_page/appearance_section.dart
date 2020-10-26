@@ -34,6 +34,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     return SectionItem(
       title: LocaleKeys.settings_page_dark_mode.tr(),
       trailing: Switch(
+        activeColor: Theme.of(context).accentColor,
         value: UserSettings.getDarkMode(),
         onChanged: (val) async {
           Provider.of<ThemeNotifier>(context, listen: false)
@@ -47,6 +48,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     return SectionItem(
       title: LocaleKeys.settings_page_enable_filter.tr(),
       trailing: Switch(
+        activeColor: Theme.of(context).accentColor,
         value: _isFilterSettings,
         onChanged: (val) async {
           UserSettings.setShowFilterSettings(val: val);

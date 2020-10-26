@@ -30,6 +30,7 @@ class _SocialSectionState extends State<SocialSection> {
     return SectionItem(
       title: LocaleKeys.settings_page_tx_share.tr(),
       trailing: Switch(
+        activeColor: Theme.of(context).accentColor,
         value: _isEnabled,
         onChanged: (val) {
           UserSettings.setTXShare(val: val);
