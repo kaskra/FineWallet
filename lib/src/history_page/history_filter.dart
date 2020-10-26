@@ -99,11 +99,11 @@ class _HistoryFilterTextFieldState extends State<HistoryFilterTextField> {
       child: TextField(
         controller: _textEditingController,
         decoration: InputDecoration(
-            isDense: true,
-            prefixIcon: Icon(widget.iconData),
-            hintText: LocaleKeys.search.tr(),
-            hintStyle: const TextStyle(color: Colors.grey)
-            ),
+          isDense: true,
+          prefixIcon: Icon(widget.iconData),
+          hintText: LocaleKeys.search.tr(),
+          hintStyle: const TextStyle(color: Colors.grey),
+        ),
         onChanged: widget.onChanged,
       ),
     );
