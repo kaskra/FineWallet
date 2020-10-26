@@ -27,6 +27,9 @@ class MonthlyReportsPage extends StatelessWidget {
       builder: (BuildContext context,
           AsyncSnapshot<List<MonthWithDetails>> snapshot) {
         if (snapshot.hasData) {
+          final previousMonths = snapshot.data.where(
+              (element) => element.month.lastDate.isBefore(DateTime.now()));
+
           return ListView(
             children: <Widget>[
               ListHeaderImage(
@@ -35,10 +38,10 @@ class MonthlyReportsPage extends StatelessWidget {
                 image: IMAGES.monthlyReport,
               ),
               // Only display previous months not the current one.
-              if (snapshot.data.length <= 1) _buildPlaceholder(context),
-              if (snapshot.data.isNotEmpty)
-                for (var m in snapshot.data.sublist(1))
-                  CompactDetailsCard(month: m)
+              if (previousMonths.isNotEmpty)
+                for (var m in previousMonths) CompactDetailsCard(month: m)
+              else
+                _buildPlaceholder(context),
             ],
           );
         } else {
