@@ -15,11 +15,13 @@ class DetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheet(
-      onClosing: () {},
-      enableDrag: false,
-      builder: (context) {
-        return Column(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(cardRadius),
+        ),
+        child: Column(
           children: <Widget>[
             _buildTitle(context),
             StructureDivider(),
@@ -42,10 +44,7 @@ class DetailsBottomSheet extends StatelessWidget {
               ),
             ),
           ],
-        );
-      },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(cardRadius),
+        ),
       ),
     );
   }
@@ -60,11 +59,11 @@ class DetailsBottomSheet extends StatelessWidget {
           top: 4,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Colors.grey.shade400,
               borderRadius: BorderRadius.circular(10),
             ),
-            width: 50,
-            height: 4,
+            width: 25,
+            height: 3,
           ),
         ),
         Container(

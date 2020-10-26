@@ -115,6 +115,7 @@ class CompactDetailsCard extends StatelessWidget {
 
   Future _openDetails(BuildContext context) async {
     await showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (context) {
         return DetailsBottomSheet(
