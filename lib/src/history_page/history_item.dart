@@ -1,10 +1,4 @@
-import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/datatypes/category_icon.dart';
-import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/formatted_strings.dart';
-import 'package:FineWallet/src/widgets/standalone/indicator.dart';
-import 'package:flutter/material.dart';
+part of 'history_page.dart';
 
 class HistoryItem extends StatelessWidget {
   const HistoryItem({
@@ -95,7 +89,7 @@ class HistoryItem extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  transaction.sub.name,
+                  tryTranslatePreset(transaction.sub),
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,

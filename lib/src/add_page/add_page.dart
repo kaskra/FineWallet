@@ -3,15 +3,16 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/add_page/category_dialog.dart';
-import 'package:FineWallet/src/add_page/editable_numeric_input.dart';
-import 'package:FineWallet/src/add_page/recurrence_dialog.dart';
-import 'package:FineWallet/src/add_page/row_child_divider.dart';
-import 'package:FineWallet/src/add_page/row_title.dart';
-import 'package:FineWallet/src/add_page/row_wrapper.dart';
+import 'package:FineWallet/logger.dart';
+import 'package:FineWallet/src/add_page/page.dart';
+import 'package:FineWallet/src/settings_page/page.dart';
+import 'package:FineWallet/utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -44,8 +45,8 @@ class _AddPageState extends State<AddPage> {
   /// The transaction money amount.
   double _amount = 0.00;
 
-  /// Label textediting controller
-  TextEditingController _labelController = TextEditingController();
+  /// Label text editing controller
+  final TextEditingController _labelController = TextEditingController();
 
   /// The (original) transaction date.
   DateTime _date = today();
@@ -126,7 +127,12 @@ class _AddPageState extends State<AddPage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(
-          'Add ${widget.isExpense ? "Expense" : "Income"}',
+          LocaleKeys.add_page_title.tr(args: [
+            if (widget.isExpense)
+              LocaleKeys.expense.tr()
+            else
+              LocaleKeys.income.tr()
+          ]),
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         centerTitle: true,
@@ -134,9 +140,9 @@ class _AddPageState extends State<AddPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _handleSaving(),
-        tooltip: 'Save transaction',
+        tooltip: LocaleKeys.add_page_fab_tooltip.tr(),
         label: Text(
-          "SAVE",
+          LocaleKeys.add_page_fab_label.tr().toUpperCase(),
           style: TextStyle(
               fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
         ), //Change Icon
@@ -161,37 +167,33 @@ class _AddPageState extends State<AddPage> {
   Tuple2<String, bool> _isValidTransaction() {
     if (_amount == 0) {
       return Tuple2<String, bool>(
-          "The specified amount has to be greater than Zero", false);
+          LocaleKeys.add_page_amount_equals_zero.tr(), false);
     }
 
     if (_amount < 0) {
       return Tuple2<String, bool>(
-          "The specified amount can only be positive!", false);
+          LocaleKeys.add_page_amount_smaller_zero.tr(), false);
     }
 
     if (_subcategory == null) {
-      return Tuple2<String, bool>("Please choose a category!", false);
+      return Tuple2<String, bool>(
+          LocaleKeys.add_page_subcategory_null.tr(), false);
     }
 
     if (_isRecurring && _recurrence == null) {
       return Tuple2<String, bool>(
-          "Please specify which recurrence "
-          "type you want to use!",
-          false);
+          LocaleKeys.add_page_recurrence_null.tr(), false);
     }
 
     // We don't need to check if date is at least a day before until date.
     // That is handled by the date picker.
     if (_isRecurring && _untilDate == null) {
       return Tuple2<String, bool>(
-          "Please choose an end date "
-          "for the recurrence!",
-          false);
+          LocaleKeys.add_page_recurrence_no_end.tr(), false);
     }
 
     if (_date == null) {
-      return Tuple2<String, bool>(
-          "Please choose a date for your transaction!", false);
+      return Tuple2<String, bool>(LocaleKeys.add_page_date_null.tr(), false);
     }
 
     return Tuple2<String, bool>("", true);
@@ -206,8 +208,7 @@ class _AddPageState extends State<AddPage> {
   void _handleSaving() {
     // Show snackbar with hints when error
     if (_hasError) {
-      print("NOT WORKING WITH THIS!!");
-      _showSnackBar("Your specified amount is not a number!");
+      _showSnackBar(LocaleKeys.add_page_not_a_number.tr());
       return;
     }
 
@@ -220,10 +221,10 @@ class _AddPageState extends State<AddPage> {
 
     if (_editing) {
       _updateTransaction();
-      print("Save edited transaction!");
+      logMsg("Save edited transaction!");
     } else {
       _addNewTransaction();
-      print("Save new transaction!");
+      logMsg("Save new transaction!");
     }
     Navigator.of(context).pop();
   }
@@ -315,23 +316,41 @@ class _AddPageState extends State<AddPage> {
   Widget _buildWarning() {
     return _inputCurrencyId != _userCurrencyId
         ? Container(
-            height: 20,
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
             color: Theme.of(context).accentColor,
-            child: const Center(
-              child: Text(
-                "You are currently not using your home currency!",
-                style: TextStyle(fontWeight: FontWeight.w600),
+            child: Center(
+              child: RichText(
+                text: TextSpan(
+                    text: "${LocaleKeys.add_page_not_home_currency.tr()} ",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    children: [
+                      TextSpan(
+                          text:
+                              LocaleKeys.add_page_not_home_currency_change.tr(),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              logMsg("Change currency");
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (_) => SettingsPage()),
+                              );
+                            },
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                          )),
+                    ]),
               ),
             ),
           )
         : Container();
   }
 
-  // TODO add a hint when input currency != user currency when reworking add page!
   List<Widget> _buildAmountRow() {
     return [
-      const Padding(
-          padding: EdgeInsets.only(top: 8), child: RowTitle(title: "Amount")),
+      Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: RowTitle(title: LocaleKeys.add_page_amount.tr()),
+      ),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.attach_money,
@@ -350,7 +369,7 @@ class _AddPageState extends State<AddPage> {
           },
           onError: (value) {
             if (value) {
-              print("Got error! No real double value ${_amount.toString()}!");
+              logMsg("Got error! No real double value ${_amount.toString()}!");
             }
             setState(() {
               _hasError = value;
@@ -363,7 +382,7 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildCategoryRow() {
     return [
-      const RowTitle(title: "Category"),
+      RowTitle(title: LocaleKeys.add_page_category.tr()),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.category,
@@ -382,7 +401,7 @@ class _AddPageState extends State<AddPage> {
           );
 
           if (res != null) {
-            print("Return from Category: $res");
+            logMsg("Return from Category: $res");
             setState(() {
               _subcategory = res;
             });
@@ -391,7 +410,7 @@ class _AddPageState extends State<AddPage> {
         child: Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
-            _subcategory?.name ?? "",
+            tryTranslatePreset(_subcategory), //?.name ?? ""),
             style: const TextStyle(fontSize: 16),
           ),
         ),
@@ -401,8 +420,10 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildLabelRow() {
     return [
-      const Padding(
-          padding: EdgeInsets.only(top: 8), child: RowTitle(title: "Label")),
+      Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: RowTitle(title: LocaleKeys.add_page_label.tr()),
+      ),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.label_important,
@@ -410,7 +431,6 @@ class _AddPageState extends State<AddPage> {
         isChild: false,
         child: TextField(
           controller: _labelController,
-          autocorrect: true,
           keyboardType: TextInputType.text,
           textAlign: TextAlign.right,
         ),
@@ -419,11 +439,11 @@ class _AddPageState extends State<AddPage> {
   }
 
   List<Widget> _buildDateRow() {
-    final formatter = DateFormat('dd.MM.yy');
+    final formatter = DateFormat.yMd(context.locale.toLanguageTag());
     final String formattedDate = formatter.format(_date);
 
     return [
-      const RowTitle(title: "Date"),
+      RowTitle(title: LocaleKeys.add_page_date.tr()),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.calendar_today,
@@ -474,7 +494,7 @@ class _AddPageState extends State<AddPage> {
 
   List<Widget> _buildRecurrenceRow() {
     return [
-      const RowTitle(title: "Recurrence"),
+      RowTitle(title: LocaleKeys.add_page_recurrence.tr()),
       RowWrapper(
         iconSize: 24,
         leadingIcon: Icons.replay,
@@ -491,7 +511,7 @@ class _AddPageState extends State<AddPage> {
   }
 
   List<Widget> _buildRecurrenceChoices() {
-    final formatter = DateFormat('dd.MM.yy');
+    final formatter = DateFormat.yMd(context.locale.toLanguageTag());
     final String formattedDate = formatter.format(_untilDate);
 
     return [
@@ -517,7 +537,7 @@ class _AddPageState extends State<AddPage> {
         child: Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Text(
-            _recurrence?.name ?? "",
+            _recurrence?.name?.tr() ?? "",
             style: const TextStyle(fontSize: 16),
           ),
         ),

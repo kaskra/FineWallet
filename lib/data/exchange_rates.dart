@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:FineWallet/logger.dart';
 import 'package:http/http.dart' as http;
 
 Future<ExchangeRates> fetchExchangeRates(
@@ -7,7 +8,7 @@ Future<ExchangeRates> fetchExchangeRates(
   final nonBaseCurrencies = currencies.where((c) => c != base).toList();
   final url = "https://api.exchangeratesapi.io/latest?base=$base";
 
-  print("Fetch exchange rates from $url...");
+  logMsg("Fetch exchange rates from $url...");
   final response = await http.get(url);
 
   if (response.statusCode == 200) {

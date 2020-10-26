@@ -1,19 +1,4 @@
-import 'package:flutter/material.dart';
-
-class HistoryFilterState {
-  bool onlyExpenses = true;
-  bool onlyIncomes = true;
-  bool showFuture = false;
-
-  @override
-  String toString() {
-    return 'HistoryFilterState{'
-        'onlyExpenses: $onlyExpenses, '
-        'onlyIncomes: $onlyIncomes, '
-        'showFuture: $showFuture '
-        '}';
-  }
-}
+part of 'history_page.dart';
 
 class HistoryFilter extends StatelessWidget {
   const HistoryFilter({Key key, this.items}) : super(key: key);
@@ -32,7 +17,7 @@ class HistoryFilter extends StatelessWidget {
                 bottom: BorderSide(
                     color: Theme.of(context).colorScheme.secondary, width: 0))),
         child: ExpansionTile(
-          title: const Text("Filter Settings"),
+          title: Text(LocaleKeys.history_page_filter_settings.tr()),
           leading: const Icon(Icons.filter_list),
           children: items,
         ),

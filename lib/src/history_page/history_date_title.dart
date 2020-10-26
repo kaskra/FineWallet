@@ -1,6 +1,4 @@
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl;
+part of 'history_page.dart';
 
 class HistoryDateTitle extends StatelessWidget {
   final DateTime date;
@@ -9,7 +7,7 @@ class HistoryDateTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final intl.DateFormat d = intl.DateFormat.MMMEd();
+    final DateFormat d = DateFormat.MMMEd(context.locale.toLanguageTag());
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),

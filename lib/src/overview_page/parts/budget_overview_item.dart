@@ -1,11 +1,13 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/overview_page/parts/monthly_expense_item.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/row_item.dart';
 import 'package:FineWallet/src/widgets/views/daily_budget.dart';
 import 'package:FineWallet/src/widgets/views/monthly_budget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +20,9 @@ class BudgetOverviewItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              const RowItem(
-                footerText: "Today",
-                child: DailyBudgetView(
+              RowItem(
+                footerText: LocaleKeys.today.tr(),
+                child: const DailyBudgetView(
                   textStyle:
                       TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                 ),
@@ -41,7 +43,7 @@ class BudgetOverviewItem extends StatelessWidget {
                 children: <Widget>[
                   MonthlyExpenseItem(),
                   Text(
-                    "Used Budget",
+                    LocaleKeys.budget_overview_used_budget.tr(),
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -70,7 +72,7 @@ class BudgetOverviewItem extends StatelessWidget {
         minWidth: MediaQuery.of(context).size.width * 0.9,
         color: Theme.of(context).colorScheme.secondary,
         child: Text(
-          "Change Available Budget",
+          LocaleKeys.budget_overview_change_avail_budget.tr(),
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),

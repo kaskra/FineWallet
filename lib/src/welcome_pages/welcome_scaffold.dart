@@ -1,10 +1,11 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/main.dart';
-import 'package:FineWallet/src/welcome_pages/currency_page.dart';
-import 'package:FineWallet/src/welcome_pages/dark_mode_page.dart';
-import 'package:FineWallet/src/welcome_pages/finish_page.dart';
-import 'package:FineWallet/src/welcome_pages/language_page.dart';
-import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
+import 'package:FineWallet/src/welcome_pages/pages.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,8 @@ class WelcomeScaffold extends StatelessWidget {
   final Widget child;
   final void Function() onContinue;
   final void Function() onBack;
+  final bool enableContinue;
+  final Future<bool> Function() confirmContinue;
   final String pageName;
 
   const WelcomeScaffold({
@@ -22,6 +25,8 @@ class WelcomeScaffold extends StatelessWidget {
     @required this.onContinue,
     @required this.onBack,
     @required this.pageName,
+    this.enableContinue = false,
+    this.confirmContinue,
   })  : assert(pageName != null),
         assert(child != null),
         super(key: key);
@@ -54,6 +59,7 @@ class WelcomeScaffold extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
+          _randomBackdropCircle(context),
           Center(
             child: Align(
               alignment: const Alignment(0, -1 / 3),
@@ -71,19 +77,29 @@ class WelcomeScaffold extends StatelessWidget {
               ),
             ),
           ),
-          if (onContinue != null && !isLastPage)
+          if ((onContinue != null || confirmContinue != null) &&
+              !isLastPage &&
+              enableContinue)
             Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(
-                onPressed: () {
-                  onContinue();
-                  Navigator.of(context).push(_continueRoute(pageName));
+                onPressed: () async {
+                  var continueAvailable = false;
+                  if (confirmContinue != null) {
+                    continueAvailable = await confirmContinue();
+                  } else {
+                    continueAvailable = true;
+                    onContinue();
+                  }
+                  if (continueAvailable) {
+                    Navigator.of(context).push(_continueRoute(pageName));
+                  }
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Continue",
+                      LocaleKeys.continueText.tr(),
                       style: Theme.of(context).primaryTextTheme.subtitle2,
                     ),
                     const SizedBox(width: 8),
@@ -112,7 +128,7 @@ class WelcomeScaffold extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      "Back",
+                      LocaleKeys.backText.tr(),
                       style: Theme.of(context).primaryTextTheme.subtitle2,
                     ),
                   ],
@@ -126,14 +142,13 @@ class WelcomeScaffold extends StatelessWidget {
                 onPressed: () {
                   UserSettings.setInitialized(val: true);
                   Navigator.of(context).pushAndRemoveUntil(
-                      _createRoute(const MyHomePage(title: 'FineWallet')),
-                      (route) => false);
+                      _createRoute(const MyHomePage()), (route) => false);
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Finish",
+                      LocaleKeys.doneText.tr(),
                       style: Theme.of(context).primaryTextTheme.subtitle2,
                     ),
                     const SizedBox(width: 8),
@@ -164,6 +179,31 @@ class WelcomeScaffold extends StatelessWidget {
 
         return SlideTransition(position: animation.drive(tween), child: child);
       },
+    );
+  }
+
+  Widget _randomBackdropCircle(BuildContext context) {
+    final random = Random(42);
+    final double radius = random.nextInt(200) + 700.0;
+
+    // final side = random.nextBool();
+
+    // final double dx = side
+    //     ? random.nextDouble() * MediaQuery.of(context).size.width * 0.5
+    //     : 0 - radius / 2;
+    // final double dy =
+    //     random.nextDouble() * MediaQuery.of(context).size.height * 0.5;
+
+    return Positioned(
+      left: -radius / 2,
+      top: -radius / 2,
+      child: Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).accentColor.withOpacity(0.2)),
+        width: radius,
+        height: radius,
+      ),
     );
   }
 }

@@ -1,3 +1,6 @@
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 extension ExtendedDateTime on DateTime {
   DateTime getFirstDateOfMonth() {
     return DateTime.utc(year, month);
@@ -22,34 +25,34 @@ extension ExtendedDateTime on DateTime {
 
   String getMonthName({bool abbrev = false}) {
     final months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
+      LocaleKeys.january,
+      LocaleKeys.february,
+      LocaleKeys.march,
+      LocaleKeys.april,
+      LocaleKeys.may,
+      LocaleKeys.june,
+      LocaleKeys.july,
+      LocaleKeys.august,
+      LocaleKeys.september,
+      LocaleKeys.october,
+      LocaleKeys.november,
+      LocaleKeys.december
     ];
-    final monthName = months[(month - 1) % 12];
+    final monthName = months[(month - 1) % 12].tr();
     return abbrev ? monthName.substring(0, 3) : monthName;
   }
 
   String getDayName() {
     final days = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
+      LocaleKeys.monday,
+      LocaleKeys.tuesday,
+      LocaleKeys.wednesday,
+      LocaleKeys.thursday,
+      LocaleKeys.friday,
+      LocaleKeys.saturday,
+      LocaleKeys.sunday
     ];
-    return days[(weekday - 1) % 7];
+    return days[(weekday - 1) % 7].tr();
   }
 }
 

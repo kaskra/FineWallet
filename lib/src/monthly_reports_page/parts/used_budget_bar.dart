@@ -1,6 +1,8 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
 import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
@@ -61,11 +63,11 @@ class UsedBudgetBar extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(cardRadius),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 6.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0),
             child: Text(
-              "Used budget",
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              LocaleKeys.budget_overview_used_budget.tr(),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
           ),
         ],

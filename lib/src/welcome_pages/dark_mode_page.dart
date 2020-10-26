@@ -1,7 +1,9 @@
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_scaffold.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ class DarkModePage extends StatelessWidget {
       pageName: "dark_mode",
       onContinue: () {},
       onBack: () {},
+      enableContinue: true,
       headerImage: Image.asset(
         IMAGES.darkMode,
         height: 150,
@@ -25,7 +28,7 @@ class DarkModePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Enable Dark Mode",
+                LocaleKeys.welcome_pages_dark_mode_title.tr(),
                 style: Theme.of(context)
                     .primaryTextTheme
                     .headline6
@@ -42,7 +45,7 @@ class DarkModePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "You may enable dark mode if it is more relaxing for your eyes.",
+            LocaleKeys.welcome_pages_dark_mode_text.tr(),
             style: Theme.of(context)
                 .primaryTextTheme
                 .subtitle2

@@ -1,5 +1,4 @@
-import 'package:FineWallet/src/settings_page/parts/section.dart';
-import 'package:flutter/material.dart';
+part of 'settings_page.dart';
 
 /// This class creates a [Section] which shows some remaining
 /// settings, like exporting and importing the database.
@@ -7,7 +6,7 @@ class OthersSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Section(
-      title: "Other",
+      title: LocaleKeys.settings_page_others.tr(),
       children: <SectionItem>[
         _buildImportExport(),
       ],
@@ -16,20 +15,41 @@ class OthersSection extends StatelessWidget {
 
   SectionItem _buildImportExport() {
     return SectionItem(
-      title: "Transactions",
+      title: LocaleKeys.settings_page_your_data.tr(),
       trailing: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FlatButton(
-            onPressed: () {
-              print("IMPORT!!");
-            },
-            child: const Text("IMPORT"),
+          SizedBox(
+            width: 100,
+            child: FlatButton(
+              onPressed: () {
+                logMsg("IMPORT!!");
+              },
+              visualDensity: VisualDensity.compact,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  LocaleKeys.settings_page_import.tr().toUpperCase(),
+                  maxLines: 1,
+                ),
+              ),
+            ),
           ),
-          FlatButton(
-            onPressed: () {
-              print("EXPORT!!");
-            },
-            child: const Text("EXPORT"),
+          SizedBox(
+            width: 100,
+            child: FlatButton(
+              onPressed: () {
+                logMsg("EXPORT!!");
+              },
+              visualDensity: VisualDensity.compact,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  LocaleKeys.settings_page_export.tr().toUpperCase(),
+                  maxLines: 1,
+                ),
+              ),
+            ),
           ),
         ],
       ),
