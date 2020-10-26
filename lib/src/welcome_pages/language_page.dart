@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/extensions/locale_extension.dart';
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_scaffold.dart';
@@ -51,8 +52,7 @@ class LanguagePage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        // TODO get nicer string by extension?
-                        context.locale.toString(),
+                        context.locale.getFullLanguageName(),
                         style: Theme.of(context)
                             .primaryTextTheme
                             .headline6
@@ -99,7 +99,7 @@ class LanguageSelectionDialog extends StatelessWidget {
             final locale = locales[index];
             return ListTile(
                 visualDensity: VisualDensity.compact,
-                title: Center(child: Text(locale.toString())),
+                title: Center(child: Text(locale.getFullLanguageName())),
                 onTap: () {
                   Navigator.of(context).pop(locale);
                 });

@@ -1,3 +1,4 @@
+import 'package:FineWallet/data/extensions/locale_extension.dart';
 import 'package:FineWallet/data/providers/theme_notifier.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
@@ -17,13 +18,10 @@ class AppearanceSection extends StatefulWidget {
 class _AppearanceSectionState extends State<AppearanceSection> {
   bool _isFilterSettings = true;
 
-  int _selectedLanguage = 2;
-
   @override
   void initState() {
     setState(() {
       _isFilterSettings = UserSettings.getShowFilterSettings();
-      _selectedLanguage = UserSettings.getLanguage();
     });
     super.initState();
   }
@@ -69,10 +67,7 @@ class _AppearanceSectionState extends State<AppearanceSection> {
   }
 
   SectionItem _buildLanguage() {
-    // TODO remove, just placeholders
-    final items = <int, String>{};
-    items.putIfAbsent(1, () => "ENG");
-    items.putIfAbsent(2, () => "GER");
+    final items = context.supportedLocales.asMap();
 
     return SectionItem(
       title: LocaleKeys.settings_page_language.plural(1),
@@ -80,25 +75,23 @@ class _AppearanceSectionState extends State<AppearanceSection> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
-            final int res = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SelectionPage(
-                      pageTitle: LocaleKeys.settings_page_language.plural(2),
-                      selectedIndex: UserSettings.getLanguage(),
-                      data: items,
-                    )));
+            final int res = await Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => SelectionPage(
+                        pageTitle: LocaleKeys.settings_page_language.plural(2),
+                        selectedIndex:
+                            context.supportedLocales.indexOf(context.locale),
+                        data: items.map((key, value) =>
+                            MapEntry(key, value.getFullLanguageName())),
+                      )),
+            );
             if (res != null) {
-              UserSettings.setLanguage(res);
-              setState(() {
-                _selectedLanguage = res;
-              });
-              final langs = ["en", "de"];
-              EasyLocalization.of(context).locale =
-                  Locale(langs[_selectedLanguage - 1]);
+              EasyLocalization.of(context).locale = items[res];
             }
           },
           child: Row(
             children: <Widget>[
-              Text(items[_selectedLanguage]),
+              Text(context.locale.getFullLanguageName()),
               Icon(
                 Icons.keyboard_arrow_right,
                 color: Theme.of(context).colorScheme.onBackground,
