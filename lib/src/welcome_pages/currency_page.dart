@@ -1,18 +1,45 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_scaffold.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:moor/moor.dart' hide Column;
 import 'package:provider/provider.dart';
 
-class CurrencyPage extends StatelessWidget {
+class CurrencyPage extends StatefulWidget {
+  @override
+  _CurrencyPageState createState() => _CurrencyPageState();
+}
+
+class _CurrencyPageState extends State<CurrencyPage> {
+  bool _selectedCurrency = false;
+
+  bool _initialized = false;
+
+  Future getUserCurrency() async {
+    final currency =
+        await Provider.of<AppDatabase>(context).currencyDao.getUserCurrency();
+    if (currency != null) {
+      setState(() {
+        _selectedCurrency = true;
+        _initialized = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_initialized) {
+      getUserCurrency();
+    }
+
     return WelcomeScaffold(
       pageName: "currency",
       onContinue: () {},
       onBack: () {},
+      enableContinue: _selectedCurrency,
       headerImage: Image.asset(
         IMAGES.savings,
         height: 150,
@@ -27,7 +54,7 @@ class CurrencyPage extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  "Choose your home currency",
+                  LocaleKeys.welcome_pages_currency_title.tr(),
                   style: Theme.of(context)
                       .primaryTextTheme
                       .headline6
@@ -44,12 +71,17 @@ class CurrencyPage extends StatelessWidget {
                     final Currency selectedCurrency = await showDialog(
                         context: context,
                         builder: (context) => CurrencySelectionDialog());
+
                     if (selectedCurrency != null) {
                       await Provider.of<AppDatabase>(context, listen: false)
                           .addUserProfile(UserProfilesCompanion(
                         id: const Value<int>(1),
                         currencyId: Value<int>(selectedCurrency.id),
                       ));
+
+                      setState(() {
+                        _selectedCurrency = true;
+                      });
                     }
                   },
                   child: Row(
@@ -62,6 +94,7 @@ class CurrencyPage extends StatelessWidget {
                           builder: (context, AsyncSnapshot<Currency> snapshot) {
                             final currencyString =
                                 snapshot.hasData ? snapshot.data.abbrev : "";
+
                             return Text(
                               currencyString,
                               style: Theme.of(context)
@@ -83,10 +116,7 @@ class CurrencyPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "The home currency is the standard currency you use. When travelling "
-            "to another currency region, you can change the input currency "
-            "respectively. Every transaction will then be exchanged to your "
-            "home currency automatically.",
+            LocaleKeys.welcome_pages_currency_text.tr(),
             style: Theme.of(context)
                 .primaryTextTheme
                 .subtitle2
@@ -94,9 +124,11 @@ class CurrencyPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "Warning: You cannot change your home currency later on!",
-            style: Theme.of(context).primaryTextTheme.subtitle2.copyWith(
-                fontWeight: FontWeight.normal, color: Colors.redAccent),
+            LocaleKeys.welcome_pages_currency_warning.tr(),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .subtitle2
+                .copyWith(fontWeight: FontWeight.normal, color: Colors.red),
           ),
         ],
       ),

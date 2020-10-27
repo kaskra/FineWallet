@@ -11,7 +11,9 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +77,7 @@ class _ProfileChartState extends State<ProfileChart> {
       AsyncSnapshot<List<Tuple3<int, String, double>>> transactionSnapshot) {
     if (transactionSnapshot.hasData) {
       if (transactionSnapshot.data.isEmpty) {
-        return const Center(child: Text("Found no expenses."));
+        return Center(child: Text(LocaleKeys.profile_page_no_expenses.tr()));
       }
 
       // Get the summed up expenses, ids and names for each category.
@@ -86,7 +88,7 @@ class _ProfileChartState extends State<ProfileChart> {
       // Create the chart with expenses per category and category names.
       return CircularProfileChart.withTransactions(expenses, ids, names);
     }
-    return const Center(child: Text("Found no expenses."));
+    return Center(child: Text(LocaleKeys.profile_page_no_expenses.tr()));
   }
 
   @override

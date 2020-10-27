@@ -1,0 +1,273 @@
+{
+  "january": "Januar",
+  "february": "Februar",
+  "march": "März",
+  "april": "April",
+  "may": "Mai",
+  "june": "Juni",
+  "july": "Juli",
+  "august": "August",
+  "september": "September",
+  "october": "Oktober",
+  "november": "November",
+  "december": "Dezember",
+  "monday": "Montag",
+  "tuesday": "Dienstag",
+  "wednesday": "Mittwoch",
+  "thursday": "Donnerstag",
+  "friday": "Freitag",
+  "saturday": "Samstag",
+  "sunday": "Sonntag",
+  "today": "Heute",
+
+  "moor" : {
+    "various": "Verschiedenes",
+    "myself" : "Ich",
+    "food": "Essen & Trinken",
+    "home" : "Zuhause",
+    "spare_time": "Freizeit",
+    "transport": "Transport",
+    "medical": "Medizinisches",
+    "clothes": "Kleidung",
+    "gifts": "Geschenke",
+    "income": "Einkommen",
+    "cat1": {
+      "debt" : "Schulden",
+      "tuition" : "Nachhilfe",
+      "computer": "Computer & Zubehör",
+      "mail": "Mail",
+      "gadget" : "Spielzeug"
+    },
+    "cat2": {
+      "mobile": "Handy",
+      "tax" : "Steuer",
+      "pet": "Haustier",
+      "education": "Bildung",
+      "fitness": "Fitness",
+      "subscription" : "Abonnement"
+    },
+    "cat3": {
+      "groceries": "Lebensmittel",
+      "sweets": "Süßigkeiten",
+      "bakery": "Bäcker",
+      "fast_food": "Fast Food",
+      "take_away": "Zum Mitnehmen",
+      "cafe": "Cafè",
+      "dining_out": "Essen gehen",
+      "drinks": "Drinks",
+      "fruits": "Früchte",
+      "breakfast": "Frühstück",
+      "ice_cream": "Eiscreme",
+      "baking": "Backen",
+      "bbq": "BBQ"
+    },
+    "cat4": {
+      "rent": "Miete",
+      "laundry": "Wäsche",
+      "electricity": "Strom",
+      "internet": "Internet",
+      "cable": "Kabel",
+      "water": "Wasser",
+      "repairs": "Reparatur",
+      "plants": "Pflanzen",
+      "furniture": "Möbel",
+      "heating": "Heizung",
+      "hotel": "Hotel"
+    },
+    "cat5": {
+      "going_out": "Ausgehen",
+      "event": "Event",
+      "cinema": "Kino",
+      "sport": "Sport",
+      "cultural": "Kultur",
+      "book": "Buch",
+      "music": "Musik",
+      "app": "App",
+      "software": "Software",
+      "shopping": "Shopping"
+    },
+    "cat6": {
+      "gas": "Benzin/Sprit",
+      "maintenance": "Instandhaltung",
+      "public_transport": "Öffentliches Transportmittel",
+      "taxi": "Taxi",
+      "car_insurance": "Versicherung",
+      "flight": "Flug",
+      "parking": "Parken",
+      "car_rental": "Autovermietung",
+      "penalty": "Strafzettel"
+    },
+    "cat7":{
+      "medicine": "Medizin",
+      "doctors_visit": "Doktorbesuch",
+      "hospital": "Krankenhaus",
+      "medical_insurance": "Krankenversicherung"
+    },
+    "cat8": {
+      "clothes": "Kleidung",
+      "shoes": "Schuhe",
+      "accessories": "Accessories",
+      "underwear": "Unterwäsche",
+      "bag": "Tasche"
+    },
+    "cat9": {
+      "gift": "Geschenk",
+      "souvenir": "Souvenir"
+    },
+    "cat10": {
+      "payment" : "Gehalt",
+      "money_gift": "Geldgeschenk",
+      "voucher": "Gutschein"
+    },
+    "recurrence": {
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich",
+      "yearly": "Jährlich"
+    }
+  },
+
+
+  "nav": {
+    "home": "Home",
+    "me": "Profil",
+    "history": "Verlauf",
+    "statistics": "Statistiken"
+  },
+  "welcome_pages": {
+    "welcome": {
+      "title": "Willkommen zu FineWallet!",
+      "next_steps": "In den nächsten Schritte wirst du die App deinen Vorlieben anpassen.",
+      "data_1": "Alle deine Daten sind",
+      "data_bold": "nur",
+      "data_2": "auf deinem Gerät gespeichert."
+    },
+    "currency": {
+      "title": "Wähle deine Heimatwährung",
+      "text": "Die Heimatwährung ist die Währung die du meistens benutzt. Während des Reisens kannst du auf die lokale Währung umstellen, um in dieser den Betrag einzugeben. Jeder Betrag wird dann automatisch in deine Heimatwährung umgewandelt.",
+      "warning": "Achtung: Du kannst deine Heimatwährung später nicht mehr ändern!"
+    },
+    "dark_mode": {
+      "title": "Aktiviere Dark Mode",
+      "text": "Du kannst den Dark Mode aktivieren, falls es für deine Augen angenehmer ist."
+    },
+    "finish": {
+      "title": "Du hast erfolgreich dein FineWallet Profil erstellt!",
+      "text": "Viel Erfolg und Spaß beim Geld sparen!"
+    },
+    "language": {
+      "semantic_label": "Sprache",
+      "title": "Wähle deine Sprache",
+      "text": "Die Sprache kannst du später jederzeit in den Einstellungen ändern!"
+    }
+  },
+  "continueText": "Weiter",
+  "backText": "Zurück",
+  "doneText": "Fertig",
+  "ok" : "Ok",
+  "search" : "Suchen",
+  "confirm": "Bestätigen",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "share": "Teilen",
+  "edit": "Bearbeiten",
+  "expense" : "Ausgabe",
+  "income" : "Einkommen",
+  "found_no_transactions": "Konnte keine Einträge finden.",
+  "overview_page": {
+    "remaining_budget": "Restliches Budget",
+    "latest_transactions": "Letzte Transaktionen",
+    "last_week": "Letzte Woche",
+    "last_week_load_error": "Konnte keine Transaktionen der letzten Woche laden!"
+  },
+  "budget_overview": {
+    "used_budget": "Verbrauchtes Budget",
+    "change_avail_budget": "Verfügbares Budget ändern"
+  },
+  "delete_dialog": {
+    "title": "Transaktion löschen?",
+    "text": "Dies wird ihre Transaktion löschen."
+  },
+  "savings": {
+    "name": "Ersparnisse",
+    "saved_amount": "Gesparter Betrag",
+    "difference": "Aktueller Unterschied"
+  },
+  "history_page": {
+    "expenses_on": "Ausgaben am {}",
+    "filter_settings" : "Filtereinstellungen",
+    "show_expenses" : "Ausgaben anzeigen",
+    "show_incomes" : "Einnahmen anzeigen",
+    "show_future" : "Zukünftige Einträge",
+    "share_title" : "TX SHARE",
+    "share_text" : "TX SHARE ist momentan nicht verfügbar."
+  },
+  "profile_page": {
+    "month_avail_budget": "Monatlich verfügbares Budget",
+    "spending_prediction": "Vorausgesagte Ausgaben",
+    "expenses_per_category": "Ausgaben pro Kategorie",
+    "total_avail_budget": "Verfügbares Gesamtbudget",
+    "expected_savings": "Erwartete Ersparnisse",
+    "monthly" : "Monatlich",
+    "lifetime" : "Insgesamt",
+    "no_expenses" : "Keine Ausgaben gefunden."
+  },
+  "reports_page" : {
+    "name": "Monatliche Berichte",
+    "found_none" : "Keine vergangenen Monate gefunden.",
+    "more_details" : "Mehr Details",
+    "overall" : "Zusammenfassung",
+    "total_income" : "Gesamtes Einkommen",
+    "total_expense" : "Gesamte Ausgaben"
+  },
+  "add_page" : {
+    "title": "{} hinzufügen",
+    "fab_tooltip" : "Speichere Transaktion",
+    "fab_label" : "Speichern",
+    "amount_equals_zero": "Der angegebene Betrag muss größer als Null sein.",
+    "amount_smaller_zero": "Der angegebene Betrag muss positiv sein!",
+    "subcategory_null" : "Bitte wähle eine Kategorie!",
+    "recurrence_null" : "Bitte wähle eine Wiederholungsfrequenz aus!",
+    "recurrence_no_end" : "Bitte wähle aus, wann die Wiederholung enden soll.",
+    "date_null" : "Bitte wähle ein Datum für die Transaktion.",
+    "not_a_number" : "Der angegebene Betrag ist keine Zahl!",
+    "not_home_currency" : "Du benutzt momentan nicht deine Heimatwährung!",
+    "not_home_currency_change" : "Wechsel hier zurück!",
+    "amount" : "Betrag",
+    "category" : "Kategorie",
+    "label" : "Bezeichnung/Hinweis",
+    "date" : "Datum",
+    "recurrence" : "Wiederholung",
+    "select_category" : "Wähle eine Kategorie"
+  },
+  "settings_page" : {
+    "title" : "Einstellungen",
+    "currencies" : "Währungen",
+    "snack_at_home" : "Du benutzt nun wieder deine Heimatwährung als Eingabewährung.",
+    "snack_traveling" : "Du benutzt nun {} als deine Währung. Jede Eingabe wird zu deiner Heimatwährung umgerechnet.",
+    "travel" : "Reise in ein anderes Währungsgebiet",
+    "while_travel": "Du reist mit {} als Währung",
+    "home_currency" : "Deine Heimatwährung",
+    "appearance" : "Anzeige",
+    "dark_mode" : "Dark Mode",
+    "dark_mode_desc" : "Dark Mode aktivieren",
+    "enable_filter" : "Verlaufsfilter",
+    "enable_filter_desc" : "Verlaufsfilter aktivieren",
+    "language" : {
+      "one" : "Sprache",
+      "other" : "Sprachen"
+    },
+    "social" : "Soziales",
+    "tx_share" : "TX SHARE",
+    "tx_share_desc" : "Teilen von Transaktionen aktivieren",
+    "defaults" : "Standardeinstellungen",
+    "default_filter_settings" : "Filtereinstellungen",
+    "default_filter_settings_desc" : "Standardmäßige Filtereinstellungen einstellen",
+    "default_expense_chart" : "Ausgabenanzeige",
+    "others" : "Weiteres",
+    "import" : "Importieren",
+    "import_desc" : "Importieren einer Wiederherstellungsdatei",
+    "export" : "Exportieren",
+    "export_desc" : "Exportieren einer Wiederherstellungsdatei"
+  }
+}

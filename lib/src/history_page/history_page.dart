@@ -1,17 +1,24 @@
+import 'package:FineWallet/constants.dart';
+import 'package:FineWallet/core/datatypes/category_icon.dart';
+import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/add_page.dart';
-import 'package:FineWallet/src/history_page/history_date_title.dart';
-import 'package:FineWallet/src/history_page/history_filter.dart';
-import 'package:FineWallet/src/history_page/history_item.dart';
-import 'package:FineWallet/src/history_page/history_month_divider.dart';
-import 'package:FineWallet/src/widgets/selection_appbar.dart';
-import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:FineWallet/utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+part 'history_date_title.dart';
+part 'history_filter.dart';
+part 'history_item.dart';
+part 'history_month_divider.dart';
 
 /// This class is used to create a page which shows all recorded transactions.
 ///
@@ -93,40 +100,84 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Future _buildModalSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(cardRadius),
+          topLeft: Radius.circular(cardRadius),
+        ),
+      ),
+      builder: (context) {
+        final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
+        return Material(
+          borderRadius: BorderRadius.circular(cardRadius),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: HistoryFilterTextField(
+                  iconData: Icons.search,
+                  initialData: _filterState.label,
+                  onChanged: (text) {
+                    setState(() {
+                      _filterState.label = text;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              ),
+              if (!isKeyboardOpen) const Divider(),
+              if (!isKeyboardOpen)
+                HistoryFilterItem(
+                  initialValue: _filterState.onlyExpenses,
+                  title: LocaleKeys.history_page_show_expenses.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState.onlyExpenses = b;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              if (!isKeyboardOpen)
+                HistoryFilterItem(
+                  initialValue: _filterState.onlyIncomes,
+                  title: LocaleKeys.history_page_show_incomes.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState.onlyIncomes = b;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              if (!isKeyboardOpen)
+                HistoryFilterItem(
+                  initialValue: _filterState.showFuture,
+                  title: LocaleKeys.history_page_show_future.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState.showFuture = b;
+                    });
+                    _handleFilterSettings();
+                  },
+                ),
+              const SizedBox(height: 8)
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildFilterSettingsRow() {
     return HistoryFilter(
-      items: [
-        HistoryFilterItem(
-          initialValue: _filterState.onlyExpenses,
-          title: "Show expenses",
-          onChanged: (b) {
-            setState(() {
-              _filterState.onlyExpenses = b;
-            });
-            _handleFilterSettings();
-          },
-        ),
-        HistoryFilterItem(
-          initialValue: _filterState.onlyIncomes,
-          title: "Show incomes",
-          onChanged: (b) {
-            setState(() {
-              _filterState.onlyIncomes = b;
-            });
-            _handleFilterSettings();
-          },
-        ),
-        HistoryFilterItem(
-          initialValue: _filterState.showFuture,
-          title: "Future transactions",
-          onChanged: (b) {
-            setState(() {
-              _filterState.showFuture = b;
-            });
-            _handleFilterSettings();
-          },
-        ),
-      ],
+      onTap: () {
+        _buildModalSheet();
+      },
     );
   }
 
@@ -173,15 +224,21 @@ class _HistoryPageState extends State<HistoryPage> {
       builder: (BuildContext context,
           AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data.isNotEmpty) {
-            return _buildItems(snapshot.data);
+          final foundTransactions = snapshot.data
+              .where((element) => element.tx.label
+                  .contains(RegExp(_filterState.label, caseSensitive: false)))
+              .toList();
+          if (foundTransactions.isNotEmpty) {
+            return _buildItems(foundTransactions);
           } else {
-            return const SizedBox(
-                child: Center(child: Text("Found no transactions.")));
+            return SizedBox(
+                child:
+                    Center(child: Text(LocaleKeys.found_no_transactions.tr())));
           }
         } else {
-          return const SizedBox(
-              child: Center(child: Text("Found no transactions.")));
+          return SizedBox(
+              child:
+                  Center(child: Text(LocaleKeys.found_no_transactions.tr())));
         }
       },
     );
@@ -303,7 +360,10 @@ class _HistoryPageState extends State<HistoryPage> {
   ///
   Future _deleteItems() async {
     if (await showConfirmDialog(
-        context, "Delete transaction?", "This will delete the transaction.")) {
+      context,
+      LocaleKeys.delete_dialog_title.tr(),
+      LocaleKeys.delete_dialog_text.tr(),
+    )) {
       for (final tx in _selectedItems.values) {
         Provider.of<AppDatabase>(context, listen: false)
             .transactionDao
@@ -316,7 +376,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Edit an item on the add page. Close selection mode afterwards.
   ///
   void _editItem(TransactionWithCategoryAndCurrency tx) {
-    print(tx);
+    logMsg(tx.toString());
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -329,7 +389,10 @@ class _HistoryPageState extends State<HistoryPage> {
   ///
   void _shareItem(TransactionWithCategoryAndCurrency tx) {
     showConfirmDialog(
-        context, "TX SHARE", "The TX SHARE is not available right now.");
+      context,
+      LocaleKeys.history_page_share_title.tr(),
+      LocaleKeys.history_page_share_text.tr(),
+    );
     _closeSelection();
   }
 

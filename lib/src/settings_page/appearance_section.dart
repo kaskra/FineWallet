@@ -1,10 +1,6 @@
-import 'package:FineWallet/data/providers/theme_notifier.dart';
-import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/settings_page/parts/section.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+part of 'settings_page.dart';
 
-/// This class creates a [Section] which shows the appearance
+/// This class creates a [SettingSection] which shows the appearance
 /// settings, like Dark Mode.
 class AppearanceSection extends StatefulWidget {
   @override
@@ -24,40 +20,60 @@ class _AppearanceSectionState extends State<AppearanceSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Section(
-      title: "Appearance",
-      children: <SectionItem>[
-        _buildDarkModeSwitch(context),
-        _buildFilterSettingsSwitch(context)
+    return SettingSection(
+      title: LocaleKeys.settings_page_appearance.tr(),
+      items: [
+        _buildDarkModeSwitch(),
+        _buildFilterSettingsSwitch(),
+        _buildLanguage(),
       ],
     );
   }
 
-  SectionItem _buildDarkModeSwitch(BuildContext context) {
-    return SectionItem(
-      title: "Enable Dark Mode",
-      trailing: Switch(
+  Widget _buildDarkModeSwitch() {
+    return SettingSwitchItem(
+        title: LocaleKeys.settings_page_dark_mode.tr(),
+        description: LocaleKeys.settings_page_dark_mode_desc.tr(),
         value: UserSettings.getDarkMode(),
-        onChanged: (val) async {
+        onChanged: (val) {
           Provider.of<ThemeNotifier>(context, listen: false)
               .switchTheme(dark: val);
-        },
-      ),
-    );
+        });
   }
 
-  SectionItem _buildFilterSettingsSwitch(BuildContext context) {
-    return SectionItem(
-      title: "Enable Filtering of History",
-      trailing: Switch(
+  Widget _buildFilterSettingsSwitch() {
+    return SettingSwitchItem(
+        title: LocaleKeys.settings_page_enable_filter.tr(),
+        description: LocaleKeys.settings_page_enable_filter_desc.tr(),
         value: _isFilterSettings,
-        onChanged: (val) async {
+        onChanged: (val) {
           UserSettings.setShowFilterSettings(val: val);
           setState(() {
             _isFilterSettings = val;
           });
-        },
-      ),
+        });
+  }
+
+  Widget _buildLanguage() {
+    final items = context.supportedLocales.asMap();
+
+    return SettingPageItem(
+      title: LocaleKeys.settings_page_language.plural(1),
+      displayValue: context.locale.getFullLanguageName(),
+      onTap: () async {
+        final int res = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SelectionPage(
+                pageTitle: LocaleKeys.settings_page_language.plural(2),
+                selectedIndex: context.supportedLocales.indexOf(context.locale),
+                data: items.map((key, value) =>
+                    MapEntry(key, value.getFullLanguageName()))),
+          ),
+        );
+        if (res != null) {
+          EasyLocalization.of(context).locale = items[res];
+        }
+      },
     );
   }
 }

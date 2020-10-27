@@ -1,5 +1,8 @@
+import 'package:FineWallet/core/datatypes/history_filter_state.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/history_page/history_filter.dart';
+import 'package:FineWallet/src/history_page/page.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class DefaultFilterSettingsPage extends StatefulWidget {
@@ -25,13 +28,13 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Default Filter Settings"),
+        title: Text(LocaleKeys.settings_page_default_filter_settings.tr()),
       ),
       body: Column(
         children: <Widget>[
           HistoryFilterItem(
             initialValue: _filterState.onlyExpenses,
-            title: "Only show expenses",
+            title: LocaleKeys.history_page_show_expenses.tr(),
             onChanged: (b) {
               setState(() {
                 _filterState.onlyExpenses = b;
@@ -41,7 +44,7 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
           ),
           HistoryFilterItem(
             initialValue: _filterState.onlyIncomes,
-            title: "Only show incomes",
+            title: LocaleKeys.history_page_show_incomes.tr(),
             onChanged: (b) {
               setState(() {
                 _filterState.onlyIncomes = b;
@@ -51,7 +54,7 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
           ),
           HistoryFilterItem(
             initialValue: _filterState.showFuture,
-            title: "Future transactions",
+            title: LocaleKeys.history_page_show_future.tr(),
             onChanged: (b) {
               setState(() {
                 _filterState.showFuture = b;

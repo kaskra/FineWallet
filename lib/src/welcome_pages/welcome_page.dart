@@ -1,5 +1,7 @@
 import 'package:FineWallet/data/resources/asset_dictionary.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_scaffold.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -7,6 +9,7 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WelcomeScaffold(
       pageName: "welcome",
+      enableContinue: true,
       headerImage: Image.asset(
         IMAGES.welcome,
         height: 150,
@@ -18,15 +21,15 @@ class WelcomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Welcome to FineWallet!",
+            LocaleKeys.welcome_pages_welcome_title,
             style: Theme.of(context)
                 .primaryTextTheme
                 .headline5
                 .copyWith(fontWeight: FontWeight.bold),
-          ),
+          ).tr(),
           const SizedBox(height: 20),
           Text(
-            "In the next steps you will personalize the app to your liking.",
+            LocaleKeys.welcome_pages_welcome_next_steps.tr(),
             style: Theme.of(context)
                 .primaryTextTheme
                 .headline6
@@ -35,12 +38,13 @@ class WelcomePage extends StatelessWidget {
           const SizedBox(height: 10),
           RichText(
             text: TextSpan(
-              text: "All of your data is saved ",
-              children: const [
+              text: "${LocaleKeys.welcome_pages_welcome_data_1.tr()} ",
+              children: [
                 TextSpan(
-                    text: "only",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                TextSpan(text: " on your device."),
+                    text: LocaleKeys.welcome_pages_welcome_data_bold.tr(),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: " ${LocaleKeys.welcome_pages_welcome_data_2.tr()}"),
               ],
               style: Theme.of(context)
                   .primaryTextTheme

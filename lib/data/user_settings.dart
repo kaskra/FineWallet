@@ -1,5 +1,5 @@
+import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/extensions/string_extension.dart';
-import 'package:FineWallet/src/history_page/history_filter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// This class holds all keys needed to save and retrieve values
@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 class _KEYS {
   static const darkMode = "dark_mode";
-  static const language = "language";
   static const currency = "currency";
   static const txShare = "tx_share";
   static const profileChart = "default_profile_chart";
@@ -34,7 +33,7 @@ class UserSettings {
     _store = await SharedPreferences.getInstance();
   }
 
-  /// Sets the value whether dark mode is enabled or not.
+  /// Sets the value whether the user has gone through the intro pages.
   ///
   /// The default value is FALSE.
   ///
@@ -46,7 +45,7 @@ class UserSettings {
     _store.setBool(_KEYS.initialized, val);
   }
 
-  /// Returns the value whether dark mode is enabled or not.
+  /// Returns the value whether the user has gone through the intro pages.
   ///
   /// The default value is FALSE.
   ///
@@ -80,31 +79,6 @@ class UserSettings {
   ///
   static bool getDarkMode() {
     return _store.getBool(_KEYS.darkMode) ?? false;
-  }
-
-  /// Sets the applications language code to the selected code and
-  /// saves it persistently in the user settings.
-  ///
-  /// The default language is 'EN'.
-  ///
-  /// Input
-  /// -----
-  /// The selected language id.
-  ///
-  static void setLanguage(int languageId) {
-    _store.setInt(_KEYS.language, languageId);
-  }
-
-  /// Returns the applications language code saved in memory.
-  ///
-  /// The default language is 'EN'.
-  ///
-  /// Returns
-  /// -----
-  /// The retrieved language id from user settings memory.
-  ///
-  static int getLanguage() {
-    return _store.getInt(_KEYS.language) ?? 1;
   }
 
   /// Sets the applications currency id to the selected symbol and

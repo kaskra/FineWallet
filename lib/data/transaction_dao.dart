@@ -14,6 +14,7 @@ import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/utils/recurrence_utils.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -311,7 +312,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     return query.watch().map((event) => event
         .map((row) => Tuple3<int, String, double>(row.read(categories.id),
-            row.read(categories.name), row.read(sumAmount)))
+            tryTranslatePreset(row.read(categories.name)), row.read(sumAmount)))
         .toList());
   }
 

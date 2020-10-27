@@ -1,10 +1,8 @@
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/src/monthly_reports_page/parts/used_budget_bar.dart';
-import 'package:FineWallet/src/widgets/formatted_strings.dart';
-import 'package:FineWallet/src/widgets/row_item.dart';
-import 'package:FineWallet/src/widgets/standalone/result_arrow.dart';
-import 'package:FineWallet/src/widgets/structure/structure_space.dart';
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/src/monthly_reports_page/page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class OverallDetail extends StatelessWidget {
@@ -19,8 +17,8 @@ class OverallDetail extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const StructureTitle(
-          text: "Overall",
+        StructureTitle(
+          text: LocaleKeys.reports_page_overall.tr(),
         ),
         SmallStructureSpace(),
         Padding(
@@ -35,7 +33,7 @@ class OverallDetail extends StatelessWidget {
           children: <Widget>[
             RowItem(
               amountPadding: const EdgeInsets.symmetric(vertical: 4),
-              footerText: "Total Income",
+              footerText: LocaleKeys.reports_page_total_income.tr(),
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: AmountString(
                 month.income,
@@ -48,11 +46,10 @@ class OverallDetail extends StatelessWidget {
             const ResultArrow(),
             RowItem(
               amountPadding: const EdgeInsets.symmetric(vertical: 4),
-              footerText: "Total Expense",
+              footerText: LocaleKeys.reports_page_total_expense.tr(),
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: AmountString(
                 month.expense * -1,
-                signed: true,
                 colored: true,
                 textStyle:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -65,7 +62,7 @@ class OverallDetail extends StatelessWidget {
           children: <Widget>[
             RowItem(
               amountPadding: const EdgeInsets.symmetric(vertical: 4),
-              footerText: "Savings",
+              footerText: LocaleKeys.savings_name.tr(),
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: AmountString(
                 savings,

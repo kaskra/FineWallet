@@ -30,7 +30,7 @@ pubspec.lock
 
 
 # Ignore generated .g.dart files
-**/*.g.dart
+#**/*.g.dart
 
 
 # Android related

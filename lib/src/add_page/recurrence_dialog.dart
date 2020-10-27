@@ -1,5 +1,8 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/logger.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,12 +57,13 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                     Navigator.of(context).pop(RecurrenceType(
                         type: _recurrenceType, name: _recurrenceName));
                   } else {
-                    print("Wrong Recurrence type or name!");
+                    logMsg("Wrong Recurrence type or name!");
                   }
                 },
-                child: const Text(
-                  "OK",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                child: Text(
+                  LocaleKeys.ok.tr().toUpperCase(),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             )
@@ -81,7 +85,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
       height: 50,
       child: Center(
         child: Text(
-          "Recurrence",
+          LocaleKeys.add_page_recurrence.tr(),
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             decoration: TextDecoration.none,
@@ -134,7 +138,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             },
             child: Center(
               child: Text(
-                rec.name,
+                rec.name.tr(),
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 16,

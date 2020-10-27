@@ -1,13 +1,11 @@
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
-import 'package:FineWallet/src/monthly_reports_page/parts/category_view.dart';
-import 'package:FineWallet/src/monthly_reports_page/parts/overall_section.dart';
-import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
-import 'package:FineWallet/src/widgets/structure/structure_divider.dart';
-import 'package:FineWallet/src/widgets/structure/structure_space.dart';
-import 'package:FineWallet/src/widgets/structure/structure_title.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/src/monthly_reports_page/page.dart';
+import 'package:FineWallet/src/profile_page/page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class DetailsBottomSheet extends StatelessWidget {
@@ -17,11 +15,13 @@ class DetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheet(
-      onClosing: () {},
-      enableDrag: false,
-      builder: (context) {
-        return Column(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(cardRadius),
+        ),
+        child: Column(
           children: <Widget>[
             _buildTitle(context),
             StructureDivider(),
@@ -44,15 +44,14 @@ class DetailsBottomSheet extends StatelessWidget {
               ),
             ),
           ],
-        );
-      },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(cardRadius),
+        ),
       ),
     );
   }
 
   Widget _buildTitle(BuildContext context) {
+    final formatter = DateFormat.yMMMM(context.locale.toLanguageTag());
+
     return Stack(
       alignment: Alignment.topCenter,
       children: <Widget>[
@@ -60,18 +59,17 @@ class DetailsBottomSheet extends StatelessWidget {
           top: 4,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Colors.grey.shade400,
               borderRadius: BorderRadius.circular(10),
             ),
-            width: 50,
-            height: 4,
+            width: 25,
+            height: 3,
           ),
         ),
         Container(
           padding: const EdgeInsets.only(top: 10),
           child: Text(
-            "${month.month.firstDate.getMonthName()} "
-            ", ${month.month.firstDate.year}",
+            formatter.format(month.month.firstDate),
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -86,8 +84,8 @@ class DetailsBottomSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const StructureTitle(
-          text: "Expenses per Category",
+        StructureTitle(
+          text: LocaleKeys.profile_page_expenses_per_category.tr(),
         ),
         SizedBox(
           height: 170,
