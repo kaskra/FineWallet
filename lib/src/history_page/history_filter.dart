@@ -9,10 +9,11 @@ class HistoryFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          border: Border(
-        bottom: BorderSide(
-            width: 0, color: Theme.of(context).colorScheme.onBackground),
-      )),
+        border: Border(
+          bottom: BorderSide(
+              width: 0, color: Theme.of(context).colorScheme.onBackground),
+        ),
+      ),
       child: ListTile(
         leading: const Icon(Icons.filter_alt),
         onTap: onTap,
@@ -53,7 +54,7 @@ class _HistoryFilterItemState extends State<HistoryFilterItem> {
         children: <Widget>[
           Text(widget.title ?? "EMPTY"),
           Switch(
-            activeColor: Theme.of(context).accentColor,
+              activeColor: Theme.of(context).accentColor,
               value: _active,
               onChanged: (s) {
                 widget.onChanged(s);

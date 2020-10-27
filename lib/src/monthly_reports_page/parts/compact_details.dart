@@ -122,8 +122,11 @@ class CompactDetailsCard extends StatelessWidget {
           month: month,
         );
       },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(cardRadius),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(cardRadius),
+          topLeft: Radius.circular(cardRadius),
+        ),
       ),
     );
   }

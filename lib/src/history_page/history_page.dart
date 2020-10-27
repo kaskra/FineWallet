@@ -16,11 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 part 'history_date_title.dart';
-
 part 'history_filter.dart';
-
 part 'history_item.dart';
-
 part 'history_month_divider.dart';
 
 /// This class is used to create a page which shows all recorded transactions.
@@ -107,8 +104,11 @@ class _HistoryPageState extends State<HistoryPage> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(cardRadius),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(cardRadius),
+          topLeft: Radius.circular(cardRadius),
+        ),
       ),
       builder: (context) {
         final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
