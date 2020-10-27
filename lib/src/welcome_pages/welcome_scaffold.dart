@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
@@ -183,20 +182,13 @@ class WelcomeScaffold extends StatelessWidget {
   }
 
   Widget _randomBackdropCircle(BuildContext context) {
-    final random = Random(42);
-    final double radius = random.nextInt(200) + 700.0;
-
-    // final side = random.nextBool();
-
-    // final double dx = side
-    //     ? random.nextDouble() * MediaQuery.of(context).size.width * 0.5
-    //     : 0 - radius / 2;
-    // final double dy =
-    //     random.nextDouble() * MediaQuery.of(context).size.height * 0.5;
+    const double radius = 770;
+    final double dx = MediaQuery.of(context).size.width - radius / 2;
+    final double dy = MediaQuery.of(context).size.height - radius / 2;
 
     return Positioned(
-      left: -radius / 2,
-      top: -radius / 2,
+      left: dx,
+      top: dy,
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,
