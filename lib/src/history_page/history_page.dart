@@ -165,7 +165,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     _handleFilterSettings();
                   },
                 ),
-              const SizedBox(height: 16)
+              const SizedBox(height: 8)
             ],
           ),
         );
