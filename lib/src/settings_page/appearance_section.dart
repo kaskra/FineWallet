@@ -1,6 +1,6 @@
 part of 'settings_page.dart';
 
-/// This class creates a [Section] which shows the appearance
+/// This class creates a [SettingSection] which shows the appearance
 /// settings, like Dark Mode.
 class AppearanceSection extends StatefulWidget {
   @override
@@ -20,80 +20,60 @@ class _AppearanceSectionState extends State<AppearanceSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Section(
+    return SettingSection(
       title: LocaleKeys.settings_page_appearance.tr(),
-      children: <SectionItem>[
-        _buildDarkModeSwitch(context),
-        _buildFilterSettingsSwitch(context),
+      items: [
+        _buildDarkModeSwitch(),
+        _buildFilterSettingsSwitch(),
         _buildLanguage(),
       ],
     );
   }
 
-  SectionItem _buildDarkModeSwitch(BuildContext context) {
-    return SectionItem(
-      title: LocaleKeys.settings_page_dark_mode.tr(),
-      trailing: Switch(
-        activeColor: Theme.of(context).accentColor,
+  Widget _buildDarkModeSwitch() {
+    return SettingSwitchItem(
+        title: LocaleKeys.settings_page_dark_mode.tr(),
+        description: LocaleKeys.settings_page_dark_mode_desc.tr(),
         value: UserSettings.getDarkMode(),
-        onChanged: (val) async {
+        onChanged: (val) {
           Provider.of<ThemeNotifier>(context, listen: false)
               .switchTheme(dark: val);
-        },
-      ),
-    );
+        });
   }
 
-  SectionItem _buildFilterSettingsSwitch(BuildContext context) {
-    return SectionItem(
-      title: LocaleKeys.settings_page_enable_filter.tr(),
-      trailing: Switch(
-        activeColor: Theme.of(context).accentColor,
+  Widget _buildFilterSettingsSwitch() {
+    return SettingSwitchItem(
+        title: LocaleKeys.settings_page_enable_filter.tr(),
+        description: LocaleKeys.settings_page_enable_filter_desc.tr(),
         value: _isFilterSettings,
-        onChanged: (val) async {
+        onChanged: (val) {
           UserSettings.setShowFilterSettings(val: val);
           setState(() {
             _isFilterSettings = val;
           });
-        },
-      ),
-    );
+        });
   }
 
-  SectionItem _buildLanguage() {
+  Widget _buildLanguage() {
     final items = context.supportedLocales.asMap();
 
-    return SectionItem(
+    return SettingPageItem(
       title: LocaleKeys.settings_page_language.plural(1),
-      trailing: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () async {
-            final int res = await Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => SelectionPage(
-                        pageTitle: LocaleKeys.settings_page_language.plural(2),
-                        selectedIndex:
-                            context.supportedLocales.indexOf(context.locale),
-                        data: items.map((key, value) =>
-                            MapEntry(key, value.getFullLanguageName())),
-                      )),
-            );
-            if (res != null) {
-              EasyLocalization.of(context).locale = items[res];
-            }
-          },
-          child: Row(
-            children: <Widget>[
-              Text(context.locale.getFullLanguageName()),
-              Icon(
-                Icons.keyboard_arrow_right,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ],
+      displayValue: context.locale.getFullLanguageName(),
+      onTap: () async {
+        final int res = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SelectionPage(
+                pageTitle: LocaleKeys.settings_page_language.plural(2),
+                selectedIndex: context.supportedLocales.indexOf(context.locale),
+                data: items.map((key, value) =>
+                    MapEntry(key, value.getFullLanguageName()))),
           ),
-        ),
-      ),
+        );
+        if (res != null) {
+          EasyLocalization.of(context).locale = items[res];
+        }
+      },
     );
   }
 }

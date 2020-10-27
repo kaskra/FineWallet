@@ -249,20 +249,26 @@
     "while_travel": "Du reist mit {} als Währung",
     "home_currency" : "Deine Heimatwährung",
     "appearance" : "Anzeige",
-    "dark_mode" : "Dark Mode aktiveren",
-    "enable_filter" : "Verlaufsfilter aktivieren",
+    "dark_mode" : "Dark Mode",
+    "dark_mode_desc" : "Dark Mode aktivieren",
+    "enable_filter" : "Verlaufsfilter",
+    "enable_filter_desc" : "Verlaufsfilter aktivieren",
     "language" : {
       "one" : "Sprache",
       "other" : "Sprachen"
     },
     "social" : "Soziales",
-    "tx_share" : "TX SHARE aktiveren",
+    "tx_share" : "TX SHARE",
+    "tx_share_desc" : "Teilen von Transaktionen aktivieren",
     "defaults" : "Standardeinstellungen",
     "default_filter_settings" : "Filtereinstellungen",
+    "default_filter_settings_desc" : "Standardmäßige Filtereinstellungen einstellen",
     "default_expense_chart" : "Ausgabenanzeige",
     "others" : "Weiteres",
     "your_data" : "Deine Daten",
     "import" : "Importieren",
-    "export" : "Exportieren"
+    "import_desc" : "Importieren einer Wiederherstellungsdatei",
+    "export" : "Exportieren",
+    "export_desc" : "Exportieren einer Wiederherstellungsdatei"
   }
 }

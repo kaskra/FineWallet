@@ -19,12 +19,11 @@
   "saturday": "Saturday",
   "sunday": "Sunday",
   "today": "Today",
-
-  "moor" : {
+  "moor": {
     "various": "Various",
-    "myself" : "Myself",
+    "myself": "Myself",
     "food": "Food & Drinks",
-    "home" : "Home",
+    "home": "Home",
     "spare_time": "Spare Time",
     "transport": "Transport",
     "medical": "Medical",
@@ -32,19 +31,19 @@
     "gifts": "Gifts",
     "income": "Income",
     "cat1": {
-      "debt" : "Debt",
-      "tuition" : "Tuition",
+      "debt": "Debt",
+      "tuition": "Tuition",
       "computer": "Computer & Supply",
       "mail": "Mail",
-      "gadget" : "Gadget"
+      "gadget": "Gadget"
     },
     "cat2": {
       "mobile": "Mobile",
-      "tax" : "Tax",
+      "tax": "Tax",
       "pet": "Pet",
       "education": "Education",
       "fitness": "Fitness",
-      "subscription" : "Subscription"
+      "subscription": "Subscription"
     },
     "cat3": {
       "groceries": "Grocieres",
@@ -97,7 +96,7 @@
       "car_rental": "Car Rental",
       "penalty": "Penalty"
     },
-    "cat7":{
+    "cat7": {
       "medicine": "Medicine",
       "doctors_visit": "Doctors Visit",
       "hospital": "Hospital",
@@ -115,7 +114,7 @@
       "souvenir": "Souvenir"
     },
     "cat10": {
-      "payment" : "Payment",
+      "payment": "Payment",
       "money_gift": "Money Gift",
       "voucher": "Voucher"
     },
@@ -126,8 +125,6 @@
       "yearly": "Yearly"
     }
   },
-
-
   "nav": {
     "home": "Home",
     "me": "Profile",
@@ -164,15 +161,15 @@
   "continueText": "Continue",
   "backText": "Back",
   "doneText": "Done",
-  "ok" : "Ok",
-  "search" : "Search",
+  "ok": "Ok",
+  "search": "Search",
   "confirm": "Confirm",
   "cancel": "Cancel",
   "delete": "Delete",
   "share": "Share",
   "edit": "Edit",
-  "expense" : "Expense",
-  "income" : "Income",
+  "expense": "Expense",
+  "income": "Income",
   "found_no_transactions": "Found no transactions.",
   "overview_page": {
     "remaining_budget": "Remaining Budget",
@@ -195,12 +192,12 @@
   },
   "history_page": {
     "expenses_on": "Expenses on {}",
-    "filter_settings" : "Filter Settings",
-    "show_expenses" : "Show expenses",
-    "show_incomes" : "Show incomes",
-    "show_future" : "Future transactions",
-    "share_title" : "TX SHARE",
-    "share_text" : "TX SHARE is not available right now."
+    "filter_settings": "Filter Settings",
+    "show_expenses": "Show expenses",
+    "show_incomes": "Show incomes",
+    "show_future": "Future transactions",
+    "share_title": "TX SHARE",
+    "share_text": "TX SHARE is not available right now."
   },
   "profile_page": {
     "month_avail_budget": "Monthly Available Budget",
@@ -208,61 +205,67 @@
     "expenses_per_category": "Expenses per Category",
     "total_avail_budget": "Total available budget",
     "expected_savings": "Expected savings",
-    "monthly" : "Monthly",
-    "lifetime" : "Lifetime",
-    "no_expenses" : "Found no expenses."
+    "monthly": "Monthly",
+    "lifetime": "Lifetime",
+    "no_expenses": "Found no expenses."
   },
-  "reports_page" : {
+  "reports_page": {
     "name": "Monthly Reports",
-    "found_none" : "Found no previous recorded months.",
-    "more_details" : "More Details",
-    "overall" : "Overall",
-    "total_income" : "Total Income",
-    "total_expense" : "Total Expense"
+    "found_none": "Found no previous recorded months.",
+    "more_details": "More Details",
+    "overall": "Overall",
+    "total_income": "Total Income",
+    "total_expense": "Total Expense"
   },
-  "add_page" : {
+  "add_page": {
     "title": "Add {}",
-    "fab_tooltip" : "Save transaction",
-    "fab_label" : "Save",
+    "fab_tooltip": "Save transaction",
+    "fab_label": "Save",
     "amount_equals_zero": "The specified amount has to be greater than Zero.",
     "amount_smaller_zero": "The specified amount can only be positive!",
-    "subcategory_null" : "Please choose a category!",
-    "recurrence_null" : "Please specify which recurrence type you want to use!",
-    "recurrence_no_end" : "Please choose an end date for the recurrence!",
-    "date_null" : "Please choose a date for your transaction!",
-    "not_a_number" : "Your specified amount is not a number!",
-    "not_home_currency" : "You are currently not using your home currency!",
-    "not_home_currency_change" : "Change back here!",
-    "amount" : "Amount",
-    "category" : "Category",
-    "label" : "Label",
-    "date" : "Date",
-    "recurrence" : "Recurrence",
-    "select_category" : "Select a category"
+    "subcategory_null": "Please choose a category!",
+    "recurrence_null": "Please specify which recurrence type you want to use!",
+    "recurrence_no_end": "Please choose an end date for the recurrence!",
+    "date_null": "Please choose a date for your transaction!",
+    "not_a_number": "Your specified amount is not a number!",
+    "not_home_currency": "You are currently not using your home currency!",
+    "not_home_currency_change": "Change back here!",
+    "amount": "Amount",
+    "category": "Category",
+    "label": "Label",
+    "date": "Date",
+    "recurrence": "Recurrence",
+    "select_category": "Select a category"
   },
-  "settings_page" : {
-    "title" : "Settings",
-    "currencies" : "Currencies",
-    "snack_at_home" : "You are now using your home currency as your input currency.",
-    "snack_traveling" : "You are now using {} as your input currency. Every transaction will be converted to your home currency.",
-    "travel" : "Travel to other currency area",
+  "settings_page": {
+    "title": "Settings",
+    "currencies": "Currencies",
+    "snack_at_home": "You are now using your home currency as your input currency.",
+    "snack_traveling": "You are now using {} as your input currency. Every transaction will be converted to your home currency.",
+    "travel": "Travel to other currency area",
     "while_travel": "Traveling using {}",
-    "home_currency" : "Your home currency",
-    "appearance" : "Appearance",
-    "dark_mode" : "Enable Dark Mode",
-    "enable_filter" : "Enable History Filter",
-    "language" : {
-      "one" : "Language",
-      "other" : "Languages"
+    "home_currency": "Your home currency",
+    "appearance": "Appearance",
+    "dark_mode": "Dark Mode",
+    "dark_mode_desc": "Enable Dark Mode",
+    "enable_filter": "History Filter",
+    "enable_filter_desc": "Enable filtering of history",
+    "language": {
+      "one": "Language",
+      "other": "Languages"
     },
-    "social" : "Social",
-    "tx_share" : "Enable TX SHARE",
-    "defaults" : "Default Settings",
-    "default_filter_settings" : "Filter Settings",
-    "default_expense_chart" : "Expense Chart",
-    "others" : "Others",
-    "your_data" : "Your Data",
-    "import" : "Import",
-    "export" : "Export"
+    "social": "Social",
+    "tx_share": "TX SHARE",
+    "tx_share_desc": "Enable sharing of transactions",
+    "defaults": "Default Settings",
+    "default_filter_settings": "Filter Settings",
+    "default_filter_settings_desc": "Set default filter settings",
+    "default_expense_chart": "Expense Chart",
+    "others": "Others",
+    "your_data": "Your Data",
+    "import": "Import",
+    "import_desc": "Import recovery file",
+    "export": "Export",
+    "export_desc": "Export recovery file"
   }
 }

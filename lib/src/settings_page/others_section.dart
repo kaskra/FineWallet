@@ -1,58 +1,28 @@
 part of 'settings_page.dart';
 
-/// This class creates a [Section] which shows some remaining
+/// This class creates a [SettingSection] which shows some remaining
 /// settings, like exporting and importing the database.
 class OthersSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Section(
+    return SettingSection(
       title: LocaleKeys.settings_page_others.tr(),
-      children: <SectionItem>[
-        _buildImportExport(),
+      items: [
+        SettingItem(
+          title: LocaleKeys.settings_page_import.tr(),
+          displayValue: LocaleKeys.settings_page_import_desc.tr(),
+          onTap: () {
+            logMsg("IMPORT!!");
+          },
+        ),
+        SettingItem(
+          title: LocaleKeys.settings_page_export.tr(),
+          displayValue: LocaleKeys.settings_page_export_desc.tr(),
+          onTap: () {
+            logMsg("EXPORT!!");
+          },
+        )
       ],
-    );
-  }
-
-  SectionItem _buildImportExport() {
-    return SectionItem(
-      title: LocaleKeys.settings_page_your_data.tr(),
-      trailing: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          SizedBox(
-            width: 100,
-            child: FlatButton(
-              onPressed: () {
-                logMsg("IMPORT!!");
-              },
-              visualDensity: VisualDensity.compact,
-              child: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Text(
-                  LocaleKeys.settings_page_import.tr().toUpperCase(),
-                  maxLines: 1,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 100,
-            child: FlatButton(
-              onPressed: () {
-                logMsg("EXPORT!!");
-              },
-              visualDensity: VisualDensity.compact,
-              child: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Text(
-                  LocaleKeys.settings_page_export.tr().toUpperCase(),
-                  maxLines: 1,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

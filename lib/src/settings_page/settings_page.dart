@@ -7,6 +7,7 @@ import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/settings_page/page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:clean_settings/clean_settings.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,11 +18,15 @@ part 'others_section.dart';
 part 'social_section.dart';
 part 'travel_button.dart';
 
-/// This class creates a page where the user can edit the application
-/// settings in a list of [Section]s with [SectionTitle].
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
+    // TODO styling comes with version 0.1.6, add it then
     return Scaffold(
       appBar: AppBar(
         title: Text(LocaleKeys.settings_page_title.tr()),
@@ -32,28 +37,35 @@ class SettingsPage extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TravelButton(),
-              _buildUserCurrency(context),
-              AppearanceSection(),
-              SocialSection(),
-              DefaultsSection(),
-              OthersSection(),
-            ],
-          ),
-        ),
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          _header(),
+          AppearanceSection(),
+          SocialSection(),
+          DefaultsSection(),
+          OthersSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _header() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TravelButton(),
+          _buildUserCurrency(context),
+        ],
       ),
     );
   }
 
   Widget _buildUserCurrency(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 7.0),
       child: Row(
         children: [
           Text("${LocaleKeys.settings_page_home_currency.tr()}: "),
