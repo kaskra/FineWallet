@@ -50,7 +50,6 @@ class OverallDetail extends StatelessWidget {
               footerTextColor: Theme.of(context).colorScheme.onBackground,
               child: AmountString(
                 month.expense * -1,
-                signed: true,
                 colored: true,
                 textStyle:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
