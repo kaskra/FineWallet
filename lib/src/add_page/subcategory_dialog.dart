@@ -1,5 +1,6 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -161,14 +162,31 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
           height: 35,
           child: InkWell(
             onTap: () => onTap(),
-            child: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 16,
+            child: Stack(
+              children: [
+                // TODO
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: IconButton (
+                        icon : Icon(Icons.remove),
+                        color: Theme.of(context).colorScheme.onSurface,
+                        onPressed: () async {
+                          final bool deleteSubcategory = await showConfirmDialog(context, "Delete this subcategory?", "This will delete the subcategory.");
+                        }
+                      ),
+                    ),
+               // )
+                //
+                Center(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
