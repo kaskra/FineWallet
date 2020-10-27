@@ -1,5 +1,6 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/utils.dart';
@@ -60,8 +61,11 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                       final String addNewSubcategory = await showDialog(
                           context: context,
                           builder: (context) => CreateSubcategoryDialog());
-                          final subcategory = SubcategoriesCompanion.insert(categoryId: _category.id, name: addNewSubcategory);
-                          Provider.of<AppDatabase>(context, listen: false ).categoryDao.insertSubcategory(subcategory);
+                      final subcategory = SubcategoriesCompanion.insert(
+                          categoryId: _category.id, name: addNewSubcategory);
+                      Provider.of<AppDatabase>(context, listen: false)
+                          .categoryDao
+                          .insertSubcategory(subcategory);
                     },
                     child: Icon(Icons.add),
                   ),
@@ -75,9 +79,9 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                       Navigator.of(context).pop(_subcategory);
                     },
                     child: Text(
-                        LocaleKeys.ok.tr().toUpperCase(),
-                      style:
-                      const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      LocaleKeys.ok.tr().toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -115,6 +119,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
   }
 
   Widget _buildSubcategoryList() {
+    //TODO make it possible that a deleted subcat is deleted immediatly
     return FutureBuilder(
       future: Provider.of<AppDatabase>(context)
           .categoryDao
@@ -136,6 +141,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 
   Widget _buildSubcategoryListItem(Subcategory sub) {
     return _buildGeneralListItem(
+      subcategory: sub,
       text: tryTranslatePreset(sub),
       color: _selectedSubcategory == sub.id
           ? Theme.of(context).colorScheme.secondary
@@ -149,11 +155,11 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
     );
   }
 
-
   Widget _buildGeneralListItem(
       {@required String text,
       @required Color color,
-      @required Function onTap}) {
+      @required Function onTap,
+      Subcategory subcategory}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Material(
@@ -164,19 +170,53 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
             onTap: () => onTap(),
             child: Stack(
               children: [
-                // TODO
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: IconButton (
-                        icon : Icon(Icons.remove),
+                if (!subcategory.isPreset)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: IconButton(
+                        icon: Icon(Icons.remove),
                         color: Theme.of(context).colorScheme.onSurface,
                         onPressed: () async {
-                          final bool deleteSubcategory = await showConfirmDialog(context, "Delete this subcategory?", "This will delete the subcategory.");
-                        }
-                      ),
-                    ),
-               // )
-                //
+                          final bool deleteSubcategory =
+                              await showConfirmDialog(
+                                  context,
+                                  "Delete this subcategory?",
+                                  "This will delete the subcategory.");
+                          if (deleteSubcategory) {
+                            try {
+                              final sub = subcategory.toCompanion(false);
+                              await Provider
+                                  .of<AppDatabase>(context,
+                                  listen: false)
+                                  .categoryDao
+                                  .deleteSubcategory(sub);
+                            } catch (e) {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Alert'),
+                                    content: SingleChildScrollView(
+                                      child: Text(
+                                          "You can't delete a subcategory which is used in a transaction."),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('Ok'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          }
+                        }),
+                  ),
                 Center(
                   child: Text(
                     text,
@@ -237,7 +277,8 @@ class CreateSubcategoryDialog extends StatelessWidget {
               child: FlatButton(
                 textColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
-                  Navigator.of(context).pop(_addSubcategoryController.text.trim());
+                  Navigator.of(context)
+                      .pop(_addSubcategoryController.text.trim());
                 },
                 child: const Text(
                   "OK",
@@ -251,5 +292,3 @@ class CreateSubcategoryDialog extends StatelessWidget {
     );
   }
 }
-
-
