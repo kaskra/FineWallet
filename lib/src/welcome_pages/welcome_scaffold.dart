@@ -58,7 +58,7 @@ class WelcomeScaffold extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
-          _randomBackdropCircle(context),
+          _backdropCircle(context),
           Center(
             child: Align(
               alignment: const Alignment(0, -1 / 3),
@@ -181,7 +181,7 @@ class WelcomeScaffold extends StatelessWidget {
     );
   }
 
-  Widget _randomBackdropCircle(BuildContext context) {
+  Widget _backdropCircle(BuildContext context) {
     const double radius = 770;
     final double dx = MediaQuery.of(context).size.width - radius / 2;
     final double dy = MediaQuery.of(context).size.height - radius / 2;
