@@ -68,6 +68,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
       theme: Provider.of<ThemeNotifier>(context).theme,
+      routes: {
+        "/expense": (context) => const AddPage(isExpense: true),
+        "/income": (context) => const AddPage(isExpense: false),
+        "/settings": (context) => SettingsPage(),
+      },
       home: UserSettings.getInitialized() ? const MyHomePage() : WelcomePage(),
     );
   }
@@ -119,27 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _addTransaction(int leftRight) {
-    if (leftRight == -1) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const AddPage(isExpense: false)));
-    } else if (leftRight == 1) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const AddPage(isExpense: true)));
-    }
-    return;
-  }
-
-  void _navCallback(bool showNavBar) {
-    setState(() {
-      _showBottomBar = showNavBar;
-    });
-  }
-
   Widget _buildHistory() {
     return HistoryPage(
       onChangeSelectionMode: (b) {
@@ -161,8 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()));
+              Navigator.pushNamed(context, "/settings");
             },
           )
         ],
@@ -259,5 +242,19 @@ class _MyHomePageState extends State<MyHomePage> {
               tapCallback: _navCallback,
             ),
     );
+  }
+
+  void _addTransaction(int leftRight) {
+    if (leftRight == -1) {
+      Navigator.pushNamed(context, "/income");
+    } else if (leftRight == 1) {
+      Navigator.pushNamed(context, "/expense");
+    }
+  }
+
+  void _navCallback(bool showNavBar) {
+    setState(() {
+      _showBottomBar = showNavBar;
+    });
   }
 }
