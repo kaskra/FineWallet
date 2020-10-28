@@ -225,7 +225,32 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
       bottomNavigationBar: _buildBottomBar(),
-      body: children[Provider.of<NavigationNotifier>(context).page],
+      body: WillPopScope(
+        onWillPop: () async {
+          Provider.of<NavigationNotifier>(context, listen: false).goBack();
+          return false;
+        },
+        child: AnimatedSwitcher(
+            transitionBuilder: (child, animation) {
+              final direction =
+                  Provider.of<NavigationNotifier>(context, listen: false)
+                      .navigationDirection;
+              var begin = 1.0;
+              if (direction == NavigationDirection.right) {
+                begin = -1.0;
+              }
+
+              final offsetAnimation = Tween<Offset>(
+                      begin: Offset(begin, 0.0), end: const Offset(0.0, 0.0))
+                  .animate(animation);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+            duration: const Duration(milliseconds: 150),
+            child: children[Provider.of<NavigationNotifier>(context).page]),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: MediaQuery.of(context).viewInsets.bottom >= 50
           ? const SizedBox()
