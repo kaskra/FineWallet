@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 enum NavigationDirection { left, right }
 
 class NavigationNotifier extends ChangeNotifier {
+  static int maxSize = 10;
+
   int _page = 3;
   NavigationDirection _direction;
 
@@ -18,7 +20,7 @@ class NavigationNotifier extends ChangeNotifier {
     _navigations.addLast(_page);
     _updateDirection(p);
 
-    if (_navigations.length > 10) {
+    if (_navigations.length > maxSize) {
       _navigations.removeFirst();
     }
     _page = p;
