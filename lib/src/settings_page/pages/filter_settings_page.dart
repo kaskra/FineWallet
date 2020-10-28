@@ -6,9 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class DefaultFilterSettingsPage extends StatefulWidget {
-  final HistoryFilterState state;
-
-  const DefaultFilterSettingsPage({Key key, this.state}) : super(key: key);
+  const DefaultFilterSettingsPage({Key key}) : super(key: key);
 
   @override
   _DefaultFilterSettingsPageState createState() =>
@@ -20,7 +18,9 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
 
   @override
   void initState() {
-    _filterState ??= widget.state;
+    setState(() {
+      _filterState = UserSettings.getDefaultFilterSettings();
+    });
     super.initState();
   }
 

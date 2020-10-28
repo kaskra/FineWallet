@@ -22,6 +22,7 @@ import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/monthly_reports_page/monthly_reports_page.dart';
 import 'package:FineWallet/src/overview_page/overview_page.dart';
 import 'package:FineWallet/src/profile_page/profile_page.dart';
+import 'package:FineWallet/src/settings_page/page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
 import 'package:FineWallet/src/widgets/bottom_bar_app_item.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         "/expense": (context) => const AddPage(isExpense: true),
         "/income": (context) => const AddPage(isExpense: false),
         "/settings": (context) => SettingsPage(),
+        "/filter_settings": (context) => const DefaultFilterSettingsPage(),
       },
       home: UserSettings.getInitialized() ? const MyHomePage() : WelcomePage(),
     );

@@ -42,12 +42,7 @@ class _DefaultsSectionState extends State<DefaultsSection> {
       title: LocaleKeys.settings_page_default_filter_settings.tr(),
       displayValue: LocaleKeys.settings_page_default_filter_settings_desc.tr(),
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => DefaultFilterSettingsPage(
-                state: UserSettings.getDefaultFilterSettings()),
-          ),
-        );
+        Navigator.pushNamed(context, "/filter_settings");
       },
     );
   }

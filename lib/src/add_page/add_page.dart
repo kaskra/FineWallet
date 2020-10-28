@@ -8,7 +8,6 @@ import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/page.dart';
-import 'package:FineWallet/src/settings_page/page.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -331,10 +330,8 @@ class _AddPageState extends State<AddPage> {
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               logMsg("Change currency");
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (_) => SettingsPage()),
-                              );
+                              Navigator.pushReplacementNamed(
+                                  context, "/settings");
                             },
                           style: const TextStyle(
                             decoration: TextDecoration.underline,
