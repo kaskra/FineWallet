@@ -1,5 +1,5 @@
 import 'dart:developer';
 
-void logMsg(String text) {
-  log(text, name: "FineWallet");
+void logMsg(dynamic text) {
+  log(text.toString(), name: "FineWallet");
 }
