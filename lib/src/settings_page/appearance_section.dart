@@ -9,11 +9,13 @@ class AppearanceSection extends StatefulWidget {
 
 class _AppearanceSectionState extends State<AppearanceSection> {
   bool _isFilterSettings = true;
+  bool _isDarkMode = true;
 
   @override
   void initState() {
     setState(() {
       _isFilterSettings = UserSettings.getShowFilterSettings();
+      _isDarkMode = UserSettings.getDarkMode();
     });
     super.initState();
   }
@@ -34,10 +36,13 @@ class _AppearanceSectionState extends State<AppearanceSection> {
     return SettingSwitchItem(
         title: LocaleKeys.settings_page_dark_mode.tr(),
         description: LocaleKeys.settings_page_dark_mode_desc.tr(),
-        value: UserSettings.getDarkMode(),
+        value: _isDarkMode,
         onChanged: (val) {
           Provider.of<ThemeNotifier>(context, listen: false)
               .switchTheme(dark: val);
+          setState(() {
+            _isDarkMode = val;
+          });
         });
   }
 
