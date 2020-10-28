@@ -488,4 +488,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
             row.read(sumAmount)))
         .toList());
   }
+
+  Future<List<String>> getTransactionsLabels() {
+    return (selectOnly(transactions, distinct: true)
+          ..addColumns([transactions.label])
+          ..where(transactions.label.equals("").not())
+          ..orderBy([OrderingTerm.asc(transactions.label)]))
+        .map((transaction) => transaction.read(transactions.label))
+        .get();
+  }
 }

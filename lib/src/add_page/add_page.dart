@@ -14,6 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -424,17 +425,38 @@ class _AddPageState extends State<AddPage> {
         padding: const EdgeInsets.only(top: 8),
         child: RowTitle(title: LocaleKeys.add_page_label.tr()),
       ),
-      RowWrapper(
-        iconSize: 24,
-        leadingIcon: Icons.label_important,
-        isExpandable: false,
-        isChild: false,
-        child: TextField(
-          controller: _labelController,
-          keyboardType: TextInputType.text,
-          textAlign: TextAlign.right,
+      FutureBuilder<List<String>>(
+        future: Provider.of<AppDatabase>(context, listen: false)
+            .transactionDao
+            .getTransactionsLabels(),
+        builder: (context, snapshot) => RowWrapper(
+          iconSize: 24,
+          leadingIcon: Icons.label_important,
+          isExpandable: false,
+          isChild: false,
+          // height: 200,
+          child: TypeAheadField<String>(
+            noItemsFoundBuilder: (context) => const ListTile(
+              title: Text("No items found."),
+            ),
+            textFieldConfiguration: TextFieldConfiguration(
+              controller: _labelController,
+              textAlign: TextAlign.right,
+            ),
+            suggestionsCallback: (pattern) {
+              final items = snapshot.data ?? [];
+              print(items);
+              return items.where((element) => element.contains(pattern));
+            },
+            itemBuilder: (context, suggestion) {
+              return ListTile(title: Text(suggestion));
+            },
+            onSuggestionSelected: (suggestion) {
+              _labelController.text = suggestion;
+            },
+          ),
         ),
-      )
+      ),
     ];
   }
 
