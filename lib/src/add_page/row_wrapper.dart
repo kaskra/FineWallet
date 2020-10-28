@@ -6,6 +6,7 @@ class RowWrapper extends StatelessWidget {
   final IconData leadingIcon;
   final bool isExpandable;
   final double iconSize;
+  final double height;
   final bool isExpanded;
   final Function onTap;
   final Function(bool) onSwitch;
@@ -22,6 +23,7 @@ class RowWrapper extends StatelessWidget {
     @required this.isChild,
     this.child,
     this.onSwitch,
+    double height,
   })  : assert(leadingIcon != null),
         assert(isExpandable != null),
         assert(iconSize != null),
@@ -30,9 +32,10 @@ class RowWrapper extends StatelessWidget {
         assert(isExpandable ? isExpanded != null : true),
         // ignore: avoid_bool_literals_in_conditional_expressions
         assert(isExpandable ? onSwitch != null : true),
+        height = height ?? iconSize + _iconPadding,
         super(key: key);
 
-  double get _iconPadding => 8;
+  static const double _iconPadding = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class RowWrapper extends StatelessWidget {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: iconSize + _iconPadding,
+        height: height,
         child: onTap != null
             ? InkWell(
                 onTap: () => onTap(),
@@ -99,7 +102,7 @@ class RowWrapper extends StatelessWidget {
       child: Container(
         alignment: Alignment.centerRight,
         margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: iconSize + _iconPadding,
+        height: height,
         child: Switch.adaptive(
           value: isExpanded,
           onChanged: (val) => onSwitch(val),
