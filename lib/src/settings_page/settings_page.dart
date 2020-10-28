@@ -37,15 +37,19 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: [
-          _header(),
-          AppearanceSection(),
-          SocialSection(),
-          DefaultsSection(),
-          OthersSection(),
-        ],
+      body: Theme(
+        data: Theme.of(context)
+            .copyWith(toggleableActiveColor: Theme.of(context).accentColor),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            _header(),
+            AppearanceSection(),
+            SocialSection(),
+            DefaultsSection(),
+            OthersSection(),
+          ],
+        ),
       ),
     );
   }
