@@ -489,10 +489,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .toList());
   }
 
-  Future<List<String>> getTransactionsLabels() {
+  Future<List<String>> getTransactionsLabels({bool isExpense}) {
     return (selectOnly(transactions, distinct: true)
           ..addColumns([transactions.label])
-          ..where(transactions.label.equals("").not())
+          ..where(transactions.label.equals("").not() &
+              transactions.isExpense.equals(isExpense))
           ..orderBy([OrderingTerm.asc(transactions.label)]))
         .map((transaction) => transaction.read(transactions.label))
         .get();

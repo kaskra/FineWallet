@@ -235,7 +235,8 @@
     "label": "Label",
     "date": "Date",
     "recurrence": "Recurrence",
-    "select_category": "Select a category"
+    "select_category": "Select a category",
+    "no_suggestions": "No suggestions found."
   },
   "settings_page": {
     "title": "Settings",

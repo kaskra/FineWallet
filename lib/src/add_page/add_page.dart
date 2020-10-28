@@ -428,16 +428,17 @@ class _AddPageState extends State<AddPage> {
       FutureBuilder<List<String>>(
         future: Provider.of<AppDatabase>(context, listen: false)
             .transactionDao
-            .getTransactionsLabels(),
+            .getTransactionsLabels(isExpense: widget.isExpense),
         builder: (context, snapshot) => RowWrapper(
           iconSize: 24,
           leadingIcon: Icons.label_important,
           isExpandable: false,
           isChild: false,
-          // height: 200,
+          // TODO use TypeAheadFormField when reworking add page
           child: TypeAheadField<String>(
-            noItemsFoundBuilder: (context) => const ListTile(
-              title: Text("No items found."),
+            noItemsFoundBuilder: (context) => ListTile(
+              dense: true,
+              title: Text(LocaleKeys.add_page_no_suggestions.tr()),
             ),
             textFieldConfiguration: TextFieldConfiguration(
               controller: _labelController,
@@ -445,11 +446,10 @@ class _AddPageState extends State<AddPage> {
             ),
             suggestionsCallback: (pattern) {
               final items = snapshot.data ?? [];
-              print(items);
               return items.where((element) => element.contains(pattern));
             },
             itemBuilder: (context, suggestion) {
-              return ListTile(title: Text(suggestion));
+              return ListTile(title: Text(suggestion), dense: true);
             },
             onSuggestionSelected: (suggestion) {
               _labelController.text = suggestion;

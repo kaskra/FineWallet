@@ -238,7 +238,8 @@
     "label" : "Bezeichnung/Hinweis",
     "date" : "Datum",
     "recurrence" : "Wiederholung",
-    "select_category" : "Wähle eine Kategorie"
+    "select_category" : "Wähle eine Kategorie",
+    "no_suggestions" :  "Keine Vorschläge gefunden."
   },
   "settings_page" : {
     "title" : "Einstellungen",
