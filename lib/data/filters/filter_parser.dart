@@ -65,6 +65,11 @@ class TransactionFilterParser
           "WHERE months.first_date <= '${converter.mapToSql(settings.dateInMonth)}' "
           "AND months.last_date >= '${converter.mapToSql(settings.dateInMonth)}')");
     }
+
+    if (settings.onlyRecurrences != null) {
+      queue.add(
+          "${tableName != "" ? "$tableName." : ""}is_recurring = ${settings.onlyRecurrences ? 1 : 0}");
+    }
     return queue;
   }
 

@@ -23,20 +23,81 @@ class HistoryFilter extends StatelessWidget {
   }
 }
 
-class HistoryFilterItem extends StatefulWidget {
-  const HistoryFilterItem(
+class HistoryFilterSwitchItem extends StatefulWidget {
+  const HistoryFilterSwitchItem({
+    Key key,
+    this.title,
+    this.onChanged,
+    @required this.initialValue,
+    this.enabled = true,
+  }) : super(key: key);
+
+  @override
+  HistoryFilterSwitchItemState createState() => HistoryFilterSwitchItemState();
+
+  final String title;
+  final Function(bool) onChanged;
+  final bool initialValue;
+  final bool enabled;
+}
+
+class HistoryFilterSwitchItemState extends State<HistoryFilterSwitchItem> {
+  bool _active;
+  bool _enabled;
+
+  @override
+  void initState() {
+    _active = widget.initialValue;
+    _enabled = widget.enabled;
+    super.initState();
+  }
+
+  void setEnabled({bool value}) {
+    setState(() {
+      _enabled = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(widget.title ?? "EMPTY"),
+          Switch(
+              activeColor: Theme.of(context).accentColor,
+              value: _active,
+              onChanged: _enabled
+                  ? (s) {
+                      widget.onChanged(s);
+                      setState(() {
+                        _active = s;
+                      });
+                    }
+                  : null)
+        ],
+      ),
+    );
+  }
+}
+
+class HistoryFilterCheckboxItem extends StatefulWidget {
+  const HistoryFilterCheckboxItem(
       {Key key, this.title, this.onChanged, @required this.initialValue})
       : super(key: key);
 
   @override
-  _HistoryFilterItemState createState() => _HistoryFilterItemState();
+  _HistoryFilterCheckboxItemState createState() =>
+      _HistoryFilterCheckboxItemState();
 
   final String title;
   final Function(bool) onChanged;
   final bool initialValue;
 }
 
-class _HistoryFilterItemState extends State<HistoryFilterItem> {
+class _HistoryFilterCheckboxItemState extends State<HistoryFilterCheckboxItem> {
   bool _active;
 
   @override
@@ -53,7 +114,7 @@ class _HistoryFilterItemState extends State<HistoryFilterItem> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(widget.title ?? "EMPTY"),
-          Switch(
+          Checkbox(
               activeColor: Theme.of(context).accentColor,
               value: _active,
               onChanged: (s) {

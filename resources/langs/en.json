@@ -196,6 +196,7 @@
     "show_expenses": "Show expenses",
     "show_incomes": "Show incomes",
     "show_future": "Future transactions",
+    "show_recurrent" : "Show only recurrences",
     "share_title": "TX SHARE",
     "share_text": "TX SHARE is not available right now."
   },

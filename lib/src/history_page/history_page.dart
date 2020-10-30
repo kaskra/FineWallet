@@ -54,6 +54,10 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Used to synchronize between the different setting rows.
   HistoryFilterState _filterState = HistoryFilterState();
 
+  final showExpenseKey = GlobalKey<HistoryFilterSwitchItemState>();
+  final showIncomeKey = GlobalKey<HistoryFilterSwitchItemState>();
+  final showFutureKey = GlobalKey<HistoryFilterSwitchItemState>();
+
   /// The currency id of the user's home currency.
   int _userCurrencyId = 1;
 
@@ -125,7 +129,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   initialData: _filterState.label,
                   onChanged: (text) {
                     setState(() {
-                      _filterState.label = text;
+                      _filterState = _filterState.copyWith(label: text);
                     });
                     _handleFilterSettings();
                   },
@@ -133,35 +137,53 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               if (!isKeyboardOpen) const Divider(),
               if (!isKeyboardOpen)
-                HistoryFilterItem(
+                HistoryFilterSwitchItem(
+                  key: showExpenseKey,
                   initialValue: _filterState.onlyExpenses,
                   title: LocaleKeys.history_page_show_expenses.tr(),
+                  enabled: !_filterState.showRecurrent,
                   onChanged: (b) {
                     setState(() {
-                      _filterState.onlyExpenses = b;
+                      _filterState = _filterState.copyWith(onlyExpenses: b);
                     });
                     _handleFilterSettings();
                   },
                 ),
               if (!isKeyboardOpen)
-                HistoryFilterItem(
+                HistoryFilterSwitchItem(
+                  key: showIncomeKey,
                   initialValue: _filterState.onlyIncomes,
                   title: LocaleKeys.history_page_show_incomes.tr(),
+                  enabled: !_filterState.showRecurrent,
                   onChanged: (b) {
                     setState(() {
-                      _filterState.onlyIncomes = b;
+                      _filterState = _filterState.copyWith(onlyIncomes: b);
                     });
                     _handleFilterSettings();
                   },
                 ),
               if (!isKeyboardOpen)
-                HistoryFilterItem(
+                HistoryFilterSwitchItem(
+                  key: showFutureKey,
                   initialValue: _filterState.showFuture,
                   title: LocaleKeys.history_page_show_future.tr(),
+                  enabled: !_filterState.showRecurrent,
                   onChanged: (b) {
                     setState(() {
-                      _filterState.showFuture = b;
+                      _filterState = _filterState.copyWith(showFuture: b);
                     });
+                    _handleFilterSettings();
+                  },
+                ),
+              if (!isKeyboardOpen)
+                HistoryFilterCheckboxItem(
+                  initialValue: _filterState.showRecurrent,
+                  title: LocaleKeys.history_page_show_recurrent.tr(),
+                  onChanged: (b) {
+                    setState(() {
+                      _filterState = _filterState.copyWith(showRecurrent: b);
+                    });
+                    _toggleSwitches(value: !b);
                     _handleFilterSettings();
                   },
                 ),
@@ -181,12 +203,23 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  void _toggleSwitches({bool value}) {
+    showExpenseKey.currentState.setEnabled(value: value);
+    showIncomeKey.currentState.setEnabled(value: value);
+    showFutureKey.currentState.setEnabled(value: value);
+  }
+
   void _handleFilterSettings() {
     setState(() {
       _filterSettings = TransactionFilterSettings.beforeDate(today());
     });
     if (widget.showFilters) {
       _filterSettings = TransactionFilterSettings();
+
+      if (_filterState.showRecurrent) {
+        _filterSettings = _filterSettings.copyWith(onlyRecurrences: true);
+        return;
+      }
 
       if (!_filterState.showFuture) {
         _filterSettings = _filterSettings.copyWith(before: today());

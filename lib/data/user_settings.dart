@@ -213,8 +213,10 @@ class UserSettings {
     final onlyExp = state.onlyExpenses.toString();
     final onlyInc = state.onlyIncomes.toString();
     final showFuture = state.showFuture.toString();
+    final showRecurrent = state.showRecurrent.toString();
 
-    _store.setStringList(_KEYS.filterSettings, [onlyExp, onlyInc, showFuture]);
+    _store.setStringList(
+        _KEYS.filterSettings, [onlyExp, onlyInc, showFuture, showRecurrent]);
   }
 
   /// Returns the the default history filter values.
@@ -238,13 +240,16 @@ class UserSettings {
     final values = _store.getStringList(_KEYS.filterSettings);
 
     if (values != null) {
-      final onlyExp = values[0].toBool();
-      final onlyInc = values[1].toBool();
-      final showFuture = values[2].toBool();
-      final filterState = HistoryFilterState()
-        ..onlyIncomes = onlyInc
-        ..onlyExpenses = onlyExp
-        ..showFuture = showFuture;
+      final onlyExp = values.isNotEmpty ? values[0].toBool() : null;
+      final onlyInc = values.length >= 2 ? values[1].toBool() : null;
+      final showFuture = values.length >= 3 ? values[2].toBool() : null;
+      final showRecurrent = values.length >= 4 ? values[3].toBool() : null;
+
+      final filterState = HistoryFilterState(
+          onlyIncomes: onlyInc,
+          onlyExpenses: onlyExp,
+          showFuture: showFuture,
+          showRecurrent: showRecurrent);
       return filterState;
     }
     return HistoryFilterState();

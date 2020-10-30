@@ -16,6 +16,10 @@ class DefaultFilterSettingsPage extends StatefulWidget {
 class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
   HistoryFilterState _filterState;
 
+  final showExpenseKey = GlobalKey<HistoryFilterSwitchItemState>();
+  final showIncomeKey = GlobalKey<HistoryFilterSwitchItemState>();
+  final showFutureKey = GlobalKey<HistoryFilterSwitchItemState>();
+
   @override
   void initState() {
     setState(() {
@@ -32,39 +36,62 @@ class _DefaultFilterSettingsPageState extends State<DefaultFilterSettingsPage> {
       ),
       body: Column(
         children: <Widget>[
-          HistoryFilterItem(
+          HistoryFilterSwitchItem(
+            key: showExpenseKey,
             initialValue: _filterState.onlyExpenses,
             title: LocaleKeys.history_page_show_expenses.tr(),
+            enabled: !_filterState.showRecurrent,
             onChanged: (b) {
               setState(() {
-                _filterState.onlyExpenses = b;
+                _filterState = _filterState.copyWith(onlyExpenses: b);
               });
               _handleFilterState();
             },
           ),
-          HistoryFilterItem(
+          HistoryFilterSwitchItem(
+            key: showIncomeKey,
             initialValue: _filterState.onlyIncomes,
             title: LocaleKeys.history_page_show_incomes.tr(),
+            enabled: !_filterState.showRecurrent,
             onChanged: (b) {
               setState(() {
-                _filterState.onlyIncomes = b;
+                _filterState = _filterState.copyWith(onlyIncomes: b);
               });
               _handleFilterState();
             },
           ),
-          HistoryFilterItem(
+          HistoryFilterSwitchItem(
+            key: showFutureKey,
             initialValue: _filterState.showFuture,
             title: LocaleKeys.history_page_show_future.tr(),
+            enabled: !_filterState.showRecurrent,
             onChanged: (b) {
               setState(() {
-                _filterState.showFuture = b;
+                _filterState = _filterState.copyWith(showFuture: b);
               });
               _handleFilterState();
             },
-          )
+          ),
+          HistoryFilterCheckboxItem(
+            initialValue: _filterState.showRecurrent,
+            title: LocaleKeys.history_page_show_recurrent.tr(),
+            onChanged: (b) {
+              setState(() {
+                _filterState = _filterState.copyWith(showRecurrent: b);
+                _toggleSwitches(value: !b);
+              });
+              _handleFilterState();
+            },
+          ),
         ],
       ),
     );
+  }
+
+  void _toggleSwitches({bool value}) {
+    showExpenseKey.currentState.setEnabled(value: value);
+    showIncomeKey.currentState.setEnabled(value: value);
+    showFutureKey.currentState.setEnabled(value: value);
   }
 
   void _handleFilterState() {

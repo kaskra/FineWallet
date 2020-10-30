@@ -14,8 +14,10 @@ class TransactionFilterSettings extends FilterSettings {
   final bool incomes;
   final DateTime before;
   final DateTime dateInMonth;
+  final bool onlyRecurrences;
 
   TransactionFilterSettings({
+    this.onlyRecurrences,
     this.category,
     this.subcategory,
     this.month,
@@ -50,6 +52,9 @@ class TransactionFilterSettings extends FilterSettings {
   factory TransactionFilterSettings.inMonth(DateTime date) =>
       TransactionFilterSettings(dateInMonth: date);
 
+  factory TransactionFilterSettings.onlyRecurrences() =>
+      TransactionFilterSettings(onlyRecurrences: true);
+
   TransactionFilterSettings copyWith(
           {int subcategory,
           int category,
@@ -58,27 +63,24 @@ class TransactionFilterSettings extends FilterSettings {
           bool expenses,
           bool incomes,
           DateTime before,
-          DateTime dateInMonth}) =>
+          DateTime dateInMonth,
+          bool onlyRecurrences}) =>
       TransactionFilterSettings(
-        subcategory: subcategory ?? this.subcategory,
-        category: category ?? this.category,
-        month: month ?? this.month,
-        day: day ?? this.day,
-        expenses: expenses ?? this.expenses,
-        incomes: incomes ?? this.incomes,
-        before: before ?? this.before,
-        dateInMonth: dateInMonth ?? this.dateInMonth,
-      );
+          subcategory: subcategory ?? this.subcategory,
+          category: category ?? this.category,
+          month: month ?? this.month,
+          day: day ?? this.day,
+          expenses: expenses ?? this.expenses,
+          incomes: incomes ?? this.incomes,
+          before: before ?? this.before,
+          dateInMonth: dateInMonth ?? this.dateInMonth,
+          onlyRecurrences: onlyRecurrences ?? this.onlyRecurrences);
 
   @override
   String toString() {
-    return 'TransactionFilterSettings{category: $category, '
-        'subcategory: $subcategory, '
-        'month: $month, '
-        'day: $day, '
-        'expenses: $expenses, '
-        'incomes: $incomes, '
-        'before: $before, '
-        'dateInMonth: $dateInMonth}';
+    return 'TransactionFilterSettings{category: $category, subcategory: $subcategory, '
+        'month: $month, day: $day, expenses: $expenses, incomes: $incomes, '
+        'before: $before, dateInMonth: $dateInMonth, '
+        'onlyRecurrences: $onlyRecurrences}';
   }
 }

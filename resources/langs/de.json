@@ -199,6 +199,7 @@
     "show_expenses" : "Ausgaben anzeigen",
     "show_incomes" : "Einnahmen anzeigen",
     "show_future" : "Zukünftige Einträge",
+    "show_recurrent" : "Nur Wiederholungen anzeigen",
     "share_title" : "TX SHARE",
     "share_text" : "TX SHARE ist momentan nicht verfügbar."
   },
