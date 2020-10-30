@@ -8,7 +8,15 @@ class DefaultsSection extends StatefulWidget {
 }
 
 class _DefaultsSectionState extends State<DefaultsSection> {
-  int _selectedId = UserSettings.getDefaultProfileChart();
+  int _selectedId;
+
+  @override
+  void initState() {
+    setState(() {
+      _selectedId = UserSettings.getDefaultProfileChart();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +31,22 @@ class _DefaultsSectionState extends State<DefaultsSection> {
 
   Widget _buildDefaultProfileChart() {
     return SettingRadioItem<int>(
-      title: LocaleKeys.settings_page_default_expense_chart.tr(),
-      selectedValue: _selectedId,
-      displayValue: [
-        LocaleKeys.profile_page_monthly.tr(),
-        LocaleKeys.profile_page_lifetime.tr()
-      ][_selectedId],
-      items: [
-        SettingRadioValue(LocaleKeys.profile_page_monthly.tr(), 0),
-        SettingRadioValue(LocaleKeys.profile_page_lifetime.tr(), 1),
-      ],
-      onChanged: (val) => setState(() => _selectedId = val),
-    );
+        title: LocaleKeys.settings_page_default_expense_chart.tr(),
+        selectedValue: _selectedId,
+        displayValue: [
+          LocaleKeys.profile_page_monthly.tr(),
+          LocaleKeys.profile_page_lifetime.tr()
+        ][_selectedId],
+        items: [
+          SettingRadioValue(LocaleKeys.profile_page_monthly.tr(), 0),
+          SettingRadioValue(LocaleKeys.profile_page_lifetime.tr(), 1),
+        ],
+        onChanged: (val) {
+          UserSettings.setDefaultProfileChart(val);
+          setState(() {
+            _selectedId = val;
+          });
+        });
   }
 
   Widget _buildDefaultFilterSettings() {
