@@ -1,6 +1,5 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/utils.dart';
@@ -67,7 +66,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                           .categoryDao
                           .insertSubcategory(subcategory);
                     },
-                    child: Icon(Icons.add),
+                    child: const Icon(Icons.add),
                   ),
                 ),
                 Align(
@@ -120,10 +119,10 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 
   Widget _buildSubcategoryList() {
     //TODO make it possible that a deleted subcat is deleted immediatly
-    return FutureBuilder(
-      future: Provider.of<AppDatabase>(context)
+    return StreamBuilder(
+      stream: Provider.of<AppDatabase>(context)
           .categoryDao
-          .getAllSubcategoriesOf(_category.id),
+          .watchAllSubcategoriesOf(_category.id),
       builder: (context, AsyncSnapshot<List<Subcategory>> snapshot) {
         if (snapshot.hasData) {
           return ListView(
@@ -174,14 +173,14 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: IconButton(
-                        icon: Icon(Icons.remove),
+                        icon: const Icon(Icons.remove),
                         color: Theme.of(context).colorScheme.onSurface,
                         onPressed: () async {
                           final bool deleteSubcategory =
                               await showConfirmDialog(
                                   context,
-                                  "Delete this subcategory?",
-                                  "This will delete the subcategory.");
+                                  LocaleKeys.add_page_confirm_title.tr(),
+                                  LocaleKeys.add_page_confirm_text.tr());
                           if (deleteSubcategory) {
                             try {
                               final sub = subcategory.toCompanion(false);
@@ -197,17 +196,17 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                 // user must tap button!
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Alert'),
+                                    title: Text(LocaleKeys.add_page_alert_title.tr()), //alert_title
                                     content: SingleChildScrollView(
                                       child: Text(
-                                          "You can't delete a subcategory which is used in a transaction."),
+                                          LocaleKeys.add_page_alert_text.tr()),
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text('Ok'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
+                                        child: Text(LocaleKeys.ok.tr().toUpperCase()),
                                       ),
                                     ],
                                   );
@@ -236,7 +235,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 }
 
 class CreateSubcategoryDialog extends StatelessWidget {
-  TextEditingController _addSubcategoryController = TextEditingController();
+  final TextEditingController _addSubcategoryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -247,8 +246,8 @@ class CreateSubcategoryDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Add new subcategory',
+            Text(
+              LocaleKeys.add_page_add_subcategory_text.tr(),
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontSize: 17.0,
@@ -280,8 +279,8 @@ class CreateSubcategoryDialog extends StatelessWidget {
                   Navigator.of(context)
                       .pop(_addSubcategoryController.text.trim());
                 },
-                child: const Text(
-                  "OK",
+                child: Text(
+                  LocaleKeys.ok.tr().toUpperCase(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),

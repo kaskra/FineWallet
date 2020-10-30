@@ -238,7 +238,12 @@
     "label" : "Bezeichnung/Hinweis",
     "date" : "Datum",
     "recurrence" : "Wiederholung",
-    "select_category" : "Wähle eine Kategorie"
+    "select_category" : "Wähle eine Kategorie",
+    "confirm_title": "Unterkategorie löschen?",
+    "confirm_text" :  "Dies löscht die Unterkategorie.",
+    "alert_title" : "Achtung",
+    "alert_text" : "Sie können keine Unterkategorie löschen, welche in einer Transaktion genutzt wird.",
+    "add_subcategory_text" : "Unterkategorie hinzufügen"
   },
   "settings_page" : {
     "title" : "Einstellungen",

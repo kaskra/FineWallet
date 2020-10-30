@@ -235,7 +235,12 @@
     "label": "Label",
     "date": "Date",
     "recurrence": "Recurrence",
-    "select_category": "Select a category"
+    "select_category": "Select a category",
+    "confirm_title": "Delete this subcategory?",
+    "confirm_text" :  "This will delete the subcategory.",
+    "alert_title" : "Alert",
+    "alert_text" : "You can't delete a subcategory which is used in a transaction.",
+    "add_subcategory_text" : "Add new subcategory"
   },
   "settings_page": {
     "title": "Settings",
