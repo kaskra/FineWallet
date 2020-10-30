@@ -236,7 +236,12 @@
     "date": "Date",
     "recurrence": "Recurrence",
     "select_category": "Select a category",
-    "no_suggestions": "No suggestions found."
+    "no_suggestions": "No suggestions found.",
+    "confirm_title": "Delete this subcategory?",
+    "confirm_text" :  "This will delete the subcategory.",
+    "alert_title" : "Alert",
+    "alert_text" : "You can't delete a subcategory which is used in a transaction.",
+    "add_subcategory_text" : "Add new subcategory"
   },
   "settings_page": {
     "title": "Settings",

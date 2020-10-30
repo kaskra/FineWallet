@@ -48,6 +48,9 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future<List<Subcategory>> getAllSubcategoriesOf(int id) =>
       (select(subcategories)..where((s) => s.categoryId.equals(id))).get();
 
+  Stream<List<Subcategory>> watchAllSubcategoriesOf(int id) =>
+      (select(subcategories)..where((s) => s.categoryId.equals(id))).watch();
+
   Future insertSubcategory(Insertable<Subcategory> subcategory) =>
       into(subcategories).insert(subcategory);
 

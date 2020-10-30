@@ -1,5 +1,6 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -48,21 +49,43 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
           children: <Widget>[
             _buildDialogHeader(),
             Expanded(child: _buildSubcategoryList()),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: FlatButton(
-                padding: const EdgeInsets.all(5),
-                textColor: Theme.of(context).colorScheme.secondary,
-                onPressed: () {
-                  Navigator.of(context).pop(_subcategory);
-                },
-                child: Text(
-                  LocaleKeys.ok.tr().toUpperCase(),
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5),
+                    //textColor: Theme.of(context).colorScheme.secondary,
+                    onPressed: () async {
+                      final String addNewSubcategory = await showDialog(
+                          context: context,
+                          builder: (context) => CreateSubcategoryDialog());
+                      final subcategory = SubcategoriesCompanion.insert(
+                          categoryId: _category.id, name: addNewSubcategory);
+                      Provider.of<AppDatabase>(context, listen: false)
+                          .categoryDao
+                          .insertSubcategory(subcategory);
+                    },
+                    child: const Icon(Icons.add),
+                  ),
                 ),
-              ),
-            )
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5),
+                    textColor: Theme.of(context).colorScheme.secondary,
+                    onPressed: () {
+                      Navigator.of(context).pop(_subcategory);
+                    },
+                    child: Text(
+                      LocaleKeys.ok.tr().toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -95,17 +118,16 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
   }
 
   Widget _buildSubcategoryList() {
-    return FutureBuilder(
-      future: Provider.of<AppDatabase>(context)
+    //TODO make it possible that a deleted subcat is deleted immediatly
+    return StreamBuilder(
+      stream: Provider.of<AppDatabase>(context)
           .categoryDao
-          .getAllSubcategoriesOf(_category.id),
+          .watchAllSubcategoriesOf(_category.id),
       builder: (context, AsyncSnapshot<List<Subcategory>> snapshot) {
         if (snapshot.hasData) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-//              TODO implement adding of subcategories
-//              _buildAddSubcategoryItem(),
               for (var subs in snapshot.data) _buildSubcategoryListItem(subs)
             ],
           );
@@ -118,6 +140,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 
   Widget _buildSubcategoryListItem(Subcategory sub) {
     return _buildGeneralListItem(
+      subcategory: sub,
       text: tryTranslatePreset(sub),
       color: _selectedSubcategory == sub.id
           ? Theme.of(context).colorScheme.secondary
@@ -131,23 +154,11 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
     );
   }
 
-  // TODO
-  // UNUSED until adding of category/subcategory is implemented
-  // ignore: unused_element
-  Widget _buildAddSubcategoryItem() {
-    return _buildGeneralListItem(
-      text: "+",
-      color: Theme.of(context).colorScheme.secondary,
-      onTap: () {
-        print("Add new subcategory !! TODO !!");
-      },
-    );
-  }
-
   Widget _buildGeneralListItem(
       {@required String text,
       @required Color color,
-      @required Function onTap}) {
+      @required Function onTap,
+      Subcategory subcategory}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Material(
@@ -156,16 +167,125 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
           height: 35,
           child: InkWell(
             onTap: () => onTap(),
-            child: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 16,
+            child: Stack(
+              children: [
+                if (!subcategory.isPreset)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: IconButton(
+                        icon: const Icon(Icons.remove),
+                        color: Theme.of(context).colorScheme.onSurface,
+                        onPressed: () async {
+                          final bool deleteSubcategory =
+                              await showConfirmDialog(
+                                  context,
+                                  LocaleKeys.add_page_confirm_title.tr(),
+                                  LocaleKeys.add_page_confirm_text.tr());
+                          if (deleteSubcategory) {
+                            try {
+                              final sub = subcategory.toCompanion(false);
+                              await Provider
+                                  .of<AppDatabase>(context,
+                                  listen: false)
+                                  .categoryDao
+                                  .deleteSubcategory(sub);
+                            } catch (e) {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(LocaleKeys.add_page_alert_title.tr()), //alert_title
+                                    content: SingleChildScrollView(
+                                      child: Text(
+                                          LocaleKeys.add_page_alert_text.tr()),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(LocaleKeys.ok.tr().toUpperCase()),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          }
+                        }),
+                  ),
+                Center(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CreateSubcategoryDialog extends StatelessWidget {
+  final TextEditingController _addSubcategoryController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              LocaleKeys.add_page_add_subcategory_text.tr(),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            //schreibfeld
+            TextField(
+              controller: _addSubcategoryController,
+              keyboardType: TextInputType.text,
+              autofocus: true,
+              decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              )),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            //Button
+            Align(
+              alignment: Alignment.bottomRight,
+              child: FlatButton(
+                textColor: Theme.of(context).colorScheme.secondary,
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop(_addSubcategoryController.text.trim());
+                },
+                child: Text(
+                  LocaleKeys.ok.tr().toUpperCase(),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
