@@ -297,9 +297,13 @@ class _AddPageState extends State<AddPage> {
     final List<Widget> items = [
       _buildWarning(),
       ..._buildAmountRow(),
+      const SizedBox(height: 8),
       ..._buildCategoryRow(),
+      const SizedBox(height: 8),
       ..._buildLabelRow(),
+      const SizedBox(height: 8),
       ..._buildDateRow(),
+      const SizedBox(height: 8),
       ..._buildRecurrenceRow()
     ];
 
@@ -307,8 +311,8 @@ class _AddPageState extends State<AddPage> {
       items.addAll(_buildRecurrenceChoices());
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: items,
     );
   }
