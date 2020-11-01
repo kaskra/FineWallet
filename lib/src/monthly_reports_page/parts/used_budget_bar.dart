@@ -27,7 +27,7 @@ class UsedBudgetBar extends StatelessWidget {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 6.0),
+                padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
                 child: Text(
                   LocaleKeys.budget_overview_used_budget.tr(),
                   style: const TextStyle(
@@ -42,7 +42,7 @@ class UsedBudgetBar extends StatelessWidget {
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
+                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
