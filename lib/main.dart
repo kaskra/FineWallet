@@ -177,12 +177,14 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _isLocalizationLoaded = true;
       });
-      final rates = await fetchExchangeRates(
-          currency.abbrev, allCurrencies.map((c) => c.abbrev).toList());
 
-      await Provider.of<AppDatabase>(context, listen: false)
-          .currencyDao
-          .updateExchangeRates(rates.rates, allCurrencies);
+      fetchExchangeRates(
+              currency.abbrev, allCurrencies.map((c) => c.abbrev).toList())
+          .then((rates) async {
+        await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .updateExchangeRates(rates.rates, allCurrencies);
+      });
 
       UserSettings.setInputCurrency(currency.id);
       Provider.of<LocalizationNotifier>(context, listen: false)
