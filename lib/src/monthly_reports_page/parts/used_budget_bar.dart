@@ -26,14 +26,6 @@ class UsedBudgetBar extends StatelessWidget {
         children: <Widget>[
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
-                child: Text(
-                  LocaleKeys.budget_overview_used_budget.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
               AnimatedBudgetBar(
                 height: 75,
                 availableBudget: model.month.maxBudget,

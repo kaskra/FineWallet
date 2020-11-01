@@ -36,6 +36,7 @@ class CompactDetailsCard extends StatelessWidget {
                   ),
                 ),
                 const Divider(height: 1),
+                const SizedBox(height: 8.0),
                 UsedBudgetBar(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   model: month,
