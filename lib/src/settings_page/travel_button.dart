@@ -37,7 +37,8 @@ class _TravelButtonState extends State<TravelButton> {
         final currencies = <Currency>[];
 
         if (snapshot.hasData) {
-          items.addEntries(snapshot.data.map((c) => MapEntry(c.id, c.abbrev)));
+          items.addEntries(snapshot.data
+              .map((c) => MapEntry(c.id, "${c.abbrev} (${c.symbol})")));
           currencies.addAll(snapshot.data);
         }
 

@@ -111,7 +111,7 @@ class Currencies extends Table {
 
   TextColumn get abbrev => text().withLength(max: 40, min: 2)();
 
-  TextColumn get symbol => text().withLength(max: 1, min: 1)();
+  TextColumn get symbol => text().withLength(min: 1, max: 3)();
 
   RealColumn get exchangeRate => real().withDefault(const Constant(1.0))();
 }

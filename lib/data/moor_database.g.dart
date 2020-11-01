@@ -2012,7 +2012,7 @@ class $CurrenciesTable extends Currencies
   GeneratedTextColumn get symbol => _symbol ??= _constructSymbol();
   GeneratedTextColumn _constructSymbol() {
     return GeneratedTextColumn('symbol', $tableName, false,
-        minTextLength: 1, maxTextLength: 1);
+        minTextLength: 1, maxTextLength: 3);
   }
 
   final VerificationMeta _exchangeRateMeta =

@@ -1,5 +1,6 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:moor/moor.dart';
+import 'package:moor_flutter/moor_flutter.dart';
 
 part 'currency_dao.g.dart';
 
@@ -13,7 +14,9 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
 
   CurrencyDao(this.db) : super(db);
 
-  Future<List<Currency>> getAllCurrencies() => select(currencies).get();
+  Future<List<Currency>> getAllCurrencies() => (select(currencies)
+        ..orderBy([(currency) => OrderingTerm.asc(currency.abbrev)]))
+      .get();
 
   Future insertCurrency(Insertable<Currency> currency) =>
       into(currencies).insert(currency);
