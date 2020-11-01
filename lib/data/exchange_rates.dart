@@ -31,7 +31,7 @@ class ExchangeRates {
 
     for (final curr in currencies) {
       final rate = double.tryParse(json['rates'][curr].toString());
-      rs.putIfAbsent(curr, () => rate ?? 1.0);
+      rs.putIfAbsent(curr, () => 1 / rate ?? 1.0);
     }
     rs.putIfAbsent(json['base'].toString(), () => 1.0);
     return ExchangeRates(
