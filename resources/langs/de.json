@@ -219,7 +219,8 @@
     "more_details" : "Mehr Details",
     "overall" : "Zusammenfassung",
     "total_income" : "Gesamtes Einkommen",
-    "total_expense" : "Gesamte Ausgaben"
+    "total_expense" : "Gesamte Ausgaben",
+    "maximal_available_budget" : "Maximal verfügbares Budget"
   },
   "add_page" : {
     "title": "{} hinzufügen",

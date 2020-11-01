@@ -216,7 +216,8 @@
     "more_details": "More Details",
     "overall": "Overall",
     "total_income": "Total Income",
-    "total_expense": "Total Expense"
+    "total_expense": "Total Expense",
+    "maximal_available_budget" : "Maximum available budget"
   },
   "add_page": {
     "title": "Add {}",

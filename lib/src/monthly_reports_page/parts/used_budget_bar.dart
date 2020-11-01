@@ -30,18 +30,42 @@ class UsedBudgetBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          AnimatedBudgetBar(
-            height: 70,
-            availableBudget: model.month.maxBudget,
-            maxBudget: model.income,
-            usedBudget: model.expense,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6.0),
-            child: Text(
-              LocaleKeys.budget_overview_used_budget.tr(),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Text(
+                  LocaleKeys.budget_overview_used_budget.tr(),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
+              AnimatedBudgetBar(
+                height: 75,
+                availableBudget: model.month.maxBudget,
+                maxBudget: model.income,
+                usedBudget: model.expense,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      LocaleKeys.reports_page_maximal_available_budget.tr(),
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      "${model.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -107,6 +131,12 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
   }
 
   @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
@@ -164,8 +194,9 @@ class BudgetBarPainter extends CustomPainter {
 
   // Statics
   static Radius radius = const Radius.circular(8.0);
+  static Radius indicatorRadius = const Radius.circular(8.0);
   static double spaceToMarker = 4;
-  static double padding = 2.0;
+  static double padding = 4.0;
   static double borderWidth = 1.0;
   static double barRatioTop = 0.35;
   static double barRatioBottom = 0.65;
@@ -294,22 +325,27 @@ class BudgetBarPainter extends CustomPainter {
       x = length / 2;
     }
 
-    final backgroundRect = Rect.fromCenter(
-      center: Offset(x, y),
-      height: height,
-      width: length,
-    );
+    final backgroundRect = RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(x, y),
+          height: height,
+          width: length,
+        ),
+        indicatorRadius);
 
-    final borderRect = Rect.fromCenter(
-      center: Offset(x, y),
-      height: height + borderWidth * 2,
-      width: length + borderWidth * 2,
-    );
+    final borderRect = RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(x, y),
+          height: height + borderWidth * 2,
+          width: length + borderWidth * 2,
+        ),
+        indicatorRadius);
 
     // Painting
-    canvas.drawRect(borderRect, borderPaint);
-    canvas.drawRect(backgroundRect, backgroundPaint);
-    tp.paint(canvas, backgroundRect.topLeft.translate(padding, padding));
+    canvas.drawRRect(borderRect, borderPaint);
+    canvas.drawRRect(backgroundRect, backgroundPaint);
+    tp.paint(
+        canvas, backgroundRect.outerRect.topLeft.translate(padding, padding));
   }
 
   @override
