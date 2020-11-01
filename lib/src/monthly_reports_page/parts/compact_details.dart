@@ -23,20 +23,20 @@ class CompactDetailsCard extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 14.0),
+                  padding: const EdgeInsets.only(bottom: 4.0),
                   child: Center(
                     child: Text(
                       formatter.format(month.month.firstDate),
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                 ),
+                const Divider(height: 1),
                 UsedBudgetBar(
-                  padding:
-                      const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   model: month,
                 ),
                 _buildDetails(context)
