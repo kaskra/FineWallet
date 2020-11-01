@@ -14,18 +14,20 @@ import 'package:flutter/material.dart';
 /// and the default values can be used.
 ///
 class DecoratedCard extends StatelessWidget {
-  const DecoratedCard(
-      {Key key,
-      this.child,
-      this.color,
-      this.shape,
-      this.padding = 10,
-      this.elevation = 4})
-      : super(key: key);
+  const DecoratedCard({
+    Key key,
+    this.child,
+    this.color,
+    this.shape,
+    this.padding = 10,
+    this.elevation = 4,
+    this.customPadding,
+  }) : super(key: key);
 
   final Widget child;
   final ShapeBorder shape;
   final double padding;
+  final EdgeInsets customPadding;
   final Color color;
   final double elevation;
 
@@ -35,7 +37,10 @@ class DecoratedCard extends StatelessWidget {
       elevation: elevation,
       color: color ?? Theme.of(context).cardTheme.color,
       shape: shape ?? Theme.of(context).cardTheme.shape,
-      child: Padding(padding: EdgeInsets.all(padding), child: child),
+      child: Padding(
+        padding: customPadding ?? EdgeInsets.all(padding),
+        child: child,
+      ),
     );
   }
 }

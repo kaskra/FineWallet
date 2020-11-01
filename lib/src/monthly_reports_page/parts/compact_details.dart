@@ -20,6 +20,7 @@ class CompactDetailsCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           DecoratedCard(
+            customPadding: const EdgeInsets.fromLTRB(10, 4, 10, 10),
             child: Column(
               children: <Widget>[
                 Padding(
