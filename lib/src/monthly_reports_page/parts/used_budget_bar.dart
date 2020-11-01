@@ -1,5 +1,6 @@
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
@@ -137,6 +138,9 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
             maxBudget: widget.maxBudget,
             availableColor: Colors.green,
             backgroundColor: Colors.black.withOpacity(0.1),
+            centerTextColor: Provider.of<ThemeNotifier>(context).isDarkMode
+                ? Colors.white
+                : Colors.grey.shade900,
             usedColor: Theme.of(context).accentColor,
             indicatorBackgroundColor: Colors.grey.shade50,
             indicatorBorderColor: Colors.grey.shade300,
@@ -168,6 +172,7 @@ class BudgetBarPainter extends CustomPainter {
   final Color indicatorBackgroundColor;
   final Color indicatorBorderColor;
   final Color markerColor;
+  final Color centerTextColor;
 
   final bool isError;
 
@@ -195,6 +200,7 @@ class BudgetBarPainter extends CustomPainter {
     this.indicatorBackgroundColor = Colors.grey,
     this.indicatorBorderColor = Colors.black,
     this.markerColor = Colors.white,
+    this.centerTextColor = Colors.white,
     this.usedPercentage = 0.0,
     this.availablePercentage = 1.0,
     this.usedBudget = 0.0,
@@ -242,10 +248,14 @@ class BudgetBarPainter extends CustomPainter {
       canvas.drawRRect(used, _usedPaint);
     }
 
-    canvas.drawLine(Offset(width * usedPercentage, minHeightBar),
-        Offset(width * usedPercentage, maxHeightBar), _markerPaint);
-    canvas.drawLine(Offset(width * availablePercentage, minHeightBar),
-        Offset(width * availablePercentage, maxHeightBar), _markerPaint);
+    if (usedPercentage > 0 && usedPercentage < 1) {
+      canvas.drawLine(Offset(width * usedPercentage, minHeightBar),
+          Offset(width * usedPercentage, maxHeightBar), _markerPaint);
+    }
+    if (availablePercentage > 0 && availablePercentage < 1) {
+      canvas.drawLine(Offset(width * availablePercentage, minHeightBar),
+          Offset(width * availablePercentage, maxHeightBar), _markerPaint);
+    }
 
     final String text =
         "${usedBudget.toStringAsFixed(2)} / ${availableBudget.toStringAsFixed(2)} $currencySymbol";
@@ -254,7 +264,7 @@ class BudgetBarPainter extends CustomPainter {
       ..text = TextSpan(
           text: text,
           style: TextStyle(
-            color: Colors.grey.shade900,
+            color: centerTextColor,
             fontWeight: FontWeight.bold,
           ))
       ..textDirection = TextDirection.ltr;
