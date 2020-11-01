@@ -29,7 +29,7 @@ class CompactDetailsCard extends StatelessWidget {
                     child: Text(
                       formatter.format(month.month.firstDate),
                       style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.secondary),
                     ),
