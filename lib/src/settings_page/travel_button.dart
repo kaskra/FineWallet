@@ -100,11 +100,12 @@ class _TravelButtonState extends State<TravelButton> {
         .getUserCurrency();
 
     // Load exchange rates and update currency table in database.
-    final rates = await fetchExchangeRates(
-        currency.abbrev, allCurrencies.map((c) => c.abbrev).toList());
-
-    await Provider.of<AppDatabase>(context, listen: false)
-        .currencyDao
-        .updateExchangeRates(rates.rates, allCurrencies);
+    fetchExchangeRates(
+            currency.abbrev, allCurrencies.map((c) => c.abbrev).toList())
+        .then((rates) async {
+      await Provider.of<AppDatabase>(context, listen: false)
+          .currencyDao
+          .updateExchangeRates(rates.rates, allCurrencies);
+    });
   }
 }
