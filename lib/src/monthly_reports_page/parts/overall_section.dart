@@ -18,7 +18,7 @@ class OverallDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         StructureTitle(
-          text: LocaleKeys.reports_page_overall.tr(),
+          text: LocaleKeys.budget_overview_used_budget.tr(),
         ),
         SmallStructureSpace(),
         Padding(
@@ -27,6 +27,9 @@ class OverallDetail extends StatelessWidget {
             model: month,
             padding: const EdgeInsets.only(),
           ),
+        ),
+        StructureTitle(
+          text: LocaleKeys.reports_page_overall.tr(),
         ),
         StructureSpace(),
         Row(
