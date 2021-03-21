@@ -57,16 +57,23 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(5),
                     ),
-                    //textColor: Theme.of(context).colorScheme.secondary,
                     onPressed: () async {
-                      final String addNewSubcategory = await showDialog(
+                      final String newSubcategory = await showDialog(
                           context: context,
-                          builder: (context) => CreateSubcategoryDialog());
-                      final subcategory = SubcategoriesCompanion.insert(
-                          categoryId: _category.id, name: addNewSubcategory);
-                      Provider.of<AppDatabase>(context, listen: false)
-                          .categoryDao
-                          .insertSubcategory(subcategory);
+                          builder: (context) => WillPopScope(
+                                onWillPop: () => Future.value(true),
+                                child: CreateSubcategoryDialog(),
+                              ));
+
+                      if (newSubcategory != null) {
+                        final subcategory = SubcategoriesCompanion.insert(
+                          categoryId: _category.id,
+                          name: newSubcategory,
+                        );
+                        Provider.of<AppDatabase>(context, listen: false)
+                            .categoryDao
+                            .insertSubcategory(subcategory);
+                      }
                     },
                     child: const Icon(Icons.add),
                   ),
@@ -122,7 +129,6 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
   }
 
   Widget _buildSubcategoryList() {
-    //TODO make it possible that a deleted subcat is deleted immediatly
     return StreamBuilder(
       stream: Provider.of<AppDatabase>(context)
           .categoryDao
@@ -192,6 +198,14 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                       listen: false)
                                   .categoryDao
                                   .deleteSubcategory(sub);
+                              // Reset selected subcategory
+                              if (subcategory.id == _selectedSubcategory) {
+                                // TODO should remove content of text field on add page
+                                setState(() {
+                                  _selectedSubcategory = -1;
+                                  _subcategory = null;
+                                });
+                              }
                             } catch (e) {
                               showDialog<void>(
                                 context: context,
@@ -263,7 +277,6 @@ class CreateSubcategoryDialog extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            //schreibfeld
             TextField(
               controller: _addSubcategoryController,
               keyboardType: TextInputType.text,
@@ -284,8 +297,10 @@ class CreateSubcategoryDialog extends StatelessWidget {
                   primary: Theme.of(context).colorScheme.secondary,
                 ),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pop(_addSubcategoryController.text.trim());
+                  if (_addSubcategoryController.text.trim().isNotEmpty) {
+                    Navigator.of(context)
+                        .pop(_addSubcategoryController.text.trim());
+                  }
                 },
                 child: Text(
                   LocaleKeys.ok.tr().toUpperCase(),
