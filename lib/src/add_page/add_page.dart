@@ -411,9 +411,28 @@ class _AddPageState extends State<AddPage> {
         },
         child: Padding(
           padding: const EdgeInsets.only(right: 8.0),
-          child: Text(
-            tryTranslatePreset(_subcategory), //?.name ?? ""),
-            style: const TextStyle(fontSize: 16),
+          child: StreamBuilder<List<Subcategory>>(
+            stream: Provider.of<AppDatabase>(context)
+                .categoryDao
+                .watchAllSubcategories(),
+            initialData: const [],
+            builder: (context, snapshot) {
+              final subcats = snapshot.data.map((subcat) => subcat.id).toList();
+              var text = "";
+
+              if (_subcategory != null) {
+                if (subcats.contains(_subcategory.id)) {
+                  text = tryTranslatePreset(_subcategory);
+                } else {
+                  _subcategory = null;
+                }
+              }
+
+              return Text(
+                text,
+                style: const TextStyle(fontSize: 16),
+              );
+            },
           ),
         ),
       ),
