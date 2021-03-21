@@ -397,11 +397,11 @@ class _HistoryPageState extends State<HistoryPage> {
       LocaleKeys.delete_dialog_title.tr(),
       LocaleKeys.delete_dialog_text.tr(),
     )) {
-      for (final tx in _selectedItems.values) {
-        Provider.of<AppDatabase>(context, listen: false)
-            .transactionDao
-            .deleteTransactionById(tx.tx.originalId);
-      }
+      Provider.of<AppDatabase>(context, listen: false)
+          .transactionDao
+          .deleteTransactionsByIds(
+              _selectedItems.values.map((e) => e.tx.originalId).toList());
+
       _closeSelection();
     }
   }

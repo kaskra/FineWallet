@@ -138,17 +138,29 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           label: tx.label);
       await insertTransaction(tempTx);
     });
-    return db.monthDao.syncMonths();
+    return db.monthDao.batchedSyncMonths();
   }
 
   Future deleteTransaction(db_file.Transaction transaction) async {
     await delete(transactions).delete(transaction.toCompanion(true));
-    await db.monthDao.syncMonths();
+    await db.monthDao.batchedSyncMonths();
   }
 
   Future deleteTransactionById(int id, {bool beforeInsert = false}) async {
     await (delete(transactions)..where((t) => t.originalId.equals(id))).go();
-    if (!beforeInsert) await db.monthDao.syncMonths();
+    if (!beforeInsert) await db.monthDao.batchedSyncMonths();
+  }
+
+  Future deleteTransactionsByIds(List<int> transactionIds) async {
+    await transaction(() async {
+      await batch((b) {
+        for (final id in transactionIds) {
+          b.deleteWhere(transactions,
+              ($TransactionsTable tbl) => tbl.originalId.equals(id));
+        }
+      });
+      await db.monthDao.batchedSyncMonths();
+    });
   }
 
   /// Returns a [Stream] with the savings up to the current month.

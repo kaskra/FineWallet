@@ -95,7 +95,8 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
         .get();
   }
 
-  Future syncSingleMonth(Month month) async {
+  Future<Insertable<Month>> _batchedSyncSingleMonth(
+      Month month, Batch batch) async {
     final txs = await (select(transactions)
           ..where((t) => t.monthId.equals(month.id))
           ..where((t) => t.isExpense.equals(false)))
@@ -104,15 +105,22 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     final double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
     if (sumIncomes < month.maxBudget) {
       final tempMonth = month.copyWith(maxBudget: sumIncomes);
-      await updateMonth(tempMonth.toCompanion(true));
+      return Future.value(tempMonth.toCompanion(true));
     }
+    return Future.value(month.toCompanion(true));
   }
 
-  Future syncMonths() async {
-    final List<Month> months = await getAllMonths();
-    for (final Month m in months) {
-      await syncSingleMonth(m);
-    }
+  Future batchedSyncMonths() async {
+    final List<Month> allMonths = await getAllMonths();
+    await batch((batch) async {
+      batch.replaceAll(
+        months,
+        [
+          for (final Month m in allMonths)
+            await _batchedSyncSingleMonth(m, batch)
+        ],
+      );
+    });
   }
 
   /// Check months after last recorded month to see whether any are missing.
