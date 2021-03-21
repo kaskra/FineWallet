@@ -91,8 +91,13 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
 
   @override
   void initState() {
-    usedBudgetPercentage = widget.usedBudget / widget.maxBudget;
-    availableBudgetPercentage = widget.availableBudget / widget.maxBudget;
+    if (widget.maxBudget > 0) {
+      availableBudgetPercentage = widget.availableBudget / widget.maxBudget;
+      usedBudgetPercentage = widget.usedBudget / widget.maxBudget;
+    } else {
+      usedBudgetPercentage = 0.0;
+      availableBudgetPercentage = 0.0;
+    }
 
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
@@ -277,7 +282,6 @@ class BudgetBarPainter extends CustomPainter {
         barHeight: heightBar,
         amount: usedBudget,
         top: true);
-
     drawMarker(canvas, size,
         dx: width * availablePercentage,
         dy: minHeightBar,
