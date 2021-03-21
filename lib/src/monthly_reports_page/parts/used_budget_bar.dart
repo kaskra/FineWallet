@@ -1,3 +1,4 @@
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
 import 'package:FineWallet/data/providers/providers.dart';
@@ -95,7 +96,7 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
       availableBudgetPercentage = widget.availableBudget / widget.maxBudget;
       usedBudgetPercentage = widget.usedBudget / widget.maxBudget;
     } else {
-      usedBudgetPercentage = 0.0;
+      usedBudgetPercentage = 1.0;
       availableBudgetPercentage = 0.0;
     }
 
@@ -235,29 +236,27 @@ class BudgetBarPainter extends CustomPainter {
       radius,
     );
 
-    final available = RRect.fromRectAndCorners(
-        Rect.fromLTWH(0, minHeightBar, width * availablePercentage, heightBar),
-        topLeft: radius,
-        bottomLeft: radius);
+    final availableTuple = getRectangleByPercentile(
+        minHeightBar, width, heightBar, availablePercentage);
 
-    final used = RRect.fromRectAndCorners(
-        Rect.fromLTWH(0, minHeightBar, width * usedPercentage, heightBar),
-        topLeft: radius,
-        bottomLeft: radius);
+    final usedTuple = getRectangleByPercentile(
+        minHeightBar, width, heightBar, usedPercentage);
 
     if (isError) {
       canvas.drawRRect(error, _errorPaint);
     } else {
       canvas.drawRRect(background, _backgroundPaint);
-      canvas.drawRRect(available, _availablePaint);
-      canvas.drawRRect(used, _usedPaint);
+      canvas.drawRRect(availableTuple.first, _availablePaint);
+      canvas.drawRRect(usedTuple.first, _usedPaint);
     }
 
-    if (usedPercentage > 0 && usedPercentage < 1) {
+    if (usedPercentage > 0 && usedPercentage < 1 && usedTuple.second) {
       canvas.drawLine(Offset(width * usedPercentage, minHeightBar),
           Offset(width * usedPercentage, maxHeightBar), _markerPaint);
     }
-    if (availablePercentage > 0 && availablePercentage < 1) {
+    if (availablePercentage > 0 &&
+        availablePercentage < 1 &&
+        availableTuple.second) {
       canvas.drawLine(Offset(width * availablePercentage, minHeightBar),
           Offset(width * availablePercentage, maxHeightBar), _markerPaint);
     }
@@ -288,6 +287,19 @@ class BudgetBarPainter extends CustomPainter {
         barHeight: heightBar,
         amount: availableBudget,
         top: false);
+  }
+
+  Tuple2<RRect, bool> getRectangleByPercentile(
+      double minHeight, double width, double height, double percentile) {
+    final bool needsMarker = width * (1 - percentile) >= radius.x;
+    final rect = RRect.fromRectAndCorners(
+        Rect.fromLTWH(0, minHeight, width * percentile, height),
+        topLeft: radius,
+        bottomLeft: radius,
+        bottomRight: needsMarker ? const Radius.circular(0.0) : radius,
+        topRight: needsMarker ? const Radius.circular(0.0) : radius);
+
+    return Tuple2(rect, needsMarker);
   }
 
   void drawMarker(
