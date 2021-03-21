@@ -93,9 +93,13 @@ class Months extends Table {
   RealColumn get maxBudget =>
       real().customConstraint("CHECK (max_budget >= 0)")();
 
+  RealColumn get savingsBudget => //Info from second slider in profile
+      real().customConstraint("CHECK (savings_budget >= 0)")();
+
   TextColumn get firstDate => text().map(const DateTimeConverter())();
 
   TextColumn get lastDate => text().map(const DateTimeConverter())();
+
 }
 
 @DataClassName('RecurrenceType')

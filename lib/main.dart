@@ -161,6 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
+    Provider.of<BudgetNotifier>(context, listen: false).setSavingsBudget(m?.savingsBudget);
   }
 
   Future _loadLocalizationAndCurrency() async {

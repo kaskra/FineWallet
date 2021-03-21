@@ -181,6 +181,31 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return combinedQuery.cast();
   }
 
+  /// Returns a [Future] with the savings up to the current month.
+  Future<double> getTotalSavings() async {
+    const converter = DateTimeConverter();
+    final currentDate = converter.mapToSql(today().getFirstDateOfMonth());
+
+    final sumAmount = transactions.amount.total();
+
+    final expense = await (selectOnly(transactions)
+      ..addColumns([sumAmount])
+      ..where(transactions.isExpense &
+      transactions.date.isSmallerThanValue(currentDate)))
+        .map((event) => event.read(sumAmount))
+        .getSingle();
+
+    final income = await (selectOnly(transactions)
+      ..addColumns([sumAmount])
+      ..where(transactions.isExpense.not() &
+      transactions.date.isSmallerThanValue(currentDate)))
+        .map((event) => event.read(sumAmount))
+        .getSingle();
+
+    return income - expense;
+
+  }
+
   /// Returns a [Stream] that watches the transactions table.
   ///
   /// The stream is updated when ever the table changes.

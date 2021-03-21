@@ -131,7 +131,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
       final first = m.getFirstDateOfMonth();
       final last = m.getLastDateOfMonth();
       newMonths.add(MonthsCompanion.insert(
-          maxBudget: 0, firstDate: first, lastDate: last));
+          maxBudget: 0, savingsBudget: 0, firstDate: first, lastDate: last));
     }
 
     if (newMonths.isNotEmpty) {
@@ -147,7 +147,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
       final last = date.getLastDateOfMonth();
 
       final newMonth = MonthsCompanion.insert(
-          maxBudget: 0, firstDate: first, lastDate: last);
+          maxBudget: 0, savingsBudget: 0, firstDate: first, lastDate: last);
       await insertMonth(newMonth);
     }
   }
