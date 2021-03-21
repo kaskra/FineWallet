@@ -60,10 +60,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                     onPressed: () async {
                       final String newSubcategory = await showDialog(
                           context: context,
-                          builder: (context) => WillPopScope(
-                                onWillPop: () => Future.value(true),
-                                child: CreateSubcategoryDialog(),
-                              ));
+                          builder: (context) => CreateSubcategoryDialog());
 
                       if (newSubcategory != null) {
                         final subcategory = SubcategoriesCompanion.insert(
