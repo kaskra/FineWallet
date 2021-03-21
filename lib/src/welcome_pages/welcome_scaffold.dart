@@ -81,7 +81,7 @@ class WelcomeScaffold extends StatelessWidget {
               enableContinue)
             Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
+              child: TextButton(
                 onPressed: () async {
                   var continueAvailable = false;
                   if (confirmContinue != null) {
@@ -113,7 +113,7 @@ class WelcomeScaffold extends StatelessWidget {
           if (onBack != null)
             Align(
               alignment: Alignment.bottomLeft,
-              child: FlatButton(
+              child: TextButton(
                 onPressed: () {
                   onBack();
                   Navigator.pop(context);
@@ -137,7 +137,7 @@ class WelcomeScaffold extends StatelessWidget {
           if (isLastPage)
             Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
+              child: TextButton(
                 onPressed: () {
                   UserSettings.setInitialized(val: true);
                   Navigator.of(context).pushAndRemoveUntil(

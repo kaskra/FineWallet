@@ -72,9 +72,11 @@ class CategoryListView extends StatelessWidget {
               Expanded(child: _buildDialogTransactionList(id)),
               Align(
                 alignment: Alignment.bottomRight,
-                child: FlatButton(
-                  padding: const EdgeInsets.all(5),
-                  textColor: Theme.of(context).colorScheme.secondary,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(5),
+                    primary: Theme.of(context).colorScheme.secondary,
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },

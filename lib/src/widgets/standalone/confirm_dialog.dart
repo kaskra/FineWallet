@@ -21,13 +21,13 @@ Future<bool> showConfirmDialog(
           title: Text(title),
           content: Text(content),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
               child: Text(LocaleKeys.cancel.tr()),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

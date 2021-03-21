@@ -56,9 +56,11 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             Expanded(child: _buildCategoryGrid()),
             Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
-                padding: const EdgeInsets.all(5),
-                textColor: Theme.of(context).colorScheme.secondary,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.all(5),
+                  primary: Theme.of(context).colorScheme.secondary,
+                ),
                 onPressed: () {
                   if (_isSelectionValid()) {
                     Navigator.of(context).pop(_subcategory);

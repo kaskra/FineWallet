@@ -47,9 +47,11 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             Expanded(child: _buildSubcategoryList()),
             Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
-                padding: const EdgeInsets.all(5),
-                textColor: Theme.of(context).colorScheme.secondary,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.all(5),
+                  primary: Theme.of(context).colorScheme.secondary,
+                ),
                 onPressed: () {
                   // This should always be right, if it is
                   // not there is a problem.

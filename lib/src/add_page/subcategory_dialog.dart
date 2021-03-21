@@ -1,7 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +53,10 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
               children: [
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: FlatButton(
-                    padding: const EdgeInsets.all(5),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(5),
+                    ),
                     //textColor: Theme.of(context).colorScheme.secondary,
                     onPressed: () async {
                       final String addNewSubcategory = await showDialog(
@@ -71,9 +73,11 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: FlatButton(
-                    padding: const EdgeInsets.all(5),
-                    textColor: Theme.of(context).colorScheme.secondary,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(5),
+                      primary: Theme.of(context).colorScheme.secondary,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop(_subcategory);
                     },
@@ -184,9 +188,8 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                           if (deleteSubcategory) {
                             try {
                               final sub = subcategory.toCompanion(false);
-                              await Provider
-                                  .of<AppDatabase>(context,
-                                  listen: false)
+                              await Provider.of<AppDatabase>(context,
+                                      listen: false)
                                   .categoryDao
                                   .deleteSubcategory(sub);
                             } catch (e) {
@@ -196,7 +199,8 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                 // user must tap button!
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text(LocaleKeys.add_page_alert_title.tr()), //alert_title
+                                    title: Text(LocaleKeys.add_page_alert_title
+                                        .tr()), //alert_title
                                     content: SingleChildScrollView(
                                       child: Text(
                                           LocaleKeys.add_page_alert_text.tr()),
@@ -206,7 +210,8 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text(LocaleKeys.ok.tr().toUpperCase()),
+                                        child: Text(
+                                            LocaleKeys.ok.tr().toUpperCase()),
                                       ),
                                     ],
                                   );
@@ -235,7 +240,8 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 }
 
 class CreateSubcategoryDialog extends StatelessWidget {
-  final TextEditingController _addSubcategoryController = TextEditingController();
+  final TextEditingController _addSubcategoryController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +255,7 @@ class CreateSubcategoryDialog extends StatelessWidget {
             Text(
               LocaleKeys.add_page_add_subcategory_text.tr(),
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 17.0,
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
@@ -273,15 +279,18 @@ class CreateSubcategoryDialog extends StatelessWidget {
             //Button
             Align(
               alignment: Alignment.bottomRight,
-              child: FlatButton(
-                textColor: Theme.of(context).colorScheme.secondary,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  primary: Theme.of(context).colorScheme.secondary,
+                ),
                 onPressed: () {
                   Navigator.of(context)
                       .pop(_addSubcategoryController.text.trim());
                 },
                 child: Text(
                   LocaleKeys.ok.tr().toUpperCase(),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

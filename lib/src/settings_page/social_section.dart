@@ -17,6 +17,7 @@ class _SocialSectionState extends State<SocialSection> {
       items: [
         SettingSwitchItem(
             title: LocaleKeys.settings_page_tx_share.tr(),
+            priority: ItemPriority.disabled,
             description: LocaleKeys.settings_page_tx_share_desc.tr(),
             value: _isTxShareEnabled,
             onChanged: (val) {

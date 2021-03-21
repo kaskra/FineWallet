@@ -17,9 +17,11 @@ class SectionButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       width: MediaQuery.of(context).size.width,
-      child: RaisedButton.icon(
-        color: Theme.of(context).accentColor,
-        elevation: 4,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          primary: Theme.of(context).accentColor,
+          elevation: 4,
+        ),
         onPressed: onPressed,
         icon: icon,
         label: Text(

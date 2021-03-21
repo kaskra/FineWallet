@@ -60,7 +60,6 @@ class _AddPageState extends State<AddPage> {
   DateTime _untilDate = today().add(const Duration(days: 1));
 
   /// State variables
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _hasError = false;
   bool _initialized = false;
 
@@ -123,8 +122,7 @@ class _AddPageState extends State<AddPage> {
     }
 
     return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           LocaleKeys.add_page_title.tr(args: [
@@ -286,7 +284,7 @@ class _AddPageState extends State<AddPage> {
   /// Shows a snackbar with a specified text.
   ///
   void _showSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(value),
       backgroundColor: Colors.grey,
     ));
@@ -396,10 +394,12 @@ class _AddPageState extends State<AddPage> {
           // it also holds the category id.
           final Subcategory res = await showDialog(
             context: context,
-            child: CategoryChoiceDialog(
-              isExpense: widget.isExpense,
-              selectedSubcategory: _subcategory,
-            ),
+            builder: (BuildContext context) {
+              return CategoryChoiceDialog(
+                isExpense: widget.isExpense,
+                selectedSubcategory: _subcategory,
+              );
+            },
           );
 
           if (res != null) {
@@ -547,9 +547,11 @@ class _AddPageState extends State<AddPage> {
         onTap: () async {
           final RecurrenceType rec = await showDialog(
             context: context,
-            child: RecurrenceDialog(
-              recurrenceType: _recurrence?.type ?? -1,
-            ),
+            builder: (BuildContext context) {
+              return RecurrenceDialog(
+                recurrenceType: _recurrence?.type ?? -1,
+              );
+            },
           );
           if (rec != null) {
             setState(() {

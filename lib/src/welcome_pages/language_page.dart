@@ -34,11 +34,13 @@ class LanguagePage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: OutlineButton(
-                  borderSide: BorderSide(
-                      color:
-                          Theme.of(context).primaryTextTheme.subtitle2.color),
-                  padding: const EdgeInsets.all(0),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                        color:
+                            Theme.of(context).primaryTextTheme.subtitle2.color),
+                    padding: const EdgeInsets.all(0),
+                  ),
                   onPressed: () async {
                     final Locale selectedLocale = await showDialog(
                         context: context,

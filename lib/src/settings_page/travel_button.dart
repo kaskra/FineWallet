@@ -64,14 +64,14 @@ class _TravelButtonState extends State<TravelButton> {
                   _selectedCurrency = res;
                 });
                 if (_selectedCurrency == _userCurrencyId) {
-                  Scaffold.of(context)
+                  ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(SnackBar(
                       content:
                           Text(LocaleKeys.settings_page_snack_at_home.tr()),
                     ));
                 } else {
-                  Scaffold.of(context)
+                  ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(SnackBar(
                       content: Text(LocaleKeys.settings_page_snack_traveling
