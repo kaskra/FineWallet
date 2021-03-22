@@ -463,6 +463,8 @@ class _AddPageState extends State<AddPage> {
             textFieldConfiguration: TextFieldConfiguration(
               controller: _labelController,
               textAlign: TextAlign.right,
+              maxLength: 30,
+              decoration: const InputDecoration(counterText: ""),
             ),
             suggestionsCallback: (pattern) {
               final items = snapshot.data ?? [];
