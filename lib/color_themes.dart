@@ -134,6 +134,10 @@ final ThemeData standardTheme = ThemeData(
               fontWeight: FontWeight.w600,
               fontSize: 20)),
       iconTheme: IconThemeData(color: colorScheme.onSurface)),
+  dialogTheme: DialogTheme(
+    shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(cardRadius)),
+  ),
 );
 
 final ThemeData darkTheme = ThemeData(
@@ -178,10 +182,14 @@ final ThemeData darkTheme = ThemeData(
   canvasColor: const Color(0xFF292929),
   dialogBackgroundColor: darkColorScheme.primary,
   appBarTheme: AppBarTheme(
-      textTheme: textTheme.copyWith(
-          headline6: textTheme.headline6.copyWith(
-              color: colorScheme.onSurface,
+      textTheme: darkTextTheme.copyWith(
+          headline6: darkTextTheme.headline6.copyWith(
+              color: darkColorScheme.onSurface,
               fontWeight: FontWeight.w600,
               fontSize: 20)),
       iconTheme: IconThemeData(color: colorScheme.onSurface)),
+  dialogTheme: DialogTheme(
+    shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(cardRadius)),
+  ),
 );

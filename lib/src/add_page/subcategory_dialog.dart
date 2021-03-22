@@ -38,13 +38,12 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(cardRadius)),
-        height: MediaQuery.of(context).size.height * 0.8,
-        width: MediaQuery.of(context).size.width * 0.8,
+    return Dialog(
+      insetPadding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.width * 0.1,
+        horizontal: MediaQuery.of(context).size.width * 0.1,
+      ),
+      child: Center(
         child: Column(
           children: <Widget>[
             _buildDialogHeader(),
@@ -56,12 +55,12 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                   child: TextButton(
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(5),
+                      primary: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () async {
                       final String newSubcategory = await showDialog(
                           context: context,
                           builder: (context) => CreateSubcategoryDialog());
-
                       if (newSubcategory != null) {
                         final subcategory = SubcategoriesCompanion.insert(
                           categoryId: _category.id,
@@ -118,7 +117,6 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
             decoration: TextDecoration.none,
             fontSize: 18,
             fontWeight: FontWeight.normal,
-            fontFamily: "roboto",
           ),
         ),
       ),
@@ -188,6 +186,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                   context,
                                   LocaleKeys.add_page_confirm_title.tr(),
                                   LocaleKeys.add_page_confirm_text.tr());
+
                           if (deleteSubcategory) {
                             try {
                               final sub = subcategory.toCompanion(false);
@@ -195,9 +194,11 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                       listen: false)
                                   .categoryDao
                                   .deleteSubcategory(sub);
+
+                              // TODO issue when pressing outside, when selected subcategory exists, removes selection
+
                               // Reset selected subcategory
                               if (subcategory.id == _selectedSubcategory) {
-                                // TODO should remove content of text field on add page
                                 setState(() {
                                   _selectedSubcategory = -1;
                                   _subcategory = null;
@@ -258,19 +259,14 @@ class CreateSubcategoryDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              LocaleKeys.add_page_add_subcategory_text.tr(),
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontSize: 17.0,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
-            ),
+            Text(LocaleKeys.add_page_add_subcategory_text.tr(),
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.subtitle1),
             const SizedBox(
               height: 16,
             ),

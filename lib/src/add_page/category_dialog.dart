@@ -44,14 +44,14 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(cardRadius)),
-        height: MediaQuery.of(context).size.height * 0.8,
-        width: MediaQuery.of(context).size.width * 0.8,
+    return Dialog(
+      insetPadding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.width * 0.1,
+        horizontal: MediaQuery.of(context).size.width * 0.1,
+      ),
+      child: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             _buildDialogHeader(),
             Expanded(child: _buildCategoryGrid()),

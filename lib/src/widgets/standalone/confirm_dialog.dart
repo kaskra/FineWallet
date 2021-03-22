@@ -22,12 +22,16 @@ Future<bool> showConfirmDialog(
           content: Text(content),
           actions: <Widget>[
             TextButton(
+              style:
+                  TextButton.styleFrom(primary: Theme.of(context).accentColor),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
               child: Text(LocaleKeys.cancel.tr()),
             ),
             TextButton(
+              style:
+                  TextButton.styleFrom(primary: Theme.of(context).accentColor),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
