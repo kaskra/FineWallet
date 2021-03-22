@@ -209,8 +209,8 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                 // user must tap button!
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text(LocaleKeys.add_page_alert_title
-                                        .tr()), //alert_title
+                                    title: Text(
+                                        LocaleKeys.add_page_alert_title.tr()),
                                     content: SingleChildScrollView(
                                       child: Text(
                                           LocaleKeys.add_page_alert_text.tr()),
