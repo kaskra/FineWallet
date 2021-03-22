@@ -114,6 +114,10 @@ final ThemeData standardTheme = ThemeData(
   textTheme: textTheme,
   primaryTextTheme: textTheme,
   accentTextTheme: textTheme,
+  textSelectionTheme: TextSelectionThemeData(
+      selectionColor: colorScheme.secondary.withOpacity(0.8),
+      cursorColor: colorScheme.secondary,
+      selectionHandleColor: colorScheme.secondary),
   sliderTheme: SliderThemeData(
     valueIndicatorColor: colorScheme.primary,
     inactiveTrackColor: colorScheme.primary.withOpacity(0.55),
@@ -158,6 +162,10 @@ final ThemeData darkTheme = ThemeData(
   textTheme: darkTextTheme,
   primaryTextTheme: darkTextTheme,
   accentTextTheme: darkTextTheme,
+  textSelectionTheme: TextSelectionThemeData(
+      selectionColor: darkColorScheme.secondary.withOpacity(0.8),
+      cursorColor: darkColorScheme.secondary,
+      selectionHandleColor: darkColorScheme.secondary),
   sliderTheme: SliderThemeData(
     valueIndicatorColor: darkColorScheme.secondary,
     inactiveTrackColor: darkColorScheme.secondary.withOpacity(0.55),
