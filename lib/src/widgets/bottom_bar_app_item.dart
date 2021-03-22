@@ -92,7 +92,12 @@ class _FloatingActionButtonBottomAppBarState
                     children: <Widget>[
                       Icon(item.iconData, color: color, size: widget.iconSize),
                       if (_selectedIndex == index)
-                        Text(item.text, style: TextStyle(color: color))
+                        FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              item.text,
+                              style: TextStyle(color: color),
+                            ))
                       else
                         Container()
                     ],
