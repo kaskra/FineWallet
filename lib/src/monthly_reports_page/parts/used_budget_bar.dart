@@ -142,7 +142,7 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
             usedBudget: widget.usedBudget,
             availableBudget: widget.availableBudget,
             maxBudget: widget.maxBudget,
-            availableColor: Colors.green,
+            availableColor: Colors.green.shade200,
             backgroundColor: Colors.black.withOpacity(0.1),
             centerTextColor: Provider.of<ThemeNotifier>(context).isDarkMode
                 ? Colors.white
@@ -280,13 +280,18 @@ class BudgetBarPainter extends CustomPainter {
         dy: minHeightBar,
         barHeight: heightBar,
         amount: usedBudget,
-        top: true);
-    drawMarker(canvas, size,
-        dx: width * availablePercentage,
-        dy: minHeightBar,
-        barHeight: heightBar,
-        amount: availableBudget,
-        top: false);
+        top: true,
+        textColor: Colors.red);
+    drawMarker(
+      canvas,
+      size,
+      dx: width * availablePercentage,
+      dy: minHeightBar,
+      barHeight: heightBar,
+      amount: availableBudget,
+      top: false,
+      textColor: Colors.green,
+    );
   }
 
   Tuple2<RRect, bool> getRectangleByPercentile(
@@ -310,11 +315,12 @@ class BudgetBarPainter extends CustomPainter {
     double barHeight,
     double amount,
     bool top,
+    Color textColor,
   }) {
     final String text = "${amount.toStringAsFixed(2)}$currencySymbol";
 
     final TextPainter tp = TextPainter()
-      ..text = TextSpan(text: text, style: const TextStyle(color: Colors.black))
+      ..text = TextSpan(text: text, style: TextStyle(color: textColor))
       ..textDirection = TextDirection.ltr;
     tp.layout();
 
