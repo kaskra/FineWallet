@@ -220,6 +220,9 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
+                                        style: TextButton.styleFrom(
+                                            primary:
+                                                Theme.of(context).accentColor),
                                         child: Text(
                                             LocaleKeys.ok.tr().toUpperCase()),
                                       ),

@@ -18,6 +18,7 @@ Future<bool> showConfirmDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          elevation: 0.0,
           title: Text(title),
           content: Text(content),
           actions: <Widget>[
