@@ -9,7 +9,8 @@ Future<ExchangeRates> fetchExchangeRates(
   final url = "https://api.exchangeratesapi.io/latest?base=$base";
 
   logMsg("Fetch exchange rates from $url...");
-  final response = await http.get(url);
+  final uri = Uri.parse(url);
+  final response = await http.get(uri);
 
   if (response.statusCode == 200) {
     return ExchangeRates.fromJson(

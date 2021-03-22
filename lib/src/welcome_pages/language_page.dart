@@ -47,7 +47,7 @@ class LanguagePage extends StatelessWidget {
                         builder: (context) => LanguageSelectionDialog());
 
                     if (selectedLocale != null) {
-                      EasyLocalization.of(context).locale = selectedLocale;
+                      EasyLocalization.of(context).setLocale(selectedLocale);
                     }
                   },
                   child: Row(

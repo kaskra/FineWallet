@@ -259,7 +259,11 @@
     "enable_filter": "History Filter",
     "enable_filter_desc": "Enable filtering of history",
     "language": {
+      "zero" : "Languages",
       "one": "Language",
+      "two" : "Languages",
+      "few" : "Languages",
+      "many" : "Languages",
       "other": "Languages"
     },
     "social": "Social",

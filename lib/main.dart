@@ -38,6 +38,7 @@ import 'package:provider/provider.dart';
 // ignore: avoid_void_async
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  EasyLocalization.ensureInitialized();
   await UserSettings.init();
   runApp(EasyLocalization(
     supportedLocales: const [

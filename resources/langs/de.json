@@ -262,7 +262,11 @@
     "enable_filter" : "Verlaufsfilter",
     "enable_filter_desc" : "Verlaufsfilter aktivieren",
     "language" : {
+      "zero" : "Sprachen",
       "one" : "Sprache",
+      "two" : "Sprachen",
+      "few" : "Sprachen",
+      "many" : "Sprachen",
       "other" : "Sprachen"
     },
     "social" : "Soziales",

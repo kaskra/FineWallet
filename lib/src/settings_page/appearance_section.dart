@@ -69,14 +69,14 @@ class _AppearanceSectionState extends State<AppearanceSection> {
         final int res = await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => SelectionPage(
-                pageTitle: LocaleKeys.settings_page_language.plural(2),
+                pageTitle: LocaleKeys.settings_page_language.plural(10),
                 selectedIndex: context.supportedLocales.indexOf(context.locale),
                 data: items.map((key, value) =>
                     MapEntry(key, value.getFullLanguageName()))),
           ),
         );
         if (res != null) {
-          EasyLocalization.of(context).locale = items[res];
+          EasyLocalization.of(context).setLocale(items[res]);
         }
       },
     );
