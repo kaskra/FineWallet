@@ -92,6 +92,14 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
 
   @override
   void initState() {
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+
+    resetAnimation();
+    super.initState();
+  }
+
+  void resetAnimation() {
     if (widget.maxBudget > 0) {
       availableBudgetPercentage = widget.availableBudget / widget.maxBudget;
       usedBudgetPercentage = widget.usedBudget / widget.maxBudget;
@@ -99,9 +107,6 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
       usedBudgetPercentage = 1.0;
       availableBudgetPercentage = 0.0;
     }
-
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
 
     _usedBudgetAnimation = Tween<double>(
       begin: 0.0,
@@ -120,7 +125,6 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
     ));
 
     _controller.forward();
-    super.initState();
   }
 
   @override
@@ -158,9 +162,8 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
 
   @override
   void didUpdateWidget(covariant AnimatedBudgetBar oldWidget) {
-    _controller.forward(from: 0.0);
-    setState(() {});
     super.didUpdateWidget(oldWidget);
+    resetAnimation();
   }
 }
 
