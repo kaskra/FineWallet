@@ -1,5 +1,7 @@
 include: package:lint/analysis_options.yaml
 
+# IF HELP NEEDED: https://dart-lang.github.io/linter/lints/index.html
+
 analyzer:
   strong-mode:
     implicit-casts: false
@@ -14,7 +16,13 @@ analyzer:
 
 linter:
   rules:
+    sort_pub_dependencies: false
+    package_names: false
+
     annotate_overrides: false
     overridden_fields: false
     avoid_classes_with_only_static_members: false
     avoid_print: false
+
+    # Doc strings for all public vars
+    public_member_api_docs: false
