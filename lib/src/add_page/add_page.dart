@@ -420,7 +420,7 @@ class _AddPageState extends State<AddPage> {
               final subcats = snapshot.data.map((subcat) => subcat.id).toList();
               var text = "";
 
-              if (_subcategory != null) {
+              if (_subcategory != null && subcats.isNotEmpty) {
                 if (subcats.contains(_subcategory.id)) {
                   text = tryTranslatePreset(_subcategory);
                 } else {
