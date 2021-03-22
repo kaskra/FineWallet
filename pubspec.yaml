@@ -30,19 +30,19 @@ dependencies:
   http: ^0.13.1
   intl: ^0.17.0
   moor: ^4.2.0
-  moor_flutter: ^3.1.0
   provider: ^5.0.0
   path_provider: ^2.0.1
   rxdart: ^0.26.0
   shared_preferences: ^2.0.5
   google_fonts: ^2.0.0
+  sqlite3_flutter_libs:
+  sqflite: ^2.0.0+3
 
 dependency_overrides:
   clean_settings:
     git: https://github.com/kaskra/clean_settings
   easy_localization_loader:
     git: https://github.com/aissat/easy_localization_loader
-  moor_flutter: ^4.0.0-nullsafety
 
 dev_dependencies:
   flutter_test:

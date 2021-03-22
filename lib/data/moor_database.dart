@@ -6,6 +6,8 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'dart:io';
+
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/currency_dao.dart';
@@ -13,7 +15,10 @@ import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
     as moor_init;
 import 'package:FineWallet/data/transaction_dao.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/ffi.dart';
+import 'package:moor/moor.dart';
+import 'package:path/path.dart' as p;
+import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 part 'moor_database.g.dart';
 
@@ -148,8 +153,13 @@ class UserProfiles extends Table {
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
-      : super(FlutterQueryExecutor.inDatabaseFolder(
-            path: 'database.sqlite', logStatements: true));
+      : super(LazyDatabase(() async {
+          final dbFolder = await getDatabasesPath();
+          final file = File(p.join(dbFolder, 'database.sqlite'));
+          return VmDatabase(file, logStatements: true);
+          // TODO add setup function to add user-defined functions
+          // TODO recurrence etc..
+        }));
 
   @override
   int get schemaVersion => 1;

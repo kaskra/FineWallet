@@ -11,7 +11,7 @@ import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/utils/month_utils.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/moor.dart';
 
 part 'month_dao.g.dart';
 

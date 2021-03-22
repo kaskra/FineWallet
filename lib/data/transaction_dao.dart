@@ -15,7 +15,7 @@ import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
 import 'package:FineWallet/data/utils/recurrence_utils.dart';
 import 'package:FineWallet/utils.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/moor.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'transaction_dao.g.dart';

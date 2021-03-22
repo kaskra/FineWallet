@@ -1,6 +1,5 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:moor/moor.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 
 part 'currency_dao.g.dart';
 

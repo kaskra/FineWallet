@@ -7,7 +7,7 @@
  */
 
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/moor.dart';
 
 part 'category_dao.g.dart';
 
