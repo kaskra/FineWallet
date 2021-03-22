@@ -205,7 +205,7 @@ class AppDatabase extends _$AppDatabase {
   Future<int> maxTransactionId() {
     final res = customSelect(
         "SELECT seq FROM sqlite_sequence WHERE name='transactions'");
-    return res.map((row) => row.readInt("seq")).getSingle();
+    return res.map((row) => row.readInt("seq")).getSingleOrNull();
   }
 
   /// Return a list of all [Recurrence]s in database table.
