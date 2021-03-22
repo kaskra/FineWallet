@@ -33,7 +33,7 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
   Future<Currency> getUserCurrency() => (select(currencies).join([
         innerJoin(
             userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
-      ])).map((rows) => rows.readTable(currencies)).getSingle();
+      ])).map((rows) => rows.readTable(currencies)).getSingleOrNull();
 
   Stream<Currency> watchUserCurrency() => (select(currencies).join([
         innerJoin(
