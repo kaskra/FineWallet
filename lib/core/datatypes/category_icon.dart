@@ -27,7 +27,7 @@ class CategoryIcon {
 
   final int id;
 
-  IconData get data => icons[id];
+  IconData get data => id <= 9 ? icons[id] : Icons.description;
 
   static int get amount => icons.length;
 }

@@ -42,6 +42,13 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future deleteCategory(Insertable<Category> category) =>
       delete(categories).delete(category);
 
+  Future deleteCategoryWithSubcategories(int id) {
+    return transaction(() async {
+      await (delete(subcategories)..where((s) => s.categoryId.equals(id))).go();
+      await (delete(categories)..where((c) => c.id.equals(id))).go();
+    });
+  }
+
   Future<List<Subcategory>> getAllSubcategories() =>
       select(subcategories).get();
 

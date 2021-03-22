@@ -1,6 +1,9 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/logger.dart';
+import 'package:FineWallet/src/add_page/create_dialog.dart';
+import 'package:FineWallet/src/add_page/deletion_denial_dialog.dart';
 import 'package:FineWallet/src/widgets/standalone/confirm_dialog.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -58,18 +61,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                       primary: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () async {
-                      final String newSubcategory = await showDialog(
-                          context: context,
-                          builder: (context) => CreateSubcategoryDialog());
-                      if (newSubcategory != null) {
-                        final subcategory = SubcategoriesCompanion.insert(
-                          categoryId: _category.id,
-                          name: newSubcategory,
-                        );
-                        Provider.of<AppDatabase>(context, listen: false)
-                            .categoryDao
-                            .insertSubcategory(subcategory);
-                      }
+                      await handleNewSubcategory(context);
                     },
                     child: const Icon(Icons.add),
                   ),
@@ -97,6 +89,23 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
         ),
       ),
     );
+  }
+
+  Future handleNewSubcategory(BuildContext context) async {
+    final String newSubcategory = await showDialog(
+        context: context,
+        builder: (context) => CreateDialog(
+              title: LocaleKeys.add_page_add_subcategory_dialog_title.tr(),
+            ));
+    if (newSubcategory != null) {
+      final subcategory = SubcategoriesCompanion.insert(
+        categoryId: _category.id,
+        name: newSubcategory,
+      );
+      Provider.of<AppDatabase>(context, listen: false)
+          .categoryDao
+          .insertSubcategory(subcategory);
+    }
   }
 
   Widget _buildDialogHeader() {
@@ -181,57 +190,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                         icon: const Icon(Icons.remove),
                         color: Theme.of(context).colorScheme.onSurface,
                         onPressed: () async {
-                          final bool deleteSubcategory =
-                              await showConfirmDialog(
-                                  context,
-                                  LocaleKeys.add_page_confirm_title.tr(),
-                                  LocaleKeys.add_page_confirm_text.tr());
-
-                          if (deleteSubcategory) {
-                            try {
-                              final sub = subcategory.toCompanion(false);
-                              await Provider.of<AppDatabase>(context,
-                                      listen: false)
-                                  .categoryDao
-                                  .deleteSubcategory(sub);
-
-                              // Reset selected subcategory
-                              if (subcategory.id == _selectedSubcategory) {
-                                setState(() {
-                                  _selectedSubcategory = -1;
-                                  _subcategory = null;
-                                });
-                              }
-                            } catch (e) {
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible: false,
-                                // user must tap button!
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                        LocaleKeys.add_page_alert_title.tr()),
-                                    content: SingleChildScrollView(
-                                      child: Text(
-                                          LocaleKeys.add_page_alert_text.tr()),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        style: TextButton.styleFrom(
-                                            primary:
-                                                Theme.of(context).accentColor),
-                                        child: Text(
-                                            LocaleKeys.ok.tr().toUpperCase()),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          }
+                          await deleteSubcategory(subcategory);
                         }),
                   ),
                 Center(
@@ -250,62 +209,50 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
       ),
     );
   }
-}
 
-class CreateSubcategoryDialog extends StatelessWidget {
-  final TextEditingController _addSubcategoryController =
-      TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(LocaleKeys.add_page_add_subcategory_text.tr(),
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.subtitle1),
-            const SizedBox(
-              height: 16,
-            ),
-            TextField(
-              controller: _addSubcategoryController,
-              keyboardType: TextInputType.text,
-              autofocus: true,
-              decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              )),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            //Button
-            Align(
-              alignment: Alignment.bottomRight,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  primary: Theme.of(context).colorScheme.secondary,
-                ),
-                onPressed: () {
-                  if (_addSubcategoryController.text.trim().isNotEmpty) {
-                    Navigator.of(context)
-                        .pop(_addSubcategoryController.text.trim());
-                  }
-                },
-                child: Text(
-                  LocaleKeys.ok.tr().toUpperCase(),
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+  Future deleteSubcategory(Subcategory subcategory) async {
+    final bool deleteSubcategory = await showConfirmDialog(
+      context,
+      LocaleKeys.add_page_subcategory_delete_confirm_title.tr(),
+      LocaleKeys.add_page_subcategory_delete_confirm_text.tr(),
     );
+
+    if (deleteSubcategory) {
+      try {
+        await removeSubcategoryFromDatabase(subcategory);
+      } catch (e) {
+        logMsg("Could not delete subcategory.");
+        logMsg("Error: $e");
+        showDeletionDenialDialog();
+      }
+    }
+  }
+
+  void showDeletionDenialDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return DeletionDenialDialog(
+          denialTitle: LocaleKeys.add_page_subcategory_alert_title.tr(),
+          denialText: LocaleKeys.add_page_subcategory_alert_text.tr(),
+        );
+      },
+    );
+  }
+
+  Future removeSubcategoryFromDatabase(Subcategory subcategory) async {
+    final sub = subcategory.toCompanion(false);
+    await Provider.of<AppDatabase>(context, listen: false)
+        .categoryDao
+        .deleteSubcategory(sub);
+
+    // Reset selected subcategory
+    if (subcategory.id == _selectedSubcategory) {
+      setState(() {
+        _selectedSubcategory = -1;
+        _subcategory = null;
+      });
+    }
   }
 }

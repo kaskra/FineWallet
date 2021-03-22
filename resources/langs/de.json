@@ -242,11 +242,17 @@
     "recurrence" : "Wiederholung",
     "select_category" : "Wähle eine Kategorie",
     "no_suggestions" :  "Keine Vorschläge gefunden.",
-    "confirm_title": "Unterkategorie löschen?",
-    "confirm_text" :  "Dies löscht die Unterkategorie.",
-    "alert_title" : "Achtung",
-    "alert_text" : "Sie können keine Unterkategorie löschen, welche in einer Transaktion genutzt wird.",
-    "add_subcategory_text" : "Unterkategorie hinzufügen"
+    "subcategory_delete_confirm_title": "Unterkategorie löschen?",
+    "subcategory_delete_confirm_text" :  "Dies löscht die Unterkategorie.",
+    "category_delete_confirm_title": "Kategorie löschen?",
+    "category_delete_confirm_text" : "Dies löscht die Kategorie.",
+    "subcategory_alert_title" : "Achtung",
+    "subcategory_alert_text" : "Sie können keine Unterkategorie löschen, welche in einer Transaktion genutzt wird.",
+    "category_alert_title" : "Achtung",
+    "category_alert_text" : "Sie können keine Kategorie löschen, deren Unterkategorien in Transaktionen genutzt werden.",
+    "add_subcategory_dialog_title" : "Neue Unterkategorie hinzufügen",
+    "add_category_text": "Neue Kategorie",
+    "add_category_dialog_title": "Neue Kategorie hinzufügen"
   },
   "settings_page" : {
     "title" : "Einstellungen",

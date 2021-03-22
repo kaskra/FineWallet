@@ -3,10 +3,14 @@ import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/logger.dart';
+import 'package:FineWallet/src/add_page/create_dialog.dart';
+import 'package:FineWallet/src/add_page/deletion_denial_dialog.dart';
 import 'package:FineWallet/src/add_page/page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:moor/moor.dart' as moor;
 import 'package:provider/provider.dart';
 
 /// This class is used as a [Dialog] where the user can choose a category
@@ -138,8 +142,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             return GridView.count(
               crossAxisCount: 3,
               children: <Widget>[
-//                 TODO enable adding of categories
-//                _buildCategoryAddItem(),
+                _buildCategoryAddItem(),
                 for (Category c in snapshot.data) _buildCategoryGridItem(c)
               ],
             );
@@ -151,63 +154,100 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
     );
   }
 
-  // TODO
-  // UNUSED until adding of category/subcategory is implemented
-  // ignore: unused_element
   Widget _buildCategoryAddItem() {
     return _buildGeneralGridItem(
-      color: Theme.of(context).colorScheme.secondary,
-      onTap: () {
-        print("Add new category !! TODO !!");
+      color: Colors.grey.shade400,
+      onTap: () async {
+        await handleNewCategory(context);
       },
-      text: "Add Category",
+      text: LocaleKeys.add_page_add_category_text.tr(),
       iconData: Icons.add,
     );
   }
 
+  Future handleNewCategory(BuildContext context) async {
+    final String newCategory = await showDialog(
+        context: context,
+        builder: (context) => CreateDialog(
+              title: LocaleKeys.add_page_add_category_dialog_title.tr(),
+            ));
+    if (newCategory != null) {
+      final category = CategoriesCompanion.insert(
+          name: newCategory,
+          isExpense: moor.Value(widget.isExpense),
+          isPreset: const moor.Value(false));
+      Provider.of<AppDatabase>(context, listen: false)
+          .categoryDao
+          .insertCategory(category);
+    }
+  }
+
   Widget _buildCategoryGridItem(Category c) {
-    return _buildGeneralGridItem(
-      color: _selectedCategory == c.id
-          ? Theme.of(context).colorScheme.secondary
-          : Colors.grey,
-      onTap: () async {
-        var res = await showDialog<Subcategory>(
-          context: context,
-          builder: (context) => SubcategoryDialog(
-            category: c,
-            subcategory: _subcategory,
+    return Stack(
+      children: [
+        _buildGeneralGridItem(
+          color: _selectedCategory == c.id
+              ? Theme.of(context).colorScheme.secondary
+              : Colors.grey,
+          onTap: () async {
+            var res = await showDialog<Subcategory>(
+              context: context,
+              builder: (context) => SubcategoryDialog(
+                category: c,
+                subcategory: _subcategory,
+              ),
+            );
+
+            if (res != null) {
+              logMsg("Result of subcategories: $res");
+              // Set state values
+              setState(() {
+                _subcategory = res;
+                _selectedCategory = c.id;
+                _category = c;
+              });
+
+              if (_isSelectionValid()) {
+                Navigator.of(context).pop(_subcategory);
+              }
+            } else {
+              if (_subcategory != null) {
+                logMsg(
+                    "Returned from subcategory dialog without choosing. Do not change selected subcategory.");
+                res = _subcategory;
+              } else {
+                // Reset state values
+                setState(() {
+                  _selectedCategory = -1;
+                  _category = null;
+                  _subcategory = null;
+                });
+              }
+            }
+          },
+          text: tryTranslatePreset(c),
+          iconData: CategoryIcon(c.id - 1).data,
+        ),
+        if (!c.isPreset)
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.red),
+              child: InkWell(
+                onTap: () async {
+                  await deleteSubcategory(c);
+                },
+                child: const Icon(
+                  Icons.close,
+                  size: 16,
+                ),
+              ),
+            ),
           ),
-        );
-
-        if (res != null) {
-          logMsg("Result of subcategories: $res");
-          // Set state values
-          setState(() {
-            _subcategory = res;
-            _selectedCategory = c.id;
-            _category = c;
-          });
-
-          if (_isSelectionValid()) {
-            Navigator.of(context).pop(_subcategory);
-          }
-        } else {
-          if (_subcategory != null) {
-            logMsg(
-                "Returned from subcategory dialog without choosing. Do not change selected subcategory.");
-            res = _subcategory;
-          } else {
-            // Reset state values
-            setState(() {
-              _selectedCategory = -1;
-              _category = null;
-              _subcategory = null;
-            });
-          }
-        }
-      },
-      text: tryTranslatePreset(c),
-      iconData: CategoryIcon(c.id - 1).data,
+      ],
     );
   }
 
@@ -251,5 +291,53 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
         ),
       ),
     );
+  }
+
+  Future deleteSubcategory(Category category) async {
+    final bool deleteCategory = await showConfirmDialog(
+      context,
+      LocaleKeys.add_page_category_delete_confirm_title.tr(),
+      LocaleKeys.add_page_category_delete_confirm_text.tr(),
+    );
+
+    if (deleteCategory) {
+      try {
+        logMsg("Attempt to delete category $category");
+        await removeCategoryFromDatabase(category);
+      } catch (e) {
+        logMsg("Could not delete category.");
+        logMsg("Error: $e");
+        showDeletionDenialDialog();
+      }
+    }
+  }
+
+  void showDeletionDenialDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return DeletionDenialDialog(
+          denialTitle: LocaleKeys.add_page_category_alert_title.tr(),
+          denialText: LocaleKeys.add_page_category_alert_text.tr(),
+        );
+      },
+    );
+  }
+
+  Future removeCategoryFromDatabase(Category category) async {
+    await Provider.of<AppDatabase>(context, listen: false)
+        .categoryDao
+        .deleteCategoryWithSubcategories(category.id);
+
+    if (_subcategory.categoryId == category.id) {
+      setState(() {
+        _selectedCategory = -1;
+        _category = null;
+        _subcategory = null;
+      });
+    } else {
+      setState(() {});
+    }
   }
 }

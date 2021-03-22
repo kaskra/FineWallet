@@ -239,11 +239,17 @@
     "recurrence": "Recurrence",
     "select_category": "Select a category",
     "no_suggestions": "No suggestions found.",
-    "confirm_title": "Delete this subcategory?",
-    "confirm_text" :  "This will delete the subcategory.",
-    "alert_title" : "Alert",
-    "alert_text" : "You can't delete a subcategory which is used in a transaction.",
-    "add_subcategory_text" : "Add new subcategory"
+    "subcategory_delete_confirm_title": "Delete this subcategory?",
+    "subcategory_delete_confirm_text" : "This will delete the subcategory.",
+    "category_delete_confirm_title": "Delete this category?",
+    "category_delete_confirm_text" : "This will delete the category.",
+    "subcategory_alert_title" : "Alert",
+    "subcategory_alert_text" : "You can't delete a subcategory which is used in a transaction.",
+    "category_alert_title" : "Alert",
+    "category_alert_text" : "You can't delete a category which subcategories are used in transactions.",
+    "add_subcategory_dialog_title" : "Add new subcategory",
+    "add_category_text": "New Category",
+    "add_category_dialog_title": "Add new category"
   },
   "settings_page": {
     "title": "Settings",
