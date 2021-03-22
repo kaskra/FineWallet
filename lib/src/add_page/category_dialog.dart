@@ -330,7 +330,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
         .categoryDao
         .deleteCategoryWithSubcategories(category.id);
 
-    if (_subcategory.categoryId == category.id) {
+    if (_subcategory != null && _subcategory.categoryId == category.id) {
       setState(() {
         _selectedCategory = -1;
         _category = null;
