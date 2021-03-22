@@ -115,12 +115,17 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                       if (snapshotItem.tx.label.isNotEmpty)
                         Text(
                           snapshotItem.tx.label,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               fontStyle: FontStyle.italic, fontSize: 13),
                         )
                     ],
                   ),
                 ),
+              ),
+              const Expanded(
+                flex: 0,
+                child: SizedBox(width: 4),
               ),
               CombinedAmountString(
                 transaction: snapshotItem,
