@@ -113,10 +113,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           LocaleKeys.add_page_select_category.tr(),
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
-            decoration: TextDecoration.none,
             fontSize: 18,
-            fontWeight: FontWeight.normal,
-            fontFamily: "roboto",
           ),
         ),
       ),
@@ -174,7 +171,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
           ? Theme.of(context).colorScheme.secondary
           : Colors.grey,
       onTap: () async {
-        final res = await showDialog<Subcategory>(
+        var res = await showDialog<Subcategory>(
           context: context,
           builder: (context) => SubcategoryDialog(
             category: c,
@@ -195,12 +192,18 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             Navigator.of(context).pop(_subcategory);
           }
         } else {
-          // Reset state values
-          setState(() {
-            _selectedCategory = -1;
-            _category = null;
-            _subcategory = null;
-          });
+          if (_subcategory != null) {
+            logMsg(
+                "Returned from subcategory dialog without choosing. Do not change selected subcategory.");
+            res = _subcategory;
+          } else {
+            // Reset state values
+            setState(() {
+              _selectedCategory = -1;
+              _category = null;
+              _subcategory = null;
+            });
+          }
         }
       },
       text: tryTranslatePreset(c),

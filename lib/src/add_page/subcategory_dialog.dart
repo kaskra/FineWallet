@@ -195,8 +195,6 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                                   .categoryDao
                                   .deleteSubcategory(sub);
 
-                              // TODO issue when pressing outside, when selected subcategory exists, removes selection
-
                               // Reset selected subcategory
                               if (subcategory.id == _selectedSubcategory) {
                                 setState(() {
