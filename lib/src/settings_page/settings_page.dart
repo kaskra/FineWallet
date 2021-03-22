@@ -26,7 +26,6 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    // TODO styling comes with version 0.1.6, add it then
     return Scaffold(
       appBar: AppBar(
         title: Text(LocaleKeys.settings_page_title.tr()),
