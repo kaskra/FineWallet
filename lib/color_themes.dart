@@ -124,12 +124,11 @@ final ThemeData standardTheme = ThemeData(
   iconTheme: IconThemeData(color: colorScheme.onSurface),
   hintColor: const Color(0xFF212121),
   appBarTheme: AppBarTheme(
-      textTheme: TextTheme(
-          headline6: TextStyle(
+      textTheme: textTheme.copyWith(
+          headline6: textTheme.headline6.copyWith(
               color: colorScheme.onSurface,
-              fontSize: 20,
               fontWeight: FontWeight.w600,
-              fontFamily: "roboto")),
+              fontSize: 20)),
       iconTheme: IconThemeData(color: colorScheme.onSurface)),
 );
 
@@ -171,11 +170,10 @@ final ThemeData darkTheme = ThemeData(
   canvasColor: const Color(0xFF292929),
   dialogBackgroundColor: darkColorScheme.primary,
   appBarTheme: AppBarTheme(
-      textTheme: TextTheme(
-          headline6: TextStyle(
+      textTheme: textTheme.copyWith(
+          headline6: textTheme.headline6.copyWith(
               color: colorScheme.onSurface,
-              fontSize: 20,
               fontWeight: FontWeight.w600,
-              fontFamily: "roboto")),
+              fontSize: 20)),
       iconTheme: IconThemeData(color: colorScheme.onSurface)),
 );
