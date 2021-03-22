@@ -9,6 +9,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme colorScheme = ColorScheme(
   primary: Colors.orange,
@@ -52,39 +53,42 @@ const ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
 );
 
-const TextTheme textTheme = TextTheme(
-  bodyText1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  caption: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline4: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline3: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline5: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  overline: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  subtitle1: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  subtitle2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  headline6: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  bodyText2: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-  button: TextStyle(color: Color(0xFF151515), fontFamily: "roboto"),
-);
+const googleFonts = GoogleFonts.robotoSlabTextTheme;
 
-const TextTheme darkTextTheme = TextTheme(
-  bodyText1: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  caption: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline4: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline3: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline2: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline1: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline5: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  overline: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  subtitle1: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  subtitle2: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  headline6: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  bodyText2: TextStyle(color: Colors.white, fontFamily: "roboto"),
-  button: TextStyle(color: Colors.white, fontFamily: "roboto"),
-);
+TextTheme textTheme = googleFonts(const TextTheme(
+  bodyText1: TextStyle(color: Color(0xFF151515)),
+  caption: TextStyle(color: Color(0xFF151515)),
+  headline4: TextStyle(color: Color(0xFF151515)),
+  headline3: TextStyle(color: Color(0xFF151515)),
+  headline2: TextStyle(color: Color(0xFF151515)),
+  headline1: TextStyle(color: Color(0xFF151515)),
+  headline5: TextStyle(color: Color(0xFF151515)),
+  overline: TextStyle(color: Color(0xFF151515)),
+  subtitle1: TextStyle(color: Color(0xFF151515)),
+  subtitle2: TextStyle(color: Color(0xFF151515)),
+  headline6: TextStyle(color: Color(0xFF151515)),
+  bodyText2: TextStyle(color: Color(0xFF151515)),
+  button: TextStyle(color: Color(0xFF151515)),
+));
+
+TextTheme darkTextTheme = googleFonts(const TextTheme(
+  bodyText1: TextStyle(color: Colors.white),
+  caption: TextStyle(color: Colors.white),
+  headline4: TextStyle(color: Colors.white),
+  headline3: TextStyle(color: Colors.white),
+  headline2: TextStyle(color: Colors.white),
+  headline1: TextStyle(color: Colors.white),
+  headline5: TextStyle(color: Colors.white),
+  overline: TextStyle(color: Colors.white),
+  subtitle1: TextStyle(color: Colors.white),
+  subtitle2: TextStyle(color: Colors.white),
+  headline6: TextStyle(color: Colors.white),
+  bodyText2: TextStyle(color: Colors.white),
+  button: TextStyle(color: Colors.white),
+));
 
 final ThemeData standardTheme = ThemeData(
+  brightness: Brightness.light,
   colorScheme: colorScheme,
   primaryColor: colorScheme.primary,
   accentColor: colorScheme.secondary,
@@ -130,6 +134,7 @@ final ThemeData standardTheme = ThemeData(
 );
 
 final ThemeData darkTheme = ThemeData(
+  brightness: Brightness.dark,
   colorScheme: darkColorScheme,
   primaryColor: darkColorScheme.primary,
   accentColor: darkColorScheme.secondary,
