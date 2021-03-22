@@ -54,7 +54,8 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     final inMonthExp = months.firstDate.isSmallerOrEqualValue(sqlDate) &
         months.lastDate.isBiggerOrEqualValue(sqlDate);
 
-    final month = await (select(months)..where((m) => inMonthExp)).getSingle();
+    final month =
+        await (select(months)..where((m) => inMonthExp)).getSingleOrNull();
 
     return month?.id;
   }
@@ -66,11 +67,11 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     final inMonthExp = months.firstDate.isSmallerOrEqualValue(sqlDate) &
         months.lastDate.isBiggerOrEqualValue(sqlDate);
 
-    return (select(months)..where((m) => inMonthExp)).getSingle();
+    return (select(months)..where((m) => inMonthExp)).getSingleOrNull();
   }
 
   Future<Month> getMonthById(int id) =>
-      (select(months)..where((m) => m.id.equals(id))).getSingle();
+      (select(months)..where((m) => m.id.equals(id))).getSingleOrNull();
 
   Stream<Month> watchCurrentMonth() {
     const converter = DateTimeConverter();
@@ -79,7 +80,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     final inMonthExp = months.firstDate.isSmallerOrEqualValue(sqlDate) &
         months.lastDate.isBiggerOrEqualValue(sqlDate);
 
-    return (select(months)..where((month) => inMonthExp)).watchSingle();
+    return (select(months)..where((month) => inMonthExp)).watchSingleOrNull();
   }
 
   Stream<List<Month>> watchAllMonths() =>
@@ -130,7 +131,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
             (m) => OrderingTerm(expression: m.lastDate, mode: OrderingMode.desc)
           ])
           ..limit(1))
-        .getSingle();
+        .getSingleOrNull();
 
     final missingMonths = getMissingMonths(lastRecordedMonth);
     final List<Insertable<Month>> newMonths = [];
