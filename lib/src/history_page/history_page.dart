@@ -121,19 +121,15 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: HistoryFilterTextField(
-                  iconData: Icons.search,
-                  initialData: _filterState.label,
-                  onChanged: (text) {
-                    setState(() {
-                      _filterState = _filterState.copyWith(label: text);
-                    });
-                    _handleFilterSettings();
-                  },
-                ),
+              HistoryFilterTextField(
+                iconData: Icons.search,
+                initialData: _filterState.label,
+                onChanged: (text) {
+                  setState(() {
+                    _filterState = _filterState.copyWith(label: text);
+                  });
+                  _handleFilterSettings();
+                },
               ),
               if (!isKeyboardOpen) const Divider(),
               if (!isKeyboardOpen)
