@@ -2,6 +2,7 @@ import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -182,7 +183,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
         );
 
         if (res != null) {
-          print("Result of subcategories: $res");
+          logMsg("Result of subcategories: $res");
           // Set state values
           setState(() {
             _subcategory = res;
