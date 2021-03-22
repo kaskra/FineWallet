@@ -95,6 +95,7 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
     final String newSubcategory = await showDialog(
         context: context,
         builder: (context) => CreateDialog(
+              maxLength: 30,
               title: LocaleKeys.add_page_add_subcategory_dialog_title.tr(),
             ));
     if (newSubcategory != null) {
@@ -193,12 +194,19 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                           await deleteSubcategory(subcategory);
                         }),
                   ),
-                Center(
-                  child: Text(
-                    text,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        text,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ),
                 ),

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class CreateDialog extends StatelessWidget {
   final String title;
+  final int maxLength;
 
   CreateDialog({
     Key key,
-    this.title,
+    this.title = "",
+    this.maxLength = 20,
   }) : super(key: key);
 
   final TextEditingController _textEditingController = TextEditingController();
@@ -60,6 +62,7 @@ class CreateDialog extends StatelessWidget {
   TextField buildTextField() {
     return TextField(
       controller: _textEditingController,
+      maxLength: maxLength,
       keyboardType: TextInputType.text,
       autofocus: true,
       decoration: const InputDecoration(

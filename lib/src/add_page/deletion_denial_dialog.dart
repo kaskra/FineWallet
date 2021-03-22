@@ -15,6 +15,7 @@ class DeletionDenialDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      elevation: 0.0,
       title: Text(denialTitle),
       content: SingleChildScrollView(
         child: Text(denialText),
