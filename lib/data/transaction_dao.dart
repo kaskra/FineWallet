@@ -319,12 +319,22 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           useColumns: false)
     ])
       ..where(parsedSettings)
-      ..addColumns([sumAmount, categories.id, categories.name])
+      ..addColumns([
+        sumAmount,
+        ...categories.$columns,
+      ])
       ..groupBy([categories.id]);
 
     return query.watch().map((event) => event
-        .map((row) => Tuple3<int, String, double>(row.read(categories.id),
-            tryTranslatePreset(row.read(categories.name)), row.read(sumAmount)))
+        .map((row) => Tuple3<int, String, double>(
+            row.read(categories.id),
+            tryTranslatePreset(Category(
+              id: row.read(categories.id),
+              name: row.read(categories.name),
+              isPreset: row.read(categories.isPreset),
+              isExpense: row.read(categories.isExpense),
+            )),
+            row.read(sumAmount)))
         .toList());
   }
 
