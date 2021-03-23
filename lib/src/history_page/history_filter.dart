@@ -143,6 +143,7 @@ class HistoryFilterTextField extends StatefulWidget {
 }
 
 class _HistoryFilterTextFieldState extends State<HistoryFilterTextField> {
+  final textFieldFocusNode = FocusNode();
   TextEditingController _textEditingController;
 
   @override
@@ -156,15 +157,39 @@ class _HistoryFilterTextFieldState extends State<HistoryFilterTextField> {
     return Container(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
       child: TextField(
+        focusNode: textFieldFocusNode,
         controller: _textEditingController,
         decoration: InputDecoration(
           isDense: true,
           prefixIcon: Icon(widget.iconData),
           hintText: LocaleKeys.search.tr(),
           hintStyle: const TextStyle(color: Colors.grey),
+          suffixIcon: IconButton(
+            splashRadius: 0.1,
+            onPressed: () {
+              if (textFieldFocusNode.hasFocus) {
+                _clearTextField();
+              } else {
+                textFieldFocusNode.canRequestFocus = false;
+
+                _clearTextField();
+
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  textFieldFocusNode.canRequestFocus = true;
+                });
+              }
+            },
+            icon: const Icon(Icons.clear),
+          ),
+          suffixStyle: const TextStyle(color: Colors.grey),
         ),
         onChanged: widget.onChanged,
       ),
     );
+  }
+
+  void _clearTextField() {
+    _textEditingController.clear();
+    widget.onChanged(_textEditingController.text);
   }
 }
