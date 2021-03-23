@@ -53,7 +53,6 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
     final month = _currentMonth.copyWith(
         savingsBudget:
             Provider.of<BudgetNotifier>(context, listen: false).savingsBudget);
-    print(month);
     Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .updateMonth(month.toCompanion(true));
@@ -116,7 +115,6 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
             decoration: const InputDecoration(border: InputBorder.none),
             onSubmitted: (valueAsString) {
               final value = double.parse(valueAsString);
-              print(value);
               _setMaxMonthlySavingsBudget(value, max);
               _updateMonthModel();
             },

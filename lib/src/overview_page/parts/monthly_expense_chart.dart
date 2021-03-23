@@ -25,7 +25,8 @@ class MonthlyExpenseChart extends StatelessWidget {
           double total = 0;
           double value = 0;
           if (snapshot.hasData) {
-            total = snapshot.data.month.maxBudget;
+            total = snapshot.data.month.maxBudget +
+                snapshot.data.month.savingsBudget;
             value = snapshot.data.expense;
           }
           return CustomPaint(

@@ -189,21 +189,20 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     final sumAmount = transactions.amount.total();
 
     final expense = await (selectOnly(transactions)
-      ..addColumns([sumAmount])
-      ..where(transactions.isExpense &
-      transactions.date.isSmallerThanValue(currentDate)))
+          ..addColumns([sumAmount])
+          ..where(transactions.isExpense &
+              transactions.date.isSmallerThanValue(currentDate)))
         .map((event) => event.read(sumAmount))
         .getSingle();
 
     final income = await (selectOnly(transactions)
-      ..addColumns([sumAmount])
-      ..where(transactions.isExpense.not() &
-      transactions.date.isSmallerThanValue(currentDate)))
+          ..addColumns([sumAmount])
+          ..where(transactions.isExpense.not() &
+              transactions.date.isSmallerThanValue(currentDate)))
         .map((event) => event.read(sumAmount))
         .getSingle();
 
     return income - expense;
-
   }
 
   /// Returns a [Stream] that watches the transactions table.
@@ -413,15 +412,16 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         .watchSingle()
         .map((row) => row.read(sumAmount));
 
-    final maxBudgetStream = (selectOnly(months)
-          ..addColumns([months.maxBudget])
-          ..where(months.firstDate.isSmallerOrEqualValue(sqlDate) &
-              months.lastDate.isBiggerOrEqualValue(sqlDate)))
-        .watchSingle()
-        .map((row) => row.read(months.maxBudget));
+    final maxBudgetStream = (select(months)
+          ..where((m) =>
+              m.firstDate.isSmallerOrEqualValue(sqlDate) &
+              m.lastDate.isBiggerOrEqualValue(sqlDate)))
+        .watchSingle();
 
     final combinedStream = CombineLatestStream.combine2(
-        maxBudgetStream, expensesStream, (max, exp) => max - exp);
+        maxBudgetStream,
+        expensesStream,
+        (Month max, double exp) => max.maxBudget + max.savingsBudget - exp);
 
     return combinedStream.cast();
   }
@@ -452,12 +452,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     final sqlDate = converter.mapToSql(date);
     final sumAmount = transactions.amount.total();
 
-    final maxBudgetStream = (selectOnly(months)
-          ..addColumns([months.maxBudget])
-          ..where(months.firstDate.isSmallerOrEqualValue(sqlDate) &
-              months.lastDate.isBiggerOrEqualValue(sqlDate)))
-        .watchSingle()
-        .map((row) => row.read(months.maxBudget));
+    final maxBudgetStream = (select(months)
+          ..where((m) =>
+              m.firstDate.isSmallerOrEqualValue(sqlDate) &
+              m.lastDate.isBiggerOrEqualValue(sqlDate)))
+        .watchSingle();
 
     final monthlyExpensesStream = (selectOnly(transactions)
           ..addColumns([sumAmount])
@@ -479,8 +478,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
     final dailyBudgetStream = CombineLatestStream.combine3(
         maxBudgetStream, monthlyExpensesStream, todayExpensesStream,
-        (double max, double m, double t) {
-      return (max - m) / remainingDays - t;
+        (Month max, double m, double t) {
+      return (max.savingsBudget + max.maxBudget - m) / remainingDays - t;
     });
 
     return dailyBudgetStream.cast();
