@@ -91,7 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _isBudgetLoaded = false;
   bool _isLocalizationLoaded = false;
-  bool _arePagesLoaded = false;
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomBar(
@@ -185,26 +184,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loadPages() {
-    if (_arePagesLoaded) return;
-
-    setState(() {
-      _children = [
-        const ProfilePage(),
-        const MonthlyReportsPage(),
-        const SizedBox(),
-        const OverviewPage(),
-        HistoryPage(showFilters: UserSettings.getShowFilterSettings()),
-      ];
-      _arePagesLoaded = true;
-    });
+    _children = [
+      const ProfilePage(),
+      const MonthlyReportsPage(),
+      const SizedBox(),
+      const OverviewPage(),
+      HistoryPage(showFilters: UserSettings.getShowFilterSettings()),
+    ];
   }
 
   Future _initStates() async {
-    _loadBudget();
-    _loadLocalizationAndCurrency();
-    _loadPages();
-
-    // await Future.delayed(const Duration(seconds: 3));
+    await _loadBudget();
+    await _loadLocalizationAndCurrency();
+    await Future.delayed(const Duration(seconds: 3));
   }
 
   PreferredSizeWidget _chooseAppBar(BuildContext context) {
@@ -214,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool _isInitialized() {
-    return _isLocalizationLoaded && _isBudgetLoaded && _arePagesLoaded;
+    return _isLocalizationLoaded && _isBudgetLoaded;
   }
 
   Widget _chooseFloatingActionButton(BuildContext context) {
@@ -260,6 +252,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadPages();
+
     return FutureBuilder(
       future: _isInitialized() ? null : _initStates(),
       builder: (context, snapshot) {
