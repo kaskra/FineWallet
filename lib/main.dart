@@ -196,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future _initStates() async {
     await _loadBudget();
     await _loadLocalizationAndCurrency();
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 5));
   }
 
   PreferredSizeWidget _chooseAppBar(BuildContext context) {
