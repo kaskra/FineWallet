@@ -94,18 +94,18 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _arePagesLoaded = false;
 
   Widget _buildBottomBar() {
-    return FloatingActionButtonBottomAppBar(
+    return FloatingActionButtonBottomBar(
       unselectedColor: Theme.of(context).colorScheme.onSecondary,
       selectedColor: Theme.of(context).colorScheme.onPrimary,
       items: [
-        FloatingActionButtonBottomAppBarItem(
+        FloatingActionButtonBottomAppItem(
             iconData: Icons.person, text: LocaleKeys.nav_me.tr()),
-        FloatingActionButtonBottomAppBarItem(
+        FloatingActionButtonBottomAppItem(
             iconData: Icons.equalizer, text: LocaleKeys.nav_statistics.tr()),
-        FloatingActionButtonBottomAppBarItem(disabled: true),
-        FloatingActionButtonBottomAppBarItem(
+        FloatingActionButtonBottomAppItem(disabled: true),
+        FloatingActionButtonBottomAppItem(
             iconData: Icons.home, text: LocaleKeys.nav_home.tr()),
-        FloatingActionButtonBottomAppBarItem(
+        FloatingActionButtonBottomAppItem(
           iconData: Icons.list,
           text: LocaleKeys.nav_history.tr(),
         ),

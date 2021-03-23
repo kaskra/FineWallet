@@ -9,8 +9,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FloatingActionButtonBottomAppBarItem {
-  FloatingActionButtonBottomAppBarItem(
+class FloatingActionButtonBottomAppItem {
+  FloatingActionButtonBottomAppItem(
       {this.iconData, this.text = "", this.disabled = false});
 
   final IconData iconData;
@@ -18,8 +18,8 @@ class FloatingActionButtonBottomAppBarItem {
   final bool disabled;
 }
 
-class FloatingActionButtonBottomAppBar extends StatefulWidget {
-  const FloatingActionButtonBottomAppBar(
+class FloatingActionButtonBottomBar extends StatefulWidget {
+  const FloatingActionButtonBottomBar(
       {@required this.items,
       @required this.onTabSelected,
       this.selectedIndex,
@@ -29,7 +29,7 @@ class FloatingActionButtonBottomAppBar extends StatefulWidget {
       this.iconSize = 24,
       this.isVisible});
 
-  final List<FloatingActionButtonBottomAppBarItem> items;
+  final List<FloatingActionButtonBottomAppItem> items;
   final ValueChanged<int> onTabSelected;
   final int selectedIndex;
   final Color selectedColor;
@@ -39,12 +39,12 @@ class FloatingActionButtonBottomAppBar extends StatefulWidget {
   final bool isVisible;
 
   @override
-  _FloatingActionButtonBottomAppBarState createState() =>
-      _FloatingActionButtonBottomAppBarState();
+  _FloatingActionButtonBottomBarState createState() =>
+      _FloatingActionButtonBottomBarState();
 }
 
-class _FloatingActionButtonBottomAppBarState
-    extends State<FloatingActionButtonBottomAppBar> {
+class _FloatingActionButtonBottomBarState
+    extends State<FloatingActionButtonBottomBar> {
   int _selectedIndex = 0;
 
   @override
@@ -63,7 +63,7 @@ class _FloatingActionButtonBottomAppBarState
   }
 
   @override
-  void didUpdateWidget(FloatingActionButtonBottomAppBar oldWidget) {
+  void didUpdateWidget(FloatingActionButtonBottomBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     setState(() {
       _selectedIndex = widget.selectedIndex ?? oldWidget.selectedIndex;
@@ -71,7 +71,7 @@ class _FloatingActionButtonBottomAppBarState
   }
 
   Widget _buildTabItem({
-    FloatingActionButtonBottomAppBarItem item,
+    FloatingActionButtonBottomAppItem item,
     int index,
     ValueChanged<int> onPressed,
     bool isDisabled,
