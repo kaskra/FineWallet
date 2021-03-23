@@ -141,10 +141,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future _loadBudget() async {
     if (_isBudgetLoaded) return;
+    _isBudgetLoaded = true;
 
-    setState(() {
-      _isBudgetLoaded = true;
-    });
     final Month m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
@@ -165,9 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Load exchange rates and update currency table in database.
     if (currency != null) {
-      setState(() {
-        _isLocalizationLoaded = true;
-      });
+      _isLocalizationLoaded = true;
 
       await fetchExchangeRates(
               currency.abbrev, allCurrencies.map((c) => c.abbrev).toList())
@@ -196,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future _initStates() async {
     await _loadBudget();
     await _loadLocalizationAndCurrency();
+    setState(() {});
     await Future.delayed(const Duration(seconds: 5));
   }
 
