@@ -1,4 +1,3 @@
-import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
@@ -22,8 +21,9 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
 
   /// Load the current savings and set the overall maximum budget
   Future _loadCurrentSavings() async {
-    final s =  await Provider.of<AppDatabase>(context, listen: false)
-    .transactionDao.getTotalSavings();
+    final s = await Provider.of<AppDatabase>(context, listen: false)
+        .transactionDao
+        .getTotalSavings();
 
     setState(() {
       _currentSavings = s;
@@ -37,7 +37,8 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
     final m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setSavingsBudget(m?.savingsBudget);
+    Provider.of<BudgetNotifier>(context, listen: false)
+        .setSavingsBudget(m?.savingsBudget);
 
     setState(() {
       _currentMonth = m;
@@ -50,7 +51,9 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
     final month = _currentMonth.copyWith(
-        savingsBudget: Provider.of<BudgetNotifier>(context, listen: false).savingsBudget);
+        savingsBudget:
+            Provider.of<BudgetNotifier>(context, listen: false).savingsBudget);
+    print(month);
     Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .updateMonth(month.toCompanion(true));
@@ -72,7 +75,7 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
     Provider.of<BudgetNotifier>(context, listen: false).setSavingsBudget(temp);
   }
 
-    /// Build the center row with slider, suffix and the slider-depending textfield.
+  /// Build the center row with slider, suffix and the slider-depending textfield.
   Widget _buildSliderWithTextInput() {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
@@ -83,7 +86,7 @@ class _SliderItemSavingsState extends State<SliderItemSavings> {
             _ValueSlider(
               onChangeEnd: (value) => _updateMonthModel(),
               onChange: (value) =>
-              _textEditingController.text = value.toStringAsFixed(2),
+                  _textEditingController.text = value.toStringAsFixed(2),
             ),
             Text(
               "${Provider.of<LocalizationNotifier>(context).userCurrency} ",
@@ -190,7 +193,8 @@ class __ValueSliderState extends State<_ValueSlider> {
           // Make sure that max is not smaller than the value to be displayed.
           // Happens while loading the monthly transactions.
           double max = snapshot.hasData ? snapshot.data : 0;
-          if (max < (Provider.of<BudgetNotifier>(context)?.savingsBudget ?? 0)) {
+          if (max <
+              (Provider.of<BudgetNotifier>(context)?.savingsBudget ?? 0)) {
             max = Provider.of<BudgetNotifier>(context).savingsBudget;
           }
 
@@ -212,8 +216,8 @@ class __ValueSliderState extends State<_ValueSlider> {
             onChangeStart: (value) {
               FocusScope.of(context).requestFocus(FocusNode());
             },
-            value:
-            Provider.of<BudgetNotifier>(context, listen: false)?.savingsBudget ??
+            value: Provider.of<BudgetNotifier>(context, listen: false)
+                    ?.savingsBudget ??
                 0,
             max: max,
             divisions: 100,
