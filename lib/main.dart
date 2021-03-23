@@ -91,9 +91,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
+  List<Widget> _children;
 
   bool _isBudgetLoaded = false;
   bool _isLocalizationLoaded = false;
+  bool _arePagesLoaded = false;
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomAppBar(
@@ -161,7 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final Month m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
+    await Provider.of<BudgetNotifier>(context, listen: false)
+        .setBudget(m?.maxBudget);
   }
 
   Future _loadLocalizationAndCurrency() async {
@@ -179,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _isLocalizationLoaded = true;
       });
 
-      fetchExchangeRates(
+      await fetchExchangeRates(
               currency.abbrev, allCurrencies.map((c) => c.abbrev).toList())
           .then((rates) async {
         await Provider.of<AppDatabase>(context, listen: false)
@@ -188,64 +191,95 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
       UserSettings.setInputCurrency(currency.id);
-      Provider.of<LocalizationNotifier>(context, listen: false)
+      await Provider.of<LocalizationNotifier>(context, listen: false)
           .setUserCurrencySymbol(currency.symbol);
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Future _initStates() async {
+    logMsg(_isBudgetLoaded);
+    logMsg(_isLocalizationLoaded);
+    logMsg(_arePagesLoaded);
     if (!_isBudgetLoaded) {
       _loadBudget();
     }
     if (!_isLocalizationLoaded) {
       _loadLocalizationAndCurrency();
     }
+    if (!_arePagesLoaded) {
+      setState(() {
+        _children = [
+          const ProfilePage(),
+          const MonthlyReportsPage(),
+          const SizedBox(),
+          const OverviewPage(),
+          _buildHistory(),
+        ];
+        _arePagesLoaded = true;
+      });
+    }
+    await Future.delayed(const Duration(seconds: 3));
+  }
 
-    final children = [
-      const ProfilePage(),
-      const MonthlyReportsPage(),
-      const SizedBox(),
-      const OverviewPage(),
-      _buildHistory(),
-    ];
-
-    return Scaffold(
-      appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
-      bottomNavigationBar: _buildBottomBar(),
-      body: WillPopScope(
-        onWillPop: () async {
-          Provider.of<NavigationNotifier>(context, listen: false).goBack();
-          return false;
-        },
-        child: AnimatedSwitcher(
-            transitionBuilder: (child, animation) {
-              final direction =
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _isInitialized() ? null : _initStates(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingPage();
+          } else {
+            return Scaffold(
+              appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
+              bottomNavigationBar: _buildBottomBar(),
+              body: WillPopScope(
+                onWillPop: () async {
                   Provider.of<NavigationNotifier>(context, listen: false)
-                      .navigationDirection;
-              var begin = 1.0;
-              if (direction == NavigationDirection.right) {
-                begin = -1.0;
-              }
+                      .goBack();
+                  return false;
+                },
+                child: AnimatedSwitcher(
+                    transitionBuilder: (child, animation) =>
+                        transition(context, animation, child),
+                    duration: const Duration(milliseconds: 150),
+                    child: _children[
+                        Provider.of<NavigationNotifier>(context).page]),
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              floatingActionButton: chooseFloatingActionButton(context),
+            );
+          }
+        });
+  }
 
-              final offsetAnimation = Tween<Offset>(
-                      begin: Offset(begin, 0.0), end: const Offset(0.0, 0.0))
-                  .animate(animation);
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
-            duration: const Duration(milliseconds: 150),
-            child: children[Provider.of<NavigationNotifier>(context).page]),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: MediaQuery.of(context).viewInsets.bottom >= 50
-          ? const SizedBox()
-          : SlidingButtonMenu(
-              onMenuFunction: _addTransaction,
-              tapCallback: _navCallback,
-            ),
+  bool _isInitialized() =>
+      _isLocalizationLoaded && _isBudgetLoaded && _arePagesLoaded;
+
+  Widget chooseFloatingActionButton(BuildContext context) {
+    return MediaQuery.of(context).viewInsets.bottom >= 50
+        ? const SizedBox()
+        : SlidingButtonMenu(
+            onMenuFunction: _addTransaction,
+            tapCallback: _navCallback,
+          );
+  }
+
+  SlideTransition transition(
+      BuildContext context, Animation<double> animation, Widget child) {
+    final direction = Provider.of<NavigationNotifier>(context, listen: false)
+        .navigationDirection;
+    var begin = 1.0;
+    if (direction == NavigationDirection.right) {
+      begin = -1.0;
+    }
+
+    final offsetAnimation =
+        Tween<Offset>(begin: Offset(begin, 0.0), end: const Offset(0.0, 0.0))
+            .animate(animation);
+    return SlideTransition(
+      position: offsetAnimation,
+      child: child,
     );
   }
 
@@ -261,5 +295,19 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _showBottomBar = showNavBar;
     });
+  }
+}
+
+class LoadingPage extends StatelessWidget {
+  const LoadingPage({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Colors.orange,
+      body: Center(child: Icon(Icons.title)),
+    );
   }
 }
