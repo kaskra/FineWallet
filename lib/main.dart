@@ -9,10 +9,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/budget_notifier.dart';
-import 'package:FineWallet/data/providers/localization_notifier.dart';
-import 'package:FineWallet/data/providers/navigation_notifier.dart';
-import 'package:FineWallet/data/providers/theme_notifier.dart';
+import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
@@ -89,7 +86,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _isSelectionModeActive = false;
   bool _showBottomBar = true;
   List<Widget> _children;
 
@@ -117,26 +113,14 @@ class _MyHomePageState extends State<MyHomePage> {
       onTabSelected: (int index) {
         if (index !=
             Provider.of<NavigationNotifier>(context, listen: false).page) {
-          setState(() {
-            _isSelectionModeActive = false;
-          });
+          Provider.of<SelectionModeNotifier>(context, listen: false)
+              .setMode(SelectionMode.off);
           Provider.of<NavigationNotifier>(context, listen: false)
               .setPage(index);
         }
       },
       selectedIndex: Provider.of<NavigationNotifier>(context).page,
       isVisible: _showBottomBar,
-    );
-  }
-
-  Widget _buildHistory() {
-    return HistoryPage(
-      onChangeSelectionMode: (b) {
-        setState(() {
-          _isSelectionModeActive = b;
-        });
-      },
-      showFilters: UserSettings.getShowFilterSettings(),
     );
   }
 
@@ -156,7 +140,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
 
-  Future<void> _loadBudget() async {
+  Future _loadBudget() async {
+    if (_isBudgetLoaded) return;
+
     setState(() {
       _isBudgetLoaded = true;
     });
@@ -168,6 +154,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future _loadLocalizationAndCurrency() async {
+    if (_isLocalizationLoaded) return;
+
     final allCurrencies = await Provider.of<AppDatabase>(context, listen: false)
         .currencyDao
         .getAllCurrencies();
@@ -196,67 +184,40 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _loadPages() {
+    if (_arePagesLoaded) return;
+
+    setState(() {
+      _children = [
+        const ProfilePage(),
+        const MonthlyReportsPage(),
+        const SizedBox(),
+        const OverviewPage(),
+        HistoryPage(showFilters: UserSettings.getShowFilterSettings()),
+      ];
+      _arePagesLoaded = true;
+    });
+  }
+
   Future _initStates() async {
-    logMsg(_isBudgetLoaded);
-    logMsg(_isLocalizationLoaded);
-    logMsg(_arePagesLoaded);
-    if (!_isBudgetLoaded) {
-      _loadBudget();
-    }
-    if (!_isLocalizationLoaded) {
-      _loadLocalizationAndCurrency();
-    }
-    if (!_arePagesLoaded) {
-      setState(() {
-        _children = [
-          const ProfilePage(),
-          const MonthlyReportsPage(),
-          const SizedBox(),
-          const OverviewPage(),
-          _buildHistory(),
-        ];
-        _arePagesLoaded = true;
-      });
-    }
-    await Future.delayed(const Duration(seconds: 3));
+    _loadBudget();
+    _loadLocalizationAndCurrency();
+    _loadPages();
+
+    // await Future.delayed(const Duration(seconds: 3));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _isInitialized() ? null : _initStates(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingPage();
-          } else {
-            return Scaffold(
-              appBar: _isSelectionModeActive ? null : _buildDefaultAppBar(),
-              bottomNavigationBar: _buildBottomBar(),
-              body: WillPopScope(
-                onWillPop: () async {
-                  Provider.of<NavigationNotifier>(context, listen: false)
-                      .goBack();
-                  return false;
-                },
-                child: AnimatedSwitcher(
-                    transitionBuilder: (child, animation) =>
-                        transition(context, animation, child),
-                    duration: const Duration(milliseconds: 150),
-                    child: _children[
-                        Provider.of<NavigationNotifier>(context).page]),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              floatingActionButton: chooseFloatingActionButton(context),
-            );
-          }
-        });
+  PreferredSizeWidget _chooseAppBar(BuildContext context) {
+    return Provider.of<SelectionModeNotifier>(context).isOn
+        ? null
+        : _buildDefaultAppBar();
   }
 
-  bool _isInitialized() =>
-      _isLocalizationLoaded && _isBudgetLoaded && _arePagesLoaded;
+  bool _isInitialized() {
+    return _isLocalizationLoaded && _isBudgetLoaded && _arePagesLoaded;
+  }
 
-  Widget chooseFloatingActionButton(BuildContext context) {
+  Widget _chooseFloatingActionButton(BuildContext context) {
     return MediaQuery.of(context).viewInsets.bottom >= 50
         ? const SizedBox()
         : SlidingButtonMenu(
@@ -296,6 +257,39 @@ class _MyHomePageState extends State<MyHomePage> {
       _showBottomBar = showNavBar;
     });
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _isInitialized() ? null : _initStates(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const LoadingPage();
+        } else {
+          return Scaffold(
+            appBar: _chooseAppBar(context),
+            bottomNavigationBar: _buildBottomBar(),
+            body: WillPopScope(
+              onWillPop: () async {
+                Provider.of<NavigationNotifier>(context, listen: false)
+                    .goBack();
+                return false;
+              },
+              child: AnimatedSwitcher(
+                transitionBuilder: (child, animation) =>
+                    transition(context, animation, child),
+                duration: const Duration(milliseconds: 150),
+                child: _children[Provider.of<NavigationNotifier>(context).page],
+              ),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: _chooseFloatingActionButton(context),
+          );
+        }
+      },
+    );
+  }
 }
 
 class LoadingPage extends StatelessWidget {
@@ -303,6 +297,7 @@ class LoadingPage extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
+  // TODO animation
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

@@ -8,6 +8,7 @@
 
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/providers.dart';
+import 'package:FineWallet/data/providers/selection_mode_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -27,6 +28,9 @@ List<SingleChildWidget> independentServices = [
   ),
   ChangeNotifierProvider<BudgetNotifier>(
     create: (_) => BudgetNotifier(),
+  ),
+  ChangeNotifierProvider<SelectionModeNotifier>(
+    create: (_) => SelectionModeNotifier(),
   ),
 ];
 

@@ -4,6 +4,7 @@ import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
@@ -29,14 +30,12 @@ part 'history_month_divider.dart';
 ///
 class HistoryPage extends StatefulWidget {
   final TransactionFilterSettings filterSettings;
-  final void Function(bool) onChangeSelectionMode;
   final bool showFilters;
 
   const HistoryPage({
     Key key,
     this.filterSettings,
     this.showFilters = false,
-    @required this.onChangeSelectionMode,
   }) : super(key: key);
 
   @override
@@ -377,9 +376,9 @@ class _HistoryPageState extends State<HistoryPage> {
   /// In selection mode the displayed app bar changes to the selection app bar.
   ///
   Future _checkSelectionMode() async {
-    if (widget.onChangeSelectionMode != null) {
-      widget.onChangeSelectionMode(_isSelectionActive);
-    }
+    final SelectionMode m =
+        _isSelectionActive ? SelectionMode.on : SelectionMode.off;
+    Provider.of<SelectionModeNotifier>(context, listen: false).setMode(m);
   }
 
   /// Deletes the selected items from database. Close selection mode afterwards.

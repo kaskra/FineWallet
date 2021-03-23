@@ -77,7 +77,6 @@ class WeekOverviewTimeline extends StatelessWidget {
             Text(LocaleKeys.history_page_expenses_on.tr(args: [todayString])),
       ),
       body: HistoryPage(
-        onChangeSelectionMode: (s) {},
         filterSettings: TransactionFilterSettings(day: date, expenses: true),
       ),
     );
