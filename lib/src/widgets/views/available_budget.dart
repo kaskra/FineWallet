@@ -11,14 +11,9 @@ class AvailableBudgetView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<double>(
-      stream:
-          Provider.of<AppDatabase>(context).transactionDao.watchTotalSavings(),
-      builder: (context, snapshot) {
-        double maxBudget = snapshot.data ?? 0;
-        maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
-        return AmountString(maxBudget, textStyle: textStyle);
-      },
-    );
+    double maxBudget = 0;
+    maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
+    maxBudget += Provider.of<BudgetNotifier>(context)?.savingsBudget ?? 0;
+    return AmountString(maxBudget, textStyle: textStyle);
   }
 }
