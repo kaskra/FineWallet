@@ -1,5 +1,6 @@
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/profile_page/page.dart';
+import 'package:FineWallet/src/profile_page/parts/slider_item_savings.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         children: <Widget>[
           SliderItem(),
+          SliderItemSavings(),
           AvailableBudgetItem(),
           ExpectedSavingsItem(),
         ],

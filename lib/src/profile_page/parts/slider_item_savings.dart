@@ -1,22 +1,35 @@
-import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
-import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:FineWallet/data/providers/providers.dart';
+import 'package:FineWallet/src/widgets/information_row.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SliderItem extends StatefulWidget {
+class SliderItemSavings extends StatefulWidget {
   @override
-  _SliderItemState createState() => _SliderItemState();
+  _SliderItemSavingsState createState() => _SliderItemSavingsState();
 }
 
-class _SliderItemState extends State<SliderItem> {
-  /// Current month entity, holding the current available budget of the month.
+class _SliderItemSavingsState extends State<SliderItemSavings> {
+  /// Current saving balance
+  double _currentSavings;
+
   Month _currentMonth;
 
   /// The text editor controller for the slider-depending textfield.
   final TextEditingController _textEditingController = TextEditingController();
+
+  /// Load the current savings and set the overall maximum budget
+  Future _loadCurrentSavings() async {
+    final s = await Provider.of<AppDatabase>(context, listen: false)
+        .transactionDao
+        .getTotalSavings();
+
+    setState(() {
+      _currentSavings = s;
+    });
+  }
 
   /// Load the current month and set the overall maximum budget,
   /// the current maximum available budget, update the parent by
@@ -25,12 +38,13 @@ class _SliderItemState extends State<SliderItem> {
     final m = await Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .getCurrentMonth();
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(m?.maxBudget);
+    Provider.of<BudgetNotifier>(context, listen: false)
+        .setSavingsBudget(m?.savingsBudget);
 
     setState(() {
       _currentMonth = m;
     });
-    _textEditingController.text = m?.maxBudget?.toStringAsFixed(2);
+    _textEditingController.text = m?.savingsBudget?.toStringAsFixed(2);
   }
 
   /// Update the current month by updating the current monthly available budget in the entity.
@@ -38,10 +52,27 @@ class _SliderItemState extends State<SliderItem> {
   /// Then update the entity in the database.
   Future _updateMonthModel() async {
     final month = _currentMonth.copyWith(
-        maxBudget: Provider.of<BudgetNotifier>(context, listen: false).budget);
+        savingsBudget:
+            Provider.of<BudgetNotifier>(context, listen: false).savingsBudget);
     Provider.of<AppDatabase>(context, listen: false)
         .monthDao
         .updateMonth(month.toCompanion(true));
+  }
+
+  /// Set the maximum available budget.
+  ///
+  /// Clamp the value to [0, max] and
+  /// update the parent by calling onChanged event callback.
+  void _setMaxMonthlySavingsBudget(double value, double max) {
+    double temp = value;
+    if (temp >= max) {
+      temp = max;
+    } else if (temp < 0) {
+      temp = 0;
+    }
+
+    _textEditingController.text = temp.toStringAsFixed(2);
+    Provider.of<BudgetNotifier>(context, listen: false).setSavingsBudget(temp);
   }
 
   /// Build the center row with slider, suffix and the slider-depending textfield.
@@ -52,8 +83,8 @@ class _SliderItemState extends State<SliderItem> {
         children: [
           InformationRow(
               padding:
-              const EdgeInsets.only(bottom: 0.0, left: 8.0, right: 8.0),
-              text: Text("Monthly Budget:", style: const TextStyle(fontSize: 14)),
+                  const EdgeInsets.only(bottom: 0.0, left: 8.0, right: 8.0),
+              text: Text("Savings:", style: const TextStyle(fontSize: 14)),
               value: Container()),
           Align(
             alignment: Alignment.centerRight,
@@ -77,22 +108,6 @@ class _SliderItemState extends State<SliderItem> {
     );
   }
 
-  /// Set the maximum available budget.
-  ///
-  /// Clamp the value to [0, max] and
-  /// update the parent by calling onChanged event callback.
-  void _setMaxMonthlyBudget(double value, double max) {
-    double temp = value;
-    if (temp >= max) {
-      temp = max;
-    } else if (temp < 0) {
-      temp = 0;
-    }
-
-    _textEditingController.text = temp.toStringAsFixed(2);
-    Provider.of<BudgetNotifier>(context, listen: false).setBudget(temp);
-  }
-
   /// The depending textfield shows the current value of the slider.
   ///
   /// It can be changed by keyboard input to a custom value.
@@ -102,7 +117,7 @@ class _SliderItemState extends State<SliderItem> {
       child: StreamBuilder(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
-            .watchMonthlyIncome(today()),
+            .watchTotalSavings(),
         builder: (context, AsyncSnapshot<double> snapshot) {
           final double max = snapshot.hasData ? snapshot.data : 0;
 
@@ -110,7 +125,7 @@ class _SliderItemState extends State<SliderItem> {
             decoration: const InputDecoration(border: InputBorder.none),
             onSubmitted: (valueAsString) {
               final value = double.parse(valueAsString);
-              _setMaxMonthlyBudget(value, max);
+              _setMaxMonthlySavingsBudget(value, max);
               _updateMonthModel();
             },
             onTap: () {
@@ -133,9 +148,14 @@ class _SliderItemState extends State<SliderItem> {
       _loadCurrentMonth();
     }
 
+    if (_currentSavings == null) {
+      _loadCurrentSavings();
+    }
+
     return _buildSliderWithTextInput();
   }
 }
+
 //-------------------------------------------------------------------
 class _ValueSlider extends StatefulWidget {
   const _ValueSlider({this.onChangeEnd, this.onChange});
@@ -157,32 +177,33 @@ class __ValueSliderState extends State<_ValueSlider> {
         .monthDao
         .getCurrentMonth();
     Provider.of<BudgetNotifier>(context, listen: false)
-        .setBudget(month?.maxBudget);
+        .setSavingsBudget(month?.savingsBudget);
     setState(() {
       _loaded = true;
     });
   }
 
-  /// Build the slider, which calls sets the current maximum budget when getting changed.
+  /// Build the slider, which calls the amount of savings that the user wants to use this month
   ///
   /// When the change ends, the database is updated.
   /// When the change starts, a new focus node is set, to force the keyboard to be closed.
   @override
   Widget build(BuildContext context) {
     if (!_loaded) _loadCurrentBudget();
-
+    //TODO
     return Expanded(
       flex: 5,
       child: StreamBuilder(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
-            .watchMonthlyIncome(today()),
+            .watchTotalSavings(),
         builder: (context, AsyncSnapshot<double> snapshot) {
           // Make sure that max is not smaller than the value to be displayed.
           // Happens while loading the monthly transactions.
           double max = snapshot.hasData ? snapshot.data : 0;
-          if (max < (Provider.of<BudgetNotifier>(context)?.budget ?? 0)) {
-            max = Provider.of<BudgetNotifier>(context).budget;
+          if (max <
+              (Provider.of<BudgetNotifier>(context)?.savingsBudget ?? 0)) {
+            max = Provider.of<BudgetNotifier>(context).savingsBudget;
           }
 
           return Slider(
@@ -191,21 +212,21 @@ class __ValueSliderState extends State<_ValueSlider> {
                 widget.onChangeEnd(value);
               }
               Provider.of<BudgetNotifier>(context, listen: false)
-                  .setBudget(value);
+                  .setSavingsBudget(value);
             },
             onChanged: (value) {
               if (widget.onChange != null) {
                 widget.onChange(value);
               }
               Provider.of<BudgetNotifier>(context, listen: false)
-                  .setBudget(value);
+                  .setSavingsBudget(value);
             },
             onChangeStart: (value) {
               FocusScope.of(context).requestFocus(FocusNode());
             },
-            value:
-                Provider.of<BudgetNotifier>(context, listen: false)?.budget ??
-                    0,
+            value: Provider.of<BudgetNotifier>(context, listen: false)
+                    ?.savingsBudget ??
+                0,
             max: max,
             divisions: 100,
           );

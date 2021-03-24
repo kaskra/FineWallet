@@ -1330,11 +1330,13 @@ class $SubcategoriesTable extends Subcategories
 class Month extends DataClass implements Insertable<Month> {
   final int id;
   final double maxBudget;
+  final double savingsBudget;
   final DateTime firstDate;
   final DateTime lastDate;
   Month(
       {@required this.id,
       @required this.maxBudget,
+      @required this.savingsBudget,
       @required this.firstDate,
       @required this.lastDate});
   factory Month.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -1347,6 +1349,8 @@ class Month extends DataClass implements Insertable<Month> {
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       maxBudget: doubleType
           .mapFromDatabaseResponse(data['${effectivePrefix}max_budget']),
+      savingsBudget: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}savings_budget']),
       firstDate: $MonthsTable.$converter0.mapToDart(stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}first_date'])),
       lastDate: $MonthsTable.$converter1.mapToDart(stringType
@@ -1361,6 +1365,9 @@ class Month extends DataClass implements Insertable<Month> {
     }
     if (!nullToAbsent || maxBudget != null) {
       map['max_budget'] = Variable<double>(maxBudget);
+    }
+    if (!nullToAbsent || savingsBudget != null) {
+      map['savings_budget'] = Variable<double>(savingsBudget);
     }
     if (!nullToAbsent || firstDate != null) {
       final converter = $MonthsTable.$converter0;
@@ -1379,6 +1386,9 @@ class Month extends DataClass implements Insertable<Month> {
       maxBudget: maxBudget == null && nullToAbsent
           ? const Value.absent()
           : Value(maxBudget),
+      savingsBudget: savingsBudget == null && nullToAbsent
+          ? const Value.absent()
+          : Value(savingsBudget),
       firstDate: firstDate == null && nullToAbsent
           ? const Value.absent()
           : Value(firstDate),
@@ -1394,6 +1404,7 @@ class Month extends DataClass implements Insertable<Month> {
     return Month(
       id: serializer.fromJson<int>(json['id']),
       maxBudget: serializer.fromJson<double>(json['maxBudget']),
+      savingsBudget: serializer.fromJson<double>(json['savingsBudget']),
       firstDate: serializer.fromJson<DateTime>(json['firstDate']),
       lastDate: serializer.fromJson<DateTime>(json['lastDate']),
     );
@@ -1404,16 +1415,22 @@ class Month extends DataClass implements Insertable<Month> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'maxBudget': serializer.toJson<double>(maxBudget),
+      'savingsBudget': serializer.toJson<double>(savingsBudget),
       'firstDate': serializer.toJson<DateTime>(firstDate),
       'lastDate': serializer.toJson<DateTime>(lastDate),
     };
   }
 
   Month copyWith(
-          {int id, double maxBudget, DateTime firstDate, DateTime lastDate}) =>
+          {int id,
+          double maxBudget,
+          double savingsBudget,
+          DateTime firstDate,
+          DateTime lastDate}) =>
       Month(
         id: id ?? this.id,
         maxBudget: maxBudget ?? this.maxBudget,
+        savingsBudget: savingsBudget ?? this.savingsBudget,
         firstDate: firstDate ?? this.firstDate,
         lastDate: lastDate ?? this.lastDate,
       );
@@ -1422,6 +1439,7 @@ class Month extends DataClass implements Insertable<Month> {
     return (StringBuffer('Month(')
           ..write('id: $id, ')
           ..write('maxBudget: $maxBudget, ')
+          ..write('savingsBudget: $savingsBudget, ')
           ..write('firstDate: $firstDate, ')
           ..write('lastDate: $lastDate')
           ..write(')'))
@@ -1429,14 +1447,19 @@ class Month extends DataClass implements Insertable<Month> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(maxBudget.hashCode, $mrjc(firstDate.hashCode, lastDate.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          maxBudget.hashCode,
+          $mrjc(savingsBudget.hashCode,
+              $mrjc(firstDate.hashCode, lastDate.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Month &&
           other.id == this.id &&
           other.maxBudget == this.maxBudget &&
+          other.savingsBudget == this.savingsBudget &&
           other.firstDate == this.firstDate &&
           other.lastDate == this.lastDate);
 }
@@ -1444,31 +1467,37 @@ class Month extends DataClass implements Insertable<Month> {
 class MonthsCompanion extends UpdateCompanion<Month> {
   final Value<int> id;
   final Value<double> maxBudget;
+  final Value<double> savingsBudget;
   final Value<DateTime> firstDate;
   final Value<DateTime> lastDate;
   const MonthsCompanion({
     this.id = const Value.absent(),
     this.maxBudget = const Value.absent(),
+    this.savingsBudget = const Value.absent(),
     this.firstDate = const Value.absent(),
     this.lastDate = const Value.absent(),
   });
   MonthsCompanion.insert({
     this.id = const Value.absent(),
     @required double maxBudget,
+    @required double savingsBudget,
     @required DateTime firstDate,
     @required DateTime lastDate,
   })  : maxBudget = Value(maxBudget),
+        savingsBudget = Value(savingsBudget),
         firstDate = Value(firstDate),
         lastDate = Value(lastDate);
   static Insertable<Month> custom({
     Expression<int> id,
     Expression<double> maxBudget,
+    Expression<double> savingsBudget,
     Expression<String> firstDate,
     Expression<String> lastDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (maxBudget != null) 'max_budget': maxBudget,
+      if (savingsBudget != null) 'savings_budget': savingsBudget,
       if (firstDate != null) 'first_date': firstDate,
       if (lastDate != null) 'last_date': lastDate,
     });
@@ -1477,11 +1506,13 @@ class MonthsCompanion extends UpdateCompanion<Month> {
   MonthsCompanion copyWith(
       {Value<int> id,
       Value<double> maxBudget,
+      Value<double> savingsBudget,
       Value<DateTime> firstDate,
       Value<DateTime> lastDate}) {
     return MonthsCompanion(
       id: id ?? this.id,
       maxBudget: maxBudget ?? this.maxBudget,
+      savingsBudget: savingsBudget ?? this.savingsBudget,
       firstDate: firstDate ?? this.firstDate,
       lastDate: lastDate ?? this.lastDate,
     );
@@ -1495,6 +1526,9 @@ class MonthsCompanion extends UpdateCompanion<Month> {
     }
     if (maxBudget.present) {
       map['max_budget'] = Variable<double>(maxBudget.value);
+    }
+    if (savingsBudget.present) {
+      map['savings_budget'] = Variable<double>(savingsBudget.value);
     }
     if (firstDate.present) {
       final converter = $MonthsTable.$converter0;
@@ -1512,6 +1546,7 @@ class MonthsCompanion extends UpdateCompanion<Month> {
     return (StringBuffer('MonthsCompanion(')
           ..write('id: $id, ')
           ..write('maxBudget: $maxBudget, ')
+          ..write('savingsBudget: $savingsBudget, ')
           ..write('firstDate: $firstDate, ')
           ..write('lastDate: $lastDate')
           ..write(')'))
@@ -1541,6 +1576,17 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
         $customConstraints: 'CHECK (max_budget >= 0)');
   }
 
+  final VerificationMeta _savingsBudgetMeta =
+      const VerificationMeta('savingsBudget');
+  GeneratedRealColumn _savingsBudget;
+  @override
+  GeneratedRealColumn get savingsBudget =>
+      _savingsBudget ??= _constructSavingsBudget();
+  GeneratedRealColumn _constructSavingsBudget() {
+    return GeneratedRealColumn('savings_budget', $tableName, false,
+        $customConstraints: 'CHECK (savings_budget >= 0)');
+  }
+
   final VerificationMeta _firstDateMeta = const VerificationMeta('firstDate');
   GeneratedTextColumn _firstDate;
   @override
@@ -1566,7 +1612,8 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, maxBudget, firstDate, lastDate];
+  List<GeneratedColumn> get $columns =>
+      [id, maxBudget, savingsBudget, firstDate, lastDate];
   @override
   $MonthsTable get asDslTable => this;
   @override
@@ -1586,6 +1633,14 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
           maxBudget.isAcceptableOrUnknown(data['max_budget'], _maxBudgetMeta));
     } else if (isInserting) {
       context.missing(_maxBudgetMeta);
+    }
+    if (data.containsKey('savings_budget')) {
+      context.handle(
+          _savingsBudgetMeta,
+          savingsBudget.isAcceptableOrUnknown(
+              data['savings_budget'], _savingsBudgetMeta));
+    } else if (isInserting) {
+      context.missing(_savingsBudgetMeta);
     }
     context.handle(_firstDateMeta, const VerificationResult.success());
     context.handle(_lastDateMeta, const VerificationResult.success());
