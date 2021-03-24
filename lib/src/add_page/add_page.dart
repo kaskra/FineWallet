@@ -231,18 +231,14 @@ class _AddPageState extends State<AddPage> {
   /// `transactions`.
   ///
   Future _addNewTransaction() async {
-    final tx = Transaction(
-      id: null,
+    final tx = BaseTransactionsCompanion.insert(
       date: _date,
       isExpense: widget.isExpense,
-      isRecurring: _isRecurring,
       amount: _amount,
       originalAmount: _amount,
       exchangeRate: null,
       monthId: null,
       subcategoryId: _subcategory.id,
-      recurrenceType: _isRecurring ? _recurrence.type : null,
-      until: _untilDate,
       currencyId: _inputCurrencyId,
       label: _labelController.text.trim(),
     );
@@ -260,19 +256,15 @@ class _AddPageState extends State<AddPage> {
   /// as the original transaction.
   ///
   Future _updateTransaction() async {
-    final tx = Transaction(
+    final tx = BaseTransactionsCompanion.insert(
       id: _transaction.tx.originalId,
       date: _date,
       isExpense: widget.isExpense,
-      isRecurring: _isRecurring,
       amount: _amount,
       originalAmount: _amount,
       exchangeRate: null,
       monthId: null,
       subcategoryId: _subcategory.id,
-      recurrenceType: _isRecurring ? _recurrence.type : null,
-      until: _untilDate,
-      originalId: _transaction.tx.originalId,
       currencyId: _inputCurrencyId,
       label: _labelController.text.trim(),
     );

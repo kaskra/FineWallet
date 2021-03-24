@@ -1,32 +1,52 @@
 import 'package:FineWallet/data/category_dao.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:flutter/material.dart';
 import 'package:moor/moor.dart';
 
 import 'generated/locale_keys.g.dart';
 
 var _cat1 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_various, isPreset: const Value(true));
+    name: LocaleKeys.moor_various,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.blur_on.codePoint);
 var _cat2 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_myself, isPreset: const Value(true));
+    name: LocaleKeys.moor_myself,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.person.codePoint);
 var _cat3 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_food, isPreset: const Value(true));
+    name: LocaleKeys.moor_food,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.restaurant.codePoint);
 var _cat4 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_home, isPreset: const Value(true));
+    name: LocaleKeys.moor_home,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.home.codePoint);
 var _cat5 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_spare_time, isPreset: const Value(true));
+    name: LocaleKeys.moor_spare_time,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.rowing.codePoint);
 var _cat6 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_transport, isPreset: const Value(true));
+    name: LocaleKeys.moor_transport,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.time_to_leave.codePoint);
 var _cat7 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_medical, isPreset: const Value(true));
+    name: LocaleKeys.moor_medical,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.healing.codePoint);
 var _cat8 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_clothes, isPreset: const Value(true));
+    name: LocaleKeys.moor_clothes,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.local_mall.codePoint);
 var _cat9 = CategoriesCompanion.insert(
-    name: LocaleKeys.moor_gifts, isPreset: const Value(true));
+    name: LocaleKeys.moor_gifts,
+    isPreset: const Value(true),
+    iconCodePoint: Icons.cake.codePoint);
 var _cat10 = CategoriesCompanion.insert(
     name: LocaleKeys.moor_income,
     isPreset: const Value(true),
-    isExpense: const Value(false));
+    isExpense: const Value(false),
+    iconCodePoint: Icons.attach_money.codePoint);
 
 List<SubcategoriesCompanion> _subcategories1 = [
   SubcategoriesCompanion.insert(
@@ -350,6 +370,8 @@ MonthsCompanion currentMonth = MonthsCompanion.insert(
 );
 
 List<RecurrenceTypesCompanion> recurrenceTypes = [
+  // TODO name localization
+  RecurrenceTypesCompanion.insert(name: "Once"),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_daily),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_weekly),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_monthly),

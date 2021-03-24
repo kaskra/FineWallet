@@ -1,0 +1,23 @@
+import 'tables.moor';
+
+transactions: SELECT * FROM fullTransactions;
+deleteTxById: DELETE FROM baseTransactions WHERE id=:id;
+deleteTxsByIds: DELETE FROM baseTransactions WHERE id IN :ids;
+totalSavings: SELECT (SELECT SUM(amount) FROM fullTransactions WHERE NOT isExpense AND date < :date) - (SELECT SUM(amount) FROM fullTransactions WHERE isExpense AND date < :date);
+
+transactionsWithFilter: SELECT * FROM fullTransactions WHERE
+
+-- sumTransactionsByCategory:
+
+nLatestTransactions: SELECT t.**, cc.**, s.**, c.**  FROM baseTransactions t,categories cc, subcategories s, currencies c
+    WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id
+    ORDER BY t.id DESC LIMIT :N;
+
+lastWeeksTransactions: SELECT date, SUM(amount) AS sumAmount FROM fullTransactions
+    WHERE isExpense AND date > DATE('now', '-7 days')
+    GROUP BY date
+    LIMIT 7;
+
+transactionsLabels: SELECT DISTINCT label FROM baseTransactions
+    WHERE isExpense=:isExpense AND NOT label = ''
+    ORDER BY label ASC;

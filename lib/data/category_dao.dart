@@ -18,20 +18,28 @@ class CategoryWithSubs {
   CategoryWithSubs(this.category, this.subcategories);
 }
 
-@UseDao(tables: [Categories, Subcategories])
+@UseDao(
+  tables: [
+    Categories,
+    Subcategories,
+  ],
+  include: {
+    "moor_files/category_queries.moor",
+  },
+)
 class CategoryDao extends DatabaseAccessor<AppDatabase>
     with _$CategoryDaoMixin {
   final AppDatabase db;
 
   CategoryDao(this.db) : super(db);
 
-  Future<List<Category>> getAllCategories() => select(categories).get();
+  Future<List<Category>> getAllCategories() => allCategories().get();
 
   Future<List<Category>> getAllCategoriesByType({@required bool isExpense}) =>
-      (select(categories)..where((c) => c.isExpense.equals(isExpense))).get();
+      categoriesByType(isExpense).get();
 
   Stream<List<Category>> watchAllCategoriesByType({@required bool isExpense}) =>
-      (select(categories)..where((c) => c.isExpense.equals(isExpense))).watch();
+      categoriesByType(isExpense).watch();
 
   Future insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
@@ -44,22 +52,21 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   Future deleteCategoryWithSubcategories(int id) {
     return transaction(() async {
-      await (delete(subcategories)..where((s) => s.categoryId.equals(id))).go();
-      await (delete(categories)..where((c) => c.id.equals(id))).go();
+      // await (delete(subcategories)..where((s) => s.categoryId.equals(id))).go();
+      deleteCustomCategory(id);
     });
   }
 
-  Future<List<Subcategory>> getAllSubcategories() =>
-      select(subcategories).get();
+  Future<List<Subcategory>> getAllSubcategories() => allSubcategories().get();
 
   Future<List<Subcategory>> getAllSubcategoriesOf(int id) =>
-      (select(subcategories)..where((s) => s.categoryId.equals(id))).get();
+      allSubcategoriesOfCategory(id).get();
 
   Stream<List<Subcategory>> watchAllSubcategoriesOf(int id) =>
-      (select(subcategories)..where((s) => s.categoryId.equals(id))).watch();
+      allSubcategoriesOfCategory(id).watch();
 
   Stream<List<Subcategory>> watchAllSubcategories() =>
-      select(subcategories).watch();
+      allSubcategories().watch();
 
   Future insertSubcategory(Insertable<Subcategory> subcategory) =>
       into(subcategories).insert(subcategory);

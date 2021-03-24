@@ -1,0 +1,5 @@
+import 'tables.moor';
+
+allCurrencies: SELECT * FROM currencies ORDER BY abbrev ASC;
+currencyById: SELECT * FROM currencies WHERE id=:id;
+userCurrency: SELECT currencies.* FROM currencies, userProfiles WHERE currencies.id = userProfiles.currencyId;

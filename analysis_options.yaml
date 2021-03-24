@@ -12,6 +12,8 @@ analyzer:
     dead_code: error
   exclude:
     - "lib/**/*.g.dart"
+  plugins:
+    - moor
 
 
 linter:

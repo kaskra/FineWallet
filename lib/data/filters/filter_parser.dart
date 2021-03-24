@@ -26,17 +26,17 @@ class TransactionFilterParser
     const converter = DateTimeConverter();
     final Queue<String> queue = Queue<String>();
     if (settings.category != null) {
-      queue.add("subcategories.category_id = ${settings.category}");
+      queue.add("subcategories.categoryId = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}subcategory_id = ${settings.subcategory}");
+          "${tableName != "" ? "$tableName." : ""}subcategoryId = ${settings.subcategory}");
     }
 
     if (settings.month != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}month_id = ${settings.month}");
+          "${tableName != "" ? "$tableName." : ""}monthId = ${settings.month}");
     }
 
     if (settings.day != null) {
@@ -51,24 +51,24 @@ class TransactionFilterParser
 
     if (settings.expenses != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}is_expense = ${settings.expenses ? 1 : 0}");
+          "${tableName != "" ? "$tableName." : ""}isExpense = ${settings.expenses ? 1 : 0}");
     }
 
     if (settings.incomes != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}is_expense = ${settings.incomes ? 0 : 1}");
+          "${tableName != "" ? "$tableName." : ""}isExpense = ${settings.incomes ? 0 : 1}");
     }
 
     if (settings.dateInMonth != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}month_id = (SELECT months.id FROM months "
-          "WHERE months.first_date <= '${converter.mapToSql(settings.dateInMonth)}' "
-          "AND months.last_date >= '${converter.mapToSql(settings.dateInMonth)}')");
+          "${tableName != "" ? "$tableName." : ""}monthId = (SELECT months.id FROM months "
+          "WHERE months.firstDate <= '${converter.mapToSql(settings.dateInMonth)}' "
+          "AND months.lastDate >= '${converter.mapToSql(settings.dateInMonth)}')");
     }
 
     if (settings.onlyRecurrences != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}is_recurring = ${settings.onlyRecurrences ? 1 : 0}");
+          "${tableName != "" ? "$tableName." : ""}recurrenceType > ${settings.onlyRecurrences ? 1 : 0}");
     }
     return queue;
   }

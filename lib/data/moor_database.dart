@@ -9,7 +9,6 @@
 import 'dart:io';
 
 import 'package:FineWallet/data/category_dao.dart';
-import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/currency_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
@@ -22,116 +21,13 @@ import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 part 'moor_database.g.dart';
 
-class Transactions extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  RealColumn get amount => real().customConstraint("CHECK (amount > 0)")();
-
-  RealColumn get originalAmount =>
-      real().customConstraint("CHECK (amount > 0)")();
-
-  RealColumn get exchangeRate => real()();
-
-  IntColumn get subcategoryId =>
-      integer().customConstraint("REFERENCES subcategories(id)")();
-
-  IntColumn get monthId =>
-      integer().customConstraint("REFERENCES months(id)")();
-
-  TextColumn get date => text().map(const DateTimeConverter())();
-
-  BoolColumn get isExpense => boolean()();
-
-  BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
-
-  IntColumn get recurrenceType => integer()
-      .nullable()
-      .customConstraint("NULL REFERENCES recurrence_types(type)")();
-
-  TextColumn get until => text().map(const DateTimeConverter()).nullable()();
-
-  IntColumn get originalId => integer()
-      .nullable()
-      .customConstraint("NULL REFERENCES transactions(id)")();
-
-  IntColumn get currencyId =>
-      integer().customConstraint("REFERENCES currencies(id)")();
-
-  TextColumn get label => text().withLength(min: 0, max: 256)();
-
-  @override
-  List<String> get customConstraints => [
-        // ignore: no_adjacent_strings_in_list
-        "CHECK (is_recurring = 0 OR (until NOT NULL AND "
-            "recurrence_type NOT NULL AND "
-            "original_id NOT NULL))"
-      ];
-}
-
-@DataClassName('Category')
-class Categories extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  TextColumn get name => text().withLength(min: 1, max: 20)();
-
-  BoolColumn get isExpense => boolean().withDefault(const Constant(true))();
-
-  BoolColumn get isPreset => boolean().withDefault(const Constant(false))();
-}
-
-@DataClassName('Subcategory')
-class Subcategories extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  TextColumn get name => text().withLength(min: 1, max: 30)();
-
-  IntColumn get categoryId =>
-      integer().customConstraint("REFERENCES categories(id)")();
-
-  BoolColumn get isPreset => boolean().withDefault(const Constant(false))();
-}
-
-@DataClassName('Month')
-class Months extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  RealColumn get maxBudget =>
-      real().customConstraint("CHECK (max_budget >= 0)")();
-
-  TextColumn get firstDate => text().map(const DateTimeConverter())();
-
-  TextColumn get lastDate => text().map(const DateTimeConverter())();
-}
-
-@DataClassName('RecurrenceType')
-class RecurrenceTypes extends Table {
-  IntColumn get type => integer().autoIncrement()();
-
-  TextColumn get name => text().withLength(max: 40, min: 2)();
-}
-
-@DataClassName('Currency')
-class Currencies extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  TextColumn get abbrev => text().withLength(max: 40, min: 2)();
-
-  TextColumn get symbol => text().withLength(min: 1, max: 3)();
-
-  RealColumn get exchangeRate => real().withDefault(const Constant(1.0))();
-}
-
-@DataClassName('UserProfile')
-class UserProfiles extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  IntColumn get currencyId =>
-      integer().customConstraint("REFERENCES currencies(id)")();
-}
-
 @UseMoor(
+  include: {
+    "moor_files/tables.moor",
+    "moor_files/general_queries.moor",
+  },
   tables: [
-    Transactions,
+    BaseTransactions,
     Categories,
     Subcategories,
     Months,
@@ -145,11 +41,6 @@ class UserProfiles extends Table {
     MonthDao,
     CurrencyDao,
   ],
-  queries: {
-    "getTimestamp":
-        "SELECT strftime('%s','now', 'localtime') * 1000 AS timestamp",
-    "getUserProfile": "SELECT * FROM user_profiles WHERE id=1",
-  },
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
@@ -200,10 +91,10 @@ class AppDatabase extends _$AppDatabase {
               }
             });
 
-            await customStatement("CREATE VIEW IF NOT EXISTS expenses "
-                "AS SELECT * FROM transactions WHERE is_expense = 1");
-            await customStatement("CREATE VIEW IF NOT EXISTS incomes "
-                "AS SELECT * FROM transactions WHERE is_expense = 0");
+            // await customStatement("CREATE VIEW IF NOT EXISTS expenses "
+            //     "AS SELECT * FROM transactions WHERE is_expense = 1");
+            // await customStatement("CREATE VIEW IF NOT EXISTS incomes "
+            //     "AS SELECT * FROM transactions WHERE is_expense = 0");
           }
 
           // Check if in new month and update accordingly

@@ -3,19 +3,24 @@ import 'package:moor/moor.dart';
 
 part 'currency_dao.g.dart';
 
-@UseDao(tables: [
-  Currencies,
-  UserProfiles,
-])
+@UseDao(
+  tables: [
+    Currencies,
+    UserProfiles,
+  ],
+  include: {
+    "moor_files/currency_queries.moor",
+  },
+)
 class CurrencyDao extends DatabaseAccessor<AppDatabase>
     with _$CurrencyDaoMixin {
   final AppDatabase db;
 
   CurrencyDao(this.db) : super(db);
 
-  Future<List<Currency>> getAllCurrencies() => (select(currencies)
-        ..orderBy([(currency) => OrderingTerm.asc(currency.abbrev)]))
-      .get();
+  Future<List<Currency>> getAllCurrencies() => allCurrencies().get();
+
+  Stream<List<Currency>> watchAllCurrencies() => allCurrencies().watch();
 
   Future insertCurrency(Insertable<Currency> currency) =>
       into(currencies).insert(currency);
@@ -26,18 +31,11 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
   Future deleteCurrency(Insertable<Currency> currency) =>
       delete(currencies).delete(currency);
 
-  Future<Currency> getCurrencyById(int id) =>
-      (select(currencies)..where((c) => c.id.equals(id))).getSingle();
+  Future<Currency> getCurrencyById(int id) => currencyById(id).getSingle();
 
-  Future<Currency> getUserCurrency() => (select(currencies).join([
-        innerJoin(
-            userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
-      ])).map((rows) => rows.readTable(currencies)).getSingleOrNull();
+  Future<Currency> getUserCurrency() => userCurrency().getSingleOrNull();
 
-  Stream<Currency> watchUserCurrency() => (select(currencies).join([
-        innerJoin(
-            userProfiles, currencies.id.equalsExp(userProfiles.currencyId))
-      ])).map((rows) => rows.readTable(currencies)).watchSingle();
+  Stream<Currency> watchUserCurrency() => userCurrency().watchSingleOrNull();
 
   /// Updates the currencies table with new exchange rates.
   ///

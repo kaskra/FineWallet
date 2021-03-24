@@ -7,791 +7,18 @@ part of 'moor_database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
-class Transaction extends DataClass implements Insertable<Transaction> {
-  final int id;
-  final double amount;
-  final double originalAmount;
-  final double exchangeRate;
-  final int subcategoryId;
-  final int monthId;
-  final DateTime date;
-  final bool isExpense;
-  final bool isRecurring;
-  final int recurrenceType;
-  final DateTime until;
-  final int originalId;
-  final int currencyId;
-  final String label;
-  Transaction(
-      {@required this.id,
-      @required this.amount,
-      @required this.originalAmount,
-      @required this.exchangeRate,
-      @required this.subcategoryId,
-      @required this.monthId,
-      @required this.date,
-      @required this.isExpense,
-      @required this.isRecurring,
-      this.recurrenceType,
-      this.until,
-      this.originalId,
-      @required this.currencyId,
-      @required this.label});
-  factory Transaction.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
-    final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final doubleType = db.typeSystem.forDartType<double>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
-    return Transaction(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      amount:
-          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}amount']),
-      originalAmount: doubleType
-          .mapFromDatabaseResponse(data['${effectivePrefix}original_amount']),
-      exchangeRate: doubleType
-          .mapFromDatabaseResponse(data['${effectivePrefix}exchange_rate']),
-      subcategoryId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}subcategory_id']),
-      monthId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}month_id']),
-      date: $TransactionsTable.$converter0.mapToDart(
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}date'])),
-      isExpense: boolType
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_expense']),
-      isRecurring: boolType
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_recurring']),
-      recurrenceType: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}recurrence_type']),
-      until: $TransactionsTable.$converter1.mapToDart(
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}until'])),
-      originalId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}original_id']),
-      currencyId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}currency_id']),
-      label:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}label']),
-    );
-  }
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
-    }
-    if (!nullToAbsent || amount != null) {
-      map['amount'] = Variable<double>(amount);
-    }
-    if (!nullToAbsent || originalAmount != null) {
-      map['original_amount'] = Variable<double>(originalAmount);
-    }
-    if (!nullToAbsent || exchangeRate != null) {
-      map['exchange_rate'] = Variable<double>(exchangeRate);
-    }
-    if (!nullToAbsent || subcategoryId != null) {
-      map['subcategory_id'] = Variable<int>(subcategoryId);
-    }
-    if (!nullToAbsent || monthId != null) {
-      map['month_id'] = Variable<int>(monthId);
-    }
-    if (!nullToAbsent || date != null) {
-      final converter = $TransactionsTable.$converter0;
-      map['date'] = Variable<String>(converter.mapToSql(date));
-    }
-    if (!nullToAbsent || isExpense != null) {
-      map['is_expense'] = Variable<bool>(isExpense);
-    }
-    if (!nullToAbsent || isRecurring != null) {
-      map['is_recurring'] = Variable<bool>(isRecurring);
-    }
-    if (!nullToAbsent || recurrenceType != null) {
-      map['recurrence_type'] = Variable<int>(recurrenceType);
-    }
-    if (!nullToAbsent || until != null) {
-      final converter = $TransactionsTable.$converter1;
-      map['until'] = Variable<String>(converter.mapToSql(until));
-    }
-    if (!nullToAbsent || originalId != null) {
-      map['original_id'] = Variable<int>(originalId);
-    }
-    if (!nullToAbsent || currencyId != null) {
-      map['currency_id'] = Variable<int>(currencyId);
-    }
-    if (!nullToAbsent || label != null) {
-      map['label'] = Variable<String>(label);
-    }
-    return map;
-  }
-
-  TransactionsCompanion toCompanion(bool nullToAbsent) {
-    return TransactionsCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      amount:
-          amount == null && nullToAbsent ? const Value.absent() : Value(amount),
-      originalAmount: originalAmount == null && nullToAbsent
-          ? const Value.absent()
-          : Value(originalAmount),
-      exchangeRate: exchangeRate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(exchangeRate),
-      subcategoryId: subcategoryId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(subcategoryId),
-      monthId: monthId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(monthId),
-      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
-      isExpense: isExpense == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isExpense),
-      isRecurring: isRecurring == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isRecurring),
-      recurrenceType: recurrenceType == null && nullToAbsent
-          ? const Value.absent()
-          : Value(recurrenceType),
-      until:
-          until == null && nullToAbsent ? const Value.absent() : Value(until),
-      originalId: originalId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(originalId),
-      currencyId: currencyId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(currencyId),
-      label:
-          label == null && nullToAbsent ? const Value.absent() : Value(label),
-    );
-  }
-
-  factory Transaction.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return Transaction(
-      id: serializer.fromJson<int>(json['id']),
-      amount: serializer.fromJson<double>(json['amount']),
-      originalAmount: serializer.fromJson<double>(json['originalAmount']),
-      exchangeRate: serializer.fromJson<double>(json['exchangeRate']),
-      subcategoryId: serializer.fromJson<int>(json['subcategoryId']),
-      monthId: serializer.fromJson<int>(json['monthId']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      isExpense: serializer.fromJson<bool>(json['isExpense']),
-      isRecurring: serializer.fromJson<bool>(json['isRecurring']),
-      recurrenceType: serializer.fromJson<int>(json['recurrenceType']),
-      until: serializer.fromJson<DateTime>(json['until']),
-      originalId: serializer.fromJson<int>(json['originalId']),
-      currencyId: serializer.fromJson<int>(json['currencyId']),
-      label: serializer.fromJson<String>(json['label']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'amount': serializer.toJson<double>(amount),
-      'originalAmount': serializer.toJson<double>(originalAmount),
-      'exchangeRate': serializer.toJson<double>(exchangeRate),
-      'subcategoryId': serializer.toJson<int>(subcategoryId),
-      'monthId': serializer.toJson<int>(monthId),
-      'date': serializer.toJson<DateTime>(date),
-      'isExpense': serializer.toJson<bool>(isExpense),
-      'isRecurring': serializer.toJson<bool>(isRecurring),
-      'recurrenceType': serializer.toJson<int>(recurrenceType),
-      'until': serializer.toJson<DateTime>(until),
-      'originalId': serializer.toJson<int>(originalId),
-      'currencyId': serializer.toJson<int>(currencyId),
-      'label': serializer.toJson<String>(label),
-    };
-  }
-
-  Transaction copyWith(
-          {int id,
-          double amount,
-          double originalAmount,
-          double exchangeRate,
-          int subcategoryId,
-          int monthId,
-          DateTime date,
-          bool isExpense,
-          bool isRecurring,
-          int recurrenceType,
-          DateTime until,
-          int originalId,
-          int currencyId,
-          String label}) =>
-      Transaction(
-        id: id ?? this.id,
-        amount: amount ?? this.amount,
-        originalAmount: originalAmount ?? this.originalAmount,
-        exchangeRate: exchangeRate ?? this.exchangeRate,
-        subcategoryId: subcategoryId ?? this.subcategoryId,
-        monthId: monthId ?? this.monthId,
-        date: date ?? this.date,
-        isExpense: isExpense ?? this.isExpense,
-        isRecurring: isRecurring ?? this.isRecurring,
-        recurrenceType: recurrenceType ?? this.recurrenceType,
-        until: until ?? this.until,
-        originalId: originalId ?? this.originalId,
-        currencyId: currencyId ?? this.currencyId,
-        label: label ?? this.label,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('Transaction(')
-          ..write('id: $id, ')
-          ..write('amount: $amount, ')
-          ..write('originalAmount: $originalAmount, ')
-          ..write('exchangeRate: $exchangeRate, ')
-          ..write('subcategoryId: $subcategoryId, ')
-          ..write('monthId: $monthId, ')
-          ..write('date: $date, ')
-          ..write('isExpense: $isExpense, ')
-          ..write('isRecurring: $isRecurring, ')
-          ..write('recurrenceType: $recurrenceType, ')
-          ..write('until: $until, ')
-          ..write('originalId: $originalId, ')
-          ..write('currencyId: $currencyId, ')
-          ..write('label: $label')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          amount.hashCode,
-          $mrjc(
-              originalAmount.hashCode,
-              $mrjc(
-                  exchangeRate.hashCode,
-                  $mrjc(
-                      subcategoryId.hashCode,
-                      $mrjc(
-                          monthId.hashCode,
-                          $mrjc(
-                              date.hashCode,
-                              $mrjc(
-                                  isExpense.hashCode,
-                                  $mrjc(
-                                      isRecurring.hashCode,
-                                      $mrjc(
-                                          recurrenceType.hashCode,
-                                          $mrjc(
-                                              until.hashCode,
-                                              $mrjc(
-                                                  originalId.hashCode,
-                                                  $mrjc(
-                                                      currencyId.hashCode,
-                                                      label
-                                                          .hashCode))))))))))))));
-  @override
-  bool operator ==(dynamic other) =>
-      identical(this, other) ||
-      (other is Transaction &&
-          other.id == this.id &&
-          other.amount == this.amount &&
-          other.originalAmount == this.originalAmount &&
-          other.exchangeRate == this.exchangeRate &&
-          other.subcategoryId == this.subcategoryId &&
-          other.monthId == this.monthId &&
-          other.date == this.date &&
-          other.isExpense == this.isExpense &&
-          other.isRecurring == this.isRecurring &&
-          other.recurrenceType == this.recurrenceType &&
-          other.until == this.until &&
-          other.originalId == this.originalId &&
-          other.currencyId == this.currencyId &&
-          other.label == this.label);
-}
-
-class TransactionsCompanion extends UpdateCompanion<Transaction> {
-  final Value<int> id;
-  final Value<double> amount;
-  final Value<double> originalAmount;
-  final Value<double> exchangeRate;
-  final Value<int> subcategoryId;
-  final Value<int> monthId;
-  final Value<DateTime> date;
-  final Value<bool> isExpense;
-  final Value<bool> isRecurring;
-  final Value<int> recurrenceType;
-  final Value<DateTime> until;
-  final Value<int> originalId;
-  final Value<int> currencyId;
-  final Value<String> label;
-  const TransactionsCompanion({
-    this.id = const Value.absent(),
-    this.amount = const Value.absent(),
-    this.originalAmount = const Value.absent(),
-    this.exchangeRate = const Value.absent(),
-    this.subcategoryId = const Value.absent(),
-    this.monthId = const Value.absent(),
-    this.date = const Value.absent(),
-    this.isExpense = const Value.absent(),
-    this.isRecurring = const Value.absent(),
-    this.recurrenceType = const Value.absent(),
-    this.until = const Value.absent(),
-    this.originalId = const Value.absent(),
-    this.currencyId = const Value.absent(),
-    this.label = const Value.absent(),
-  });
-  TransactionsCompanion.insert({
-    this.id = const Value.absent(),
-    @required double amount,
-    @required double originalAmount,
-    @required double exchangeRate,
-    @required int subcategoryId,
-    @required int monthId,
-    @required DateTime date,
-    @required bool isExpense,
-    this.isRecurring = const Value.absent(),
-    this.recurrenceType = const Value.absent(),
-    this.until = const Value.absent(),
-    this.originalId = const Value.absent(),
-    @required int currencyId,
-    @required String label,
-  })  : amount = Value(amount),
-        originalAmount = Value(originalAmount),
-        exchangeRate = Value(exchangeRate),
-        subcategoryId = Value(subcategoryId),
-        monthId = Value(monthId),
-        date = Value(date),
-        isExpense = Value(isExpense),
-        currencyId = Value(currencyId),
-        label = Value(label);
-  static Insertable<Transaction> custom({
-    Expression<int> id,
-    Expression<double> amount,
-    Expression<double> originalAmount,
-    Expression<double> exchangeRate,
-    Expression<int> subcategoryId,
-    Expression<int> monthId,
-    Expression<String> date,
-    Expression<bool> isExpense,
-    Expression<bool> isRecurring,
-    Expression<int> recurrenceType,
-    Expression<String> until,
-    Expression<int> originalId,
-    Expression<int> currencyId,
-    Expression<String> label,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (amount != null) 'amount': amount,
-      if (originalAmount != null) 'original_amount': originalAmount,
-      if (exchangeRate != null) 'exchange_rate': exchangeRate,
-      if (subcategoryId != null) 'subcategory_id': subcategoryId,
-      if (monthId != null) 'month_id': monthId,
-      if (date != null) 'date': date,
-      if (isExpense != null) 'is_expense': isExpense,
-      if (isRecurring != null) 'is_recurring': isRecurring,
-      if (recurrenceType != null) 'recurrence_type': recurrenceType,
-      if (until != null) 'until': until,
-      if (originalId != null) 'original_id': originalId,
-      if (currencyId != null) 'currency_id': currencyId,
-      if (label != null) 'label': label,
-    });
-  }
-
-  TransactionsCompanion copyWith(
-      {Value<int> id,
-      Value<double> amount,
-      Value<double> originalAmount,
-      Value<double> exchangeRate,
-      Value<int> subcategoryId,
-      Value<int> monthId,
-      Value<DateTime> date,
-      Value<bool> isExpense,
-      Value<bool> isRecurring,
-      Value<int> recurrenceType,
-      Value<DateTime> until,
-      Value<int> originalId,
-      Value<int> currencyId,
-      Value<String> label}) {
-    return TransactionsCompanion(
-      id: id ?? this.id,
-      amount: amount ?? this.amount,
-      originalAmount: originalAmount ?? this.originalAmount,
-      exchangeRate: exchangeRate ?? this.exchangeRate,
-      subcategoryId: subcategoryId ?? this.subcategoryId,
-      monthId: monthId ?? this.monthId,
-      date: date ?? this.date,
-      isExpense: isExpense ?? this.isExpense,
-      isRecurring: isRecurring ?? this.isRecurring,
-      recurrenceType: recurrenceType ?? this.recurrenceType,
-      until: until ?? this.until,
-      originalId: originalId ?? this.originalId,
-      currencyId: currencyId ?? this.currencyId,
-      label: label ?? this.label,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (amount.present) {
-      map['amount'] = Variable<double>(amount.value);
-    }
-    if (originalAmount.present) {
-      map['original_amount'] = Variable<double>(originalAmount.value);
-    }
-    if (exchangeRate.present) {
-      map['exchange_rate'] = Variable<double>(exchangeRate.value);
-    }
-    if (subcategoryId.present) {
-      map['subcategory_id'] = Variable<int>(subcategoryId.value);
-    }
-    if (monthId.present) {
-      map['month_id'] = Variable<int>(monthId.value);
-    }
-    if (date.present) {
-      final converter = $TransactionsTable.$converter0;
-      map['date'] = Variable<String>(converter.mapToSql(date.value));
-    }
-    if (isExpense.present) {
-      map['is_expense'] = Variable<bool>(isExpense.value);
-    }
-    if (isRecurring.present) {
-      map['is_recurring'] = Variable<bool>(isRecurring.value);
-    }
-    if (recurrenceType.present) {
-      map['recurrence_type'] = Variable<int>(recurrenceType.value);
-    }
-    if (until.present) {
-      final converter = $TransactionsTable.$converter1;
-      map['until'] = Variable<String>(converter.mapToSql(until.value));
-    }
-    if (originalId.present) {
-      map['original_id'] = Variable<int>(originalId.value);
-    }
-    if (currencyId.present) {
-      map['currency_id'] = Variable<int>(currencyId.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(label.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TransactionsCompanion(')
-          ..write('id: $id, ')
-          ..write('amount: $amount, ')
-          ..write('originalAmount: $originalAmount, ')
-          ..write('exchangeRate: $exchangeRate, ')
-          ..write('subcategoryId: $subcategoryId, ')
-          ..write('monthId: $monthId, ')
-          ..write('date: $date, ')
-          ..write('isExpense: $isExpense, ')
-          ..write('isRecurring: $isRecurring, ')
-          ..write('recurrenceType: $recurrenceType, ')
-          ..write('until: $until, ')
-          ..write('originalId: $originalId, ')
-          ..write('currencyId: $currencyId, ')
-          ..write('label: $label')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, Transaction> {
-  final GeneratedDatabase _db;
-  final String _alias;
-  $TransactionsTable(this._db, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
-  final VerificationMeta _amountMeta = const VerificationMeta('amount');
-  GeneratedRealColumn _amount;
-  @override
-  GeneratedRealColumn get amount => _amount ??= _constructAmount();
-  GeneratedRealColumn _constructAmount() {
-    return GeneratedRealColumn('amount', $tableName, false,
-        $customConstraints: 'CHECK (amount > 0)');
-  }
-
-  final VerificationMeta _originalAmountMeta =
-      const VerificationMeta('originalAmount');
-  GeneratedRealColumn _originalAmount;
-  @override
-  GeneratedRealColumn get originalAmount =>
-      _originalAmount ??= _constructOriginalAmount();
-  GeneratedRealColumn _constructOriginalAmount() {
-    return GeneratedRealColumn('original_amount', $tableName, false,
-        $customConstraints: 'CHECK (amount > 0)');
-  }
-
-  final VerificationMeta _exchangeRateMeta =
-      const VerificationMeta('exchangeRate');
-  GeneratedRealColumn _exchangeRate;
-  @override
-  GeneratedRealColumn get exchangeRate =>
-      _exchangeRate ??= _constructExchangeRate();
-  GeneratedRealColumn _constructExchangeRate() {
-    return GeneratedRealColumn(
-      'exchange_rate',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _subcategoryIdMeta =
-      const VerificationMeta('subcategoryId');
-  GeneratedIntColumn _subcategoryId;
-  @override
-  GeneratedIntColumn get subcategoryId =>
-      _subcategoryId ??= _constructSubcategoryId();
-  GeneratedIntColumn _constructSubcategoryId() {
-    return GeneratedIntColumn('subcategory_id', $tableName, false,
-        $customConstraints: 'REFERENCES subcategories(id)');
-  }
-
-  final VerificationMeta _monthIdMeta = const VerificationMeta('monthId');
-  GeneratedIntColumn _monthId;
-  @override
-  GeneratedIntColumn get monthId => _monthId ??= _constructMonthId();
-  GeneratedIntColumn _constructMonthId() {
-    return GeneratedIntColumn('month_id', $tableName, false,
-        $customConstraints: 'REFERENCES months(id)');
-  }
-
-  final VerificationMeta _dateMeta = const VerificationMeta('date');
-  GeneratedTextColumn _date;
-  @override
-  GeneratedTextColumn get date => _date ??= _constructDate();
-  GeneratedTextColumn _constructDate() {
-    return GeneratedTextColumn(
-      'date',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _isExpenseMeta = const VerificationMeta('isExpense');
-  GeneratedBoolColumn _isExpense;
-  @override
-  GeneratedBoolColumn get isExpense => _isExpense ??= _constructIsExpense();
-  GeneratedBoolColumn _constructIsExpense() {
-    return GeneratedBoolColumn(
-      'is_expense',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _isRecurringMeta =
-      const VerificationMeta('isRecurring');
-  GeneratedBoolColumn _isRecurring;
-  @override
-  GeneratedBoolColumn get isRecurring =>
-      _isRecurring ??= _constructIsRecurring();
-  GeneratedBoolColumn _constructIsRecurring() {
-    return GeneratedBoolColumn('is_recurring', $tableName, false,
-        defaultValue: const Constant(false));
-  }
-
-  final VerificationMeta _recurrenceTypeMeta =
-      const VerificationMeta('recurrenceType');
-  GeneratedIntColumn _recurrenceType;
-  @override
-  GeneratedIntColumn get recurrenceType =>
-      _recurrenceType ??= _constructRecurrenceType();
-  GeneratedIntColumn _constructRecurrenceType() {
-    return GeneratedIntColumn('recurrence_type', $tableName, true,
-        $customConstraints: 'NULL REFERENCES recurrence_types(type)');
-  }
-
-  final VerificationMeta _untilMeta = const VerificationMeta('until');
-  GeneratedTextColumn _until;
-  @override
-  GeneratedTextColumn get until => _until ??= _constructUntil();
-  GeneratedTextColumn _constructUntil() {
-    return GeneratedTextColumn(
-      'until',
-      $tableName,
-      true,
-    );
-  }
-
-  final VerificationMeta _originalIdMeta = const VerificationMeta('originalId');
-  GeneratedIntColumn _originalId;
-  @override
-  GeneratedIntColumn get originalId => _originalId ??= _constructOriginalId();
-  GeneratedIntColumn _constructOriginalId() {
-    return GeneratedIntColumn('original_id', $tableName, true,
-        $customConstraints: 'NULL REFERENCES transactions(id)');
-  }
-
-  final VerificationMeta _currencyIdMeta = const VerificationMeta('currencyId');
-  GeneratedIntColumn _currencyId;
-  @override
-  GeneratedIntColumn get currencyId => _currencyId ??= _constructCurrencyId();
-  GeneratedIntColumn _constructCurrencyId() {
-    return GeneratedIntColumn('currency_id', $tableName, false,
-        $customConstraints: 'REFERENCES currencies(id)');
-  }
-
-  final VerificationMeta _labelMeta = const VerificationMeta('label');
-  GeneratedTextColumn _label;
-  @override
-  GeneratedTextColumn get label => _label ??= _constructLabel();
-  GeneratedTextColumn _constructLabel() {
-    return GeneratedTextColumn('label', $tableName, false,
-        minTextLength: 0, maxTextLength: 256);
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        amount,
-        originalAmount,
-        exchangeRate,
-        subcategoryId,
-        monthId,
-        date,
-        isExpense,
-        isRecurring,
-        recurrenceType,
-        until,
-        originalId,
-        currencyId,
-        label
-      ];
-  @override
-  $TransactionsTable get asDslTable => this;
-  @override
-  String get $tableName => _alias ?? 'transactions';
-  @override
-  final String actualTableName = 'transactions';
-  @override
-  VerificationContext validateIntegrity(Insertable<Transaction> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
-    }
-    if (data.containsKey('amount')) {
-      context.handle(_amountMeta,
-          amount.isAcceptableOrUnknown(data['amount'], _amountMeta));
-    } else if (isInserting) {
-      context.missing(_amountMeta);
-    }
-    if (data.containsKey('original_amount')) {
-      context.handle(
-          _originalAmountMeta,
-          originalAmount.isAcceptableOrUnknown(
-              data['original_amount'], _originalAmountMeta));
-    } else if (isInserting) {
-      context.missing(_originalAmountMeta);
-    }
-    if (data.containsKey('exchange_rate')) {
-      context.handle(
-          _exchangeRateMeta,
-          exchangeRate.isAcceptableOrUnknown(
-              data['exchange_rate'], _exchangeRateMeta));
-    } else if (isInserting) {
-      context.missing(_exchangeRateMeta);
-    }
-    if (data.containsKey('subcategory_id')) {
-      context.handle(
-          _subcategoryIdMeta,
-          subcategoryId.isAcceptableOrUnknown(
-              data['subcategory_id'], _subcategoryIdMeta));
-    } else if (isInserting) {
-      context.missing(_subcategoryIdMeta);
-    }
-    if (data.containsKey('month_id')) {
-      context.handle(_monthIdMeta,
-          monthId.isAcceptableOrUnknown(data['month_id'], _monthIdMeta));
-    } else if (isInserting) {
-      context.missing(_monthIdMeta);
-    }
-    context.handle(_dateMeta, const VerificationResult.success());
-    if (data.containsKey('is_expense')) {
-      context.handle(_isExpenseMeta,
-          isExpense.isAcceptableOrUnknown(data['is_expense'], _isExpenseMeta));
-    } else if (isInserting) {
-      context.missing(_isExpenseMeta);
-    }
-    if (data.containsKey('is_recurring')) {
-      context.handle(
-          _isRecurringMeta,
-          isRecurring.isAcceptableOrUnknown(
-              data['is_recurring'], _isRecurringMeta));
-    }
-    if (data.containsKey('recurrence_type')) {
-      context.handle(
-          _recurrenceTypeMeta,
-          recurrenceType.isAcceptableOrUnknown(
-              data['recurrence_type'], _recurrenceTypeMeta));
-    }
-    context.handle(_untilMeta, const VerificationResult.success());
-    if (data.containsKey('original_id')) {
-      context.handle(
-          _originalIdMeta,
-          originalId.isAcceptableOrUnknown(
-              data['original_id'], _originalIdMeta));
-    }
-    if (data.containsKey('currency_id')) {
-      context.handle(
-          _currencyIdMeta,
-          currencyId.isAcceptableOrUnknown(
-              data['currency_id'], _currencyIdMeta));
-    } else if (isInserting) {
-      context.missing(_currencyIdMeta);
-    }
-    if (data.containsKey('label')) {
-      context.handle(
-          _labelMeta, label.isAcceptableOrUnknown(data['label'], _labelMeta));
-    } else if (isInserting) {
-      context.missing(_labelMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Transaction map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Transaction.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  $TransactionsTable createAlias(String alias) {
-    return $TransactionsTable(_db, alias);
-  }
-
-  static TypeConverter<DateTime, String> $converter0 =
-      const DateTimeConverter();
-  static TypeConverter<DateTime, String> $converter1 =
-      const DateTimeConverter();
-}
-
 class Category extends DataClass implements Insertable<Category> {
   final int id;
   final String name;
   final bool isExpense;
   final bool isPreset;
+  final int iconCodePoint;
   Category(
       {@required this.id,
       @required this.name,
       @required this.isExpense,
-      @required this.isPreset});
+      @required this.isPreset,
+      @required this.iconCodePoint});
   factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -801,10 +28,12 @@ class Category extends DataClass implements Insertable<Category> {
     return Category(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-      isExpense: boolType
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_expense']),
+      isExpense:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}isExpense']),
       isPreset:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_preset']),
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}isPreset']),
+      iconCodePoint: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}iconCodePoint']),
     );
   }
   @override
@@ -817,10 +46,13 @@ class Category extends DataClass implements Insertable<Category> {
       map['name'] = Variable<String>(name);
     }
     if (!nullToAbsent || isExpense != null) {
-      map['is_expense'] = Variable<bool>(isExpense);
+      map['isExpense'] = Variable<bool>(isExpense);
     }
     if (!nullToAbsent || isPreset != null) {
-      map['is_preset'] = Variable<bool>(isPreset);
+      map['isPreset'] = Variable<bool>(isPreset);
+    }
+    if (!nullToAbsent || iconCodePoint != null) {
+      map['iconCodePoint'] = Variable<int>(iconCodePoint);
     }
     return map;
   }
@@ -835,6 +67,9 @@ class Category extends DataClass implements Insertable<Category> {
       isPreset: isPreset == null && nullToAbsent
           ? const Value.absent()
           : Value(isPreset),
+      iconCodePoint: iconCodePoint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconCodePoint),
     );
   }
 
@@ -846,6 +81,7 @@ class Category extends DataClass implements Insertable<Category> {
       name: serializer.fromJson<String>(json['name']),
       isExpense: serializer.fromJson<bool>(json['isExpense']),
       isPreset: serializer.fromJson<bool>(json['isPreset']),
+      iconCodePoint: serializer.fromJson<int>(json['iconCodePoint']),
     );
   }
   @override
@@ -856,15 +92,22 @@ class Category extends DataClass implements Insertable<Category> {
       'name': serializer.toJson<String>(name),
       'isExpense': serializer.toJson<bool>(isExpense),
       'isPreset': serializer.toJson<bool>(isPreset),
+      'iconCodePoint': serializer.toJson<int>(iconCodePoint),
     };
   }
 
-  Category copyWith({int id, String name, bool isExpense, bool isPreset}) =>
+  Category copyWith(
+          {int id,
+          String name,
+          bool isExpense,
+          bool isPreset,
+          int iconCodePoint}) =>
       Category(
         id: id ?? this.id,
         name: name ?? this.name,
         isExpense: isExpense ?? this.isExpense,
         isPreset: isPreset ?? this.isPreset,
+        iconCodePoint: iconCodePoint ?? this.iconCodePoint,
       );
   @override
   String toString() {
@@ -872,14 +115,19 @@ class Category extends DataClass implements Insertable<Category> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('isExpense: $isExpense, ')
-          ..write('isPreset: $isPreset')
+          ..write('isPreset: $isPreset, ')
+          ..write('iconCodePoint: $iconCodePoint')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(name.hashCode, $mrjc(isExpense.hashCode, isPreset.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          name.hashCode,
+          $mrjc(isExpense.hashCode,
+              $mrjc(isPreset.hashCode, iconCodePoint.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -887,7 +135,8 @@ class Category extends DataClass implements Insertable<Category> {
           other.id == this.id &&
           other.name == this.name &&
           other.isExpense == this.isExpense &&
-          other.isPreset == this.isPreset);
+          other.isPreset == this.isPreset &&
+          other.iconCodePoint == this.iconCodePoint);
 }
 
 class CategoriesCompanion extends UpdateCompanion<Category> {
@@ -895,29 +144,35 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<String> name;
   final Value<bool> isExpense;
   final Value<bool> isPreset;
+  final Value<int> iconCodePoint;
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.isExpense = const Value.absent(),
     this.isPreset = const Value.absent(),
+    this.iconCodePoint = const Value.absent(),
   });
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
     this.isExpense = const Value.absent(),
     this.isPreset = const Value.absent(),
-  }) : name = Value(name);
+    @required int iconCodePoint,
+  })  : name = Value(name),
+        iconCodePoint = Value(iconCodePoint);
   static Insertable<Category> custom({
     Expression<int> id,
     Expression<String> name,
     Expression<bool> isExpense,
     Expression<bool> isPreset,
+    Expression<int> iconCodePoint,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (isExpense != null) 'is_expense': isExpense,
-      if (isPreset != null) 'is_preset': isPreset,
+      if (isExpense != null) 'isExpense': isExpense,
+      if (isPreset != null) 'isPreset': isPreset,
+      if (iconCodePoint != null) 'iconCodePoint': iconCodePoint,
     });
   }
 
@@ -925,12 +180,14 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
       {Value<int> id,
       Value<String> name,
       Value<bool> isExpense,
-      Value<bool> isPreset}) {
+      Value<bool> isPreset,
+      Value<int> iconCodePoint}) {
     return CategoriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       isExpense: isExpense ?? this.isExpense,
       isPreset: isPreset ?? this.isPreset,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
     );
   }
 
@@ -944,10 +201,13 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
       map['name'] = Variable<String>(name.value);
     }
     if (isExpense.present) {
-      map['is_expense'] = Variable<bool>(isExpense.value);
+      map['isExpense'] = Variable<bool>(isExpense.value);
     }
     if (isPreset.present) {
-      map['is_preset'] = Variable<bool>(isPreset.value);
+      map['isPreset'] = Variable<bool>(isPreset.value);
+    }
+    if (iconCodePoint.present) {
+      map['iconCodePoint'] = Variable<int>(iconCodePoint.value);
     }
     return map;
   }
@@ -958,57 +218,69 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('isExpense: $isExpense, ')
-          ..write('isPreset: $isPreset')
+          ..write('isPreset: $isPreset, ')
+          ..write('iconCodePoint: $iconCodePoint')
           ..write(')'))
         .toString();
   }
 }
 
-class $CategoriesTable extends Categories
-    with TableInfo<$CategoriesTable, Category> {
+class Categories extends Table with TableInfo<Categories, Category> {
   final GeneratedDatabase _db;
   final String _alias;
-  $CategoriesTable(this._db, [this._alias]);
+  Categories(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
-  @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   }
 
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   GeneratedTextColumn _name;
-  @override
   GeneratedTextColumn get name => _name ??= _constructName();
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn('name', $tableName, false,
-        minTextLength: 1, maxTextLength: 20);
+        $customConstraints:
+            'NOT NULL CHECK (length(name) >= 1 AND length(name) <= 20)');
   }
 
   final VerificationMeta _isExpenseMeta = const VerificationMeta('isExpense');
   GeneratedBoolColumn _isExpense;
-  @override
   GeneratedBoolColumn get isExpense => _isExpense ??= _constructIsExpense();
   GeneratedBoolColumn _constructIsExpense() {
-    return GeneratedBoolColumn('is_expense', $tableName, false,
-        defaultValue: const Constant(true));
+    return GeneratedBoolColumn('isExpense', $tableName, false,
+        $customConstraints: 'NOT NULL DEFAULT True',
+        defaultValue: const CustomExpression<bool>('True'));
   }
 
   final VerificationMeta _isPresetMeta = const VerificationMeta('isPreset');
   GeneratedBoolColumn _isPreset;
-  @override
   GeneratedBoolColumn get isPreset => _isPreset ??= _constructIsPreset();
   GeneratedBoolColumn _constructIsPreset() {
-    return GeneratedBoolColumn('is_preset', $tableName, false,
-        defaultValue: const Constant(false));
+    return GeneratedBoolColumn('isPreset', $tableName, false,
+        $customConstraints: 'NOT NULL DEFAULT False',
+        defaultValue: const CustomExpression<bool>('False'));
+  }
+
+  final VerificationMeta _iconCodePointMeta =
+      const VerificationMeta('iconCodePoint');
+  GeneratedIntColumn _iconCodePoint;
+  GeneratedIntColumn get iconCodePoint =>
+      _iconCodePoint ??= _constructIconCodePoint();
+  GeneratedIntColumn _constructIconCodePoint() {
+    return GeneratedIntColumn('iconCodePoint', $tableName, false,
+        $customConstraints: 'NOT NULL');
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, name, isExpense, isPreset];
+  List<GeneratedColumn> get $columns =>
+      [id, name, isExpense, isPreset, iconCodePoint];
   @override
-  $CategoriesTable get asDslTable => this;
+  Categories get asDslTable => this;
   @override
   String get $tableName => _alias ?? 'categories';
   @override
@@ -1027,13 +299,21 @@ class $CategoriesTable extends Categories
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('is_expense')) {
+    if (data.containsKey('isExpense')) {
       context.handle(_isExpenseMeta,
-          isExpense.isAcceptableOrUnknown(data['is_expense'], _isExpenseMeta));
+          isExpense.isAcceptableOrUnknown(data['isExpense'], _isExpenseMeta));
     }
-    if (data.containsKey('is_preset')) {
+    if (data.containsKey('isPreset')) {
       context.handle(_isPresetMeta,
-          isPreset.isAcceptableOrUnknown(data['is_preset'], _isPresetMeta));
+          isPreset.isAcceptableOrUnknown(data['isPreset'], _isPresetMeta));
+    }
+    if (data.containsKey('iconCodePoint')) {
+      context.handle(
+          _iconCodePointMeta,
+          iconCodePoint.isAcceptableOrUnknown(
+              data['iconCodePoint'], _iconCodePointMeta));
+    } else if (isInserting) {
+      context.missing(_iconCodePointMeta);
     }
     return context;
   }
@@ -1047,9 +327,12 @@ class $CategoriesTable extends Categories
   }
 
   @override
-  $CategoriesTable createAlias(String alias) {
-    return $CategoriesTable(_db, alias);
+  Categories createAlias(String alias) {
+    return Categories(_db, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Subcategory extends DataClass implements Insertable<Subcategory> {
@@ -1071,10 +354,10 @@ class Subcategory extends DataClass implements Insertable<Subcategory> {
     return Subcategory(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-      categoryId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}category_id']),
+      categoryId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}categoryId']),
       isPreset:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_preset']),
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}isPreset']),
     );
   }
   @override
@@ -1087,10 +370,10 @@ class Subcategory extends DataClass implements Insertable<Subcategory> {
       map['name'] = Variable<String>(name);
     }
     if (!nullToAbsent || categoryId != null) {
-      map['category_id'] = Variable<int>(categoryId);
+      map['categoryId'] = Variable<int>(categoryId);
     }
     if (!nullToAbsent || isPreset != null) {
-      map['is_preset'] = Variable<bool>(isPreset);
+      map['isPreset'] = Variable<bool>(isPreset);
     }
     return map;
   }
@@ -1187,8 +470,8 @@ class SubcategoriesCompanion extends UpdateCompanion<Subcategory> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (categoryId != null) 'category_id': categoryId,
-      if (isPreset != null) 'is_preset': isPreset,
+      if (categoryId != null) 'categoryId': categoryId,
+      if (isPreset != null) 'isPreset': isPreset,
     });
   }
 
@@ -1215,10 +498,10 @@ class SubcategoriesCompanion extends UpdateCompanion<Subcategory> {
       map['name'] = Variable<String>(name.value);
     }
     if (categoryId.present) {
-      map['category_id'] = Variable<int>(categoryId.value);
+      map['categoryId'] = Variable<int>(categoryId.value);
     }
     if (isPreset.present) {
-      map['is_preset'] = Variable<bool>(isPreset.value);
+      map['isPreset'] = Variable<bool>(isPreset.value);
     }
     return map;
   }
@@ -1235,51 +518,51 @@ class SubcategoriesCompanion extends UpdateCompanion<Subcategory> {
   }
 }
 
-class $SubcategoriesTable extends Subcategories
-    with TableInfo<$SubcategoriesTable, Subcategory> {
+class Subcategories extends Table with TableInfo<Subcategories, Subcategory> {
   final GeneratedDatabase _db;
   final String _alias;
-  $SubcategoriesTable(this._db, [this._alias]);
+  Subcategories(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
-  @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   }
 
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   GeneratedTextColumn _name;
-  @override
   GeneratedTextColumn get name => _name ??= _constructName();
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn('name', $tableName, false,
-        minTextLength: 1, maxTextLength: 30);
+        $customConstraints:
+            'NOT NULL CHECK (length(name) >= 1 AND length(name) <= 30)');
   }
 
   final VerificationMeta _categoryIdMeta = const VerificationMeta('categoryId');
   GeneratedIntColumn _categoryId;
-  @override
   GeneratedIntColumn get categoryId => _categoryId ??= _constructCategoryId();
   GeneratedIntColumn _constructCategoryId() {
-    return GeneratedIntColumn('category_id', $tableName, false,
-        $customConstraints: 'REFERENCES categories(id)');
+    return GeneratedIntColumn('categoryId', $tableName, false,
+        $customConstraints:
+            'NOT NULL REFERENCES categories (id) ON DELETE CASCADE');
   }
 
   final VerificationMeta _isPresetMeta = const VerificationMeta('isPreset');
   GeneratedBoolColumn _isPreset;
-  @override
   GeneratedBoolColumn get isPreset => _isPreset ??= _constructIsPreset();
   GeneratedBoolColumn _constructIsPreset() {
-    return GeneratedBoolColumn('is_preset', $tableName, false,
-        defaultValue: const Constant(false));
+    return GeneratedBoolColumn('isPreset', $tableName, false,
+        $customConstraints: 'NOT NULL DEFAULT False',
+        defaultValue: const CustomExpression<bool>('False'));
   }
 
   @override
   List<GeneratedColumn> get $columns => [id, name, categoryId, isPreset];
   @override
-  $SubcategoriesTable get asDslTable => this;
+  Subcategories get asDslTable => this;
   @override
   String get $tableName => _alias ?? 'subcategories';
   @override
@@ -1298,17 +581,17 @@ class $SubcategoriesTable extends Subcategories
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('category_id')) {
+    if (data.containsKey('categoryId')) {
       context.handle(
           _categoryIdMeta,
           categoryId.isAcceptableOrUnknown(
-              data['category_id'], _categoryIdMeta));
+              data['categoryId'], _categoryIdMeta));
     } else if (isInserting) {
       context.missing(_categoryIdMeta);
     }
-    if (data.containsKey('is_preset')) {
+    if (data.containsKey('isPreset')) {
       context.handle(_isPresetMeta,
-          isPreset.isAcceptableOrUnknown(data['is_preset'], _isPresetMeta));
+          isPreset.isAcceptableOrUnknown(data['isPreset'], _isPresetMeta));
     }
     return context;
   }
@@ -1322,9 +605,12 @@ class $SubcategoriesTable extends Subcategories
   }
 
   @override
-  $SubcategoriesTable createAlias(String alias) {
-    return $SubcategoriesTable(_db, alias);
+  Subcategories createAlias(String alias) {
+    return Subcategories(_db, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Month extends DataClass implements Insertable<Month> {
@@ -1342,15 +628,15 @@ class Month extends DataClass implements Insertable<Month> {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final doubleType = db.typeSystem.forDartType<double>();
-    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Month(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       maxBudget: doubleType
-          .mapFromDatabaseResponse(data['${effectivePrefix}max_budget']),
-      firstDate: $MonthsTable.$converter0.mapToDart(stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}first_date'])),
-      lastDate: $MonthsTable.$converter1.mapToDart(stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}last_date'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}maxBudget']),
+      firstDate: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}firstDate']),
+      lastDate: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}lastDate']),
     );
   }
   @override
@@ -1360,15 +646,13 @@ class Month extends DataClass implements Insertable<Month> {
       map['id'] = Variable<int>(id);
     }
     if (!nullToAbsent || maxBudget != null) {
-      map['max_budget'] = Variable<double>(maxBudget);
+      map['maxBudget'] = Variable<double>(maxBudget);
     }
     if (!nullToAbsent || firstDate != null) {
-      final converter = $MonthsTable.$converter0;
-      map['first_date'] = Variable<String>(converter.mapToSql(firstDate));
+      map['firstDate'] = Variable<DateTime>(firstDate);
     }
     if (!nullToAbsent || lastDate != null) {
-      final converter = $MonthsTable.$converter1;
-      map['last_date'] = Variable<String>(converter.mapToSql(lastDate));
+      map['lastDate'] = Variable<DateTime>(lastDate);
     }
     return map;
   }
@@ -1463,14 +747,14 @@ class MonthsCompanion extends UpdateCompanion<Month> {
   static Insertable<Month> custom({
     Expression<int> id,
     Expression<double> maxBudget,
-    Expression<String> firstDate,
-    Expression<String> lastDate,
+    Expression<DateTime> firstDate,
+    Expression<DateTime> lastDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (maxBudget != null) 'max_budget': maxBudget,
-      if (firstDate != null) 'first_date': firstDate,
-      if (lastDate != null) 'last_date': lastDate,
+      if (maxBudget != null) 'maxBudget': maxBudget,
+      if (firstDate != null) 'firstDate': firstDate,
+      if (lastDate != null) 'lastDate': lastDate,
     });
   }
 
@@ -1494,15 +778,13 @@ class MonthsCompanion extends UpdateCompanion<Month> {
       map['id'] = Variable<int>(id.value);
     }
     if (maxBudget.present) {
-      map['max_budget'] = Variable<double>(maxBudget.value);
+      map['maxBudget'] = Variable<double>(maxBudget.value);
     }
     if (firstDate.present) {
-      final converter = $MonthsTable.$converter0;
-      map['first_date'] = Variable<String>(converter.mapToSql(firstDate.value));
+      map['firstDate'] = Variable<DateTime>(firstDate.value);
     }
     if (lastDate.present) {
-      final converter = $MonthsTable.$converter1;
-      map['last_date'] = Variable<String>(converter.mapToSql(lastDate.value));
+      map['lastDate'] = Variable<DateTime>(lastDate.value);
     }
     return map;
   }
@@ -1519,56 +801,48 @@ class MonthsCompanion extends UpdateCompanion<Month> {
   }
 }
 
-class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
+class Months extends Table with TableInfo<Months, Month> {
   final GeneratedDatabase _db;
   final String _alias;
-  $MonthsTable(this._db, [this._alias]);
+  Months(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
-  @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   }
 
   final VerificationMeta _maxBudgetMeta = const VerificationMeta('maxBudget');
   GeneratedRealColumn _maxBudget;
-  @override
   GeneratedRealColumn get maxBudget => _maxBudget ??= _constructMaxBudget();
   GeneratedRealColumn _constructMaxBudget() {
-    return GeneratedRealColumn('max_budget', $tableName, false,
-        $customConstraints: 'CHECK (max_budget >= 0)');
+    return GeneratedRealColumn('maxBudget', $tableName, false,
+        $customConstraints: 'NOT NULL CHECK (maxBudget >= 0)');
   }
 
   final VerificationMeta _firstDateMeta = const VerificationMeta('firstDate');
-  GeneratedTextColumn _firstDate;
-  @override
-  GeneratedTextColumn get firstDate => _firstDate ??= _constructFirstDate();
-  GeneratedTextColumn _constructFirstDate() {
-    return GeneratedTextColumn(
-      'first_date',
-      $tableName,
-      false,
-    );
+  GeneratedDateTimeColumn _firstDate;
+  GeneratedDateTimeColumn get firstDate => _firstDate ??= _constructFirstDate();
+  GeneratedDateTimeColumn _constructFirstDate() {
+    return GeneratedDateTimeColumn('firstDate', $tableName, false,
+        $customConstraints: 'NOT NULL');
   }
 
   final VerificationMeta _lastDateMeta = const VerificationMeta('lastDate');
-  GeneratedTextColumn _lastDate;
-  @override
-  GeneratedTextColumn get lastDate => _lastDate ??= _constructLastDate();
-  GeneratedTextColumn _constructLastDate() {
-    return GeneratedTextColumn(
-      'last_date',
-      $tableName,
-      false,
-    );
+  GeneratedDateTimeColumn _lastDate;
+  GeneratedDateTimeColumn get lastDate => _lastDate ??= _constructLastDate();
+  GeneratedDateTimeColumn _constructLastDate() {
+    return GeneratedDateTimeColumn('lastDate', $tableName, false,
+        $customConstraints: 'NOT NULL');
   }
 
   @override
   List<GeneratedColumn> get $columns => [id, maxBudget, firstDate, lastDate];
   @override
-  $MonthsTable get asDslTable => this;
+  Months get asDslTable => this;
   @override
   String get $tableName => _alias ?? 'months';
   @override
@@ -1581,14 +855,24 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (data.containsKey('max_budget')) {
+    if (data.containsKey('maxBudget')) {
       context.handle(_maxBudgetMeta,
-          maxBudget.isAcceptableOrUnknown(data['max_budget'], _maxBudgetMeta));
+          maxBudget.isAcceptableOrUnknown(data['maxBudget'], _maxBudgetMeta));
     } else if (isInserting) {
       context.missing(_maxBudgetMeta);
     }
-    context.handle(_firstDateMeta, const VerificationResult.success());
-    context.handle(_lastDateMeta, const VerificationResult.success());
+    if (data.containsKey('firstDate')) {
+      context.handle(_firstDateMeta,
+          firstDate.isAcceptableOrUnknown(data['firstDate'], _firstDateMeta));
+    } else if (isInserting) {
+      context.missing(_firstDateMeta);
+    }
+    if (data.containsKey('lastDate')) {
+      context.handle(_lastDateMeta,
+          lastDate.isAcceptableOrUnknown(data['lastDate'], _lastDateMeta));
+    } else if (isInserting) {
+      context.missing(_lastDateMeta);
+    }
     return context;
   }
 
@@ -1601,201 +885,12 @@ class $MonthsTable extends Months with TableInfo<$MonthsTable, Month> {
   }
 
   @override
-  $MonthsTable createAlias(String alias) {
-    return $MonthsTable(_db, alias);
-  }
-
-  static TypeConverter<DateTime, String> $converter0 =
-      const DateTimeConverter();
-  static TypeConverter<DateTime, String> $converter1 =
-      const DateTimeConverter();
-}
-
-class RecurrenceType extends DataClass implements Insertable<RecurrenceType> {
-  final int type;
-  final String name;
-  RecurrenceType({@required this.type, @required this.name});
-  factory RecurrenceType.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
-    final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    return RecurrenceType(
-      type: intType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-    );
-  }
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (!nullToAbsent || type != null) {
-      map['type'] = Variable<int>(type);
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    return map;
-  }
-
-  RecurrenceTypesCompanion toCompanion(bool nullToAbsent) {
-    return RecurrenceTypesCompanion(
-      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-    );
-  }
-
-  factory RecurrenceType.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return RecurrenceType(
-      type: serializer.fromJson<int>(json['type']),
-      name: serializer.fromJson<String>(json['name']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'type': serializer.toJson<int>(type),
-      'name': serializer.toJson<String>(name),
-    };
-  }
-
-  RecurrenceType copyWith({int type, String name}) => RecurrenceType(
-        type: type ?? this.type,
-        name: name ?? this.name,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('RecurrenceType(')
-          ..write('type: $type, ')
-          ..write('name: $name')
-          ..write(')'))
-        .toString();
+  Months createAlias(String alias) {
+    return Months(_db, alias);
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(type.hashCode, name.hashCode));
-  @override
-  bool operator ==(dynamic other) =>
-      identical(this, other) ||
-      (other is RecurrenceType &&
-          other.type == this.type &&
-          other.name == this.name);
-}
-
-class RecurrenceTypesCompanion extends UpdateCompanion<RecurrenceType> {
-  final Value<int> type;
-  final Value<String> name;
-  const RecurrenceTypesCompanion({
-    this.type = const Value.absent(),
-    this.name = const Value.absent(),
-  });
-  RecurrenceTypesCompanion.insert({
-    this.type = const Value.absent(),
-    @required String name,
-  }) : name = Value(name);
-  static Insertable<RecurrenceType> custom({
-    Expression<int> type,
-    Expression<String> name,
-  }) {
-    return RawValuesInsertable({
-      if (type != null) 'type': type,
-      if (name != null) 'name': name,
-    });
-  }
-
-  RecurrenceTypesCompanion copyWith({Value<int> type, Value<String> name}) {
-    return RecurrenceTypesCompanion(
-      type: type ?? this.type,
-      name: name ?? this.name,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (type.present) {
-      map['type'] = Variable<int>(type.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('RecurrenceTypesCompanion(')
-          ..write('type: $type, ')
-          ..write('name: $name')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $RecurrenceTypesTable extends RecurrenceTypes
-    with TableInfo<$RecurrenceTypesTable, RecurrenceType> {
-  final GeneratedDatabase _db;
-  final String _alias;
-  $RecurrenceTypesTable(this._db, [this._alias]);
-  final VerificationMeta _typeMeta = const VerificationMeta('type');
-  GeneratedIntColumn _type;
-  @override
-  GeneratedIntColumn get type => _type ??= _constructType();
-  GeneratedIntColumn _constructType() {
-    return GeneratedIntColumn('type', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
-  GeneratedTextColumn _name;
-  @override
-  GeneratedTextColumn get name => _name ??= _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn('name', $tableName, false,
-        minTextLength: 2, maxTextLength: 40);
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [type, name];
-  @override
-  $RecurrenceTypesTable get asDslTable => this;
-  @override
-  String get $tableName => _alias ?? 'recurrence_types';
-  @override
-  final String actualTableName = 'recurrence_types';
-  @override
-  VerificationContext validateIntegrity(Insertable<RecurrenceType> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('type')) {
-      context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type'], _typeMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {type};
-  @override
-  RecurrenceType map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return RecurrenceType.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  $RecurrenceTypesTable createAlias(String alias) {
-    return $RecurrenceTypesTable(_db, alias);
-  }
+  bool get dontWriteConstraints => true;
 }
 
 class Currency extends DataClass implements Insertable<Currency> {
@@ -1821,7 +916,7 @@ class Currency extends DataClass implements Insertable<Currency> {
       symbol:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}symbol']),
       exchangeRate: doubleType
-          .mapFromDatabaseResponse(data['${effectivePrefix}exchange_rate']),
+          .mapFromDatabaseResponse(data['${effectivePrefix}exchangeRate']),
     );
   }
   @override
@@ -1837,7 +932,7 @@ class Currency extends DataClass implements Insertable<Currency> {
       map['symbol'] = Variable<String>(symbol);
     }
     if (!nullToAbsent || exchangeRate != null) {
-      map['exchange_rate'] = Variable<double>(exchangeRate);
+      map['exchangeRate'] = Variable<double>(exchangeRate);
     }
     return map;
   }
@@ -1936,7 +1031,7 @@ class CurrenciesCompanion extends UpdateCompanion<Currency> {
       if (id != null) 'id': id,
       if (abbrev != null) 'abbrev': abbrev,
       if (symbol != null) 'symbol': symbol,
-      if (exchangeRate != null) 'exchange_rate': exchangeRate,
+      if (exchangeRate != null) 'exchangeRate': exchangeRate,
     });
   }
 
@@ -1966,7 +1061,7 @@ class CurrenciesCompanion extends UpdateCompanion<Currency> {
       map['symbol'] = Variable<String>(symbol.value);
     }
     if (exchangeRate.present) {
-      map['exchange_rate'] = Variable<double>(exchangeRate.value);
+      map['exchangeRate'] = Variable<double>(exchangeRate.value);
     }
     return map;
   }
@@ -1983,53 +1078,53 @@ class CurrenciesCompanion extends UpdateCompanion<Currency> {
   }
 }
 
-class $CurrenciesTable extends Currencies
-    with TableInfo<$CurrenciesTable, Currency> {
+class Currencies extends Table with TableInfo<Currencies, Currency> {
   final GeneratedDatabase _db;
   final String _alias;
-  $CurrenciesTable(this._db, [this._alias]);
+  Currencies(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
-  @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   }
 
   final VerificationMeta _abbrevMeta = const VerificationMeta('abbrev');
   GeneratedTextColumn _abbrev;
-  @override
   GeneratedTextColumn get abbrev => _abbrev ??= _constructAbbrev();
   GeneratedTextColumn _constructAbbrev() {
     return GeneratedTextColumn('abbrev', $tableName, false,
-        minTextLength: 2, maxTextLength: 40);
+        $customConstraints:
+            'NOT NULL CHECK (length(abbrev) >= 2 AND length(abbrev) <= 10)');
   }
 
   final VerificationMeta _symbolMeta = const VerificationMeta('symbol');
   GeneratedTextColumn _symbol;
-  @override
   GeneratedTextColumn get symbol => _symbol ??= _constructSymbol();
   GeneratedTextColumn _constructSymbol() {
     return GeneratedTextColumn('symbol', $tableName, false,
-        minTextLength: 1, maxTextLength: 3);
+        $customConstraints:
+            'NOT NULL CHECK (length(symbol) >= 1 AND length(symbol) <= 5)');
   }
 
   final VerificationMeta _exchangeRateMeta =
       const VerificationMeta('exchangeRate');
   GeneratedRealColumn _exchangeRate;
-  @override
   GeneratedRealColumn get exchangeRate =>
       _exchangeRate ??= _constructExchangeRate();
   GeneratedRealColumn _constructExchangeRate() {
-    return GeneratedRealColumn('exchange_rate', $tableName, false,
-        defaultValue: const Constant(1.0));
+    return GeneratedRealColumn('exchangeRate', $tableName, false,
+        $customConstraints: 'NOT NULL DEFAULT 1.0',
+        defaultValue: const CustomExpression<double>('1.0'));
   }
 
   @override
   List<GeneratedColumn> get $columns => [id, abbrev, symbol, exchangeRate];
   @override
-  $CurrenciesTable get asDslTable => this;
+  Currencies get asDslTable => this;
   @override
   String get $tableName => _alias ?? 'currencies';
   @override
@@ -2054,11 +1149,11 @@ class $CurrenciesTable extends Currencies
     } else if (isInserting) {
       context.missing(_symbolMeta);
     }
-    if (data.containsKey('exchange_rate')) {
+    if (data.containsKey('exchangeRate')) {
       context.handle(
           _exchangeRateMeta,
           exchangeRate.isAcceptableOrUnknown(
-              data['exchange_rate'], _exchangeRateMeta));
+              data['exchangeRate'], _exchangeRateMeta));
     }
     return context;
   }
@@ -2072,9 +1167,1066 @@ class $CurrenciesTable extends Currencies
   }
 
   @override
-  $CurrenciesTable createAlias(String alias) {
-    return $CurrenciesTable(_db, alias);
+  Currencies createAlias(String alias) {
+    return Currencies(_db, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class BaseTransaction extends DataClass implements Insertable<BaseTransaction> {
+  final int id;
+  final double amount;
+  final double originalAmount;
+  final double exchangeRate;
+  final bool isExpense;
+  final DateTime date;
+  final String label;
+  final int subcategoryId;
+  final int monthId;
+  final int currencyId;
+  BaseTransaction(
+      {@required this.id,
+      @required this.amount,
+      @required this.originalAmount,
+      @required this.exchangeRate,
+      @required this.isExpense,
+      @required this.date,
+      @required this.label,
+      @required this.subcategoryId,
+      @required this.monthId,
+      @required this.currencyId});
+  factory BaseTransaction.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final doubleType = db.typeSystem.forDartType<double>();
+    final boolType = db.typeSystem.forDartType<bool>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return BaseTransaction(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      amount:
+          doubleType.mapFromDatabaseResponse(data['${effectivePrefix}amount']),
+      originalAmount: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}originalAmount']),
+      exchangeRate: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}exchangeRate']),
+      isExpense:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}isExpense']),
+      date:
+          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+      label:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}label']),
+      subcategoryId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}subcategoryId']),
+      monthId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}monthId']),
+      currencyId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}currencyId']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || amount != null) {
+      map['amount'] = Variable<double>(amount);
+    }
+    if (!nullToAbsent || originalAmount != null) {
+      map['originalAmount'] = Variable<double>(originalAmount);
+    }
+    if (!nullToAbsent || exchangeRate != null) {
+      map['exchangeRate'] = Variable<double>(exchangeRate);
+    }
+    if (!nullToAbsent || isExpense != null) {
+      map['isExpense'] = Variable<bool>(isExpense);
+    }
+    if (!nullToAbsent || date != null) {
+      map['date'] = Variable<DateTime>(date);
+    }
+    if (!nullToAbsent || label != null) {
+      map['label'] = Variable<String>(label);
+    }
+    if (!nullToAbsent || subcategoryId != null) {
+      map['subcategoryId'] = Variable<int>(subcategoryId);
+    }
+    if (!nullToAbsent || monthId != null) {
+      map['monthId'] = Variable<int>(monthId);
+    }
+    if (!nullToAbsent || currencyId != null) {
+      map['currencyId'] = Variable<int>(currencyId);
+    }
+    return map;
+  }
+
+  BaseTransactionsCompanion toCompanion(bool nullToAbsent) {
+    return BaseTransactionsCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      amount:
+          amount == null && nullToAbsent ? const Value.absent() : Value(amount),
+      originalAmount: originalAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalAmount),
+      exchangeRate: exchangeRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exchangeRate),
+      isExpense: isExpense == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isExpense),
+      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
+      label:
+          label == null && nullToAbsent ? const Value.absent() : Value(label),
+      subcategoryId: subcategoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subcategoryId),
+      monthId: monthId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(monthId),
+      currencyId: currencyId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currencyId),
+    );
+  }
+
+  factory BaseTransaction.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return BaseTransaction(
+      id: serializer.fromJson<int>(json['id']),
+      amount: serializer.fromJson<double>(json['amount']),
+      originalAmount: serializer.fromJson<double>(json['originalAmount']),
+      exchangeRate: serializer.fromJson<double>(json['exchangeRate']),
+      isExpense: serializer.fromJson<bool>(json['isExpense']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      label: serializer.fromJson<String>(json['label']),
+      subcategoryId: serializer.fromJson<int>(json['subcategoryId']),
+      monthId: serializer.fromJson<int>(json['monthId']),
+      currencyId: serializer.fromJson<int>(json['currencyId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'amount': serializer.toJson<double>(amount),
+      'originalAmount': serializer.toJson<double>(originalAmount),
+      'exchangeRate': serializer.toJson<double>(exchangeRate),
+      'isExpense': serializer.toJson<bool>(isExpense),
+      'date': serializer.toJson<DateTime>(date),
+      'label': serializer.toJson<String>(label),
+      'subcategoryId': serializer.toJson<int>(subcategoryId),
+      'monthId': serializer.toJson<int>(monthId),
+      'currencyId': serializer.toJson<int>(currencyId),
+    };
+  }
+
+  BaseTransaction copyWith(
+          {int id,
+          double amount,
+          double originalAmount,
+          double exchangeRate,
+          bool isExpense,
+          DateTime date,
+          String label,
+          int subcategoryId,
+          int monthId,
+          int currencyId}) =>
+      BaseTransaction(
+        id: id ?? this.id,
+        amount: amount ?? this.amount,
+        originalAmount: originalAmount ?? this.originalAmount,
+        exchangeRate: exchangeRate ?? this.exchangeRate,
+        isExpense: isExpense ?? this.isExpense,
+        date: date ?? this.date,
+        label: label ?? this.label,
+        subcategoryId: subcategoryId ?? this.subcategoryId,
+        monthId: monthId ?? this.monthId,
+        currencyId: currencyId ?? this.currencyId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('BaseTransaction(')
+          ..write('id: $id, ')
+          ..write('amount: $amount, ')
+          ..write('originalAmount: $originalAmount, ')
+          ..write('exchangeRate: $exchangeRate, ')
+          ..write('isExpense: $isExpense, ')
+          ..write('date: $date, ')
+          ..write('label: $label, ')
+          ..write('subcategoryId: $subcategoryId, ')
+          ..write('monthId: $monthId, ')
+          ..write('currencyId: $currencyId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          amount.hashCode,
+          $mrjc(
+              originalAmount.hashCode,
+              $mrjc(
+                  exchangeRate.hashCode,
+                  $mrjc(
+                      isExpense.hashCode,
+                      $mrjc(
+                          date.hashCode,
+                          $mrjc(
+                              label.hashCode,
+                              $mrjc(
+                                  subcategoryId.hashCode,
+                                  $mrjc(monthId.hashCode,
+                                      currencyId.hashCode))))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is BaseTransaction &&
+          other.id == this.id &&
+          other.amount == this.amount &&
+          other.originalAmount == this.originalAmount &&
+          other.exchangeRate == this.exchangeRate &&
+          other.isExpense == this.isExpense &&
+          other.date == this.date &&
+          other.label == this.label &&
+          other.subcategoryId == this.subcategoryId &&
+          other.monthId == this.monthId &&
+          other.currencyId == this.currencyId);
+}
+
+class BaseTransactionsCompanion extends UpdateCompanion<BaseTransaction> {
+  final Value<int> id;
+  final Value<double> amount;
+  final Value<double> originalAmount;
+  final Value<double> exchangeRate;
+  final Value<bool> isExpense;
+  final Value<DateTime> date;
+  final Value<String> label;
+  final Value<int> subcategoryId;
+  final Value<int> monthId;
+  final Value<int> currencyId;
+  const BaseTransactionsCompanion({
+    this.id = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.originalAmount = const Value.absent(),
+    this.exchangeRate = const Value.absent(),
+    this.isExpense = const Value.absent(),
+    this.date = const Value.absent(),
+    this.label = const Value.absent(),
+    this.subcategoryId = const Value.absent(),
+    this.monthId = const Value.absent(),
+    this.currencyId = const Value.absent(),
+  });
+  BaseTransactionsCompanion.insert({
+    this.id = const Value.absent(),
+    @required double amount,
+    @required double originalAmount,
+    @required double exchangeRate,
+    @required bool isExpense,
+    @required DateTime date,
+    @required String label,
+    @required int subcategoryId,
+    @required int monthId,
+    @required int currencyId,
+  })  : amount = Value(amount),
+        originalAmount = Value(originalAmount),
+        exchangeRate = Value(exchangeRate),
+        isExpense = Value(isExpense),
+        date = Value(date),
+        label = Value(label),
+        subcategoryId = Value(subcategoryId),
+        monthId = Value(monthId),
+        currencyId = Value(currencyId);
+  static Insertable<BaseTransaction> custom({
+    Expression<int> id,
+    Expression<double> amount,
+    Expression<double> originalAmount,
+    Expression<double> exchangeRate,
+    Expression<bool> isExpense,
+    Expression<DateTime> date,
+    Expression<String> label,
+    Expression<int> subcategoryId,
+    Expression<int> monthId,
+    Expression<int> currencyId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (amount != null) 'amount': amount,
+      if (originalAmount != null) 'originalAmount': originalAmount,
+      if (exchangeRate != null) 'exchangeRate': exchangeRate,
+      if (isExpense != null) 'isExpense': isExpense,
+      if (date != null) 'date': date,
+      if (label != null) 'label': label,
+      if (subcategoryId != null) 'subcategoryId': subcategoryId,
+      if (monthId != null) 'monthId': monthId,
+      if (currencyId != null) 'currencyId': currencyId,
+    });
+  }
+
+  BaseTransactionsCompanion copyWith(
+      {Value<int> id,
+      Value<double> amount,
+      Value<double> originalAmount,
+      Value<double> exchangeRate,
+      Value<bool> isExpense,
+      Value<DateTime> date,
+      Value<String> label,
+      Value<int> subcategoryId,
+      Value<int> monthId,
+      Value<int> currencyId}) {
+    return BaseTransactionsCompanion(
+      id: id ?? this.id,
+      amount: amount ?? this.amount,
+      originalAmount: originalAmount ?? this.originalAmount,
+      exchangeRate: exchangeRate ?? this.exchangeRate,
+      isExpense: isExpense ?? this.isExpense,
+      date: date ?? this.date,
+      label: label ?? this.label,
+      subcategoryId: subcategoryId ?? this.subcategoryId,
+      monthId: monthId ?? this.monthId,
+      currencyId: currencyId ?? this.currencyId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (originalAmount.present) {
+      map['originalAmount'] = Variable<double>(originalAmount.value);
+    }
+    if (exchangeRate.present) {
+      map['exchangeRate'] = Variable<double>(exchangeRate.value);
+    }
+    if (isExpense.present) {
+      map['isExpense'] = Variable<bool>(isExpense.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (subcategoryId.present) {
+      map['subcategoryId'] = Variable<int>(subcategoryId.value);
+    }
+    if (monthId.present) {
+      map['monthId'] = Variable<int>(monthId.value);
+    }
+    if (currencyId.present) {
+      map['currencyId'] = Variable<int>(currencyId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BaseTransactionsCompanion(')
+          ..write('id: $id, ')
+          ..write('amount: $amount, ')
+          ..write('originalAmount: $originalAmount, ')
+          ..write('exchangeRate: $exchangeRate, ')
+          ..write('isExpense: $isExpense, ')
+          ..write('date: $date, ')
+          ..write('label: $label, ')
+          ..write('subcategoryId: $subcategoryId, ')
+          ..write('monthId: $monthId, ')
+          ..write('currencyId: $currencyId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class BaseTransactions extends Table
+    with TableInfo<BaseTransactions, BaseTransaction> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  BaseTransactions(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  }
+
+  final VerificationMeta _amountMeta = const VerificationMeta('amount');
+  GeneratedRealColumn _amount;
+  GeneratedRealColumn get amount => _amount ??= _constructAmount();
+  GeneratedRealColumn _constructAmount() {
+    return GeneratedRealColumn('amount', $tableName, false,
+        $customConstraints: 'NOT NULL CHECK (amount > 0)');
+  }
+
+  final VerificationMeta _originalAmountMeta =
+      const VerificationMeta('originalAmount');
+  GeneratedRealColumn _originalAmount;
+  GeneratedRealColumn get originalAmount =>
+      _originalAmount ??= _constructOriginalAmount();
+  GeneratedRealColumn _constructOriginalAmount() {
+    return GeneratedRealColumn('originalAmount', $tableName, false,
+        $customConstraints: 'NOT NULL CHECK (originalAmount > 0)');
+  }
+
+  final VerificationMeta _exchangeRateMeta =
+      const VerificationMeta('exchangeRate');
+  GeneratedRealColumn _exchangeRate;
+  GeneratedRealColumn get exchangeRate =>
+      _exchangeRate ??= _constructExchangeRate();
+  GeneratedRealColumn _constructExchangeRate() {
+    return GeneratedRealColumn('exchangeRate', $tableName, false,
+        $customConstraints: 'NOT NULL CHECK (exchangeRate > 0)');
+  }
+
+  final VerificationMeta _isExpenseMeta = const VerificationMeta('isExpense');
+  GeneratedBoolColumn _isExpense;
+  GeneratedBoolColumn get isExpense => _isExpense ??= _constructIsExpense();
+  GeneratedBoolColumn _constructIsExpense() {
+    return GeneratedBoolColumn('isExpense', $tableName, false,
+        $customConstraints: 'NOT NULL');
+  }
+
+  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  GeneratedDateTimeColumn _date;
+  GeneratedDateTimeColumn get date => _date ??= _constructDate();
+  GeneratedDateTimeColumn _constructDate() {
+    return GeneratedDateTimeColumn('date', $tableName, false,
+        $customConstraints: 'NOT NULL');
+  }
+
+  final VerificationMeta _labelMeta = const VerificationMeta('label');
+  GeneratedTextColumn _label;
+  GeneratedTextColumn get label => _label ??= _constructLabel();
+  GeneratedTextColumn _constructLabel() {
+    return GeneratedTextColumn('label', $tableName, false,
+        $customConstraints:
+            'NOT NULL CHECK (length(label) >= 0 AND length(label) <= 256)');
+  }
+
+  final VerificationMeta _subcategoryIdMeta =
+      const VerificationMeta('subcategoryId');
+  GeneratedIntColumn _subcategoryId;
+  GeneratedIntColumn get subcategoryId =>
+      _subcategoryId ??= _constructSubcategoryId();
+  GeneratedIntColumn _constructSubcategoryId() {
+    return GeneratedIntColumn('subcategoryId', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES subcategories (id)');
+  }
+
+  final VerificationMeta _monthIdMeta = const VerificationMeta('monthId');
+  GeneratedIntColumn _monthId;
+  GeneratedIntColumn get monthId => _monthId ??= _constructMonthId();
+  GeneratedIntColumn _constructMonthId() {
+    return GeneratedIntColumn('monthId', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES months (id)');
+  }
+
+  final VerificationMeta _currencyIdMeta = const VerificationMeta('currencyId');
+  GeneratedIntColumn _currencyId;
+  GeneratedIntColumn get currencyId => _currencyId ??= _constructCurrencyId();
+  GeneratedIntColumn _constructCurrencyId() {
+    return GeneratedIntColumn('currencyId', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES currencies (id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        amount,
+        originalAmount,
+        exchangeRate,
+        isExpense,
+        date,
+        label,
+        subcategoryId,
+        monthId,
+        currencyId
+      ];
+  @override
+  BaseTransactions get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'baseTransactions';
+  @override
+  final String actualTableName = 'baseTransactions';
+  @override
+  VerificationContext validateIntegrity(Insertable<BaseTransaction> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('amount')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['amount'], _amountMeta));
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('originalAmount')) {
+      context.handle(
+          _originalAmountMeta,
+          originalAmount.isAcceptableOrUnknown(
+              data['originalAmount'], _originalAmountMeta));
+    } else if (isInserting) {
+      context.missing(_originalAmountMeta);
+    }
+    if (data.containsKey('exchangeRate')) {
+      context.handle(
+          _exchangeRateMeta,
+          exchangeRate.isAcceptableOrUnknown(
+              data['exchangeRate'], _exchangeRateMeta));
+    } else if (isInserting) {
+      context.missing(_exchangeRateMeta);
+    }
+    if (data.containsKey('isExpense')) {
+      context.handle(_isExpenseMeta,
+          isExpense.isAcceptableOrUnknown(data['isExpense'], _isExpenseMeta));
+    } else if (isInserting) {
+      context.missing(_isExpenseMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date'], _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+          _labelMeta, label.isAcceptableOrUnknown(data['label'], _labelMeta));
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('subcategoryId')) {
+      context.handle(
+          _subcategoryIdMeta,
+          subcategoryId.isAcceptableOrUnknown(
+              data['subcategoryId'], _subcategoryIdMeta));
+    } else if (isInserting) {
+      context.missing(_subcategoryIdMeta);
+    }
+    if (data.containsKey('monthId')) {
+      context.handle(_monthIdMeta,
+          monthId.isAcceptableOrUnknown(data['monthId'], _monthIdMeta));
+    } else if (isInserting) {
+      context.missing(_monthIdMeta);
+    }
+    if (data.containsKey('currencyId')) {
+      context.handle(
+          _currencyIdMeta,
+          currencyId.isAcceptableOrUnknown(
+              data['currencyId'], _currencyIdMeta));
+    } else if (isInserting) {
+      context.missing(_currencyIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BaseTransaction map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return BaseTransaction.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  BaseTransactions createAlias(String alias) {
+    return BaseTransactions(_db, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class RecurrenceType extends DataClass implements Insertable<RecurrenceType> {
+  final int id;
+  final String name;
+  RecurrenceType({@required this.id, @required this.name});
+  factory RecurrenceType.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return RecurrenceType(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    return map;
+  }
+
+  RecurrenceTypesCompanion toCompanion(bool nullToAbsent) {
+    return RecurrenceTypesCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+    );
+  }
+
+  factory RecurrenceType.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return RecurrenceType(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  RecurrenceType copyWith({int id, String name}) => RecurrenceType(
+        id: id ?? this.id,
+        name: name ?? this.name,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('RecurrenceType(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(id.hashCode, name.hashCode));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is RecurrenceType &&
+          other.id == this.id &&
+          other.name == this.name);
+}
+
+class RecurrenceTypesCompanion extends UpdateCompanion<RecurrenceType> {
+  final Value<int> id;
+  final Value<String> name;
+  const RecurrenceTypesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  RecurrenceTypesCompanion.insert({
+    this.id = const Value.absent(),
+    @required String name,
+  }) : name = Value(name);
+  static Insertable<RecurrenceType> custom({
+    Expression<int> id,
+    Expression<String> name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+    });
+  }
+
+  RecurrenceTypesCompanion copyWith({Value<int> id, Value<String> name}) {
+    return RecurrenceTypesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurrenceTypesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class RecurrenceTypes extends Table
+    with TableInfo<RecurrenceTypes, RecurrenceType> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  RecurrenceTypes(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn('name', $tableName, false,
+        $customConstraints:
+            'NOT NULL CHECK (length(name) >= 0 AND length(name) <= 40)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  RecurrenceTypes get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'recurrenceTypes';
+  @override
+  final String actualTableName = 'recurrenceTypes';
+  @override
+  VerificationContext validateIntegrity(Insertable<RecurrenceType> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RecurrenceType map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return RecurrenceType.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  RecurrenceTypes createAlias(String alias) {
+    return RecurrenceTypes(_db, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class Recurrence extends DataClass implements Insertable<Recurrence> {
+  final int id;
+  final int recurrenceType;
+  final int transactionId;
+  final DateTime until;
+  Recurrence(
+      {@required this.id,
+      @required this.recurrenceType,
+      @required this.transactionId,
+      this.until});
+  factory Recurrence.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return Recurrence(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      recurrenceType: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}recurrenceType']),
+      transactionId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}transactionId']),
+      until:
+          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}until']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || recurrenceType != null) {
+      map['recurrenceType'] = Variable<int>(recurrenceType);
+    }
+    if (!nullToAbsent || transactionId != null) {
+      map['transactionId'] = Variable<int>(transactionId);
+    }
+    if (!nullToAbsent || until != null) {
+      map['until'] = Variable<DateTime>(until);
+    }
+    return map;
+  }
+
+  RecurrencesCompanion toCompanion(bool nullToAbsent) {
+    return RecurrencesCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      recurrenceType: recurrenceType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recurrenceType),
+      transactionId: transactionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transactionId),
+      until:
+          until == null && nullToAbsent ? const Value.absent() : Value(until),
+    );
+  }
+
+  factory Recurrence.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Recurrence(
+      id: serializer.fromJson<int>(json['id']),
+      recurrenceType: serializer.fromJson<int>(json['recurrenceType']),
+      transactionId: serializer.fromJson<int>(json['transactionId']),
+      until: serializer.fromJson<DateTime>(json['until']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'recurrenceType': serializer.toJson<int>(recurrenceType),
+      'transactionId': serializer.toJson<int>(transactionId),
+      'until': serializer.toJson<DateTime>(until),
+    };
+  }
+
+  Recurrence copyWith(
+          {int id, int recurrenceType, int transactionId, DateTime until}) =>
+      Recurrence(
+        id: id ?? this.id,
+        recurrenceType: recurrenceType ?? this.recurrenceType,
+        transactionId: transactionId ?? this.transactionId,
+        until: until ?? this.until,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Recurrence(')
+          ..write('id: $id, ')
+          ..write('recurrenceType: $recurrenceType, ')
+          ..write('transactionId: $transactionId, ')
+          ..write('until: $until')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(recurrenceType.hashCode,
+          $mrjc(transactionId.hashCode, until.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is Recurrence &&
+          other.id == this.id &&
+          other.recurrenceType == this.recurrenceType &&
+          other.transactionId == this.transactionId &&
+          other.until == this.until);
+}
+
+class RecurrencesCompanion extends UpdateCompanion<Recurrence> {
+  final Value<int> id;
+  final Value<int> recurrenceType;
+  final Value<int> transactionId;
+  final Value<DateTime> until;
+  const RecurrencesCompanion({
+    this.id = const Value.absent(),
+    this.recurrenceType = const Value.absent(),
+    this.transactionId = const Value.absent(),
+    this.until = const Value.absent(),
+  });
+  RecurrencesCompanion.insert({
+    this.id = const Value.absent(),
+    @required int recurrenceType,
+    @required int transactionId,
+    this.until = const Value.absent(),
+  })  : recurrenceType = Value(recurrenceType),
+        transactionId = Value(transactionId);
+  static Insertable<Recurrence> custom({
+    Expression<int> id,
+    Expression<int> recurrenceType,
+    Expression<int> transactionId,
+    Expression<DateTime> until,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (recurrenceType != null) 'recurrenceType': recurrenceType,
+      if (transactionId != null) 'transactionId': transactionId,
+      if (until != null) 'until': until,
+    });
+  }
+
+  RecurrencesCompanion copyWith(
+      {Value<int> id,
+      Value<int> recurrenceType,
+      Value<int> transactionId,
+      Value<DateTime> until}) {
+    return RecurrencesCompanion(
+      id: id ?? this.id,
+      recurrenceType: recurrenceType ?? this.recurrenceType,
+      transactionId: transactionId ?? this.transactionId,
+      until: until ?? this.until,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (recurrenceType.present) {
+      map['recurrenceType'] = Variable<int>(recurrenceType.value);
+    }
+    if (transactionId.present) {
+      map['transactionId'] = Variable<int>(transactionId.value);
+    }
+    if (until.present) {
+      map['until'] = Variable<DateTime>(until.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurrencesCompanion(')
+          ..write('id: $id, ')
+          ..write('recurrenceType: $recurrenceType, ')
+          ..write('transactionId: $transactionId, ')
+          ..write('until: $until')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Recurrences extends Table with TableInfo<Recurrences, Recurrence> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  Recurrences(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
+  }
+
+  final VerificationMeta _recurrenceTypeMeta =
+      const VerificationMeta('recurrenceType');
+  GeneratedIntColumn _recurrenceType;
+  GeneratedIntColumn get recurrenceType =>
+      _recurrenceType ??= _constructRecurrenceType();
+  GeneratedIntColumn _constructRecurrenceType() {
+    return GeneratedIntColumn('recurrenceType', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES recurrenceTypes (id)');
+  }
+
+  final VerificationMeta _transactionIdMeta =
+      const VerificationMeta('transactionId');
+  GeneratedIntColumn _transactionId;
+  GeneratedIntColumn get transactionId =>
+      _transactionId ??= _constructTransactionId();
+  GeneratedIntColumn _constructTransactionId() {
+    return GeneratedIntColumn('transactionId', $tableName, false,
+        $customConstraints:
+            'NOT NULL REFERENCES recurrences (id) ON DELETE CASCADE');
+  }
+
+  final VerificationMeta _untilMeta = const VerificationMeta('until');
+  GeneratedDateTimeColumn _until;
+  GeneratedDateTimeColumn get until => _until ??= _constructUntil();
+  GeneratedDateTimeColumn _constructUntil() {
+    return GeneratedDateTimeColumn('until', $tableName, true,
+        $customConstraints: '');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, recurrenceType, transactionId, until];
+  @override
+  Recurrences get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'recurrences';
+  @override
+  final String actualTableName = 'recurrences';
+  @override
+  VerificationContext validateIntegrity(Insertable<Recurrence> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('recurrenceType')) {
+      context.handle(
+          _recurrenceTypeMeta,
+          recurrenceType.isAcceptableOrUnknown(
+              data['recurrenceType'], _recurrenceTypeMeta));
+    } else if (isInserting) {
+      context.missing(_recurrenceTypeMeta);
+    }
+    if (data.containsKey('transactionId')) {
+      context.handle(
+          _transactionIdMeta,
+          transactionId.isAcceptableOrUnknown(
+              data['transactionId'], _transactionIdMeta));
+    } else if (isInserting) {
+      context.missing(_transactionIdMeta);
+    }
+    if (data.containsKey('until')) {
+      context.handle(
+          _untilMeta, until.isAcceptableOrUnknown(data['until'], _untilMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Recurrence map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Recurrence.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Recurrences createAlias(String alias) {
+    return Recurrences(_db, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class UserProfile extends DataClass implements Insertable<UserProfile> {
@@ -2087,8 +2239,8 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     final intType = db.typeSystem.forDartType<int>();
     return UserProfile(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      currencyId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}currency_id']),
+      currencyId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}currencyId']),
     );
   }
   @override
@@ -2098,7 +2250,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
       map['id'] = Variable<int>(id);
     }
     if (!nullToAbsent || currencyId != null) {
-      map['currency_id'] = Variable<int>(currencyId);
+      map['currencyId'] = Variable<int>(currencyId);
     }
     return map;
   }
@@ -2169,7 +2321,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (currencyId != null) 'currency_id': currencyId,
+      if (currencyId != null) 'currencyId': currencyId,
     });
   }
 
@@ -2187,7 +2339,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
       map['id'] = Variable<int>(id.value);
     }
     if (currencyId.present) {
-      map['currency_id'] = Variable<int>(currencyId.value);
+      map['currencyId'] = Variable<int>(currencyId.value);
     }
     return map;
   }
@@ -2202,37 +2354,36 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
   }
 }
 
-class $UserProfilesTable extends UserProfiles
-    with TableInfo<$UserProfilesTable, UserProfile> {
+class UserProfiles extends Table with TableInfo<UserProfiles, UserProfile> {
   final GeneratedDatabase _db;
   final String _alias;
-  $UserProfilesTable(this._db, [this._alias]);
+  UserProfiles(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
-  @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+        declaredAsPrimaryKey: true,
+        hasAutoIncrement: true,
+        $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
   }
 
   final VerificationMeta _currencyIdMeta = const VerificationMeta('currencyId');
   GeneratedIntColumn _currencyId;
-  @override
   GeneratedIntColumn get currencyId => _currencyId ??= _constructCurrencyId();
   GeneratedIntColumn _constructCurrencyId() {
-    return GeneratedIntColumn('currency_id', $tableName, false,
-        $customConstraints: 'REFERENCES currencies(id)');
+    return GeneratedIntColumn('currencyId', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES currencies (id)');
   }
 
   @override
   List<GeneratedColumn> get $columns => [id, currencyId];
   @override
-  $UserProfilesTable get asDslTable => this;
+  UserProfiles get asDslTable => this;
   @override
-  String get $tableName => _alias ?? 'user_profiles';
+  String get $tableName => _alias ?? 'userProfiles';
   @override
-  final String actualTableName = 'user_profiles';
+  final String actualTableName = 'userProfiles';
   @override
   VerificationContext validateIntegrity(Insertable<UserProfile> instance,
       {bool isInserting = false}) {
@@ -2241,11 +2392,11 @@ class $UserProfilesTable extends UserProfiles
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (data.containsKey('currency_id')) {
+    if (data.containsKey('currencyId')) {
       context.handle(
           _currencyIdMeta,
           currencyId.isAcceptableOrUnknown(
-              data['currency_id'], _currencyIdMeta));
+              data['currencyId'], _currencyIdMeta));
     } else if (isInserting) {
       context.missing(_currencyIdMeta);
     }
@@ -2261,31 +2412,37 @@ class $UserProfilesTable extends UserProfiles
   }
 
   @override
-  $UserProfilesTable createAlias(String alias) {
-    return $UserProfilesTable(_db, alias);
+  UserProfiles createAlias(String alias) {
+    return UserProfiles(_db, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
-  $TransactionsTable _transactions;
-  $TransactionsTable get transactions =>
-      _transactions ??= $TransactionsTable(this);
-  $CategoriesTable _categories;
-  $CategoriesTable get categories => _categories ??= $CategoriesTable(this);
-  $SubcategoriesTable _subcategories;
-  $SubcategoriesTable get subcategories =>
-      _subcategories ??= $SubcategoriesTable(this);
-  $MonthsTable _months;
-  $MonthsTable get months => _months ??= $MonthsTable(this);
-  $RecurrenceTypesTable _recurrenceTypes;
-  $RecurrenceTypesTable get recurrenceTypes =>
-      _recurrenceTypes ??= $RecurrenceTypesTable(this);
-  $CurrenciesTable _currencies;
-  $CurrenciesTable get currencies => _currencies ??= $CurrenciesTable(this);
-  $UserProfilesTable _userProfiles;
-  $UserProfilesTable get userProfiles =>
-      _userProfiles ??= $UserProfilesTable(this);
+  Categories _categories;
+  Categories get categories => _categories ??= Categories(this);
+  Subcategories _subcategories;
+  Subcategories get subcategories => _subcategories ??= Subcategories(this);
+  Months _months;
+  Months get months => _months ??= Months(this);
+  Currencies _currencies;
+  Currencies get currencies => _currencies ??= Currencies(this);
+  BaseTransactions _baseTransactions;
+  BaseTransactions get baseTransactions =>
+      _baseTransactions ??= BaseTransactions(this);
+  RecurrenceTypes _recurrenceTypes;
+  RecurrenceTypes get recurrenceTypes =>
+      _recurrenceTypes ??= RecurrenceTypes(this);
+  Recurrences _recurrences;
+  Recurrences get recurrences => _recurrences ??= Recurrences(this);
+  View _fullTransactions;
+  View get fullTransactions => _fullTransactions ??= View('fullTransactions',
+      'CREATE VIEW fullTransactions AS\r\nWITH RECURSIVE tmp(id, txDate, recType, until, name) AS (\r\n    SELECT t.id, t.date, r.recurrenceType, r.until, rt.name\r\n    FROM recurrences r,\r\n         baseTransactions t,\r\n         recurrenceTypes rt\r\n    WHERE t.id = r.transactionId\r\n      AND r.recurrenceType = rt.id\r\n    UNION\r\n    SELECT id,\r\n           (SELECT CASE tmp.recType\r\n                       WHEN 1 THEN\r\n        DATE (tmp.txDate)\r\n        WHEN 2 THEN DATE (tmp.txDate, \'+1 day\')\r\n        WHEN 3 THEN DATE (tmp.txDate, \'+7 days\')\r\n        ELSE tmp.txDate\r\n--         WHEN 4 THEN DATE (tmp.txDate, \'+1 month\', \'start of month\', \'weekday 5\', \'+7 days\')\r\nEND\r\n) AS txDate, recType, until, name\r\n      FROM tmp WHERE txDate <= until\r\n    )\r\nSELECT t.id,\r\n       t.amount,\r\n       t.originalAmount,\r\n       t.exchangeRate,\r\n       t.isExpense,\r\n       tmp.txDate AS date,\r\n       t.label,\r\n       t.subcategoryId,\r\n       (SELECT id FROM months m WHERE m.firstDate <= tmp.txDate AND m.lastDate >= tmp.txDate) AS monthId,\r\n       t.currencyId,\r\n       tmp.recType AS recurrenceType,\r\n       tmp.until,\r\n       tmp.name AS recurrenceName\r\nFROM tmp,\r\n     baseTransactions t\r\nWHERE tmp.id = t.id;');
+  UserProfiles _userProfiles;
+  UserProfiles get userProfiles => _userProfiles ??= UserProfiles(this);
   TransactionDao _transactionDao;
   TransactionDao get transactionDao =>
       _transactionDao ??= TransactionDao(this as AppDatabase);
@@ -2297,28 +2454,49 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   CurrencyDao _currencyDao;
   CurrencyDao get currencyDao =>
       _currencyDao ??= CurrencyDao(this as AppDatabase);
-  Selectable<int> getTimestamp() {
-    return customSelect(
-        'SELECT strftime(\'%s\',\'now\', \'localtime\') * 1000 AS timestamp',
-        variables: [],
-        readsFrom: {}).map((QueryRow row) => row.readInt('timestamp'));
+  Selectable<UserProfile> getUserProfile() {
+    return customSelect('SELECT * FROM userProfiles WHERE id = 1',
+        variables: [], readsFrom: {userProfiles}).map(userProfiles.mapFromRow);
   }
 
-  Selectable<UserProfile> getUserProfile() {
-    return customSelect('SELECT * FROM user_profiles WHERE id=1',
-        variables: [], readsFrom: {userProfiles}).map(userProfiles.mapFromRow);
+  Selectable<int> getTimestamp() {
+    return customSelect(
+        'SELECT CAST(strftime(\'%s\', \'now\', \'localtime\') AS INT) * 1000 AS timestamp',
+        variables: [],
+        readsFrom: {}).map((QueryRow row) => row.readInt('timestamp'));
   }
 
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        transactions,
         categories,
         subcategories,
         months,
-        recurrenceTypes,
         currencies,
+        baseTransactions,
+        recurrenceTypes,
+        recurrences,
+        fullTransactions,
         userProfiles
       ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('categories',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('subcategories', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('recurrences',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('recurrences', kind: UpdateKind.delete),
+            ],
+          ),
+        ],
+      );
 }

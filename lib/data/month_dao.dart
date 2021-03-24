@@ -33,13 +33,23 @@ class MonthWithDetails {
   double get expense => details.second;
 }
 
-@UseDao(tables: [Months, Transactions])
+@UseDao(
+  tables: [
+    Months,
+    BaseTransactions,
+  ],
+  include: {
+    "moor_files/month_queries.moor",
+  },
+)
 class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   final AppDatabase db;
 
   MonthDao(this.db) : super(db);
 
-  Future<List<Month>> getAllMonths() => select(months).get();
+  Future<List<Month>> getAllMonths() => allMonths().get();
+
+  Stream<List<Month>> watchAllMonths() => allMonths().watch();
 
   Future insertMonth(Insertable<Month> month) => into(months).insert(month);
 
@@ -47,45 +57,16 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
-  Future<int> getMonthIdByDate(DateTime date) async {
-    const converter = DateTimeConverter();
+  Future<int> getMonthIdByDate(DateTime date) =>
+      monthIdByDate(date).getSingleOrNull();
 
-    final sqlDate = converter.mapToSql(date);
-    final inMonthExp = months.firstDate.isSmallerOrEqualValue(sqlDate) &
-        months.lastDate.isBiggerOrEqualValue(sqlDate);
+  Future<Month> getCurrentMonth() => monthByDate(today()).getSingleOrNull();
 
-    final month =
-        await (select(months)..where((m) => inMonthExp)).getSingleOrNull();
+  Stream<Month> watchCurrentMonth() => monthByDate(today()).watchSingleOrNull();
 
-    return month?.id;
-  }
+  Future<Month> getMonthById(int id) => monthById(id).getSingleOrNull();
 
-  Future<Month> getCurrentMonth() {
-    const converter = DateTimeConverter();
-
-    final sqlDate = converter.mapToSql(today());
-    final inMonthExp = months.firstDate.isSmallerOrEqualValue(sqlDate) &
-        months.lastDate.isBiggerOrEqualValue(sqlDate);
-
-    return (select(months)..where((m) => inMonthExp)).getSingleOrNull();
-  }
-
-  Future<Month> getMonthById(int id) =>
-      (select(months)..where((m) => m.id.equals(id))).getSingleOrNull();
-
-  Stream<Month> watchCurrentMonth() {
-    const converter = DateTimeConverter();
-
-    final sqlDate = converter.mapToSql(today());
-    final inMonthExp = months.firstDate.isSmallerOrEqualValue(sqlDate) &
-        months.lastDate.isBiggerOrEqualValue(sqlDate);
-
-    return (select(months)..where((month) => inMonthExp)).watchSingleOrNull();
-  }
-
-  Stream<List<Month>> watchAllMonths() =>
-      (select(months)..orderBy([(m) => OrderingTerm(expression: m.firstDate)]))
-          .watch();
+  Stream<Month> watchMonthById(int id) => monthById(id).watchSingleOrNull();
 
   /// Returns every month id for which a (recursive) transaction is in the month.
   Future<List<int>> getMonthIdsFromTransaction(int txOriginalId) {
@@ -151,7 +132,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   }
 
   Future checkMonth(DateTime date) async {
-    if ((await db.monthDao.getMonthIdByDate(date)) == null) {
+    if ((await getMonthIdByDate(date)) == null) {
       final first = date.getFirstDateOfMonth();
       final last = date.getLastDateOfMonth();
 
@@ -197,7 +178,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
         "ORDER BY m.first_date DESC",
         readsFrom: {
           months,
-          transactions
+          baseTransactions
         }).watch().map((rows) => rows
         .map(
           (row) {
@@ -230,7 +211,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
             "AS month_expense,  m.* "
             "FROM months m "
             "WHERE '${converter.mapToSql(today())}' BETWEEN m.first_date AND m.last_date",
-            readsFrom: {months, transactions}).watchSingle().map(
+            readsFrom: {months, db.transactions}).watchSingle().map(
           (row) => MonthWithDetails(
               Month.fromData(row.data, db),
               Tuple3<double, double, double>(

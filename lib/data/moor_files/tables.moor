@@ -1,0 +1,110 @@
+CREATE TABLE recurrences
+(
+    id             INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    recurrenceType INT NOT NULL REFERENCES recurrenceTypes (id),
+    transactionId  INT NOT NULL REFERENCES recurrences (id) ON DELETE CASCADE,
+    until          DATE -- TODO maybe NOT NULL?
+) AS Recurrence;
+
+CREATE TABLE recurrenceTypes
+(
+    id   INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL CHECK (length(name) >= 0 AND length(name) <= 40)
+)AS RecurrenceType;
+
+CREATE TABLE categories
+(
+    id            INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name          TEXT NOT NULL CHECK (length(name) >= 1 AND length(name) <= 20),
+    isExpense     BOOL NOT NULL DEFAULT True,
+    isPreset      BOOL NOT NULL DEFAULT False,
+    iconCodePoint INT  NOT NULL
+) AS Category;
+
+CREATE TABLE subcategories
+(
+    id         INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name       TEXT NOT NULL CHECK (length(name) >= 1 AND length(name) <= 30),
+    categoryId INT  NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
+    isPreset   BOOL NOT NULL DEFAULT False
+) AS Subcategory;
+
+CREATE TABLE months
+(
+    id        INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
+    maxBudget REAL NOT NULL CHECK (maxBudget >= 0),
+    firstDate DATE NOT NULL,
+    lastDate  DATE NOT NULL
+) AS Month;
+
+CREATE TABLE currencies
+(
+    id           INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
+    abbrev       TEXT NOT NULL CHECK (length(abbrev) >= 2 AND length(abbrev) <= 10),
+    symbol       TEXT NOT NULL CHECK (length(symbol) >= 1 AND length(symbol) <= 5),
+    exchangeRate REAL NOT NULL DEFAULT 1.0
+) AS Currency;
+
+CREATE TABLE userProfiles
+(
+    id         INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    currencyId INT NOT NULL REFERENCES currencies (id)
+) AS UserProfile;
+
+CREATE TABLE baseTransactions
+(
+    id             INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
+    amount         REAL NOT NULL CHECK (amount > 0),
+    originalAmount REAL NOT NULL CHECK (originalAmount > 0),
+    exchangeRate   REAL NOT NULL CHECK (exchangeRate > 0),
+    isExpense      BOOL NOT NULL,
+    date           DATE NOT NULL,
+    label          TEXT NOT NULL CHECK (length(label) >= 0 AND length(label) <= 256),
+    subcategoryId  INT  NOT NULL REFERENCES subcategories (id),
+    monthId        INT  NOT NULL REFERENCES months (id),
+    currencyId     INT  NOT NULL REFERENCES currencies (id)
+) AS BaseTransaction;
+
+
+-- https://sqlite.org/lang_datefunc.html
+
+CREATE VIEW fullTransactions AS
+WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
+    SELECT t.id, t.date, r.recurrenceType, r.until, rt.name
+    FROM recurrences r,
+         baseTransactions t,
+         recurrenceTypes rt
+    WHERE t.id = r.transactionId
+      AND r.recurrenceType = rt.id
+    UNION
+    SELECT id,
+           (SELECT CASE tmp.recType
+                       WHEN 1 THEN
+        DATE (tmp.txDate)
+        WHEN 2 THEN DATE (tmp.txDate, '+1 day')
+        WHEN 3 THEN DATE (tmp.txDate, '+7 days')
+        ELSE tmp.txDate
+--         WHEN 4 THEN DATE (tmp.txDate, '+1 month', 'start of month', 'weekday 5', '+7 days')
+END
+) AS txDate, recType, until, name
+      FROM tmp WHERE txDate <= until
+    )
+SELECT t.id,
+       t.amount,
+       t.originalAmount,
+       t.exchangeRate,
+       t.isExpense,
+       tmp.txDate AS date,
+       t.label,
+       t.subcategoryId,
+       (SELECT id FROM months m WHERE m.firstDate <= tmp.txDate AND m.lastDate >= tmp.txDate) AS monthId,
+       t.currencyId,
+       tmp.recType AS recurrenceType,
+       tmp.until,
+       tmp.name AS recurrenceName
+FROM tmp,
+     baseTransactions t
+WHERE tmp.id = t.id;
+
+
+
