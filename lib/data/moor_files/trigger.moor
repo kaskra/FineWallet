@@ -22,6 +22,7 @@ BEGIN
                                                     ' days'),
                                             (SELECT 'weekday ' || strftime('%w', dates.txDate))
                                )
+                           WHEN 5 THEN DATE(dates.txDate, '+1 years')
                            ELSE dates.txDate
                            END
                ) AS nextTxDate,
@@ -55,19 +56,22 @@ BEGIN
                            WHEN 1 THEN dates.txDate
                            WHEN 2 THEN DATE(dates.txDate, '+1 days')
                            WHEN 3 THEN DATE(dates.txDate, '+7 days')
+                           -- TODO this up to 4th occurence, then id=5 last occurence
                            WHEN 4 THEN DATE(dates.txDate, '+1 month', 'start of month',
                                             (SELECT '+' ||
                                                     CAST(((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
                                                     ' days'),
                                             (SELECT 'weekday ' || strftime('%w', dates.txDate))
                                )
+                           -- TODO yearly at the same date
+                           WHEN 5 THEN DATE(dates.txDate, '+1 years')
                            ELSE dates.txDate
                            END
                ) AS nextTxDate,
                recType,
                until
         FROM dates
-        WHERE DATE(nextTxDate) <= DATE(until)
+        WHERE DATE(nextTxDate) <= DATE(until) -- TODO save max repetitions in recurrenceTypes? how to deal with unlimited recurrences
     ),
          firstLastDates(firstD, lastD) AS (
              SELECT DISTINCT DATE(txDate, 'start of month'), DATE(txDate, 'start of month', '+1 month', '-1 days')
