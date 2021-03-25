@@ -1,0 +1,37 @@
+import 'tables.moor';
+
+CREATE VIEW fullTransactions AS
+WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
+    SELECT t.id,
+           DATE (t.date, 'unixepoch'), t.recurrenceType, DATE (t.until, 'unixepoch'), rt.name
+    FROM baseTransactions t,
+         recurrenceTypes rt
+    WHERE t.recurrenceType = rt.id
+    UNION
+    SELECT tmp.id,
+           (SELECT CASE tmp.recType
+                       WHEN 1 THEN tmp.txDate
+                       WHEN 2 THEN DATE (tmp.txDate, '+1 days')
+                       WHEN 3 THEN DATE (tmp.txDate, '+7 days')
+                       ELSE tmp.txDate
+--         WHEN 4 THEN DATE (tmp.txDate, '+1 month', 'start of month', 'weekday 5', '+7 days')
+                       END
+           ) AS nextTxDate, tmp.recType, tmp.until, name
+    FROM tmp WHERE nextTxDate <= until
+)
+SELECT t.id,
+       t.amount,
+       t.originalAmount,
+       t.exchangeRate,
+       t.isExpense,
+       tmp.txDate AS date,
+       t.label,
+       t.subcategoryId,
+       (SELECT id FROM months m WHERE DATE(m.firstDate, 'unixepoch') <= tmp.txDate AND DATE(m.lastDate, 'unixepoch') >= tmp.txDate) AS monthId,
+       t.currencyId,
+       tmp.recType AS recurrenceType,
+       tmp.until,
+       tmp.name AS recurrenceName
+FROM tmp,
+     baseTransactions t
+WHERE tmp.id = t.id;

@@ -10,7 +10,7 @@ class HistoryItem extends StatelessWidget {
     this.userCurrencyId = 1,
   }) : super(key: key);
 
-  final TransactionWithCategoryAndCurrency transaction;
+  final TransactionsWithFilterResult transaction;
   final Function(bool) onSelect;
   final bool isSelected;
   final bool isSelectionActive;
@@ -71,11 +71,10 @@ class HistoryItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(cardRadius))),
       child: CustomPaint(
         foregroundPainter: IndicatorPainter(
-          color: transaction.tx.isExpense ? Colors.red : Colors.green,
+          color: transaction.isExpense ? Colors.red : Colors.green,
           thickness: 6,
-          side: transaction.tx.isExpense
-              ? IndicatorSide.right
-              : IndicatorSide.left,
+          side:
+              transaction.isExpense ? IndicatorSide.right : IndicatorSide.left,
         ),
         child: Container(
           margin: const EdgeInsets.all(2),
@@ -89,7 +88,7 @@ class HistoryItem extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  tryTranslatePreset(transaction.sub),
+                  tryTranslatePreset(transaction.s),
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
@@ -97,10 +96,10 @@ class HistoryItem extends StatelessWidget {
                           ? Theme.of(context).colorScheme.secondary
                           : null),
                 ),
-                if (transaction.tx.label.isNotEmpty) const SizedBox(height: 4),
-                if (transaction.tx.label.isNotEmpty)
+                if (transaction.label.isNotEmpty) const SizedBox(height: 4),
+                if (transaction.label.isNotEmpty)
                   Text(
-                    transaction.tx.label,
+                    transaction.label,
                     style: TextStyle(
                         fontStyle: FontStyle.italic,
                         color: isSelected ? Colors.white : null,
@@ -111,7 +110,7 @@ class HistoryItem extends StatelessWidget {
             trailing: _buildAmountText(context),
             leading: isSelected
                 ? const HistoryItemCheckmark()
-                : HistoryItemIcon(categoryId: transaction.sub.categoryId),
+                : HistoryItemIcon(categoryId: transaction.s.categoryId),
           ),
         ),
       ),
@@ -122,7 +121,7 @@ class HistoryItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (transaction.tx.isRecurring)
+        if (transaction.recurrenceType > 1)
           Icon(
             Icons.replay,
             color: Theme.of(context).colorScheme.secondary,
@@ -131,7 +130,11 @@ class HistoryItem extends StatelessWidget {
         else
           const SizedBox(),
         CombinedAmountString(
-          transaction: transaction,
+          amount: transaction.amount,
+          originalAmount: transaction.originalAmount,
+          isExpense: transaction.isExpense,
+          currencySymbol: transaction.c.symbol,
+          currencyId: transaction.currencyId,
           userCurrencyId: userCurrencyId,
         ),
       ],

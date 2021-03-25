@@ -1,6 +1,5 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/category_icon.dart';
-import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -34,18 +33,18 @@ class CategoryListView extends StatelessWidget {
       expenses: true,
     );
 
-    return StreamBuilder<List<Tuple3<int, String, double>>>(
+    return StreamBuilder<List<SumTransactionsByCategoryResult>>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchSumOfTransactionsByCategories(settings),
       builder: (BuildContext context,
-          AsyncSnapshot<List<Tuple3<int, String, double>>> snapshot) {
+          AsyncSnapshot<List<SumTransactionsByCategoryResult>> snapshot) {
         if (snapshot.hasData) {
           return Column(
             children: <Widget>[
               for (int i = 0; i < snapshot.data.length; i++)
-                _buildCategoryListItem(snapshot.data[i].first,
-                    snapshot.data[i].third, snapshot.data[i].second)
+                _buildCategoryListItem(snapshot.data[i].c.id,
+                    snapshot.data[i].sumAmount, snapshot.data[i].c.name)
             ],
           );
         } else {
@@ -121,7 +120,7 @@ class CategoryListView extends StatelessWidget {
             ),
           ),
           Text(
-            categoryName,
+            tryTranslatePreset(categoryName),
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
               decoration: TextDecoration.none,
@@ -146,12 +145,11 @@ class CategoryListView extends StatelessWidget {
             .transactionDao
             .watchTransactionsWithFilter(settings),
         builder: (context,
-            AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
+            AsyncSnapshot<List<TransactionsWithFilterResult>> snapshot) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-              for (final TransactionWithCategoryAndCurrency tx
-                  in snapshot.data ?? [])
+              for (final TransactionsWithFilterResult tx in snapshot.data ?? [])
                 _buildTransactionRow(tx),
             ],
           );
@@ -160,7 +158,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  InformationRow _buildTransactionRow(TransactionWithCategoryAndCurrency tx) {
+  InformationRow _buildTransactionRow(TransactionsWithFilterResult tx) {
     // Initialize date formatter for timestamp
     final formatter = DateFormat.yMMMEd(context.locale.toLanguageTag());
 
@@ -169,17 +167,17 @@ class CategoryListView extends StatelessWidget {
       text: Expanded(
         child: Text.rich(
           TextSpan(
-            text: tryTranslatePreset(tx.sub),
+            text: tryTranslatePreset(tx.s),
             children: [
-              if (tx.tx.label.isNotEmpty)
+              if (tx.label.isNotEmpty)
                 TextSpan(
-                    text: "\n${tx.tx.label}",
+                    text: "\n${tx.label}",
                     style: const TextStyle(
                       fontSize: 15,
                       fontStyle: FontStyle.italic,
                     )),
               TextSpan(
-                text: "\n${formatter.format(tx.tx.date)}",
+                text: "\n${formatter.format(DateTime.parse(tx.date))}",
                 style: const TextStyle(
                     fontSize: 12, fontWeight: FontWeight.normal),
               )
@@ -195,7 +193,7 @@ class CategoryListView extends StatelessWidget {
         ),
       ),
       value: AmountString(
-        tx.tx.amount * -1,
+        tx.amount * -1,
         colored: true,
         textStyle: const TextStyle(
           decoration: TextDecoration.none,

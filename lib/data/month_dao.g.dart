@@ -7,14 +7,13 @@ part of 'month_dao.dart';
 // **************************************************************************
 
 mixin _$MonthDaoMixin on DatabaseAccessor<AppDatabase> {
+  RecurrenceTypes get recurrenceTypes => attachedDatabase.recurrenceTypes;
   Categories get categories => attachedDatabase.categories;
   Subcategories get subcategories => attachedDatabase.subcategories;
   Months get months => attachedDatabase.months;
   Currencies get currencies => attachedDatabase.currencies;
-  BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
-  RecurrenceTypes get recurrenceTypes => attachedDatabase.recurrenceTypes;
-  Recurrences get recurrences => attachedDatabase.recurrences;
   UserProfiles get userProfiles => attachedDatabase.userProfiles;
+  BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
   Selectable<Month> allMonths() {
     return customSelect('SELECT * FROM months ORDER BY firstDate ASC',
         variables: [], readsFrom: {months}).map(months.mapFromRow);
@@ -38,19 +37,5 @@ mixin _$MonthDaoMixin on DatabaseAccessor<AppDatabase> {
     return customSelect('SELECT * FROM months WHERE id=:id',
         variables: [Variable<int>(id)],
         readsFrom: {months}).map(months.mapFromRow);
-  }
-
-  Future<int> cOgMonth(
-      DateTime date, double maxBudget, DateTime firstDate, DateTime lastDate) {
-    return customInsert(
-      'INSERT INTO months (id, maxBudget, firstDate, lastDate) VALUES ((SELECT * FROM months WHERE :date <= lastDate AND :date >= firstDate) ,:maxBudget, :firstDate, :lastDate)',
-      variables: [
-        Variable<DateTime>(date),
-        Variable<double>(maxBudget),
-        Variable<DateTime>(firstDate),
-        Variable<DateTime>(lastDate)
-      ],
-      updates: {months},
-    );
   }
 }

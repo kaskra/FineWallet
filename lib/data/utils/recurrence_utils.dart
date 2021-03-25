@@ -1,6 +1,4 @@
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
-import 'package:FineWallet/data/moor_database.dart' as db_file;
-import 'package:FineWallet/logger.dart';
 
 /// Given a recurrence type and a transaction date, calculates the
 /// duration of the recurrence.
@@ -39,36 +37,6 @@ Duration _replayTypeToDuration(int replayType, DateTime transactionDate) {
     default:
       return null;
   }
-}
-
-/// Generates and returns all recurrences for a [db_file.Transaction].
-///
-/// Input
-/// -----
-/// [db_file.Transaction] recurring transaction.
-///
-/// Return
-/// ------
-/// list of [db_file.Transaction], each is recurrence of the input transaction.
-List<db_file.Transaction> generateRecurrences(db_file.Transaction tx) {
-  final List<db_file.Transaction> recurrences = [];
-
-  DateTime currentDate = tx.date;
-  Duration interval = _replayTypeToDuration(tx.recurrenceType, currentDate);
-
-  while (currentDate.add(interval).isBeforeOrEqual(tx.until)) {
-    interval = _replayTypeToDuration(tx.recurrenceType, currentDate);
-    if (interval.inDays != null) {
-      currentDate = currentDate.add(interval);
-
-      recurrences.add(tx.copyWith(date: currentDate));
-    } else {
-      logMsg(
-          "ERROR: Recurrence type is not in range. Got value: ${tx.recurrenceType}");
-    }
-  }
-
-  return recurrences;
 }
 
 /// Checks that the chosen recurrence type is possible for the timespan between

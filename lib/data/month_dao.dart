@@ -7,7 +7,6 @@
  */
 
 import 'package:FineWallet/core/datatypes/tuple.dart';
-import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/utils/month_utils.dart';
@@ -70,26 +69,26 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   /// Returns every month id for which a (recursive) transaction is in the month.
   Future<List<int>> getMonthIdsFromTransaction(int txOriginalId) {
-    return (selectOnly(transactions, distinct: true)
-          ..addColumns([transactions.monthId])
-          ..where(transactions.originalId.equals(txOriginalId)))
-        .map((r) => r.read(transactions.monthId))
-        .get();
+    // return (selectOnly(transactions, distinct: true)
+    //       ..addColumns([transactions.monthId])
+    //       ..where(transactions.originalId.equals(txOriginalId)))
+    //     .map((r) => r.read(transactions.monthId))
+    //     .get();
   }
 
   Future<Insertable<Month>> _batchedSyncSingleMonth(
       Month month, Batch batch) async {
-    final txs = await (select(transactions)
-          ..where((t) => t.monthId.equals(month.id))
-          ..where((t) => t.isExpense.equals(false)))
-        .get();
-
-    final double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
-    if (sumIncomes < month.maxBudget) {
-      final tempMonth = month.copyWith(maxBudget: sumIncomes);
-      return Future.value(tempMonth.toCompanion(true));
-    }
-    return Future.value(month.toCompanion(true));
+    // final txs = await (select(transactions)
+    //       ..where((t) => t.monthId.equals(month.id))
+    //       ..where((t) => t.isExpense.equals(false)))
+    //     .get();
+    //
+    // final double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
+    // if (sumIncomes < month.maxBudget) {
+    //   final tempMonth = month.copyWith(maxBudget: sumIncomes);
+    //   return Future.value(tempMonth.toCompanion(true));
+    // }
+    // return Future.value(month.toCompanion(true));
   }
 
   Future batchedSyncMonths() async {
@@ -120,8 +119,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     for (final m in missingMonths) {
       final first = m.getFirstDateOfMonth();
       final last = m.getLastDateOfMonth();
-      newMonths.add(MonthsCompanion.insert(
-          maxBudget: 0, firstDate: first, lastDate: last));
+      newMonths.add(MonthsCompanion.insert(firstDate: first, lastDate: last));
     }
 
     if (newMonths.isNotEmpty) {
@@ -136,8 +134,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
       final first = date.getFirstDateOfMonth();
       final last = date.getLastDateOfMonth();
 
-      final newMonth = MonthsCompanion.insert(
-          maxBudget: 0, firstDate: first, lastDate: last);
+      final newMonth = MonthsCompanion.insert(firstDate: first, lastDate: last);
       await insertMonth(newMonth);
     }
   }
@@ -164,33 +161,33 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// monthly expenses and the monthly savings.
   ///
   Stream<List<MonthWithDetails>> watchAllMonthsWithDetails() {
-    const converter = DateTimeConverter();
-    final sqlDate = converter.mapToSql(today());
-
-    return customSelect(
-        "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
-        "AS month_income, "
-        "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
-        "AS month_expense,  m.* "
-        "FROM months m "
-        "WHERE '$sqlDate' >= m.first_date "
-        "GROUP BY m.id "
-        "ORDER BY m.first_date DESC",
-        readsFrom: {
-          months,
-          baseTransactions
-        }).watch().map((rows) => rows
-        .map(
-          (row) {
-            final double income = row.readDouble("month_income");
-            final double expense = row.readDouble("month_expense");
-
-            return MonthWithDetails(Month.fromData(row.data, db),
-                Tuple3(income, expense, income - expense));
-          },
-        )
-        .where((element) => element.expense != 0 || element.income != 0)
-        .toList());
+    // const converter = DateTimeConverter();
+    // final sqlDate = converter.mapToSql(today());
+    //
+    // return customSelect(
+    //     "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
+    //     "AS month_income, "
+    //     "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
+    //     "AS month_expense,  m.* "
+    //     "FROM months m "
+    //     "WHERE '$sqlDate' >= m.first_date "
+    //     "GROUP BY m.id "
+    //     "ORDER BY m.first_date DESC",
+    //     readsFrom: {
+    //       months,
+    //       baseTransactions
+    //     }).watch().map((rows) => rows
+    //     .map(
+    //       (row) {
+    //         final double income = row.readDouble("month_income");
+    //         final double expense = row.readDouble("month_expense");
+    //
+    //         return MonthWithDetails(Month.fromData(row.data, db),
+    //             Tuple3(income, expense, income - expense));
+    //       },
+    //     )
+    //     .where((element) => element.expense != 0 || element.income != 0)
+    //     .toList());
   }
 
   /// Returns a [Stream] that watches the current month and the
@@ -203,24 +200,24 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// monthly expenses and the monthly savings.
   ///
   Stream<MonthWithDetails> watchCurrentMonthWithDetails() {
-    const converter = DateTimeConverter();
-    final query = customSelect(
-            "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
-            "AS month_income, "
-            "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
-            "AS month_expense,  m.* "
-            "FROM months m "
-            "WHERE '${converter.mapToSql(today())}' BETWEEN m.first_date AND m.last_date",
-            readsFrom: {months, db.transactions}).watchSingle().map(
-          (row) => MonthWithDetails(
-              Month.fromData(row.data, db),
-              Tuple3<double, double, double>(
-                  row.readDouble("month_income"),
-                  row.readDouble("month_expense"),
-                  row.readDouble("month_income") -
-                      row.readDouble("month_expense"))),
-        );
-
-    return query;
+    // const converter = DateTimeConverter();
+    // final query = customSelect(
+    //         "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
+    //         "AS month_income, "
+    //         "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
+    //         "AS month_expense,  m.* "
+    //         "FROM months m "
+    //         "WHERE '${converter.mapToSql(today())}' BETWEEN m.first_date AND m.last_date",
+    //         readsFrom: {months, db.transactions}).watchSingle().map(
+    //       (row) => MonthWithDetails(
+    //           Month.fromData(row.data, db),
+    //           Tuple3<double, double, double>(
+    //               row.readDouble("month_income"),
+    //               row.readDouble("month_expense"),
+    //               row.readDouble("month_income") -
+    //                   row.readDouble("month_expense"))),
+    //     );
+    //
+    // return query;
   }
 }

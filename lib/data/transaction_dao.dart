@@ -7,15 +7,12 @@
  */
 
 import 'package:FineWallet/core/datatypes/tuple.dart';
-import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_parser.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/moor_database.dart' as db_file;
-import 'package:FineWallet/utils.dart';
 import 'package:moor/moor.dart';
-import 'package:rxdart/rxdart.dart';
 
 part 'transaction_dao.g.dart';
 
@@ -38,7 +35,6 @@ class TransactionWithCategoryAndCurrency {
   },
   tables: [
     BaseTransactions,
-    Recurrences,
     RecurrenceTypes,
     Categories,
     Subcategories,
@@ -69,10 +65,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   /// - [db_file.Transaction] that should be inserted.
   ///
-  Future insertTransaction(BaseTransaction tx, int recurrenceType) async {
+  Future insertTransaction(BaseTransaction tx) async {
     // Setup: Get next id set original id to that.
     // Prevents SELECT in SQL-transaction.
 
+    // TODO input by AddPage DataType
     return transaction(() async {
       final Currency currency =
           await db.currencyDao.getCurrencyById(tx.currencyId);
@@ -82,24 +79,19 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       final originalAmount = tx.amount;
       final amount = tx.amount * exchangeRate;
 
-      final int txId = await into(baseTransactions).insert(
+      await into(baseTransactions).insert(
         BaseTransactionsCompanion.insert(
-            amount: amount,
-            originalAmount: originalAmount,
-            exchangeRate: exchangeRate,
-            isExpense: tx.isExpense,
-            date: tx.date,
-            label: tx.label,
-            subcategoryId: tx.subcategoryId,
-            monthId: monthId,
-            currencyId: tx.currencyId),
-      );
-
-      // insert recurrence
-      await into(recurrences).insert(
-        RecurrencesCompanion.insert(
-          recurrenceType: recurrenceType,
-          transactionId: txId,
+          amount: amount,
+          originalAmount: originalAmount,
+          exchangeRate: exchangeRate,
+          isExpense: tx.isExpense,
+          date: tx.date,
+          label: tx.label,
+          subcategoryId: tx.subcategoryId,
+          monthId: monthId,
+          currencyId: tx.currencyId,
+          recurrenceType: tx.recurrenceType,
+          until: Value(tx.until),
         ),
       );
     });
@@ -113,7 +105,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   /// - [db_file.Transaction] that should be updated.
   ///
-  Future updateTransaction(BaseTransaction tx, Recurrence rec) async {
+  Future updateTransaction(BaseTransaction tx) async {
     await transaction(() async {
       // final tempTx = db_file.Transaction(
       //     id: null,
@@ -165,36 +157,14 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   ///  - [TransactionFilterSettings] to filter the query results.
   ///
-  Stream<List<TransactionWithCategoryAndCurrency>> watchTransactionsWithFilter(
+  Stream<List<TransactionsWithFilterResult>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     final txParser = TransactionFilterParser(settings);
-    final settingsContent = txParser.parse(
-        tableName: baseTransactions.tableWithAlias, useInCustomExp: true);
+    final settingsContent =
+        txParser.parse(tableName: "t", useInCustomExp: true);
     final parsedSettings = CustomExpression<bool>(settingsContent);
 
-    final query = select(baseTransactions).join([
-      innerJoin(subcategories,
-          subcategories.id.equalsExp(baseTransactions.subcategoryId)),
-      innerJoin(
-          currencies, currencies.id.equalsExp(baseTransactions.currencyId)),
-    ])
-      ..orderBy([
-        OrderingTerm.desc(baseTransactions.date),
-        OrderingTerm.desc(baseTransactions.id)
-      ]);
-
-    // Only apply where if parsed settings have content.
-    if (settingsContent.isNotEmpty) {
-      query.where(parsedSettings);
-    }
-
-    return query.map((row) {
-      final tx = row.readTable(baseTransactions);
-      final sub = row.readTable(subcategories);
-      final currency = row.readTable(currencies);
-      return TransactionWithCategoryAndCurrency(
-          tx: tx, sub: sub, currency: currency);
-    }).watch();
+    return transactionsWithFilter(predicate: parsedSettings).watch();
   }
 
   /// Returns a [Stream] of the monthly income.
@@ -207,21 +177,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// ------
   /// [Stream] of type [double] that holds the monthly income.
   ///
-  Stream<double> watchMonthlyIncome(DateTime date) {
-    final parser = TransactionFilterParser(
-        TransactionFilterSettings(dateInMonth: date, incomes: true));
-    final parsedSettings = CustomExpression<bool>(parser.parse(
-        tableName: baseTransactions.tableWithAlias, useInCustomExp: true));
-    final sumAmount = baseTransactions.amount.total();
-
-    final query = (selectOnly(baseTransactions)
-          ..addColumns([sumAmount])
-          ..where(parsedSettings))
-        .watchSingle()
-        .map((row) => row.read(sumAmount));
-
-    return query.cast();
-  }
+  Stream<double> watchMonthlyIncome(DateTime date) =>
+      monthlyIncome(date).watchSingle();
 
   /// Returns a [Stream] of summed up monthly expenses grouped and ordered by day.
   ///
@@ -231,31 +188,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   /// Return
   /// ------
-  /// [Stream] of a list of [Tuple2]s with date and summed up expenses.
+  /// [Stream] of a list of [ExpensesPerDayInMonthResult]s with date and summed up expenses.
   ///
-  Stream<List<Tuple2<DateTime, double>>> watchExpensesPerDayInMonth(
-      DateTime dateInMonth) {
-    const converter = DateTimeConverter();
-    final parser = TransactionFilterParser(
-        TransactionFilterSettings(dateInMonth: dateInMonth, expenses: true));
-    final parsedSettings = CustomExpression<bool>(parser.parse(
-        tableName: db.transactions.tableWithAlias, useInCustomExp: true));
-    final sumAmount = db.transactions.amount.total();
-
-    final query = (selectOnly(db.transactions)
-          ..addColumns([sumAmount, db.transactions.date])
-          ..where(parsedSettings)
-          ..groupBy([db.transactions.date])
-          ..orderBy([OrderingTerm.asc(db.transactions.date)]))
-        .watch()
-        .map((rows) => rows
-            .map((row) => Tuple2<DateTime, double>(
-                converter.mapToDart(row.read(db.transactions.date)),
-                row.read(sumAmount)))
-            .toList());
-
-    return query;
-  }
+  Stream<List<ExpensesPerDayInMonthResult>> watchExpensesPerDayInMonth(
+          DateTime dateInMonth) =>
+      expensesPerDayInMonth(dateInMonth).watch();
 
   /// Returns a [Stream] of categories and their corresponding
   /// summed up transactions.
@@ -268,39 +205,12 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// ------
   /// [Stream] of a list of type [Tuple3]
   ///
-  Stream<List<Tuple3<int, String, double>>> watchSumOfTransactionsByCategories(
-      TransactionFilterSettings settings) {
+  Stream<List<SumTransactionsByCategoryResult>>
+      watchSumOfTransactionsByCategories(TransactionFilterSettings settings) {
     final parser = TransactionFilterParser(settings);
-
-    final sumAmount = db.transactions.amount.total();
-    final parsedSettings = CustomExpression<bool>(parser.parse(
-        tableName: db.transactions.tableWithAlias, useInCustomExp: true));
-
-    final query = selectOnly(db.transactions).join([
-      innerJoin(subcategories,
-          subcategories.id.equalsExp(db.transactions.subcategoryId),
-          useColumns: false),
-      innerJoin(categories, categories.id.equalsExp(subcategories.categoryId),
-          useColumns: false)
-    ])
-      ..where(parsedSettings)
-      ..addColumns([
-        sumAmount,
-        ...categories.$columns,
-      ])
-      ..groupBy([categories.id]);
-
-    return query.watch().map((event) => event
-        .map((row) => Tuple3<int, String, double>(
-            row.read(categories.id),
-            tryTranslatePreset(Category(
-              id: row.read(categories.id),
-              name: row.read(categories.name),
-              isPreset: row.read(categories.isPreset),
-              isExpense: row.read(categories.isExpense),
-            )),
-            row.read(sumAmount)))
-        .toList());
+    final parsedSettings = CustomExpression<bool>(
+        parser.parse(tableName: "t", useInCustomExp: true));
+    return sumTransactionsByCategory(predicate: parsedSettings).watch();
   }
 
   /// Watches the latest non-recurrence transaction.
@@ -325,35 +235,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// ------
   /// [Stream] of type [double] that holds the daily budget.
   ///
-  Stream<double> watchMonthlyBudget(DateTime date) {
-    const converter = DateTimeConverter();
-    final settings =
-        TransactionFilterSettings(dateInMonth: date, expenses: true);
-    final parser = TransactionFilterParser(settings);
-
-    final parsedSettings = CustomExpression<bool>(parser.parse(
-        tableName: db.transactions.tableWithAlias, useInCustomExp: true));
-    final sqlDate = converter.mapToSql(date);
-    final sumAmount = db.transactions.amount.total();
-
-    final expensesStream = (selectOnly(db.transactions)
-          ..addColumns([sumAmount])
-          ..where(parsedSettings))
-        .watchSingle()
-        .map((row) => row.read(sumAmount));
-
-    final maxBudgetStream = (selectOnly(months)
-          ..addColumns([months.maxBudget])
-          ..where(months.firstDate.isSmallerOrEqualValue(sqlDate) &
-              months.lastDate.isBiggerOrEqualValue(sqlDate)))
-        .watchSingle()
-        .map((row) => row.read(months.maxBudget));
-
-    final combinedStream = CombineLatestStream.combine2(
-        maxBudgetStream, expensesStream, (max, exp) => max - exp);
-
-    return combinedStream.cast();
-  }
+  Stream<double> watchMonthlyBudget(DateTime date) =>
+      monthlyBudget(date).watchSingle();
 
   /// Returns a [Stream] of the daily budget.
   ///
@@ -369,51 +252,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// ------
   /// [Stream] of type [double] that holds the daily budget.
   ///
-  Stream<double> watchDailyBudget(DateTime date) {
-    const converter = DateTimeConverter();
-    final settings =
-        TransactionFilterSettings(dateInMonth: date, expenses: true);
-    final parser = TransactionFilterParser(settings);
-    final parsedSettings = CustomExpression<bool>(parser.parse(
-        tableName: db.transactions.tableWithAlias, useInCustomExp: true));
-
-    final remainingDays = date.remainingDaysInMonth;
-    final sqlDate = converter.mapToSql(date);
-    final sumAmount = db.transactions.amount.total();
-
-    final maxBudgetStream = (selectOnly(months)
-          ..addColumns([months.maxBudget])
-          ..where(months.firstDate.isSmallerOrEqualValue(sqlDate) &
-              months.lastDate.isBiggerOrEqualValue(sqlDate)))
-        .watchSingle()
-        .map((row) => row.read(months.maxBudget));
-
-    final monthlyExpensesStream = (selectOnly(db.transactions)
-          ..addColumns([sumAmount])
-          ..where(parsedSettings &
-              db.transactions.date.equals(sqlDate).not() &
-              (db.transactions.recurrenceType.equals(1) |
-                  db.transactions.isRecurring.not())))
-        .watchSingle()
-        .map((event) => event.read(sumAmount));
-
-    final todayExpensesStream = (selectOnly(db.transactions)
-          ..addColumns([sumAmount])
-          ..where(parsedSettings &
-              db.transactions.date.equals(sqlDate) &
-              (db.transactions.recurrenceType.equals(1) |
-                  db.transactions.isRecurring.not())))
-        .watchSingle()
-        .map((event) => event.read(sumAmount));
-
-    final dailyBudgetStream = CombineLatestStream.combine3(
-        maxBudgetStream, monthlyExpensesStream, todayExpensesStream,
-        (double max, double m, double t) {
-      return (max - m) / remainingDays - t;
-    });
-
-    return dailyBudgetStream.cast();
-  }
+  Stream<double> watchDailyBudget(DateTime date) =>
+      dailyBudget(date, date.remainingDaysInMonth).watchSingle();
 
   /// Returns all expenses of the last seven days grouped by date and summed up.
   ///

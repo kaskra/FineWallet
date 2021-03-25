@@ -9,7 +9,6 @@ import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
-import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -44,8 +43,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   TransactionFilterSettings _filterSettings;
-  final Map<int, TransactionWithCategoryAndCurrency> _selectedItems =
-      <int, TransactionWithCategoryAndCurrency>{};
+  final Map<int, TransactionsWithFilterResult> _selectedItems =
+      <int, TransactionsWithFilterResult>{};
   bool _isSelectionActive = false;
 
   /// The history filter state that holds every filter setting.
@@ -233,7 +232,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildSelectionAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: SelectionAppBar<TransactionWithCategoryAndCurrency>(
+      child: SelectionAppBar<TransactionsWithFilterResult>(
         title: "FineWallet",
         selectedItems: _selectedItems,
         onClose: () => _closeSelection(),
@@ -245,15 +244,15 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildHistoryList() {
-    return StreamBuilder<List<TransactionWithCategoryAndCurrency>>(
+    return StreamBuilder<List<TransactionsWithFilterResult>>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchTransactionsWithFilter(_filterSettings),
       builder: (BuildContext context,
-          AsyncSnapshot<List<TransactionWithCategoryAndCurrency>> snapshot) {
+          AsyncSnapshot<List<TransactionsWithFilterResult>> snapshot) {
         if (snapshot.hasData) {
           final foundTransactions = snapshot.data
-              .where((element) => element.tx.label
+              .where((element) => element.label
                   .contains(RegExp(_filterState.label, caseSensitive: false)))
               .toList();
           if (foundTransactions.isNotEmpty) {
@@ -289,13 +288,13 @@ class _HistoryPageState extends State<HistoryPage> {
   /// [ListView] containing [HistoryItem], [HistoryMonthDivider]
   /// and [HistoryDateTitle].
   ///
-  Widget _buildItems(List<TransactionWithCategoryAndCurrency> data) {
+  Widget _buildItems(List<TransactionsWithFilterResult> data) {
     final items = <Widget>[];
 
-    DateTime lastDate = data.first.tx.date;
+    DateTime lastDate = DateTime.parse(data.first.date);
     items.add(HistoryDateTitle(date: lastDate));
     for (final d in data) {
-      final date = d.tx.date;
+      final date = DateTime.parse(d.date);
 
       // Visually divide transactions when the month changes.
       if (date.month != lastDate.month) {
@@ -328,12 +327,12 @@ class _HistoryPageState extends State<HistoryPage> {
   /// ------
   /// [HistoryItem] with transaction information.
   ///
-  Widget _buildItem(TransactionWithCategoryAndCurrency d) {
+  Widget _buildItem(TransactionsWithFilterResult d) {
     return HistoryItem(
       key: Key(d.hashCode.toString()),
       transaction: d,
       userCurrencyId: _userCurrencyId,
-      isSelected: _selectedItems.containsKey(d.tx.originalId),
+      isSelected: _selectedItems.containsKey(d.id),
       isSelectionActive: _isSelectionActive,
       onSelect: (selected) {
         _toggleSelectionMode(selected, d);
@@ -355,15 +354,14 @@ class _HistoryPageState extends State<HistoryPage> {
   /// - [bool] received from a item.
   /// - [TransactionWithCategoryAndCurrency] which is displayed on the item.
   ///
-  void _toggleSelectionMode(
-      bool selected, TransactionWithCategoryAndCurrency data) {
+  void _toggleSelectionMode(bool selected, TransactionsWithFilterResult data) {
     if (selected) {
-      if (!_selectedItems.containsKey(data.tx.originalId)) {
-        _selectedItems.putIfAbsent(data.tx.originalId, () => data);
+      if (!_selectedItems.containsKey(data.id)) {
+        _selectedItems.putIfAbsent(data.id, () => data);
         _isSelectionActive = true;
       }
     } else {
-      _selectedItems.remove(data.tx.originalId);
+      _selectedItems.remove(data.id);
       if (_selectedItems.isEmpty) {
         _isSelectionActive = false;
       }
@@ -395,7 +393,7 @@ class _HistoryPageState extends State<HistoryPage> {
       Provider.of<AppDatabase>(context, listen: false)
           .transactionDao
           .deleteTransactionsByIds(
-              _selectedItems.values.map((e) => e.tx.originalId).toList());
+              _selectedItems.values.map((e) => e.id).toList());
 
       _closeSelection();
     }
@@ -403,19 +401,20 @@ class _HistoryPageState extends State<HistoryPage> {
 
   /// Edit an item on the add page. Close selection mode afterwards.
   ///
-  void _editItem(TransactionWithCategoryAndCurrency tx) {
+  void _editItem(TransactionsWithFilterResult tx) {
     logMsg(tx.toString());
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                AddPage(isExpense: tx.tx.isExpense, transaction: tx)));
+    // TODO
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) =>
+    //             AddPage(isExpense: tx.isExpense, transaction: tx)));
     _closeSelection();
   }
 
   /// Shares an item using TX SHARE. Closes selection mode afterwards.
   ///
-  void _shareItem(TransactionWithCategoryAndCurrency tx) {
+  void _shareItem(TransactionsWithFilterResult tx) {
     showConfirmDialog(
       context,
       LocaleKeys.history_page_share_title.tr(),

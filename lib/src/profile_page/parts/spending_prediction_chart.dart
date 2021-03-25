@@ -7,9 +7,9 @@
  */
 
 import 'package:FineWallet/core/datatypes/chart_data.dart';
-import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
           .transactionDao
           .watchExpensesPerDayInMonth(today()),
       builder:
-          (context, AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
+          (context, AsyncSnapshot<List<ExpensesPerDayInMonthResult>> snapshot) {
         if (snapshot.hasData) {
           return PredictionDateChart.withTransactions(
               _calcDateTimeDataPoints(snapshot), widget.monthlyBudget ?? 0.0);
@@ -60,17 +60,18 @@ class _SpendingPredictionChartState extends State<SpendingPredictionChart> {
   }
 
   List<PredictionPointDate> _calcDateTimeDataPoints(
-      AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
+      AsyncSnapshot<List<ExpensesPerDayInMonthResult>> snapshot) {
     // All days of month as date
     final List<DateTime> days = getListOfMonthDays(_todayDate);
 
     // Calc the step function by using all expenses of every day in the month
     double prev = 0;
     final List<double> expense = days.map((date) {
-      final txs =
-          snapshot.data.where((t) => t.first.isAtSameMomentAs(date)).toList();
+      final txs = snapshot.data
+          .where((t) => DateTime.parse(t.date).isAtSameMomentAs(date))
+          .toList();
       // If there are expense transactions on that day, return the amount.
-      if (txs.isNotEmpty) return txs.first.second;
+      if (txs.isNotEmpty) return txs.first.expense;
       // Otherwise Zero.
       return 0.0;
     }).map((double d) {

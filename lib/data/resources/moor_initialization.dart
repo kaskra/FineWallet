@@ -364,7 +364,6 @@ List<CategoryWithSubs> categories = [
 ];
 
 MonthsCompanion currentMonth = MonthsCompanion.insert(
-  maxBudget: 0,
   firstDate: today().getFirstDateOfMonth(),
   lastDate: today().getLastDateOfMonth(),
 );

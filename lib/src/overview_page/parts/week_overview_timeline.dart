@@ -12,6 +12,7 @@ import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/timeline.dart';
@@ -112,14 +113,15 @@ class WeekOverviewTimeline extends StatelessWidget {
   /// [List] of [Tuple3]s with the weekday, the sum of expenses and
   /// the [DateTime] of each day.
   List<Tuple2<double, DateTime>> _generateMissingDays(
-      AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
+      AsyncSnapshot<List<LastWeeksTransactionsResult>> snapshot) {
     final List<DateTime> days = getLastWeekAsDates();
 
     return days.map((day) {
-      final foundIndex =
-          snapshot.data.indexWhere((t) => t.first.isAtSameMomentAs(day));
+      final foundIndex = snapshot.data
+          .indexWhere((t) => DateTime.parse(t.date).isAtSameMomentAs(day));
       if (foundIndex != -1) {
-        return Tuple2<double, DateTime>(snapshot.data[foundIndex].second, day);
+        return Tuple2<double, DateTime>(
+            snapshot.data[foundIndex].sumAmount, day);
       } else {
         return Tuple2<double, DateTime>(0.0, day);
       }
@@ -133,7 +135,7 @@ class WeekOverviewTimeline extends StatelessWidget {
           .transactionDao
           .watchLastWeeksTransactions(),
       builder:
-          (context, AsyncSnapshot<List<Tuple2<DateTime, double>>> snapshot) {
+          (context, AsyncSnapshot<List<LastWeeksTransactionsResult>> snapshot) {
         if (snapshot.hasError) {
           return Center(
             heightFactor: 7,

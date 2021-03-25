@@ -1,5 +1,4 @@
 import 'package:FineWallet/data/providers/localization_notifier.dart';
-import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -108,19 +107,32 @@ class AmountString extends StatelessWidget {
 }
 
 class CombinedAmountString extends StatelessWidget {
-  final TransactionWithCategoryAndCurrency transaction;
+  final double originalAmount;
+  final double amount;
+  final bool isExpense;
+  final int currencyId;
+  final String currencySymbol;
+
   final int userCurrencyId;
   final double titleFontSize;
   final double subtitleFontSize;
 
   const CombinedAmountString({
     Key key,
-    @required this.transaction,
+    @required this.originalAmount,
+    @required this.amount,
+    @required this.isExpense,
+    @required this.currencyId,
+    @required this.currencySymbol,
     @required this.userCurrencyId,
     this.titleFontSize = 16,
     this.subtitleFontSize = 10,
   })  : assert(userCurrencyId != null),
-        assert(transaction != null),
+        assert(originalAmount != null),
+        assert(amount != null),
+        assert(isExpense != null),
+        assert(currencyId != null),
+        assert(currencySymbol != null),
         super(key: key);
 
   @override
@@ -130,20 +142,20 @@ class CombinedAmountString extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         AmountString(
-          transaction.tx.amount * (transaction.tx.isExpense ? -1 : 1),
+          amount * (isExpense ? -1 : 1),
           colored: true,
           textStyle: TextStyle(
             fontSize: titleFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),
-        if (userCurrencyId != transaction.tx.currencyId)
+        if (userCurrencyId != currencyId)
           ForeignAmountString(
-            transaction.tx.originalAmount * (transaction.tx.isExpense ? -1 : 1),
-            currencySymbol: transaction.currency.symbol,
+            originalAmount * (isExpense ? -1 : 1),
+            currencySymbol: currencySymbol,
             textStyle: TextStyle(
                 fontSize: subtitleFontSize,
-                color: transaction.tx.isExpense ? Colors.red : Colors.green,
+                color: isExpense ? Colors.red : Colors.green,
                 fontWeight: FontWeight.bold),
           )
       ],

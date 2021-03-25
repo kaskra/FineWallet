@@ -57,7 +57,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                   // not there is a problem.
                   if (_recurrenceType != -1 && _recurrenceName != "") {
                     Navigator.of(context).pop(RecurrenceType(
-                        type: _recurrenceType, name: _recurrenceName));
+                        id: _recurrenceType, name: _recurrenceName));
                   } else {
                     logMsg("Wrong Recurrence type or name!");
                   }
@@ -119,14 +119,14 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   }
 
   Widget _buildRecurrenceItem(RecurrenceType rec) {
-    if (_recurrenceType == rec.type && _recurrenceName == "") {
+    if (_recurrenceType == rec.id && _recurrenceName == "") {
       _recurrenceName = rec.name;
     }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Material(
-        color: _recurrenceType == rec.type
+        color: _recurrenceType == rec.id
             ? Theme.of(context).colorScheme.secondary
             : Colors.grey,
         child: SizedBox(
@@ -134,7 +134,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
           child: InkWell(
             onTap: () {
               setState(() {
-                _recurrenceType = rec.type;
+                _recurrenceType = rec.id;
                 _recurrenceName = rec.name;
               });
             },

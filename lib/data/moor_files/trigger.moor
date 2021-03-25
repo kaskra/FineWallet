@@ -1,0 +1,27 @@
+import 'views.moor';
+import 'tables.moor';
+
+CREATE TRIGGER IF NOT EXISTS createNeededMonths
+    AFTER INSERT ON baseTransactions
+BEGIN
+    INSERT INTO months (maxBudget, firstDate, lastDate)
+    WITH dates(txDate, recType, until) AS (
+        SELECT DATE (t.date, 'unixepoch'), t.recurrenceType, DATE (t.until, 'unixepoch')
+        FROM baseTransactions t
+        UNION
+        SELECT (SELECT CASE dates.recType
+                           WHEN 1 THEN dates.txDate
+                           WHEN 2 THEN DATE (dates.txDate, '+1 days')
+                           WHEN 3 THEN DATE (dates.txDate, '+7 days')
+                           ELSE dates.txDate
+                           END
+               ) AS nextTxDate, recType, until
+        FROM dates WHERE nextTxDate <= until
+    ),
+         firstLastDates(firstD, lastD) AS (
+             SELECT DISTINCT DATE(txDate, 'start of month'), DATE(txDate, 'start of month', '+1 month', '-1 days') FROM dates
+         )
+    SELECT 0, strftime('%s', firstD), strftime('%s', lastD)
+    FROM firstLastDates
+    WHERE strftime('%s', firstD) NOT IN (SELECT firstDate FROM months);
+END;

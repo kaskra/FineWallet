@@ -7,14 +7,13 @@ part of 'category_dao.dart';
 // **************************************************************************
 
 mixin _$CategoryDaoMixin on DatabaseAccessor<AppDatabase> {
+  RecurrenceTypes get recurrenceTypes => attachedDatabase.recurrenceTypes;
   Categories get categories => attachedDatabase.categories;
   Subcategories get subcategories => attachedDatabase.subcategories;
   Months get months => attachedDatabase.months;
   Currencies get currencies => attachedDatabase.currencies;
-  BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
-  RecurrenceTypes get recurrenceTypes => attachedDatabase.recurrenceTypes;
-  Recurrences get recurrences => attachedDatabase.recurrences;
   UserProfiles get userProfiles => attachedDatabase.userProfiles;
+  BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
   Selectable<Category> allCategories() {
     return customSelect('SELECT * FROM categories',
         variables: [], readsFrom: {categories}).map(categories.mapFromRow);

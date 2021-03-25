@@ -9,6 +9,7 @@
 import 'dart:io';
 
 import 'package:FineWallet/data/category_dao.dart';
+import 'package:FineWallet/data/converters/datetime_converter.dart';
 import 'package:FineWallet/data/currency_dao.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/resources/moor_initialization.dart'
@@ -25,6 +26,8 @@ part 'moor_database.g.dart';
   include: {
     "moor_files/tables.moor",
     "moor_files/general_queries.moor",
+    "moor_files/trigger.moor",
+    "moor_files/views.moor",
   },
   tables: [
     BaseTransactions,
@@ -49,7 +52,6 @@ class AppDatabase extends _$AppDatabase {
           final file = File(p.join(dbFolder, 'database.sqlite'));
           return VmDatabase(file, logStatements: true);
           // TODO add setup function to add user-defined functions
-          // TODO recurrence etc..
         }));
 
   @override
@@ -90,11 +92,6 @@ class AppDatabase extends _$AppDatabase {
                     mode: InsertMode.insertOrReplace);
               }
             });
-
-            // await customStatement("CREATE VIEW IF NOT EXISTS expenses "
-            //     "AS SELECT * FROM transactions WHERE is_expense = 1");
-            // await customStatement("CREATE VIEW IF NOT EXISTS incomes "
-            //     "AS SELECT * FROM transactions WHERE is_expense = 0");
           }
 
           // Check if in new month and update accordingly

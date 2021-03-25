@@ -12,6 +12,8 @@ import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:FineWallet/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,7 +40,7 @@ class _ProfileChartState extends State<ProfileChart> {
   /// -----
   /// [AsyncSnapshot] of [Tuple3]s with category id, category name and
   /// expense per category.
-  StreamBuilder<List<Tuple3<int, String, double>>> _buildChartWithData() {
+  StreamBuilder<List<SumTransactionsByCategoryResult>> _buildChartWithData() {
     // Check which chart should be displayed and load the correct data for it.
     TransactionFilterSettings settings;
     if (widget.type == ProfileChart.monthlyChart) {
@@ -52,7 +54,7 @@ class _ProfileChartState extends State<ProfileChart> {
           widget.filterSettings ?? TransactionFilterSettings(expenses: true);
     }
 
-    return StreamBuilder<List<Tuple3<int, String, double>>>(
+    return StreamBuilder<List<SumTransactionsByCategoryResult>>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchSumOfTransactionsByCategories(settings),
@@ -67,23 +69,27 @@ class _ProfileChartState extends State<ProfileChart> {
   ///
   /// Input
   /// -----
-  /// [AsyncSnapshot] of [Tuple3]s with category id, category name and
+  /// [AsyncSnapshot] of [SumTransactionsByCategoryResult]s with category and
   /// expense per category.
   ///
   /// Return
   /// ------
   /// Resulting [CircularProfileChart].
   Widget _buildChart(
-      AsyncSnapshot<List<Tuple3<int, String, double>>> transactionSnapshot) {
+      AsyncSnapshot<List<SumTransactionsByCategoryResult>>
+          transactionSnapshot) {
     if (transactionSnapshot.hasData) {
       if (transactionSnapshot.data.isEmpty) {
         return Center(child: Text(LocaleKeys.profile_page_no_expenses.tr()));
       }
 
       // Get the summed up expenses, ids and names for each category.
-      final ids = transactionSnapshot.data.map((l) => l.first).toList();
-      final names = transactionSnapshot.data.map((l) => l.second).toList();
-      final expenses = transactionSnapshot.data.map((l) => l.third).toList();
+      final ids = transactionSnapshot.data.map((l) => l.c.id).toList();
+      final names = transactionSnapshot.data
+          .map((l) => tryTranslatePreset(l.c.name))
+          .toList();
+      final expenses =
+          transactionSnapshot.data.map((l) => l.sumAmount).toList();
 
       // Create the chart with expenses per category and category names.
       return CircularProfileChart.withTransactions(expenses, ids, names);

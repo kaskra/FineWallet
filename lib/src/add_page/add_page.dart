@@ -32,6 +32,8 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  // TODO Create AddPage DataClass
+
   /// The transactions that the user wants to edit.
   TransactionWithCategoryAndCurrency _transaction;
 
@@ -68,58 +70,58 @@ class _AddPageState extends State<AddPage> {
   ///
   /// This function is only executed once.
   ///
-  Future _getTransactionValues() async {
-    if (widget.transaction != null) {
-      _transaction = widget.transaction;
-      _editing = true;
-
-      _inputCurrencyId = _transaction.tx.currencyId;
-
-      // Get the original value of the transaction (before exchanging to user currency)
-      _amount =
-          double.parse((_transaction.tx.originalAmount).toStringAsFixed(2));
-
-      // Make sure that currency-exchanged value is rounded to 2 decimals
-      _date = _transaction.tx.date;
-      _subcategory = _transaction.sub;
-      _labelController.text = _transaction.tx.label;
-      _isRecurring = _transaction.tx.isRecurring;
-      _untilDate = _transaction.tx.until;
-
-      if (_isRecurring) {
-        // If recurring, set the date to the first of the recurrence.
-        // With that every recurring instance is changed
-        List<Transaction> txs =
-            await Provider.of<AppDatabase>(context, listen: false)
-                .transactionDao
-                .getAllTransactions();
-        txs = txs.where((tx) => tx.id == _transaction.tx.originalId).toList();
-        txs = txs.where((t) => t.date.isBeforeOrEqual(today())).toList();
-        _date = txs.toList().last.date;
-
-        final List<RecurrenceType> recurrenceName =
-            await Provider.of<AppDatabase>(context, listen: false)
-                .getRecurrences();
-        _recurrence = recurrenceName
-            .where((r) => r.type == _transaction.tx.recurrenceType)
-            .first;
-      }
-    }
-    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
-            .currencyDao
-            .getUserCurrency())
-        ?.id;
-
-    setState(() {
-      _initialized = true;
-    });
-  }
+  // Future _getTransactionValues() async {
+  //   if (widget.transaction != null) {
+  //     _transaction = widget.transaction;
+  //     _editing = true;
+  //
+  //     _inputCurrencyId = _transaction.tx.currencyId;
+  //
+  //     // Get the original value of the transaction (before exchanging to user currency)
+  //     _amount =
+  //         double.parse((_transaction.tx.originalAmount).toStringAsFixed(2));
+  //
+  //     // Make sure that currency-exchanged value is rounded to 2 decimals
+  //     _date = _transaction.tx.date;
+  //     _subcategory = _transaction.sub;
+  //     _labelController.text = _transaction.tx.label;
+  //     _isRecurring = _transaction.tx.isRecurring;
+  //     _untilDate = _transaction.tx.until;
+  //
+  //     if (_isRecurring) {
+  //       // If recurring, set the date to the first of the recurrence.
+  //       // With that every recurring instance is changed
+  //       List<Transaction> txs =
+  //           await Provider.of<AppDatabase>(context, listen: false)
+  //               .transactionDao
+  //               .getAllTransactions();
+  //       txs = txs.where((tx) => tx.id == _transaction.tx.originalId).toList();
+  //       txs = txs.where((t) => t.date.isBeforeOrEqual(today())).toList();
+  //       _date = txs.toList().last.date;
+  //
+  //       final List<RecurrenceType> recurrenceName =
+  //           await Provider.of<AppDatabase>(context, listen: false)
+  //               .getRecurrences();
+  //       _recurrence = recurrenceName
+  //           .where((r) => r.type == _transaction.tx.recurrenceType)
+  //           .first;
+  //     }
+  //   }
+  //   _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+  //           .currencyDao
+  //           .getUserCurrency())
+  //       ?.id;
+  //
+  //   setState(() {
+  //     _initialized = true;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    if (!_initialized) {
-      _getTransactionValues();
-    }
+    // if (!_initialized) {
+    //   _getTransactionValues();
+    // }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -231,7 +233,8 @@ class _AddPageState extends State<AddPage> {
   /// `transactions`.
   ///
   Future _addNewTransaction() async {
-    final tx = BaseTransactionsCompanion.insert(
+    final tx = BaseTransaction(
+      id: null,
       date: _date,
       isExpense: widget.isExpense,
       amount: _amount,
@@ -241,6 +244,8 @@ class _AddPageState extends State<AddPage> {
       subcategoryId: _subcategory.id,
       currencyId: _inputCurrencyId,
       label: _labelController.text.trim(),
+      recurrenceType: _recurrence.id,
+      until: _untilDate,
     );
 
     await Provider.of<AppDatabase>(context, listen: false)
@@ -256,21 +261,21 @@ class _AddPageState extends State<AddPage> {
   /// as the original transaction.
   ///
   Future _updateTransaction() async {
-    final tx = BaseTransactionsCompanion.insert(
-      id: _transaction.tx.originalId,
-      date: _date,
-      isExpense: widget.isExpense,
-      amount: _amount,
-      originalAmount: _amount,
-      exchangeRate: null,
-      monthId: null,
-      subcategoryId: _subcategory.id,
-      currencyId: _inputCurrencyId,
-      label: _labelController.text.trim(),
-    );
-    await Provider.of<AppDatabase>(context, listen: false)
-        .transactionDao
-        .updateTransaction(tx);
+    // final tx = BaseTransactionsCompanion.insert(
+    //   id: _transaction.tx.originalId,
+    //   date: _date,
+    //   isExpense: widget.isExpense,
+    //   amount: _amount,
+    //   originalAmount: _amount,
+    //   exchangeRate: null,
+    //   monthId: null,
+    //   subcategoryId: _subcategory.id,
+    //   currencyId: _inputCurrencyId,
+    //   label: _labelController.text.trim(),
+    // );
+    // await Provider.of<AppDatabase>(context, listen: false)
+    //     .transactionDao
+    //     .updateTransaction(tx);
   }
 
   /// Shows a snackbar with a specified text.
@@ -562,7 +567,7 @@ class _AddPageState extends State<AddPage> {
             context: context,
             builder: (BuildContext context) {
               return RecurrenceDialog(
-                recurrenceType: _recurrence?.type ?? -1,
+                recurrenceType: _recurrence?.id ?? -1,
               );
             },
           );

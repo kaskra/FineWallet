@@ -16,6 +16,7 @@ class DateTimeConverter extends TypeConverter<DateTime, String> {
 
   @override
   String mapToSql(DateTime value) {
+    print(value);
     if (value != null) {
       final year = _fourDigits(value.year);
       final month = _twoDigits(value.month);

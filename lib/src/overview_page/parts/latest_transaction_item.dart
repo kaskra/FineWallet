@@ -1,11 +1,9 @@
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
-import 'package:FineWallet/src/add_page/add_page.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
@@ -43,7 +41,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: StreamBuilder<List<TransactionWithCategoryAndCurrency>>(
+      child: StreamBuilder<List<NLatestTransactionsResult>>(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchNLatestTransactions(numLatestTransactions),
@@ -82,7 +80,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   }
 
   Widget _buildLatestTransactionItem(
-      BuildContext context, TransactionWithCategoryAndCurrency snapshotItem) {
+      BuildContext context, NLatestTransactionsResult snapshotItem) {
     return DecoratedCard(
       padding: 0,
       child: InkWell(
@@ -94,8 +92,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Row(
             children: <Widget>[
-              _buildIcon(
-                  context, CategoryIcon(snapshotItem.sub.categoryId - 1).data),
+              _buildIcon(context, IconData(snapshotItem.cc.iconCodePoint)),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0),
@@ -104,17 +101,17 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tryTranslatePreset(snapshotItem.sub),
+                        tryTranslatePreset(snapshotItem.s),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      if (snapshotItem.tx.label.isNotEmpty)
+                      if (snapshotItem.t.label.isNotEmpty)
                         const SizedBox(height: 4),
-                      if (snapshotItem.tx.label.isNotEmpty)
+                      if (snapshotItem.t.label.isNotEmpty)
                         Text(
-                          snapshotItem.tx.label,
+                          snapshotItem.t.label,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               fontStyle: FontStyle.italic, fontSize: 13),
@@ -128,7 +125,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 child: SizedBox(width: 4),
               ),
               CombinedAmountString(
-                transaction: snapshotItem,
+                amount: snapshotItem.t.amount,
+                originalAmount: snapshotItem.t.originalAmount,
+                isExpense: snapshotItem.t.isExpense,
+                currencyId: snapshotItem.t.currencyId,
+                currencySymbol: snapshotItem.c.symbol,
                 userCurrencyId: _userCurrencyId,
                 titleFontSize: 17,
                 subtitleFontSize: 11,
@@ -156,17 +157,17 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   /// Before deleting the transaction, a confirm dialog will show,
   /// requiring the user to authorize the deletion.
   ///
-  Future _deleteItems(TransactionWithCategoryAndCurrency tx) async {
+  Future _deleteItems(NLatestTransactionsResult tx) async {
     if (await showConfirmDialog(context, LocaleKeys.delete_dialog_title.tr(),
         LocaleKeys.delete_dialog_text.tr())) {
       Provider.of<AppDatabase>(context, listen: false)
           .transactionDao
-          .deleteTransactionById(tx.tx.originalId);
+          .deleteTransactionById(tx.t.id);
     }
   }
 
   Future _showActions(
-      BuildContext context, TransactionWithCategoryAndCurrency snapshot) async {
+      BuildContext context, NLatestTransactionsResult snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(
@@ -217,14 +218,14 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddPage(
-                        isExpense: snapshot.tx.isExpense,
-                        transaction: snapshot),
-                  ),
-                );
+                // TODO
+                // Navigator.pushReplacement(
+                // context,
+                // MaterialPageRoute(
+                //   builder: (context) => AddPage(
+                //       isExpense: snapshot.t.isExpense, transaction: snapshot),
+                // ),
+                // );
               },
             ),
           )

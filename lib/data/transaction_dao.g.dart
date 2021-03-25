@@ -11,14 +11,13 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
   Subcategories get subcategories => attachedDatabase.subcategories;
   Months get months => attachedDatabase.months;
   Currencies get currencies => attachedDatabase.currencies;
-  BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
   RecurrenceTypes get recurrenceTypes => attachedDatabase.recurrenceTypes;
-  Recurrences get recurrences => attachedDatabase.recurrences;
+  BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
   UserProfiles get userProfiles => attachedDatabase.userProfiles;
   Selectable<TransactionsResult> transactions() {
     return customSelect('SELECT * FROM fullTransactions',
             variables: [],
-            readsFrom: {baseTransactions, recurrences, recurrenceTypes, months})
+            readsFrom: {baseTransactions, recurrenceTypes, months})
         .map((QueryRow row) {
       return TransactionsResult(
         id: row.readInt('id'),
@@ -26,13 +25,13 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         originalAmount: row.readDouble('originalAmount'),
         exchangeRate: row.readDouble('exchangeRate'),
         isExpense: row.readBool('isExpense'),
-        date: row.readDateTime('date'),
+        date: row.readString('date'),
         label: row.readString('label'),
         subcategoryId: row.readInt('subcategoryId'),
         monthId: row.readInt('monthId'),
         currencyId: row.readInt('currencyId'),
         recurrenceType: row.readInt('recurrenceType'),
-        until: row.readDateTime('until'),
+        until: row.readString('until'),
         recurrenceName: row.readString('recurrenceName'),
       );
     });
@@ -67,20 +66,25 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         ],
         readsFrom: {
           baseTransactions,
-          recurrences,
           recurrenceTypes,
           months
         }).map((QueryRow row) => row.readDouble(
         '(SELECT SUM(amount) FROM fullTransactions WHERE NOT isExpense AND date < :date) - (SELECT SUM(amount) FROM fullTransactions WHERE isExpense AND date < :date)'));
   }
 
-  Selectable<TransactionsWithFilterResult> transactionsWithFilter() {
+  Selectable<TransactionsWithFilterResult> transactionsWithFilter(
+      {Expression<bool> predicate = const CustomExpression('(TRUE)')}) {
+    final generatedpredicate = $write(predicate, hasMultipleTables: true);
     return customSelect(
-        'SELECT * FROM fullTransactions WHERE\r\n\r\n-- sumTransactionsByCategory:\r\n\r\nnLatestTransactions',
-        variables: [],
+        'SELECT t.*, "cc"."id" AS "nested_0.id", "cc"."name" AS "nested_0.name", "cc"."isExpense" AS "nested_0.isExpense", "cc"."isPreset" AS "nested_0.isPreset", "cc"."iconCodePoint" AS "nested_0.iconCodePoint", "s"."id" AS "nested_1.id", "s"."name" AS "nested_1.name", "s"."categoryId" AS "nested_1.categoryId", "s"."isPreset" AS "nested_1.isPreset", "c"."id" AS "nested_2.id", "c"."abbrev" AS "nested_2.abbrev", "c"."symbol" AS "nested_2.symbol", "c"."exchangeRate" AS "nested_2.exchangeRate"\r\n    FROM fullTransactions t, categories cc, subcategories s, currencies c\r\n    WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id AND ${generatedpredicate.sql}\r\n    ORDER BY t.date DESC, t.id DESC',
+        variables: [
+          ...generatedpredicate.introducedVariables
+        ],
         readsFrom: {
+          categories,
+          subcategories,
+          currencies,
           baseTransactions,
-          recurrences,
           recurrenceTypes,
           months
         }).map((QueryRow row) {
@@ -90,16 +94,123 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         originalAmount: row.readDouble('originalAmount'),
         exchangeRate: row.readDouble('exchangeRate'),
         isExpense: row.readBool('isExpense'),
-        date: row.readDateTime('date'),
+        date: row.readString('date'),
         label: row.readString('label'),
         subcategoryId: row.readInt('subcategoryId'),
         monthId: row.readInt('monthId'),
         currencyId: row.readInt('currencyId'),
         recurrenceType: row.readInt('recurrenceType'),
-        until: row.readDateTime('until'),
+        until: row.readString('until'),
         recurrenceName: row.readString('recurrenceName'),
+        cc: categories.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
+        s: subcategories.mapFromRowOrNull(row, tablePrefix: 'nested_1'),
+        c: currencies.mapFromRowOrNull(row, tablePrefix: 'nested_2'),
       );
     });
+  }
+
+  Selectable<double> monthlyIncome(DateTime date) {
+    return customSelect(
+        'SELECT SUM(t.amount) as income FROM fullTransactions t\r\n    WHERE NOT t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)',
+        variables: [
+          Variable<DateTime>(date)
+        ],
+        readsFrom: {
+          months,
+          baseTransactions,
+          recurrenceTypes
+        }).map((QueryRow row) => row.readDouble('income'));
+  }
+
+  Selectable<ExpensesPerDayInMonthResult> expensesPerDayInMonth(
+      DateTime dateInMonth) {
+    return customSelect(
+        'SELECT t.date, SUM(t.amount) AS expense FROM fullTransactions t\r\n    WHERE t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :dateInMonth AND m.lastDate >= :dateInMonth)\r\n    GROUP BY t.date\r\n    ORDER BY t.date ASC',
+        variables: [
+          Variable<DateTime>(dateInMonth)
+        ],
+        readsFrom: {
+          months,
+          baseTransactions,
+          recurrenceTypes
+        }).map((QueryRow row) {
+      return ExpensesPerDayInMonthResult(
+        date: row.readString('date'),
+        expense: row.readDouble('expense'),
+      );
+    });
+  }
+
+  Selectable<SumTransactionsByCategoryResult> sumTransactionsByCategory(
+      {Expression<bool> predicate = const CustomExpression('(TRUE)')}) {
+    final generatedpredicate = $write(predicate, hasMultipleTables: true);
+    return customSelect(
+        'SELECT "c"."id" AS "nested_0.id", "c"."name" AS "nested_0.name", "c"."isExpense" AS "nested_0.isExpense", "c"."isPreset" AS "nested_0.isPreset", "c"."iconCodePoint" AS "nested_0.iconCodePoint", SUM(amount) as sumAmount FROM fullTransactions t, categories c, subcategories s\r\n                           WHERE t.subcategoryId = s.id AND s.categoryId = c.id AND ${generatedpredicate.sql}\r\n                           GROUP BY c.id',
+        variables: [
+          ...generatedpredicate.introducedVariables
+        ],
+        readsFrom: {
+          categories,
+          subcategories,
+          baseTransactions,
+          recurrenceTypes,
+          months
+        }).map((QueryRow row) {
+      return SumTransactionsByCategoryResult(
+        sumAmount: row.readDouble('sumAmount'),
+        c: categories.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
+      );
+    });
+  }
+
+  Selectable<NLatestTransactionsResult> nLatestTransactions(int N) {
+    return customSelect(
+        'SELECT "t"."id" AS "nested_0.id", "t"."amount" AS "nested_0.amount", "t"."originalAmount" AS "nested_0.originalAmount", "t"."exchangeRate" AS "nested_0.exchangeRate", "t"."isExpense" AS "nested_0.isExpense", "t"."date" AS "nested_0.date", "t"."label" AS "nested_0.label", "t"."subcategoryId" AS "nested_0.subcategoryId", "t"."monthId" AS "nested_0.monthId", "t"."currencyId" AS "nested_0.currencyId", "t"."recurrenceType" AS "nested_0.recurrenceType", "t"."until" AS "nested_0.until", "cc"."id" AS "nested_1.id", "cc"."name" AS "nested_1.name", "cc"."isExpense" AS "nested_1.isExpense", "cc"."isPreset" AS "nested_1.isPreset", "cc"."iconCodePoint" AS "nested_1.iconCodePoint", "s"."id" AS "nested_2.id", "s"."name" AS "nested_2.name", "s"."categoryId" AS "nested_2.categoryId", "s"."isPreset" AS "nested_2.isPreset", "c"."id" AS "nested_3.id", "c"."abbrev" AS "nested_3.abbrev", "c"."symbol" AS "nested_3.symbol", "c"."exchangeRate" AS "nested_3.exchangeRate" FROM baseTransactions t,categories cc, subcategories s, currencies c\r\n    WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id\r\n    ORDER BY t.id DESC LIMIT :N',
+        variables: [
+          Variable<int>(N)
+        ],
+        readsFrom: {
+          baseTransactions,
+          categories,
+          subcategories,
+          currencies
+        }).map((QueryRow row) {
+      return NLatestTransactionsResult(
+        t: baseTransactions.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
+        cc: categories.mapFromRowOrNull(row, tablePrefix: 'nested_1'),
+        s: subcategories.mapFromRowOrNull(row, tablePrefix: 'nested_2'),
+        c: currencies.mapFromRowOrNull(row, tablePrefix: 'nested_3'),
+      );
+    });
+  }
+
+  Selectable<double> monthlyBudget(DateTime date) {
+    return customSelect(
+        'SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n                      (SELECT SUM(amount) FROM fullTransactions t\r\n                      WHERE t.isExpense\r\n                        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))',
+        variables: [
+          Variable<DateTime>(date)
+        ],
+        readsFrom: {
+          months,
+          baseTransactions,
+          recurrenceTypes
+        }).map((QueryRow row) => row.readDouble(
+        '(SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n                      (SELECT SUM(amount) FROM fullTransactions t\r\n                      WHERE t.isExpense\r\n                        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))'));
+  }
+
+  Selectable<double> dailyBudget(DateTime date, int remainingDays) {
+    return customSelect(
+        'WITH\r\n    budget(amount) AS (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),\r\n    monthlyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense\r\n        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)\r\n        AND t.date != :date AND (t.recurrenceType == 2 OR t.recurrenceType == 1)),\r\n    dailyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense\r\n        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)\r\n        AND t.date = :date AND (t.recurrenceType == 2 OR t.recurrenceType == 1))\r\n    SELECT (b.amount - m.amount) / :remainingDays - d.amount FROM budget b, monthlyExpenses m, dailyExpenses d',
+        variables: [
+          Variable<DateTime>(date),
+          Variable<int>(remainingDays)
+        ],
+        readsFrom: {
+          months,
+          baseTransactions,
+          recurrenceTypes
+        }).map((QueryRow row) =>
+        row.readDouble('(b.amount - m.amount) / :remainingDays - d.amount'));
   }
 
   Selectable<LastWeeksTransactionsResult> lastWeeksTransactions() {
@@ -108,12 +219,11 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         variables: [],
         readsFrom: {
           baseTransactions,
-          recurrences,
           recurrenceTypes,
           months
         }).map((QueryRow row) {
       return LastWeeksTransactionsResult(
-        date: row.readDateTime('date'),
+        date: row.readString('date'),
         sumAmount: row.readDouble('sumAmount'),
       );
     });
@@ -137,13 +247,13 @@ class TransactionsResult {
   final double originalAmount;
   final double exchangeRate;
   final bool isExpense;
-  final DateTime date;
+  final String date;
   final String label;
   final int subcategoryId;
   final int monthId;
   final int currencyId;
   final int recurrenceType;
-  final DateTime until;
+  final String until;
   final String recurrenceName;
   TransactionsResult({
     @required this.id,
@@ -168,14 +278,17 @@ class TransactionsWithFilterResult {
   final double originalAmount;
   final double exchangeRate;
   final bool isExpense;
-  final DateTime date;
+  final String date;
   final String label;
   final int subcategoryId;
   final int monthId;
   final int currencyId;
   final int recurrenceType;
-  final DateTime until;
+  final String until;
   final String recurrenceName;
+  final Category cc;
+  final Subcategory s;
+  final Currency c;
   TransactionsWithFilterResult({
     @required this.id,
     @required this.amount,
@@ -190,11 +303,45 @@ class TransactionsWithFilterResult {
     @required this.recurrenceType,
     @required this.until,
     @required this.recurrenceName,
+    this.cc,
+    this.s,
+    this.c,
+  });
+}
+
+class ExpensesPerDayInMonthResult {
+  final String date;
+  final double expense;
+  ExpensesPerDayInMonthResult({
+    @required this.date,
+    @required this.expense,
+  });
+}
+
+class SumTransactionsByCategoryResult {
+  final double sumAmount;
+  final Category c;
+  SumTransactionsByCategoryResult({
+    @required this.sumAmount,
+    this.c,
+  });
+}
+
+class NLatestTransactionsResult {
+  final BaseTransaction t;
+  final Category cc;
+  final Subcategory s;
+  final Currency c;
+  NLatestTransactionsResult({
+    this.t,
+    this.cc,
+    this.s,
+    this.c,
   });
 }
 
 class LastWeeksTransactionsResult {
-  final DateTime date;
+  final String date;
   final double sumAmount;
   LastWeeksTransactionsResult({
     @required this.date,
