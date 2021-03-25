@@ -5,4 +5,5 @@ targets:
       moor_generator:
         options:
           compact_query_methods: true
-          apply_converters_on_variables: false
+          apply_converters_on_variables: true
+          new_sql_code_generation: true

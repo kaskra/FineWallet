@@ -5,17 +5,17 @@ transactions: SELECT * FROM fullTransactions;
 deleteTxById: DELETE FROM baseTransactions WHERE id=:id;
 deleteTxsByIds: DELETE FROM baseTransactions WHERE id IN :ids;
 
-totalSavings(:date AS DATE): SELECT (SELECT SUM(amount) FROM fullTransactions WHERE NOT isExpense AND date < :date) - (SELECT SUM(amount) FROM fullTransactions WHERE isExpense AND date < :date);
+totalSavings: SELECT (SELECT SUM(amount) FROM fullTransactions WHERE NOT isExpense AND date < :date) - (SELECT SUM(amount) FROM fullTransactions WHERE isExpense AND date < :date);
 
 transactionsWithFilter ($predicate = True): SELECT t.*, cc.**, s.**, c.**
     FROM fullTransactions t, categories cc, subcategories s, currencies c
     WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id AND $predicate
     ORDER BY t.date DESC, t.id DESC;
 
-monthlyIncome(:date AS DATE): SELECT SUM(t.amount) as income FROM fullTransactions t
+monthlyIncome: SELECT SUM(t.amount) as income FROM fullTransactions t
     WHERE NOT t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date);
 
-expensesPerDayInMonth(:dateInMonth AS DATE): SELECT t.date, SUM(t.amount) AS expense FROM fullTransactions t
+expensesPerDayInMonth: SELECT t.date, SUM(t.amount) AS expense FROM fullTransactions t
     WHERE t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :dateInMonth AND m.lastDate >= :dateInMonth)
     GROUP BY t.date
     ORDER BY t.date ASC;
@@ -28,12 +28,12 @@ nLatestTransactions: SELECT t.**, cc.**, s.**, c.** FROM baseTransactions t,cate
     WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id
     ORDER BY t.id DESC LIMIT :N;
 
-monthlyBudget(:date AS DATE): SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -
+monthlyBudget: SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -
                       (SELECT SUM(amount) FROM fullTransactions t
                       WHERE t.isExpense
                         AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date));
 
-dailyBudget(:remainingDays AS INT, :date AS DATE): WITH
+dailyBudget(:remainingDays AS INT): WITH
     budget(amount) AS (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),
     monthlyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense
         AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)

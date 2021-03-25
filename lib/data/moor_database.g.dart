@@ -2236,11 +2236,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       _baseTransactions ??= BaseTransactions(this);
   View _fullTransactions;
   View get fullTransactions => _fullTransactions ??= View('fullTransactions',
-      'CREATE VIEW fullTransactions AS\r\nWITH RECURSIVE tmp(id, txDate, recType, until, name) AS (\r\n    SELECT t.id,\r\n           DATE (t.date, \'unixepoch\'), t.recurrenceType, DATE (t.until, \'unixepoch\'), rt.name\r\n    FROM baseTransactions t,\r\n         recurrenceTypes rt\r\n    WHERE t.recurrenceType = rt.id\r\n    UNION\r\n    SELECT tmp.id,\r\n           (SELECT CASE tmp.recType\r\n                       WHEN 1 THEN tmp.txDate\r\n                       WHEN 2 THEN DATE (tmp.txDate, \'+1 days\')\r\n                       WHEN 3 THEN DATE (tmp.txDate, \'+7 days\')\r\n                       ELSE tmp.txDate\r\n--         WHEN 4 THEN DATE (tmp.txDate, \'+1 month\', \'start of month\', \'weekday 5\', \'+7 days\')\r\n                       END\r\n           ) AS nextTxDate, tmp.recType, tmp.until, name\r\n    FROM tmp WHERE nextTxDate <= until\r\n)\r\nSELECT t.id,\r\n       t.amount,\r\n       t.originalAmount,\r\n       t.exchangeRate,\r\n       t.isExpense,\r\n       tmp.txDate AS date,\r\n       t.label,\r\n       t.subcategoryId,\r\n       (SELECT id FROM months m WHERE DATE(m.firstDate, \'unixepoch\') <= tmp.txDate AND DATE(m.lastDate, \'unixepoch\') >= tmp.txDate) AS monthId,\r\n       t.currencyId,\r\n       tmp.recType AS recurrenceType,\r\n       tmp.until,\r\n       tmp.name AS recurrenceName\r\nFROM tmp,\r\n     baseTransactions t\r\nWHERE tmp.id = t.id;');
-  Trigger _createNeededMonths;
-  Trigger get createNeededMonths => _createNeededMonths ??= Trigger(
-      'CREATE TRIGGER IF NOT EXISTS createNeededMonths\r\n    AFTER INSERT ON baseTransactions\r\nBEGIN\r\n    INSERT INTO months (maxBudget, firstDate, lastDate)\r\n    WITH dates(txDate, recType, until) AS (\r\n        SELECT DATE (t.date, \'unixepoch\'), t.recurrenceType, DATE (t.until, \'unixepoch\')\r\n        FROM baseTransactions t\r\n        UNION\r\n        SELECT (SELECT CASE dates.recType\r\n                           WHEN 1 THEN dates.txDate\r\n                           WHEN 2 THEN DATE (dates.txDate, \'+1 days\')\r\n                           WHEN 3 THEN DATE (dates.txDate, \'+7 days\')\r\n                           ELSE dates.txDate\r\n                           END\r\n               ) AS nextTxDate, recType, until\r\n        FROM dates WHERE nextTxDate <= until\r\n    ),\r\n         firstLastDates(firstD, lastD) AS (\r\n             SELECT DISTINCT DATE(txDate, \'start of month\'), DATE(txDate, \'start of month\', \'+1 month\', \'-1 days\') FROM dates\r\n         )\r\n    SELECT 0, strftime(\'%s\', firstD), strftime(\'%s\', lastD)\r\n    FROM firstLastDates\r\n    WHERE strftime(\'%s\', firstD) NOT IN (SELECT firstDate FROM months);\r\nEND;',
-      'createNeededMonths');
+      'CREATE VIEW fullTransactions AS\r\nWITH RECURSIVE tmp(id, txDate, recType, until, name) AS (\r\n    SELECT t.id,\r\n           DATE(t.date),\r\n           t.recurrenceType,\r\n           DATE(t.until),\r\n           rt.name\r\n    FROM baseTransactions t,\r\n         recurrenceTypes rt\r\n    WHERE t.recurrenceType = rt.id\r\n    UNION\r\n    SELECT tmp.id,\r\n           (SELECT CASE tmp.recType\r\n                       WHEN 1 THEN tmp.txDate\r\n                       WHEN 2 THEN DATE(tmp.txDate, \'+1 days\')\r\n                       WHEN 3 THEN DATE(tmp.txDate, \'+7 days\')\r\n                       ELSE tmp.txDate\r\n--         WHEN 4 THEN DATE (tmp.txDate, \'+1 month\', \'start of month\', \'weekday 5\', \'+7 days\')\r\n                       END\r\n           ) AS nextTxDate,\r\n           tmp.recType,\r\n           tmp.until,\r\n           name\r\n    FROM tmp\r\n    WHERE DATE(nextTxDate) <= DATE(until)\r\n)\r\nSELECT t.id,\r\n       t.amount,\r\n       t.originalAmount,\r\n       t.exchangeRate,\r\n       t.isExpense,\r\n       tmp.txDate                                                                                                     AS date,\r\n       t.label,\r\n       t.subcategoryId,\r\n       (SELECT id\r\n        FROM months m\r\n        WHERE DATE(m.firstDate) <= DATE(tmp.txDate)\r\n          AND DATE(m.lastDate) >= DATE(tmp.txDate))                                                                   AS monthId,\r\n       t.currencyId,\r\n       tmp.recType                                                                                                    AS recurrenceType,\r\n       tmp.until,\r\n       tmp.name                                                                                                       AS recurrenceName\r\nFROM tmp,\r\n     baseTransactions t\r\nWHERE tmp.id = t.id;');
+  Trigger _createNeededMonthsAfterInsert;
+  Trigger get createNeededMonthsAfterInsert =>
+      _createNeededMonthsAfterInsert ??= Trigger(
+          'CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterInsert\r\n    AFTER INSERT\r\n    ON baseTransactions\r\nBEGIN\r\n    INSERT INTO months (maxBudget, firstDate, lastDate)\r\n    WITH dates(txDate, recType, until) AS (\r\n        SELECT DATE(t.date), t.recurrenceType, DATE(t.until)\r\n        FROM baseTransactions t\r\n        UNION\r\n        SELECT (SELECT CASE dates.recType\r\n                           WHEN 1 THEN dates.txDate\r\n                           WHEN 2 THEN DATE(dates.txDate, \'+1 days\')\r\n                           WHEN 3 THEN DATE(dates.txDate, \'+7 days\')\r\n                           ELSE dates.txDate\r\n                           END\r\n               ) AS nextTxDate,\r\n               recType,\r\n               until\r\n        FROM dates\r\n        WHERE DATE(nextTxDate) <= DATE(until)\r\n    ),\r\n         firstLastDates(firstD, lastD) AS (\r\n             SELECT DISTINCT DATE(txDate, \'start of month\'), DATE(txDate, \'start of month\', \'+1 month\', \'-1 days\')\r\n             FROM dates\r\n         )\r\n    SELECT 0, DATE(firstD), DATE(lastD)\r\n    FROM firstLastDates\r\n    WHERE firstD NOT IN (SELECT firstDate FROM months);\r\nEND;',
+          'createNeededMonthsAfterInsert');
+  Trigger _createNeededMonthsAfterUpdate;
+  Trigger get createNeededMonthsAfterUpdate =>
+      _createNeededMonthsAfterUpdate ??= Trigger(
+          'CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterUpdate\r\n    AFTER UPDATE\r\n    ON baseTransactions\r\n    WHEN old.date != new.date OR old.recurrenceType != new.recurrenceType OR old.until != new.until\r\nBEGIN\r\n    INSERT INTO months (maxBudget, firstDate, lastDate)\r\n    WITH dates(txDate, recType, until) AS (\r\n        SELECT DATE(t.date), t.recurrenceType, DATE(t.until)\r\n        FROM baseTransactions t\r\n        UNION\r\n        SELECT (SELECT CASE dates.recType\r\n                           WHEN 1 THEN dates.txDate\r\n                           WHEN 2 THEN DATE(dates.txDate, \'+1 days\')\r\n                           WHEN 3 THEN DATE(dates.txDate, \'+7 days\')\r\n                           ELSE dates.txDate\r\n                           END\r\n               ) AS nextTxDate,\r\n               recType,\r\n               until\r\n        FROM dates\r\n        WHERE DATE(nextTxDate) <= DATE(until)\r\n    ),\r\n         firstLastDates(firstD, lastD) AS (\r\n             SELECT DISTINCT DATE(txDate, \'start of month\'), DATE(txDate, \'start of month\', \'+1 month\', \'-1 days\')\r\n             FROM dates\r\n         )\r\n    SELECT 0, DATE(firstD), DATE(lastD)\r\n    FROM firstLastDates\r\n    WHERE firstD NOT IN (SELECT firstDate FROM months);\r\nEND;',
+          'createNeededMonthsAfterUpdate');
   UserProfiles _userProfiles;
   UserProfiles get userProfiles => _userProfiles ??= UserProfiles(this);
   TransactionDao _transactionDao;
@@ -2277,7 +2283,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         recurrenceTypes,
         baseTransactions,
         fullTransactions,
-        createNeededMonths,
+        createNeededMonthsAfterInsert,
+        createNeededMonthsAfterUpdate,
         userProfiles
       ];
   @override
@@ -2293,6 +2300,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           WritePropagation(
             on: TableUpdateQuery.onTableName('baseTransactions',
                 limitUpdateKind: UpdateKind.insert),
+            result: [
+              TableUpdate('months', kind: UpdateKind.insert),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('baseTransactions',
+                limitUpdateKind: UpdateKind.update),
             result: [
               TableUpdate('months', kind: UpdateKind.insert),
             ],

@@ -3,7 +3,10 @@ import 'tables.moor';
 CREATE VIEW fullTransactions AS
 WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
     SELECT t.id,
-           DATE (t.date, 'unixepoch'), t.recurrenceType, DATE (t.until, 'unixepoch'), rt.name
+           DATE(t.date),
+           t.recurrenceType,
+           DATE(t.until),
+           rt.name
     FROM baseTransactions t,
          recurrenceTypes rt
     WHERE t.recurrenceType = rt.id
@@ -11,27 +14,34 @@ WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
     SELECT tmp.id,
            (SELECT CASE tmp.recType
                        WHEN 1 THEN tmp.txDate
-                       WHEN 2 THEN DATE (tmp.txDate, '+1 days')
-                       WHEN 3 THEN DATE (tmp.txDate, '+7 days')
+                       WHEN 2 THEN DATE(tmp.txDate, '+1 days')
+                       WHEN 3 THEN DATE(tmp.txDate, '+7 days')
                        ELSE tmp.txDate
 --         WHEN 4 THEN DATE (tmp.txDate, '+1 month', 'start of month', 'weekday 5', '+7 days')
                        END
-           ) AS nextTxDate, tmp.recType, tmp.until, name
-    FROM tmp WHERE nextTxDate <= until
+           ) AS nextTxDate,
+           tmp.recType,
+           tmp.until,
+           name
+    FROM tmp
+    WHERE DATE(nextTxDate) <= DATE(until)
 )
 SELECT t.id,
        t.amount,
        t.originalAmount,
        t.exchangeRate,
        t.isExpense,
-       tmp.txDate AS date,
+       tmp.txDate                                                                                                     AS date,
        t.label,
        t.subcategoryId,
-       (SELECT id FROM months m WHERE DATE(m.firstDate, 'unixepoch') <= tmp.txDate AND DATE(m.lastDate, 'unixepoch') >= tmp.txDate) AS monthId,
+       (SELECT id
+        FROM months m
+        WHERE DATE(m.firstDate) <= DATE(tmp.txDate)
+          AND DATE(m.lastDate) >= DATE(tmp.txDate))                                                                   AS monthId,
        t.currencyId,
-       tmp.recType AS recurrenceType,
+       tmp.recType                                                                                                    AS recurrenceType,
        tmp.until,
-       tmp.name AS recurrenceName
+       tmp.name                                                                                                       AS recurrenceName
 FROM tmp,
      baseTransactions t
 WHERE tmp.id = t.id;

@@ -58,11 +58,11 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
     );
   }
 
-  Selectable<double> totalSavings(DateTime date) {
+  Selectable<double> totalSavings(String date) {
     return customSelect(
         'SELECT (SELECT SUM(amount) FROM fullTransactions WHERE NOT isExpense AND date < :date) - (SELECT SUM(amount) FROM fullTransactions WHERE isExpense AND date < :date)',
         variables: [
-          Variable<DateTime>(date)
+          Variable<String>(date)
         ],
         readsFrom: {
           baseTransactions,
@@ -109,11 +109,11 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
     });
   }
 
-  Selectable<double> monthlyIncome(DateTime date) {
+  Selectable<double> monthlyIncome(String date) {
     return customSelect(
         'SELECT SUM(t.amount) as income FROM fullTransactions t\r\n    WHERE NOT t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)',
         variables: [
-          Variable<DateTime>(date)
+          Variable<String>(date)
         ],
         readsFrom: {
           months,
@@ -123,11 +123,11 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
   }
 
   Selectable<ExpensesPerDayInMonthResult> expensesPerDayInMonth(
-      DateTime dateInMonth) {
+      String dateInMonth) {
     return customSelect(
         'SELECT t.date, SUM(t.amount) AS expense FROM fullTransactions t\r\n    WHERE t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :dateInMonth AND m.lastDate >= :dateInMonth)\r\n    GROUP BY t.date\r\n    ORDER BY t.date ASC',
         variables: [
-          Variable<DateTime>(dateInMonth)
+          Variable<String>(dateInMonth)
         ],
         readsFrom: {
           months,
@@ -184,11 +184,11 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
     });
   }
 
-  Selectable<double> monthlyBudget(DateTime date) {
+  Selectable<double> monthlyBudget(String date) {
     return customSelect(
         'SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n                      (SELECT SUM(amount) FROM fullTransactions t\r\n                      WHERE t.isExpense\r\n                        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))',
         variables: [
-          Variable<DateTime>(date)
+          Variable<String>(date)
         ],
         readsFrom: {
           months,
@@ -198,11 +198,11 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         '(SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n                      (SELECT SUM(amount) FROM fullTransactions t\r\n                      WHERE t.isExpense\r\n                        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))'));
   }
 
-  Selectable<double> dailyBudget(DateTime date, int remainingDays) {
+  Selectable<double> dailyBudget(String date, int remainingDays) {
     return customSelect(
         'WITH\r\n    budget(amount) AS (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),\r\n    monthlyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense\r\n        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)\r\n        AND t.date != :date AND (t.recurrenceType == 2 OR t.recurrenceType == 1)),\r\n    dailyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense\r\n        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)\r\n        AND t.date = :date AND (t.recurrenceType == 2 OR t.recurrenceType == 1))\r\n    SELECT (b.amount - m.amount) / :remainingDays - d.amount FROM budget b, monthlyExpenses m, dailyExpenses d',
         variables: [
-          Variable<DateTime>(date),
+          Variable<String>(date),
           Variable<int>(remainingDays)
         ],
         readsFrom: {

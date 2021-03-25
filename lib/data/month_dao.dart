@@ -57,11 +57,13 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
   Future<int> getMonthIdByDate(DateTime date) =>
-      monthIdByDate(date).getSingleOrNull();
+      monthIdByDate(date.toSql()).getSingleOrNull();
 
-  Future<Month> getCurrentMonth() => monthByDate(today()).getSingleOrNull();
+  Future<Month> getCurrentMonth() =>
+      monthByDate(today().toSql()).getSingleOrNull();
 
-  Stream<Month> watchCurrentMonth() => monthByDate(today()).watchSingleOrNull();
+  Stream<Month> watchCurrentMonth() =>
+      monthByDate(today().toSql()).watchSingleOrNull();
 
   Future<Month> getMonthById(int id) => monthById(id).getSingleOrNull();
 

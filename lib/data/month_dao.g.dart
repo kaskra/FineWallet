@@ -19,17 +19,17 @@ mixin _$MonthDaoMixin on DatabaseAccessor<AppDatabase> {
         variables: [], readsFrom: {months}).map(months.mapFromRow);
   }
 
-  Selectable<int> monthIdByDate(DateTime date) {
+  Selectable<int> monthIdByDate(String date) {
     return customSelect(
         'SELECT id FROM months WHERE :date <= lastDate AND :date >= firstDate',
-        variables: [Variable<DateTime>(date)],
+        variables: [Variable<String>(date)],
         readsFrom: {months}).map((QueryRow row) => row.readInt('id'));
   }
 
-  Selectable<Month> monthByDate(DateTime date) {
+  Selectable<Month> monthByDate(String date) {
     return customSelect(
         'SELECT * FROM months WHERE :date <= lastDate AND :date >= firstDate',
-        variables: [Variable<DateTime>(date)],
+        variables: [Variable<String>(date)],
         readsFrom: {months}).map(months.mapFromRow);
   }
 

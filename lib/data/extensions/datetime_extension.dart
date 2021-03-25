@@ -54,9 +54,29 @@ extension ExtendedDateTime on DateTime {
     ];
     return days[(weekday - 1) % 7].tr();
   }
+
+  String toSql() {
+    final yearS = convertToFourDigits(year);
+    final monthS = convertToTwoDigits(month);
+    final dayS = convertToTwoDigits(day);
+    return "$yearS-$monthS-$dayS";
+  }
 }
 
 DateTime today() {
   final now = DateTime.now().toUtc();
   return DateTime.utc(now.year, now.month, now.day);
+}
+
+String convertToTwoDigits(int n) {
+  return n < 10 ? "0$n" : "$n";
+}
+
+String convertToFourDigits(int n) {
+  final int absN = n.abs();
+  final String sign = n < 0 ? "-" : "";
+  if (absN >= 1000) return "$n";
+  if (absN >= 100) return "${sign}0$absN";
+  if (absN >= 10) return "${sign}00$absN";
+  return "${sign}000$absN";
 }
