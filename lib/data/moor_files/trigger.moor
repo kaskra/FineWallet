@@ -16,6 +16,12 @@ BEGIN
                            WHEN 1 THEN dates.txDate
                            WHEN 2 THEN DATE(dates.txDate, '+1 days')
                            WHEN 3 THEN DATE(dates.txDate, '+7 days')
+                           WHEN 4 THEN DATE(dates.txDate, '+1 month', 'start of month',
+                                            (SELECT '+' ||
+                                                    CAST(((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
+                                                    ' days'),
+                                            (SELECT 'weekday ' || strftime('%w', dates.txDate))
+                               )
                            ELSE dates.txDate
                            END
                ) AS nextTxDate,
@@ -49,6 +55,12 @@ BEGIN
                            WHEN 1 THEN dates.txDate
                            WHEN 2 THEN DATE(dates.txDate, '+1 days')
                            WHEN 3 THEN DATE(dates.txDate, '+7 days')
+                           WHEN 4 THEN DATE(dates.txDate, '+1 month', 'start of month',
+                                            (SELECT '+' ||
+                                                    CAST(((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
+                                                    ' days'),
+                                            (SELECT 'weekday ' || strftime('%w', dates.txDate))
+                               )
                            ELSE dates.txDate
                            END
                ) AS nextTxDate,

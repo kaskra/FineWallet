@@ -16,8 +16,12 @@ WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
                        WHEN 1 THEN tmp.txDate
                        WHEN 2 THEN DATE(tmp.txDate, '+1 days')
                        WHEN 3 THEN DATE(tmp.txDate, '+7 days')
+                       WHEN 4 THEN DATE(tmp.txDate, '+1 month', 'start of month',
+                                        (SELECT '+' || CAST(((strftime('%d', tmp.txDate) - 1) / 7) * 7 AS VARCHAR) ||
+                                                ' days'),
+                                        (SELECT 'weekday ' || strftime('%w', tmp.txDate))
+                           )
                        ELSE tmp.txDate
---         WHEN 4 THEN DATE (tmp.txDate, '+1 month', 'start of month', 'weekday 5', '+7 days')
                        END
            ) AS nextTxDate,
            tmp.recType,
@@ -31,17 +35,17 @@ SELECT t.id,
        t.originalAmount,
        t.exchangeRate,
        t.isExpense,
-       tmp.txDate                                                                                                     AS date,
+       tmp.txDate                                   AS date,
        t.label,
        t.subcategoryId,
        (SELECT id
         FROM months m
         WHERE DATE(m.firstDate) <= DATE(tmp.txDate)
-          AND DATE(m.lastDate) >= DATE(tmp.txDate))                                                                   AS monthId,
+          AND DATE(m.lastDate) >= DATE(tmp.txDate)) AS monthId,
        t.currencyId,
-       tmp.recType                                                                                                    AS recurrenceType,
+       tmp.recType                                  AS recurrenceType,
        tmp.until,
-       tmp.name                                                                                                       AS recurrenceName
+       tmp.name                                     AS recurrenceName
 FROM tmp,
      baseTransactions t
 WHERE tmp.id = t.id;
