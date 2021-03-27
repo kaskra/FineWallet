@@ -1583,6 +1583,32 @@ void main() {
     });
   });
 
-  // TODO every method using TransactionFilterSettings
-  // watchSumOfTransactionsByCategories, watchTransactionsWithFilter
+  // TODO
+  group("sumOfTransactionsByCategories", () {
+    test('return unique categories', () async {});
+    test('consider filter settings by expenses', () async {});
+    test('consider filter settings by incomes', () async {});
+    test('consider filter settings before date', () async {});
+    test('consider filter settings by month', () async {});
+    test('consider filter settings by category', () async {});
+    test('consider filter settings by subcategory', () async {});
+    test('consider filter settings by date', () async {});
+    test('consider filter settings by only recurrences', () async {});
+    test('throws exception without entering filter settings', () async {});
+  });
+
+  // TODO
+  group("watchTransactionsWithFilter", () {
+    test('consider filter settings by expenses', () async {});
+    test('consider filter settings by incomes', () async {});
+    test('consider filter settings before date', () async {});
+    test('consider filter settings by month', () async {});
+    test('consider filter settings by category', () async {});
+    test('consider filter settings by subcategory', () async {});
+    test('consider filter settings by date', () async {});
+    test('consider filter settings by only recurrences', () async {});
+    test('descending order by date', () async {});
+    test('descending order by id', () async {});
+    test('throws exception without entering filter settings', () async {});
+  });
 }
