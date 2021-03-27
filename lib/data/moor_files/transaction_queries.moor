@@ -78,17 +78,15 @@ SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDa
           AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date));
 
 _dailyBudget(:remainingDays AS INT): WITH
-    budget(amount) AS (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),
-    monthlyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM fullTransactions t WHERE t.isExpense
-        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)
-        AND t.date != :date AND (t.recurrenceType = 2 OR t.recurrenceType = 1)),
-    dailyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM fullTransactions t WHERE t.isExpense
-        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)
-        AND t.date = :date AND (t.recurrenceType = 2 OR t.recurrenceType = 1))
+    monthByDate(id, amount) AS (SELECT m.id, m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),
+    allExpenses(date, amount) AS (SELECT t.date, t.amount FROM fullTransactions t WHERE t.isExpense
+        AND t.monthId = (SELECT m.id FROM monthByDate m) AND (t.recurrenceType = 2 OR t.recurrenceType = 1)),
+    monthlyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date != :date),
+    dayExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date = :date)
 SELECT (b.amount - m.amount) / :remainingDays - d.amount
-FROM budget b,
+FROM monthByDate b,
      monthlyExpenses m,
-     dailyExpenses d;
+     dayExpenses d;
 
 _lastWeeksTransactions:
 SELECT date, ifnull(SUM(amount),0) AS sumAmount

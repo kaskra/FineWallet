@@ -1,6 +1,7 @@
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moor/ffi.dart';
 
@@ -1455,20 +1456,131 @@ void main() {
     });
   });
 
-  // TODO
   group('lastWeeksTransactions', () {
-    test('sum of expenses of last 7 days should be returned', () async {});
-    test('empty list if no expenses are present', () async {});
-    test('no date should be returned twice', () async {});
-    test('latest date in list should be today', () async {});
+    test('sum of expenses of last 7 days should be returned', () async {
+      final stream = database.transactionDao
+          .watchLastWeeksTransactions()
+          .map((event) => event.map((e) => e.sumAmount));
+
+      final expectation = expectLater(
+          stream,
+          emitsAnyOf([
+            [52, 10, 10],
+            [42],
+            []
+          ]));
+
+      final expectation2 =
+          expectLater(stream, emits(hasLength(lessThanOrEqualTo(7))));
+
+      await database.transactionDao.insertTransaction(onceTransactions[0]
+          .copyWith(date: today().add(const Duration(days: -5))));
+      await database.transactionDao.insertTransaction(onceTransactions[1]
+          .copyWith(date: today().add(const Duration(days: -5))));
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: today().add(const Duration(days: -5)),
+          until: today().add(const Duration(days: -3))));
+
+      await expectation2;
+      await expectation;
+    });
+
+    test('empty list if no expenses are present', () async {
+      final stream = database.transactionDao
+          .watchLastWeeksTransactions()
+          .map((event) => event.map((e) => e.sumAmount));
+
+      final expectation = expectLater(stream, emits(isEmpty));
+
+      await database.transactionDao.insertTransaction(onceTransactions[0]
+          .copyWith(date: today().add(const Duration(days: -5))));
+
+      await expectation;
+    });
+
+    test('no date should be returned twice', () async {
+      final stream = database.transactionDao
+          .watchLastWeeksTransactions()
+          .map((event) => event.map((e) => e.date).toList());
+
+      stream.listen((o) {
+        if (o.isNotEmpty) {
+          expect(o, o.toSet().toList());
+        }
+      });
+
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: today().add(const Duration(days: -5)),
+          until: today().add(const Duration(days: -3))));
+      await database.transactionDao.insertTransaction(onceTransactions[0]
+          .copyWith(date: today().add(const Duration(days: -5))));
+      await database.transactionDao.insertTransaction(onceTransactions[1]
+          .copyWith(date: today().add(const Duration(days: -5))));
+    });
+
+    test('latest date in list should be today', () async {
+      final stream = database.transactionDao
+          .watchLastWeeksTransactions()
+          .map((event) => event.map((e) => DateTime.parse(e.date)).toList());
+
+      stream.listen((o) {
+        if (o.isNotEmpty) {
+          final maxDate = o.reduce((a, b) => a.isAfter(b) ? a : b);
+          expect(maxDate.difference(today()).inDays, greaterThanOrEqualTo(0));
+        }
+      });
+
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: today().add(const Duration(days: -1)),
+          until: today().add(const Duration(days: 2))));
+    });
   });
 
   // TODO
   group('transactionLabels', () {
-    test('distinct expense labels only', () async {});
-    test('list should not contain empty labels', () async {});
-    test('empty list if no expense transaction is present', () async {});
-    test('labels should be in ascending order ', () async {});
+    test('distinct expense labels only', () async {
+      await database.transactionDao
+          .insertTransaction(onceTransactions[1].copyWith(label: "Tested"));
+      await database.transactionDao
+          .insertTransaction(daily.copyWith(label: "Tested"));
+
+      final res =
+          await database.transactionDao.getTransactionsLabels(isExpense: true);
+
+      expect(res, hasLength(equals(1)));
+      expect(listEquals(res, res.toSet().toList()), true);
+    });
+
+    test('list should not contain empty labels', () async {
+      await database.transactionDao
+          .insertTransaction(onceTransactions[1].copyWith(label: "Tested"));
+      await database.transactionDao
+          .insertTransaction(daily.copyWith(label: ""));
+
+      final res =
+          await database.transactionDao.getTransactionsLabels(isExpense: true);
+
+      expect(res, isNot(contains('')));
+    });
+
+    test('empty list if no expense transaction is present', () async {
+      final res =
+          await database.transactionDao.getTransactionsLabels(isExpense: true);
+
+      expect(res, isEmpty);
+    });
+
+    test('labels should be in ascending order ', () async {
+      await database.transactionDao
+          .insertTransaction(onceTransactions[1].copyWith(label: "Foo"));
+      await database.transactionDao
+          .insertTransaction(daily.copyWith(label: "Bar"));
+
+      final res =
+          await database.transactionDao.getTransactionsLabels(isExpense: true);
+
+      expect(res, equals(["Bar", "Foo"]));
+    });
   });
 
   // TODO every method using TransactionFilterSettings
