@@ -109,9 +109,11 @@ abstract class  LocaleKeys {
   static const moor_cat10_money_gift = 'moor.cat10.money_gift';
   static const moor_cat10_voucher = 'moor.cat10.voucher';
   static const moor_cat10 = 'moor.cat10';
+  static const moor_recurrence_once = 'moor.recurrence.once';
   static const moor_recurrence_daily = 'moor.recurrence.daily';
   static const moor_recurrence_weekly = 'moor.recurrence.weekly';
   static const moor_recurrence_monthly = 'moor.recurrence.monthly';
+  static const moor_recurrence_monthly_date = 'moor.recurrence.monthly_date';
   static const moor_recurrence_yearly = 'moor.recurrence.yearly';
   static const moor_recurrence = 'moor.recurrence';
   static const moor = 'moor';

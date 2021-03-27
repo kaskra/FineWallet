@@ -119,10 +119,12 @@
       "voucher": "Voucher"
     },
     "recurrence": {
+      "once" : "Once",
       "daily": "Daily",
-      "weekly": "Weekly",
-      "monthly": "Monthly",
-      "yearly": "Yearly"
+      "weekly": "Weekly on ${}",
+      "monthly": "Monthly on the ${} ${}",
+      "monthly_date": "Monthly on the ${}",
+      "yearly": "Yearly on the ${}"
     }
   },
   "nav": {

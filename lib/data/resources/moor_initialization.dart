@@ -369,11 +369,12 @@ MonthsCompanion currentMonth = MonthsCompanion.insert(
 );
 
 List<RecurrenceTypesCompanion> recurrenceTypes = [
-  // TODO name localization
-  RecurrenceTypesCompanion.insert(name: "Once"),
+  RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_once),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_daily),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_weekly),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_monthly),
+  RecurrenceTypesCompanion.insert(
+      name: LocaleKeys.moor_recurrence_monthly_date),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_yearly),
 ];
 

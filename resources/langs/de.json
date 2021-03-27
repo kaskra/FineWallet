@@ -120,10 +120,12 @@
       "voucher": "Gutschein"
     },
     "recurrence": {
+      "once" : "Einmalig",
       "daily": "Täglich",
-      "weekly": "Wöchentlich",
-      "monthly": "Monatlich",
-      "yearly": "Jährlich"
+      "weekly": "Wöchentlich am ${}",
+      "monthly": "Monatlich am ${} ${}",
+      "monthly_date": "Monatlich am",
+      "yearly": "Jährlich am ${}"
     }
   },
 
