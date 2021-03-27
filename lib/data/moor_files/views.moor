@@ -21,7 +21,8 @@ WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
                                                 ' days'),
                                         (SELECT 'weekday ' || strftime('%w', tmp.txDate))
                            )
-                       WHEN 5 THEN DATE(tmp.txDate, '+1 years')
+                        WHEN 5 THEN DATE(tmp.txDate, '+1 months')
+                       WHEN 6 THEN DATE(tmp.txDate, '+1 years')
                        ELSE tmp.txDate
                        END
            ) AS nextTxDate,

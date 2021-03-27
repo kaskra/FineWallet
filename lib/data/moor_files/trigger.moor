@@ -1,5 +1,7 @@
-import 'views.moor';
-import 'tables.moor';
+import
+'views.moor';
+import
+'tables.moor';
 
 
 
@@ -7,25 +9,26 @@ CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterInsert
     AFTER INSERT
     ON baseTransactions
 BEGIN
-    INSERT INTO months (maxBudget, firstDate, lastDate)
-    WITH dates(txDate, recType, until) AS (
-        SELECT DATE(t.date), t.recurrenceType, DATE(t.until)
-        FROM baseTransactions t
-        UNION
-        SELECT (SELECT CASE dates.recType
-                           WHEN 1 THEN dates.txDate
-                           WHEN 2 THEN DATE(dates.txDate, '+1 days')
-                           WHEN 3 THEN DATE(dates.txDate, '+7 days')
-                           WHEN 4 THEN DATE(dates.txDate, '+1 month', 'start of month',
-                                            (SELECT '+' ||
-                                                    CAST(((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
-                                                    ' days'),
-                                            (SELECT 'weekday ' || strftime('%w', dates.txDate))
-                               )
-                           WHEN 5 THEN DATE(dates.txDate, '+1 years')
-                           ELSE dates.txDate
-                           END
-               ) AS nextTxDate,
+INSERT INTO months (maxBudget, firstDate, lastDate)
+WITH dates(txDate, recType, until) AS (
+    SELECT DATE (t.date), t.recurrenceType, DATE (t.until)
+FROM baseTransactions t
+UNION
+SELECT (SELECT CASE dates.recType
+                   WHEN 1 THEN dates.txDate
+                   WHEN 2 THEN DATE (dates.txDate, '+1 days')
+    WHEN 3 THEN DATE (dates.txDate, '+7 days')
+    WHEN 4 THEN DATE (dates.txDate, '+1 month', 'start of month',
+    (SELECT '+' ||
+    CAST (((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
+    ' days'),
+    (SELECT 'weekday ' || strftime('%w', dates.txDate))
+    )
+    WHEN 5 THEN DATE (tmp.txDate, '+1 months')
+    WHEN 6 THEN DATE (dates.txDate, '+1 years')
+    ELSE dates.txDate
+END
+) AS nextTxDate,
                recType,
                until
         FROM dates
@@ -35,39 +38,40 @@ BEGIN
              SELECT DISTINCT DATE(txDate, 'start of month'), DATE(txDate, 'start of month', '+1 month', '-1 days')
              FROM dates
          )
-    SELECT 0, DATE(firstD), DATE(lastD)
-    FROM firstLastDates
-    WHERE firstD NOT IN (SELECT firstDate FROM months);
+SELECT 0, DATE (firstD), DATE (lastD)
+FROM firstLastDates
+WHERE firstD NOT IN (SELECT firstDate FROM months);
 END;
 
 
 
 CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterUpdate
-    AFTER UPDATE
+    AFTER
+UPDATE
     ON baseTransactions
     WHEN old.date != new.date OR old.recurrenceType != new.recurrenceType OR old.until != new.until
 BEGIN
-    INSERT INTO months (maxBudget, firstDate, lastDate)
-    WITH dates(txDate, recType, until) AS (
-        SELECT DATE(t.date), t.recurrenceType, DATE(t.until)
-        FROM baseTransactions t
-        UNION
-        SELECT (SELECT CASE dates.recType
-                           WHEN 1 THEN dates.txDate
-                           WHEN 2 THEN DATE(dates.txDate, '+1 days')
-                           WHEN 3 THEN DATE(dates.txDate, '+7 days')
-                           -- TODO this up to 4th occurence, then id=5 last occurence
-                           WHEN 4 THEN DATE(dates.txDate, '+1 month', 'start of month',
-                                            (SELECT '+' ||
-                                                    CAST(((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
-                                                    ' days'),
-                                            (SELECT 'weekday ' || strftime('%w', dates.txDate))
-                               )
-                           -- TODO yearly at the same date
-                           WHEN 5 THEN DATE(dates.txDate, '+1 years')
-                           ELSE dates.txDate
-                           END
-               ) AS nextTxDate,
+INSERT INTO months (maxBudget, firstDate, lastDate)
+WITH dates(txDate, recType, until) AS (
+    SELECT DATE (t.date), t.recurrenceType, DATE (t.until)
+FROM baseTransactions t
+UNION
+SELECT (SELECT CASE dates.recType
+                   WHEN 1 THEN dates.txDate
+                   WHEN 2 THEN DATE (dates.txDate, '+1 days')
+    WHEN 3 THEN DATE (dates.txDate, '+7 days')
+       -- TODO this up to 4th occurence, then id=5 last occurence
+    WHEN 4 THEN DATE (dates.txDate, '+1 months', 'start of month',
+    (SELECT '+' ||
+    CAST (((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
+    ' days'),
+    (SELECT 'weekday ' || strftime('%w', dates.txDate))
+    )
+    WHEN 5 THEN DATE (tmp.txDate, '+1 months')
+    WHEN 6 THEN DATE (dates.txDate, '+1 years')
+    ELSE dates.txDate
+END
+) AS nextTxDate,
                recType,
                until
         FROM dates
@@ -77,7 +81,7 @@ BEGIN
              SELECT DISTINCT DATE(txDate, 'start of month'), DATE(txDate, 'start of month', '+1 month', '-1 days')
              FROM dates
          )
-    SELECT 0, DATE(firstD), DATE(lastD)
-    FROM firstLastDates
-    WHERE firstD NOT IN (SELECT firstDate FROM months);
+SELECT 0, DATE (firstD), DATE (lastD)
+FROM firstLastDates
+WHERE firstD NOT IN (SELECT firstDate FROM months);
 END;
