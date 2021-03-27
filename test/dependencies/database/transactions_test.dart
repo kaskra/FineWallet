@@ -106,7 +106,7 @@ final yearly = BaseTransaction(
   subcategoryId: 18,
   monthId: null,
   currencyId: 2,
-  recurrenceType: 5,
+  recurrenceType: 6,
   until: DateTime(2021, 3, 21).add(const Duration(days: 400)),
 );
 

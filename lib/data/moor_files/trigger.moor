@@ -24,7 +24,7 @@ SELECT (SELECT CASE dates.recType
     ' days'),
     (SELECT 'weekday ' || strftime('%w', dates.txDate))
     )
-    WHEN 5 THEN DATE (tmp.txDate, '+1 months')
+    WHEN 5 THEN DATE (dates.txDate, '+1 months')
     WHEN 6 THEN DATE (dates.txDate, '+1 years')
     ELSE dates.txDate
 END
@@ -67,7 +67,7 @@ SELECT (SELECT CASE dates.recType
     ' days'),
     (SELECT 'weekday ' || strftime('%w', dates.txDate))
     )
-    WHEN 5 THEN DATE (tmp.txDate, '+1 months')
+    WHEN 5 THEN DATE (dates.txDate, '+1 months')
     WHEN 6 THEN DATE (dates.txDate, '+1 years')
     ELSE dates.txDate
 END
