@@ -1,6 +1,6 @@
 import 'tables.moor';
 
-allMonths: SELECT * FROM months ORDER BY firstDate ASC;
-monthIdByDate: SELECT id FROM months WHERE :date <= lastDate AND :date >= firstDate;
-monthByDate: SELECT * FROM months WHERE :date <= lastDate AND :date >= firstDate;
-monthById: SELECT * FROM months WHERE id=:id;
+_allMonths: SELECT * FROM months ORDER BY firstDate ASC;
+_monthIdByDate: SELECT id FROM months WHERE :date <= lastDate AND :date >= firstDate;
+_monthByDate: SELECT * FROM months WHERE :date <= lastDate AND :date >= firstDate;
+_monthById: SELECT * FROM months WHERE id=:id;

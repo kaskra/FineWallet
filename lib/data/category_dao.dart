@@ -33,13 +33,13 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   CategoryDao(this.db) : super(db);
 
-  Future<List<Category>> getAllCategories() => allCategories().get();
+  Future<List<Category>> getAllCategories() => _allCategories().get();
 
   Future<List<Category>> getAllCategoriesByType({@required bool isExpense}) =>
-      categoriesByType(isExpense).get();
+      _categoriesByType(isExpense).get();
 
   Stream<List<Category>> watchAllCategoriesByType({@required bool isExpense}) =>
-      categoriesByType(isExpense).watch();
+      _categoriesByType(isExpense).watch();
 
   Future insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
@@ -53,20 +53,20 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future deleteCategoryWithSubcategories(int id) {
     return transaction(() async {
       // await (delete(subcategories)..where((s) => s.categoryId.equals(id))).go();
-      deleteCustomCategory(id);
+      _deleteCustomCategory(id);
     });
   }
 
-  Future<List<Subcategory>> getAllSubcategories() => allSubcategories().get();
+  Future<List<Subcategory>> getAllSubcategories() => _allSubcategories().get();
 
   Future<List<Subcategory>> getAllSubcategoriesOf(int id) =>
-      allSubcategoriesOfCategory(id).get();
+      _allSubcategoriesOfCategory(id).get();
 
   Stream<List<Subcategory>> watchAllSubcategoriesOf(int id) =>
-      allSubcategoriesOfCategory(id).watch();
+      _allSubcategoriesOfCategory(id).watch();
 
   Stream<List<Subcategory>> watchAllSubcategories() =>
-      allSubcategories().watch();
+      _allSubcategories().watch();
 
   Future insertSubcategory(Insertable<Subcategory> subcategory) =>
       into(subcategories).insert(subcategory);

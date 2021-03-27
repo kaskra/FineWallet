@@ -1,8 +1,8 @@
 import 'tables.moor';
 
-allCategories: SELECT * FROM categories;
-categoriesByType: SELECT * FROM categories WHERE isExpense=:isExpense;
-deleteCustomCategory: DELETE FROM categories WHERE id=:id AND NOT isPreset;
+_allCategories: SELECT * FROM categories;
+_categoriesByType: SELECT * FROM categories WHERE isExpense=:isExpense;
+_deleteCustomCategory: DELETE FROM categories WHERE id=:id AND NOT isPreset;
 
-allSubcategories: SELECT * FROM subcategories;
-allSubcategoriesOfCategory: SELECT * FROM subcategories WHERE categoryId=:categoryId;
+_allSubcategories: SELECT * FROM subcategories;
+_allSubcategoriesOfCategory: SELECT * FROM subcategories WHERE categoryId=:categoryId;

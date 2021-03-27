@@ -2269,7 +2269,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     return customSelect(
         'SELECT CAST(strftime(\'%s\', \'now\', \'localtime\') AS INT) * 1000 AS timestamp',
         variables: [],
-        readsFrom: {}).map((QueryRow row) => row.readInt('timestamp'));
+        readsFrom: {}).map((QueryRow row) => row.read<int>('timestamp'));
   }
 
   @override

@@ -18,9 +18,9 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
 
   CurrencyDao(this.db) : super(db);
 
-  Future<List<Currency>> getAllCurrencies() => allCurrencies().get();
+  Future<List<Currency>> getAllCurrencies() => _allCurrencies().get();
 
-  Stream<List<Currency>> watchAllCurrencies() => allCurrencies().watch();
+  Stream<List<Currency>> watchAllCurrencies() => _allCurrencies().watch();
 
   Future insertCurrency(Insertable<Currency> currency) =>
       into(currencies).insert(currency);
@@ -31,11 +31,11 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
   Future deleteCurrency(Insertable<Currency> currency) =>
       delete(currencies).delete(currency);
 
-  Future<Currency> getCurrencyById(int id) => currencyById(id).getSingle();
+  Future<Currency> getCurrencyById(int id) => _currencyById(id).getSingle();
 
-  Future<Currency> getUserCurrency() => userCurrency().getSingleOrNull();
+  Future<Currency> getUserCurrency() => _userCurrency().getSingleOrNull();
 
-  Stream<Currency> watchUserCurrency() => userCurrency().watchSingleOrNull();
+  Stream<Currency> watchUserCurrency() => _userCurrency().watchSingleOrNull();
 
   /// Updates the currencies table with new exchange rates.
   ///

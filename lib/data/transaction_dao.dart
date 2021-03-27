@@ -52,7 +52,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   /// Should use [watchTransactionsWithFilter] instead, when needed to
   /// display transactions.
-  Future<List<TransactionsResult>> getAllTransactions() => transactions().get();
+  Future<List<TransactionsResult>> getAllTransactions() =>
+      _transactions().get();
 
   /// Inserts a [db_file.Transaction] into the transactions table.
   ///
@@ -65,24 +66,36 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   /// - [db_file.Transaction] that should be inserted.
   ///
-  Future insertTransaction(BaseTransaction tx) async {
-    // Setup: Get next id set original id to that.
-    // Prevents SELECT in SQL-transaction.
+  Future<int> insertTransaction(BaseTransaction tx) => _upsertTransaction(tx);
 
-    // TODO input by AddPage DataType
-    return transaction(() async {
+  /// Updates the transaction and its recurrences in the database.
+  /// After updating, all months are synced to make sure that the max budget is
+  /// still up-to-date.
+  ///
+  /// Input
+  /// -----
+  /// - [db_file.Transaction] that should be updated.
+  ///
+  Future<int> updateTransaction(BaseTransaction tx) async {
+    final id = await _upsertTransaction(tx, update: true);
+    await db.monthDao.batchedSyncMonths();
+    return id;
+  }
+
+  Future<int> _upsertTransaction(BaseTransaction tx, {bool update = false}) {
+    return transaction<int>(() async {
+      // TODO do all of this in sql?
+      final int monthId = await db.monthDao.createOrGetMonth(tx.date);
+
       final Currency currency =
           await db.currencyDao.getCurrencyById(tx.currencyId);
-      print("Search for month id");
-      final int monthId = await db.monthDao.createOrGetMonth(tx.date);
-      print("Search for month id after");
-
       final double exchangeRate = currency?.exchangeRate ?? 1.0;
       final originalAmount = tx.amount;
       final amount = tx.amount * exchangeRate;
 
-      await into(baseTransactions).insert(
+      return into(baseTransactions).insertOnConflictUpdate(
         BaseTransactionsCompanion.insert(
+          id: update ? Value(tx.id) : const Value.absent(),
           amount: amount,
           originalAmount: originalAmount,
           exchangeRate: exchangeRate,
@@ -99,47 +112,17 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  /// Updates the transaction and its recurrences in the database.
-  /// After updating, all months are synced to make sure that the max budget is
-  /// still up-to-date.
-  ///
-  /// Input
-  /// -----
-  /// - [db_file.Transaction] that should be updated.
-  ///
-  Future updateTransaction(BaseTransaction tx) async {
-    await transaction(() async {
-      // final tempTx = db_file.Transaction(
-      //     id: null,
-      //     amount: tx.amount,
-      //     originalAmount: tx.originalAmount,
-      //     exchangeRate: tx.exchangeRate,
-      //     monthId: tx.monthId,
-      //     date: tx.date,
-      //     subcategoryId: tx.subcategoryId,
-      //     isExpense: tx.isExpense,
-      //     isRecurring: tx.isRecurring,
-      //     until: tx.until,
-      //     recurrenceType: tx.recurrenceType,
-      //     currencyId: tx.currencyId,
-      //     label: tx.label);
-      // await insertTransaction(tempTx);
-      // TODO
-    });
-    return db.monthDao.batchedSyncMonths();
-  }
-
-  Future deleteTransaction(BaseTransaction transaction) =>
+  Future deleteTransaction(TransactionsResult transaction) =>
       deleteTransactionById(transaction.id);
 
   Future deleteTransactionById(int id) async {
-    await deleteTxById(id);
+    await _deleteTxById(id);
     await db.monthDao.batchedSyncMonths();
   }
 
   Future deleteTransactionsByIds(List<int> transactionIds) async {
     await transaction(() async {
-      deleteTxsByIds(transactionIds);
+      _deleteTxsByIds(transactionIds);
       await db.monthDao.batchedSyncMonths();
     });
   }
@@ -148,7 +131,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// The stream is updated every time the database is changed.
   Stream<double> watchTotalSavings() {
     final currentDate = today().getFirstDateOfMonth();
-    return totalSavings(currentDate.toSql()).watchSingle();
+    return _totalSavings(currentDate.toSql()).watchSingle();
   }
 
   /// Returns a [Stream] that watches the transactions table.
@@ -166,7 +149,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         txParser.parse(tableName: "t", useInCustomExp: true);
     final parsedSettings = CustomExpression<bool>(settingsContent);
 
-    return transactionsWithFilter(predicate: parsedSettings).watch();
+    return _transactionsWithFilter(predicate: parsedSettings).watch();
   }
 
   /// Returns a [Stream] of the monthly income.
@@ -180,7 +163,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the monthly income.
   ///
   Stream<double> watchMonthlyIncome(DateTime date) =>
-      monthlyIncome(date.toSql()).watchSingle();
+      _monthlyIncome(date.toSql()).watchSingle();
 
   /// Returns a [Stream] of summed up monthly expenses grouped and ordered by day.
   ///
@@ -194,7 +177,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   Stream<List<ExpensesPerDayInMonthResult>> watchExpensesPerDayInMonth(
           DateTime dateInMonth) =>
-      expensesPerDayInMonth(dateInMonth.toSql()).watch();
+      _expensesPerDayInMonth(dateInMonth.toSql()).watch();
 
   /// Returns a [Stream] of categories and their corresponding
   /// summed up transactions.
@@ -209,19 +192,20 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   Stream<List<SumTransactionsByCategoryResult>>
       watchSumOfTransactionsByCategories(TransactionFilterSettings settings) {
+    // TODO rework transactionFilterParser/Settings
     final parser = TransactionFilterParser(settings);
     final parsedSettings = CustomExpression<bool>(
         parser.parse(tableName: "t", useInCustomExp: true));
-    return sumTransactionsByCategory(predicate: parsedSettings).watch();
+    return _sumTransactionsByCategory(predicate: parsedSettings).watch();
   }
 
   /// Watches the latest non-recurrence transaction.
   Stream<NLatestTransactionsResult> watchLatestTransaction() =>
-      nLatestTransactions(1).watchSingle();
+      _nLatestTransactions(1).watchSingleOrNull();
 
   /// Watches the latest N non-recurrence transactions.
   Stream<List<NLatestTransactionsResult>> watchNLatestTransactions(int N) =>
-      nLatestTransactions(N).watch();
+      _nLatestTransactions(N).watch();
 
   /// Returns a [Stream] of the monthly budget.
   ///
@@ -238,7 +222,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchMonthlyBudget(DateTime date) =>
-      monthlyBudget(date.toSql()).watchSingle();
+      _monthlyBudget(date.toSql()).watchSingle();
 
   /// Returns a [Stream] of the daily budget.
   ///
@@ -255,7 +239,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchDailyBudget(DateTime date) =>
-      dailyBudget(date.toSql(), date.remainingDaysInMonth).watchSingle();
+      _dailyBudget(date.toSql(), date.remainingDaysInMonth).watchSingle();
 
   /// Returns all expenses of the last seven days grouped by date and summed up.
   ///
@@ -264,10 +248,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of a list of [LastWeeksTransactionsResult]s with a day's date
   /// epoch and the sum of its expenses.
   Stream<List<LastWeeksTransactionsResult>> watchLastWeeksTransactions() {
-    return lastWeeksTransactions().watch();
+    return _lastWeeksTransactions().watch();
   }
 
   Future<List<String>> getTransactionsLabels({bool isExpense}) {
-    return transactionsLabels(isExpense).get();
+    return _transactionsLabels(isExpense).get();
   }
 }

@@ -46,8 +46,11 @@ part 'moor_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase()
+  AppDatabase({QueryExecutor e})
       : super(LazyDatabase(() async {
+          if (e != null) {
+            return e;
+          }
           final dbFolder = await getDatabasesPath();
           final file = File(p.join(dbFolder, 'database.sqlite'));
           return VmDatabase(file, logStatements: true);
@@ -95,7 +98,8 @@ class AppDatabase extends _$AppDatabase {
           }
 
           // Check if in new month and update accordingly
-          await monthDao.checkLatestMonths();
+          // TODO do i need this?
+          // await monthDao.checkLatestMonths();
         },
       );
 

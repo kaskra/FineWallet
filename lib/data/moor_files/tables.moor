@@ -64,8 +64,4 @@ CREATE TABLE baseTransactions
 
 -- https://sqlite.org/lang_datefunc.html
 
--- --
--- -- -- TODO build in MAPPED BY DateConverter again --- test if makes more sense
--- --
-
 

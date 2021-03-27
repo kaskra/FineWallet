@@ -14,18 +14,18 @@ mixin _$CurrencyDaoMixin on DatabaseAccessor<AppDatabase> {
   Currencies get currencies => attachedDatabase.currencies;
   UserProfiles get userProfiles => attachedDatabase.userProfiles;
   BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
-  Selectable<Currency> allCurrencies() {
+  Selectable<Currency> _allCurrencies() {
     return customSelect('SELECT * FROM currencies ORDER BY abbrev ASC',
         variables: [], readsFrom: {currencies}).map(currencies.mapFromRow);
   }
 
-  Selectable<Currency> currencyById(int id) {
+  Selectable<Currency> _currencyById(int id) {
     return customSelect('SELECT * FROM currencies WHERE id=:id',
         variables: [Variable<int>(id)],
         readsFrom: {currencies}).map(currencies.mapFromRow);
   }
 
-  Selectable<Currency> userCurrency() {
+  Selectable<Currency> _userCurrency() {
     return customSelect(
         'SELECT currencies.* FROM currencies, userProfiles WHERE currencies.id = userProfiles.currencyId',
         variables: [],

@@ -14,18 +14,18 @@ mixin _$CategoryDaoMixin on DatabaseAccessor<AppDatabase> {
   Currencies get currencies => attachedDatabase.currencies;
   UserProfiles get userProfiles => attachedDatabase.userProfiles;
   BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
-  Selectable<Category> allCategories() {
+  Selectable<Category> _allCategories() {
     return customSelect('SELECT * FROM categories',
         variables: [], readsFrom: {categories}).map(categories.mapFromRow);
   }
 
-  Selectable<Category> categoriesByType(bool isExpense) {
+  Selectable<Category> _categoriesByType(bool isExpense) {
     return customSelect('SELECT * FROM categories WHERE isExpense=:isExpense',
         variables: [Variable<bool>(isExpense)],
         readsFrom: {categories}).map(categories.mapFromRow);
   }
 
-  Future<int> deleteCustomCategory(int id) {
+  Future<int> _deleteCustomCategory(int id) {
     return customUpdate(
       'DELETE FROM categories WHERE id=:id AND NOT isPreset',
       variables: [Variable<int>(id)],
@@ -34,13 +34,13 @@ mixin _$CategoryDaoMixin on DatabaseAccessor<AppDatabase> {
     );
   }
 
-  Selectable<Subcategory> allSubcategories() {
+  Selectable<Subcategory> _allSubcategories() {
     return customSelect('SELECT * FROM subcategories',
         variables: [],
         readsFrom: {subcategories}).map(subcategories.mapFromRow);
   }
 
-  Selectable<Subcategory> allSubcategoriesOfCategory(int categoryId) {
+  Selectable<Subcategory> _allSubcategoriesOfCategory(int categoryId) {
     return customSelect(
         'SELECT * FROM subcategories WHERE categoryId=:categoryId',
         variables: [Variable<int>(categoryId)],

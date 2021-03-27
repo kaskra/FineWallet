@@ -46,9 +46,9 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   MonthDao(this.db) : super(db);
 
-  Future<List<Month>> getAllMonths() => allMonths().get();
+  Future<List<Month>> getAllMonths() => _allMonths().get();
 
-  Stream<List<Month>> watchAllMonths() => allMonths().watch();
+  Stream<List<Month>> watchAllMonths() => _allMonths().watch();
 
   Future insertMonth(Insertable<Month> month) => into(months).insert(month);
 
@@ -57,17 +57,17 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
 
   Future<int> getMonthIdByDate(DateTime date) =>
-      monthIdByDate(date.toSql()).getSingleOrNull();
+      _monthIdByDate(date.toSql()).getSingleOrNull();
 
   Future<Month> getCurrentMonth() =>
-      monthByDate(today().toSql()).getSingleOrNull();
+      _monthByDate(today().toSql()).getSingleOrNull();
 
   Stream<Month> watchCurrentMonth() =>
-      monthByDate(today().toSql()).watchSingleOrNull();
+      _monthByDate(today().toSql()).watchSingleOrNull();
 
-  Future<Month> getMonthById(int id) => monthById(id).getSingleOrNull();
+  Future<Month> getMonthById(int id) => _monthById(id).getSingleOrNull();
 
-  Stream<Month> watchMonthById(int id) => monthById(id).watchSingleOrNull();
+  Stream<Month> watchMonthById(int id) => _monthById(id).watchSingleOrNull();
 
   /// Returns every month id for which a (recursive) transaction is in the month.
   Future<List<int>> getMonthIdsFromTransaction(int txOriginalId) {
@@ -84,13 +84,13 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
     //       ..where((t) => t.monthId.equals(month.id))
     //       ..where((t) => t.isExpense.equals(false)))
     //     .get();
-    //
+    // // TODO still wandering why this is here
     // final double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
     // if (sumIncomes < month.maxBudget) {
     //   final tempMonth = month.copyWith(maxBudget: sumIncomes);
     //   return Future.value(tempMonth.toCompanion(true));
     // }
-    // return Future.value(month.toCompanion(true));
+    return Future.value(month.toCompanion(true));
   }
 
   Future batchedSyncMonths() async {

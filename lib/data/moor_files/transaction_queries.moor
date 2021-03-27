@@ -1,53 +1,105 @@
-import 'tables.moor';
-import 'views.moor';
+import
+'tables.moor';
+import
+'views.moor';
 
-transactions: SELECT * FROM fullTransactions;
-deleteTxById: DELETE FROM baseTransactions WHERE id=:id;
-deleteTxsByIds: DELETE FROM baseTransactions WHERE id IN :ids;
+_transactions:
+SELECT *
+FROM fullTransactions;
 
-totalSavings: SELECT (SELECT SUM(amount) FROM fullTransactions WHERE NOT isExpense AND date < :date) - (SELECT SUM(amount) FROM fullTransactions WHERE isExpense AND date < :date);
+_deleteTxById:
+DELETE
+FROM baseTransactions
+WHERE id = :id;
 
-transactionsWithFilter ($predicate = True): SELECT t.*, cc.**, s.**, c.**
-    FROM fullTransactions t, categories cc, subcategories s, currencies c
-    WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id AND $predicate
-    ORDER BY t.date DESC, t.id DESC;
+_deleteTxsByIds:
+DELETE
+FROM baseTransactions
+WHERE id IN :ids;
 
-monthlyIncome: SELECT SUM(t.amount) as income FROM fullTransactions t
-    WHERE NOT t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date);
+_totalSavings:
+SELECT (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -
+    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate)
+FROM months m
+WHERE m.firstDate <= :date AND m.lastDate >= :date;
 
-expensesPerDayInMonth: SELECT t.date, SUM(t.amount) AS expense FROM fullTransactions t
-    WHERE t.isExpense AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :dateInMonth AND m.lastDate >= :dateInMonth)
-    GROUP BY t.date
-    ORDER BY t.date ASC;
+_transactionsWithFilter ($predicate = True):
+SELECT t.*, cc.**, s.**, c.**
+FROM fullTransactions t,
+     categories cc,
+     subcategories s,
+     currencies c
+WHERE t.subcategoryId = s.id
+  AND t.currencyId = c.id
+  AND s.categoryId = cc.id
+  AND $predicate
+ORDER BY t.date DESC, t.id DESC;
 
-sumTransactionsByCategory ($predicate = True): SELECT c.**, SUM(amount) as sumAmount FROM fullTransactions t, categories c, subcategories s
-                           WHERE t.subcategoryId = s.id AND s.categoryId = c.id AND $predicate
-                           GROUP BY c.id;
+_monthlyIncome:
+SELECT ifnull(SUM(t.amount),0) as income
+FROM fullTransactions t
+WHERE NOT t.isExpense
+  AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date);
 
-nLatestTransactions: SELECT t.**, cc.**, s.**, c.** FROM baseTransactions t,categories cc, subcategories s, currencies c
-    WHERE t.subcategoryId = s.id AND t.currencyId = c.id AND s.categoryId = cc.id
-    ORDER BY t.id DESC LIMIT :N;
+_expensesPerDayInMonth:
+SELECT t.date, ifnull(SUM(t.amount),0) AS expense
+FROM fullTransactions t
+WHERE t.isExpense
+  AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :dateInMonth AND m.lastDate >= :dateInMonth)
+GROUP BY t.date
+ORDER BY t.date ASC;
 
-monthlyBudget: SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -
-                      (SELECT SUM(amount) FROM fullTransactions t
-                      WHERE t.isExpense
-                        AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date));
+_sumTransactionsByCategory ($predicate = True):
+SELECT c.**, ifnull(SUM(t.amount),0) as sumAmount
+FROM fullTransactions t,
+     categories c,
+     subcategories s
+WHERE t.subcategoryId = s.id
+  AND s.categoryId = c.id
+  AND $predicate
+GROUP BY c.id;
 
-dailyBudget(:remainingDays AS INT): WITH
+_nLatestTransactions:
+SELECT t.**, cc.**, s.**, c.**
+FROM baseTransactions t,
+     categories cc,
+     subcategories s,
+     currencies c
+WHERE t.subcategoryId = s.id
+  AND t.currencyId = c.id
+  AND s.categoryId = cc.id
+ORDER BY t.id DESC LIMIT :N;
+
+_monthlyBudget:
+SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -
+       (SELECT ifnull(SUM(t.amount),0)
+        FROM fullTransactions t
+        WHERE t.isExpense
+          AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date));
+
+_dailyBudget(:remainingDays AS INT): WITH
     budget(amount) AS (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),
-    monthlyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense
+    monthlyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM fullTransactions t WHERE t.isExpense
         AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)
-        AND t.date != :date AND (t.recurrenceType == 2 OR t.recurrenceType == 1)),
-    dailyExpenses(amount) AS (SELECT SUM(amount) FROM fullTransactions t WHERE t.isExpense
+        AND t.date != :date AND (t.recurrenceType = 2 OR t.recurrenceType = 1)),
+    dailyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM fullTransactions t WHERE t.isExpense
         AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date)
-        AND t.date = :date AND (t.recurrenceType == 2 OR t.recurrenceType == 1))
-    SELECT (b.amount - m.amount) / :remainingDays - d.amount FROM budget b, monthlyExpenses m, dailyExpenses d;
+        AND t.date = :date AND (t.recurrenceType = 2 OR t.recurrenceType = 1))
+SELECT (b.amount - m.amount) / :remainingDays - d.amount
+FROM budget b,
+     monthlyExpenses m,
+     dailyExpenses d;
 
-lastWeeksTransactions: SELECT date, SUM(amount) AS sumAmount FROM fullTransactions
-    WHERE isExpense AND date > DATE('now', '-7 days')
-    GROUP BY date
+_lastWeeksTransactions:
+SELECT date, ifnull(SUM(amount),0) AS sumAmount
+FROM fullTransactions
+WHERE isExpense AND date > DATE('now', '-7 days')
+GROUP BY date
     LIMIT 7;
 
-transactionsLabels: SELECT DISTINCT label FROM baseTransactions
-    WHERE isExpense=:isExpense AND NOT label = ''
-    ORDER BY label ASC;
+_transactionsLabels:
+SELECT DISTINCT label
+FROM baseTransactions
+WHERE isExpense = :isExpense
+  AND NOT label = ''
+ORDER BY label ASC;

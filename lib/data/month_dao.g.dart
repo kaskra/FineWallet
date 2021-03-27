@@ -14,26 +14,26 @@ mixin _$MonthDaoMixin on DatabaseAccessor<AppDatabase> {
   Currencies get currencies => attachedDatabase.currencies;
   UserProfiles get userProfiles => attachedDatabase.userProfiles;
   BaseTransactions get baseTransactions => attachedDatabase.baseTransactions;
-  Selectable<Month> allMonths() {
+  Selectable<Month> _allMonths() {
     return customSelect('SELECT * FROM months ORDER BY firstDate ASC',
         variables: [], readsFrom: {months}).map(months.mapFromRow);
   }
 
-  Selectable<int> monthIdByDate(String date) {
+  Selectable<int> _monthIdByDate(String date) {
     return customSelect(
         'SELECT id FROM months WHERE :date <= lastDate AND :date >= firstDate',
         variables: [Variable<String>(date)],
-        readsFrom: {months}).map((QueryRow row) => row.readInt('id'));
+        readsFrom: {months}).map((QueryRow row) => row.read<int>('id'));
   }
 
-  Selectable<Month> monthByDate(String date) {
+  Selectable<Month> _monthByDate(String date) {
     return customSelect(
         'SELECT * FROM months WHERE :date <= lastDate AND :date >= firstDate',
         variables: [Variable<String>(date)],
         readsFrom: {months}).map(months.mapFromRow);
   }
 
-  Selectable<Month> monthById(int id) {
+  Selectable<Month> _monthById(int id) {
     return customSelect('SELECT * FROM months WHERE id=:id',
         variables: [Variable<int>(id)],
         readsFrom: {months}).map(months.mapFromRow);

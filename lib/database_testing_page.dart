@@ -14,7 +14,7 @@ class DatabaseTestingPage extends StatefulWidget {
 class _DatabaseTestingPageState extends State<DatabaseTestingPage> {
   void transactionsResultToString(TransactionsResult tx) {
     print('TransactionsResult{id: ${tx.id},'
-        ' amount: ${tx.id}, '
+        ' amount: ${tx.amount}, '
         'originalAmount: ${tx.originalAmount}, '
         'exchangeRate: ${tx.exchangeRate}, '
         'isExpense: ${tx.isExpense}, '
@@ -100,6 +100,7 @@ class _DatabaseTestingPageState extends State<DatabaseTestingPage> {
         for (final t in txs) {
           transactionsResultToString(t);
         }
+        print(txs.length);
       },
       child: const Text("Read txs"),
     );
@@ -109,37 +110,76 @@ class _DatabaseTestingPageState extends State<DatabaseTestingPage> {
     return TextButton(
         onPressed: () {
           final daily = BaseTransaction(
-              id: null,
-              amount: 10,
-              originalAmount: 10,
-              exchangeRate: null,
-              isExpense: true,
-              date: DateTime.now(),
-              label: "Mittagessen",
-              subcategoryId: 12,
-              monthId: null,
-              currencyId: 2,
-              recurrenceType: 2,
-              until: DateTime.now().add(const Duration(days: 8)));
+            id: null,
+            amount: 10,
+            originalAmount: 10,
+            exchangeRate: null,
+            isExpense: true,
+            date: DateTime.now(),
+            label: "Mittagessen",
+            subcategoryId: 12,
+            monthId: null,
+            currencyId: 2,
+            recurrenceType: 2,
+            until: DateTime.now().add(const Duration(days: 8)),
+          );
           Provider.of<AppDatabase>(context, listen: false)
               .transactionDao
               .insertTransaction(daily);
 
-          // final weekly = BaseTransaction(
-          //     id: null,
-          //     amount: 21,
-          //     originalAmount: 21,
-          //     exchangeRate: null,
-          //     isExpense: true,
-          //     date: DateTime.now(),
-          //     label: "Alkohol",
-          //     subcategoryId: 18,
-          //     monthId: null,
-          //     currencyId: 2);
-          // Provider.of<AppDatabase>(context, listen: false)
-          //     .transactionDao
-          //     .insertTransaction(
-          //         weekly, 3, DateTime.now().add(const Duration(days: 15)));
+          final weekly = BaseTransaction(
+            id: null,
+            amount: 21,
+            originalAmount: 21,
+            exchangeRate: null,
+            isExpense: true,
+            date: DateTime.now(),
+            label: "Paaartyy",
+            subcategoryId: 18,
+            monthId: null,
+            currencyId: 2,
+            recurrenceType: 3,
+            until: DateTime.now().add(const Duration(days: 15)),
+          );
+          Provider.of<AppDatabase>(context, listen: false)
+              .transactionDao
+              .insertTransaction(weekly);
+
+          final monthly = BaseTransaction(
+            id: null,
+            amount: 4.5,
+            originalAmount: 4.5,
+            exchangeRate: null,
+            isExpense: true,
+            date: DateTime.now(),
+            label: "Netflix",
+            subcategoryId: 18,
+            monthId: null,
+            currencyId: 2,
+            recurrenceType: 4,
+            until: DateTime.now().add(const Duration(days: 70)),
+          );
+          Provider.of<AppDatabase>(context, listen: false)
+              .transactionDao
+              .insertTransaction(monthly);
+
+          final yearly = BaseTransaction(
+            id: null,
+            amount: 69,
+            originalAmount: 69,
+            exchangeRate: null,
+            isExpense: true,
+            date: DateTime.now(),
+            label: "Amazon",
+            subcategoryId: 18,
+            monthId: null,
+            currencyId: 2,
+            recurrenceType: 5,
+            until: DateTime.now().add(const Duration(days: 400)),
+          );
+          Provider.of<AppDatabase>(context, listen: false)
+              .transactionDao
+              .insertTransaction(yearly);
         },
         child: const Text("Add recurring txs"));
   }
