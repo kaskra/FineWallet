@@ -6,17 +6,23 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/providers.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/database_testing_page.dart';
 import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/provider_setup.dart';
 import 'package:FineWallet/src/add_page/page.dart';
+import 'package:FineWallet/src/history_page/page.dart';
+import 'package:FineWallet/src/monthly_reports_page/page.dart';
+import 'package:FineWallet/src/overview_page/page.dart';
+import 'package:FineWallet/src/profile_page/page.dart';
 import 'package:FineWallet/src/settings_page/page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -79,58 +85,58 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // bool _showBottomBar = true;
-  // List<Widget> _children;
+  bool _showBottomBar = true;
+  List<Widget> _children;
 
   bool _isBudgetLoaded = false;
   bool _isLocalizationLoaded = false;
 
-  // Widget _buildBottomBar() {
-  //   return FloatingActionButtonBottomBar(
-  //     unselectedColor: Theme.of(context).colorScheme.onSecondary,
-  //     selectedColor: Theme.of(context).colorScheme.onPrimary,
-  //     items: [
-  //       FloatingActionButtonBottomAppItem(
-  //           iconData: Icons.person, text: LocaleKeys.nav_me.tr()),
-  //       FloatingActionButtonBottomAppItem(
-  //           iconData: Icons.equalizer, text: LocaleKeys.nav_statistics.tr()),
-  //       FloatingActionButtonBottomAppItem(disabled: true),
-  //       FloatingActionButtonBottomAppItem(
-  //           iconData: Icons.home, text: LocaleKeys.nav_home.tr()),
-  //       FloatingActionButtonBottomAppItem(
-  //         iconData: Icons.list,
-  //         text: LocaleKeys.nav_history.tr(),
-  //       ),
-  //     ],
-  //     onTabSelected: (int index) {
-  //       if (index !=
-  //           Provider.of<NavigationNotifier>(context, listen: false).page) {
-  //         Provider.of<SelectionModeNotifier>(context, listen: false)
-  //             .setMode(SelectionMode.off);
-  //         Provider.of<NavigationNotifier>(context, listen: false)
-  //             .setPage(index);
-  //       }
-  //     },
-  //     selectedIndex: Provider.of<NavigationNotifier>(context).page,
-  //     isVisible: _showBottomBar,
-  //   );
-  // }
+  Widget _buildBottomBar() {
+    return FloatingActionButtonBottomBar(
+      unselectedColor: Theme.of(context).colorScheme.onSecondary,
+      selectedColor: Theme.of(context).colorScheme.onPrimary,
+      items: [
+        FloatingActionButtonBottomAppItem(
+            iconData: Icons.person, text: LocaleKeys.nav_me.tr()),
+        FloatingActionButtonBottomAppItem(
+            iconData: Icons.equalizer, text: LocaleKeys.nav_statistics.tr()),
+        FloatingActionButtonBottomAppItem(disabled: true),
+        FloatingActionButtonBottomAppItem(
+            iconData: Icons.home, text: LocaleKeys.nav_home.tr()),
+        FloatingActionButtonBottomAppItem(
+          iconData: Icons.list,
+          text: LocaleKeys.nav_history.tr(),
+        ),
+      ],
+      onTabSelected: (int index) {
+        if (index !=
+            Provider.of<NavigationNotifier>(context, listen: false).page) {
+          Provider.of<SelectionModeNotifier>(context, listen: false)
+              .setMode(SelectionMode.off);
+          Provider.of<NavigationNotifier>(context, listen: false)
+              .setPage(index);
+        }
+      },
+      selectedIndex: Provider.of<NavigationNotifier>(context).page,
+      isVisible: _showBottomBar,
+    );
+  }
 
-  // PreferredSizeWidget _buildDefaultAppBar() => AppBar(
-  //       centerTitle: isAppBarCentered,
-  //       elevation: appBarElevation,
-  //       backgroundColor:
-  //           Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-  //       title: const Text("FineWallet"),
-  //       actions: <Widget>[
-  //         IconButton(
-  //           icon: const Icon(Icons.settings),
-  //           onPressed: () {
-  //             Navigator.pushNamed(context, "/settings");
-  //           },
-  //         )
-  //       ],
-  //     );
+  PreferredSizeWidget _buildDefaultAppBar() => AppBar(
+        centerTitle: isAppBarCentered,
+        elevation: appBarElevation,
+        backgroundColor:
+            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
+        title: const Text("FineWallet"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context, "/settings");
+            },
+          )
+        ],
+      );
 
   Future _loadBudget() async {
     if (_isBudgetLoaded) return;
@@ -173,13 +179,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loadPages() {
-    // _children = [
-    //   const ProfilePage(),
-    //   const MonthlyReportsPage(),
-    //   const SizedBox(),
-    //   const OverviewPage(),
-    //   HistoryPage(showFilters: UserSettings.getShowFilterSettings()),
-    // ];
+    _children = [
+      const ProfilePage(),
+      const MonthlyReportsPage(),
+      const SizedBox(),
+      const OverviewPage(),
+      HistoryPage(showFilters: UserSettings.getShowFilterSettings()),
+    ];
   }
 
   Future _initStates() async {
@@ -189,24 +195,24 @@ class _MyHomePageState extends State<MyHomePage> {
     await Future.delayed(const Duration(seconds: 5));
   }
 
-  // PreferredSizeWidget _chooseAppBar(BuildContext context) {
-  //   return Provider.of<SelectionModeNotifier>(context).isOn
-  //       ? null
-  //       : _buildDefaultAppBar();
-  // }
+  PreferredSizeWidget _chooseAppBar(BuildContext context) {
+    return Provider.of<SelectionModeNotifier>(context).isOn
+        ? null
+        : _buildDefaultAppBar();
+  }
 
   bool _isInitialized() {
     return _isLocalizationLoaded && _isBudgetLoaded;
   }
 
-  // Widget _chooseFloatingActionButton(BuildContext context) {
-  //   return MediaQuery.of(context).viewInsets.bottom >= 50
-  //       ? const SizedBox()
-  //       : SlidingButtonMenu(
-  //           onMenuFunction: _addTransaction,
-  //           tapCallback: _navCallback,
-  //         );
-  // }
+  Widget _chooseFloatingActionButton(BuildContext context) {
+    return MediaQuery.of(context).viewInsets.bottom >= 50
+        ? const SizedBox()
+        : SlidingButtonMenu(
+            onMenuFunction: _addTransaction,
+            tapCallback: _navCallback,
+          );
+  }
 
   SlideTransition transition(
       BuildContext context, Animation<double> animation, Widget child) {
@@ -226,19 +232,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // void _addTransaction(int leftRight) {
-  //   if (leftRight == -1) {
-  //     Navigator.pushNamed(context, "/income");
-  //   } else if (leftRight == 1) {
-  //     Navigator.pushNamed(context, "/expense");
-  //   }
-  // }
-  //
-  // void _navCallback(bool showNavBar) {
-  //   setState(() {
-  //     _showBottomBar = showNavBar;
-  //   });
-  // }
+  void _addTransaction(int leftRight) {
+    if (leftRight == -1) {
+      Navigator.pushNamed(context, "/income");
+    } else if (leftRight == 1) {
+      Navigator.pushNamed(context, "/expense");
+    }
+  }
+
+  void _navCallback(bool showNavBar) {
+    setState(() {
+      _showBottomBar = showNavBar;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,27 +256,26 @@ class _MyHomePageState extends State<MyHomePage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingPage();
         } else {
-          return const DatabaseTestingPage();
-          // return Scaffold(
-          //   appBar: _chooseAppBar(context),
-          //   bottomNavigationBar: _buildBottomBar(),
-          //   body: WillPopScope(
-          //     onWillPop: () async {
-          //       Provider.of<NavigationNotifier>(context, listen: false)
-          //           .goBack();
-          //       return false;
-          //     },
-          //     child: AnimatedSwitcher(
-          //       transitionBuilder: (child, animation) =>
-          //           transition(context, animation, child),
-          //       duration: const Duration(milliseconds: 150),
-          //       child: _children[Provider.of<NavigationNotifier>(context).page],
-          //     ),
-          //   ),
-          //   floatingActionButtonLocation:
-          //       FloatingActionButtonLocation.centerDocked,
-          //   floatingActionButton: _chooseFloatingActionButton(context),
-          // );
+          return Scaffold(
+            appBar: _chooseAppBar(context),
+            bottomNavigationBar: _buildBottomBar(),
+            body: WillPopScope(
+              onWillPop: () async {
+                Provider.of<NavigationNotifier>(context, listen: false)
+                    .goBack();
+                return false;
+              },
+              child: AnimatedSwitcher(
+                transitionBuilder: (child, animation) =>
+                    transition(context, animation, child),
+                duration: const Duration(milliseconds: 150),
+                child: _children[Provider.of<NavigationNotifier>(context).page],
+              ),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: _chooseFloatingActionButton(context),
+          );
         }
       },
     );
