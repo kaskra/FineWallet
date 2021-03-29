@@ -10,13 +10,12 @@ final m1 = MonthsCompanion.insert(
     lastDate: DateTime(2020, 5, 30),
     maxBudget: const Value(42));
 
-void main() {
+void testMonths() {
   AppDatabase database;
 
   setUp(() {
     database = AppDatabase(e: VmDatabase.memory());
   });
-
   tearDown(() async {
     await database.close();
   });
