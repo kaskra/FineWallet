@@ -1,6 +1,37 @@
-import 'tables.moor';
+import
+'tables.moor';
+import
+'views.moor';
 
-_allMonths: SELECT * FROM months ORDER BY firstDate ASC;
-_monthIdByDate: SELECT id FROM months WHERE :date <= lastDate AND :date >= firstDate;
-_monthByDate: SELECT * FROM months WHERE :date <= lastDate AND :date >= firstDate;
-_monthById: SELECT * FROM months WHERE id=:id;
+_allMonths:
+    SELECT *
+    FROM months
+    ORDER BY firstDate ASC;
+
+_monthIdByDate:
+    SELECT id
+    FROM months
+    WHERE :date <= lastDate
+      AND :date >= firstDate;
+
+_monthByDate:
+    SELECT *
+    FROM months
+    WHERE :date <= lastDate
+      AND :date >= firstDate;
+
+_monthById:
+    SELECT *
+    FROM months
+    WHERE id = :id;
+
+
+_syncMaxBudgetFromIncome:
+WITH maxBudgets(monthId, budget) AS (SELECT m.id, IFNULL(SUM(amount),0)
+    FROM months m LEFT OUTER JOIN (SELECT * FROM fullTransactions WHERE NOT isExpense) t
+    ON m.id = t.monthId
+    GROUP BY m.id)
+UPDATE months
+SET maxBudget = (SELECT budget FROM maxBudgets WHERE months.id = monthId)
+WHERE EXISTS(SELECT budget FROM maxBudgets WHERE months.id = monthId)
+  AND maxBudget > (SELECT budget FROM maxBudgets WHERE months.id = monthId);

@@ -5,16 +5,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull, isNotNull;
 
+import 'transactions_test.dart';
+
 final m1 = MonthsCompanion.insert(
     firstDate: DateTime(2020, 5),
     lastDate: DateTime(2020, 5, 30),
     maxBudget: const Value(42));
 
+void main() {
+  testMonths();
+}
+
 void testMonths() {
   AppDatabase database;
 
   setUp(() {
-    database = AppDatabase(e: VmDatabase.memory());
+    database = AppDatabase(e: VmDatabase.memory(logStatements: false));
   });
   tearDown(() async {
     await database.close();
@@ -216,6 +222,42 @@ void testMonths() {
       final stream = database.monthDao.watchCurrentMonth(mockClock.now);
       final expectation = expectLater(stream, emits(isNull));
       await expectation;
+    });
+  });
+
+  group('syncMonthlyMaxBudget', () {
+    test('max budget is capped by sum of income in month', () async {
+      final id = await database.monthDao
+          .insertMonth(m1.copyWith(maxBudget: const Value(150)));
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 15)));
+
+      await database.monthDao.restrictMaxBudgetByMonthlyIncome();
+
+      final m = await database.monthDao.getMonthById(id);
+      expect(m.maxBudget, 100);
+    });
+
+    test('max budget not capped if income sum is above max budget', () async {
+      final id = await database.monthDao
+          .insertMonth(m1.copyWith(maxBudget: const Value(75)));
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 15)));
+
+      await database.monthDao.restrictMaxBudgetByMonthlyIncome();
+
+      final m = await database.monthDao.getMonthById(id);
+      expect(m.maxBudget, 75);
+    });
+
+    test('max budget capped to zero if no income', () async {
+      final id = await database.monthDao
+          .insertMonth(m1.copyWith(maxBudget: const Value(100)));
+
+      await database.monthDao.restrictMaxBudgetByMonthlyIncome();
+
+      final m = await database.monthDao.getMonthById(id);
+      expect(m.maxBudget, 0);
     });
   });
 }

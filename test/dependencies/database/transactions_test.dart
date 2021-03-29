@@ -94,6 +94,10 @@ final yearly = BaseTransaction(
   until: DateTime(2021, 3, 21).add(const Duration(days: 400)),
 );
 
+void main() {
+  testTransactions();
+}
+
 void testTransactions() {
   AppDatabase database;
 

@@ -74,42 +74,8 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Stream<Month> watchMonthById(int id) => _monthById(id).watchSingleOrNull();
 
-  /// Returns every month id for which a (recursive) transaction is in the month.
-  Future<List<int>> getMonthIdsFromTransaction(int txOriginalId) {
-    // return (selectOnly(transactions, distinct: true)
-    //       ..addColumns([transactions.monthId])
-    //       ..where(transactions.originalId.equals(txOriginalId)))
-    //     .map((r) => r.read(transactions.monthId))
-    //     .get();
-  }
-
-  Future<Insertable<Month>> _batchedSyncSingleMonth(
-      Month month, Batch batch) async {
-    // final txs = await (select(transactions)
-    //       ..where((t) => t.monthId.equals(month.id))
-    //       ..where((t) => t.isExpense.equals(false)))
-    //     .get();
-    // // TODO still wandering why this is here
-    // final double sumIncomes = txs.fold(0.0, (prev, next) => prev + next.amount);
-    // if (sumIncomes < month.maxBudget) {
-    //   final tempMonth = month.copyWith(maxBudget: sumIncomes);
-    //   return Future.value(tempMonth.toCompanion(true));
-    // }
-    return Future.value(month.toCompanion(true));
-  }
-
-  Future batchedSyncMonths() async {
-    final List<Month> allMonths = await getAllMonths();
-    await batch((batch) async {
-      batch.replaceAll(
-        months,
-        [
-          for (final Month m in allMonths)
-            await _batchedSyncSingleMonth(m, batch)
-        ],
-      );
-    });
-  }
+  Future<int> restrictMaxBudgetByMonthlyIncome() async =>
+      _syncMaxBudgetFromIncome();
 
   /// Check months after last recorded month to see whether any are missing.
   Future checkLatestMonths() async {

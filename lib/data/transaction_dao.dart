@@ -77,8 +77,9 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// - [db_file.Transaction] that should be updated.
   ///
   Future<int> updateTransaction(BaseTransaction tx) async {
+    // TODO flag to decide how to update
     final id = await _upsertTransaction(tx, update: true);
-    await db.monthDao.batchedSyncMonths();
+    await db.monthDao.restrictMaxBudgetByMonthlyIncome();
     return id;
   }
 
@@ -117,13 +118,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
 
   Future deleteTransactionById(int id) async {
     await _deleteTxById(id);
-    await db.monthDao.batchedSyncMonths();
+    await db.monthDao.restrictMaxBudgetByMonthlyIncome();
   }
 
   Future deleteTransactionsByIds(List<int> transactionIds) async {
     await transaction(() async {
-      _deleteTxsByIds(transactionIds);
-      await db.monthDao.batchedSyncMonths();
+      await _deleteTxsByIds(transactionIds);
+      await db.monthDao.restrictMaxBudgetByMonthlyIncome();
     });
   }
 
