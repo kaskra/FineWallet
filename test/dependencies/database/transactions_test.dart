@@ -1,26 +1,9 @@
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moor/ffi.dart';
-
-void transactionsResultToString(TransactionsResult tx) {
-  print('TransactionsResult{id: ${tx.id},'
-      ' amount: ${tx.amount}, '
-      'originalAmount: ${tx.originalAmount}, '
-      'exchangeRate: ${tx.exchangeRate}, '
-      'isExpense: ${tx.isExpense}, '
-      'date: ${tx.date}, '
-      'label: ${tx.label}, '
-      'subcategoryId: ${tx.subcategoryId}, '
-      'monthId: ${tx.monthId}, '
-      'currencyId: ${tx.currencyId}, '
-      'recurrenceType: ${tx.recurrenceType}, '
-      'until: ${tx.until}, '
-      'recurrenceName: ${tx.recurrenceName}}');
-}
 
 final onceTransactions = [
   BaseTransaction(
@@ -115,7 +98,7 @@ void main() {
   AppDatabase database;
 
   setUp(() {
-    database = AppDatabase(e: VmDatabase.memory(logStatements: false));
+    database = AppDatabase(e: VmDatabase.memory());
   });
   tearDown(() async {
     await database.close();
