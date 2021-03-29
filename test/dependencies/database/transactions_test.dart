@@ -1,4 +1,5 @@
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
+import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:flutter/foundation.dart';
@@ -43,7 +44,7 @@ final onceTransactions = [
     isExpense: true,
     date: DateTime(2021, 3, 21),
     label: "Kaffee",
-    subcategoryId: 17,
+    subcategoryId: 43,
     monthId: null,
     currencyId: 2,
     recurrenceType: 1,
@@ -1536,7 +1537,6 @@ void main() {
     });
   });
 
-  // TODO
   group('transactionLabels', () {
     test('distinct expense labels only', () async {
       await database.transactionDao
@@ -1583,32 +1583,559 @@ void main() {
     });
   });
 
-  // TODO
   group("sumOfTransactionsByCategories", () {
-    test('return unique categories', () async {});
-    test('consider filter settings by expenses', () async {});
-    test('consider filter settings by incomes', () async {});
-    test('consider filter settings before date', () async {});
-    test('consider filter settings by month', () async {});
-    test('consider filter settings by category', () async {});
-    test('consider filter settings by subcategory', () async {});
-    test('consider filter settings by date', () async {});
-    test('consider filter settings by only recurrences', () async {});
-    test('throws exception without entering filter settings', () async {});
+    test('return unique categories', () async {
+      final settings = TransactionFilterSettings();
+
+      var stream = database.transactionDao
+          .watchSumOfTransactionsByCategories(settings)
+          .map((event) => event.map((e) => e.c.id).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      stream.listen((event) {
+        expect(event, event.toSet().toList());
+      });
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+      await database.transactionDao.insertTransaction(
+          daily.copyWith(subcategoryId: onceTransactions[1].subcategoryId));
+    });
+
+    test('consider filter settings by expenses', () async {
+      final settings = TransactionFilterSettings.byExpense(isExpense: true);
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsInOrder([
+            [42],
+            [50, 42]
+          ]));
+
+      final expectation2 = expectLater(
+          stream.map((e) => e
+              .map((e) => e.c.isExpense)
+              .fold(true, (bool previous, element) => previous && element)),
+          emits(isTrue));
+
+      await database.transactionDao.insertTransaction(onceTransactions[0]);
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('consider filter settings by incomes', () async {
+      final settings = TransactionFilterSettings.byIncome(isIncome: true);
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)), emits([100]));
+
+      final expectation2 = expectLater(
+          stream.map((e) => e
+              .map((e) => !e.c.isExpense)
+              .fold(true, (bool previous, element) => previous && element)),
+          emits(isTrue));
+
+      await database.transactionDao.insertTransaction(onceTransactions[0]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('consider filter settings before date', () async {
+      final settings =
+          TransactionFilterSettings.beforeDate(DateTime(2021, 3, 23));
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsAnyOf([
+            [42],
+            [30, 42]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+    });
+
+    test('consider filter settings by month', () async {
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+
+      final id =
+          await database.monthDao.getMonthIdByDate(onceTransactions[1].date);
+
+      final settings = TransactionFilterSettings.byMonth(id);
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsInOrder([
+            [42],
+            [20, 42],
+          ]));
+
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider filter settings by category', () async {
+      final settings = TransactionFilterSettings.byCategory(3);
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsInOrder([
+            [60]
+          ]));
+
+      final expectation2 = expectLater(
+          stream.map((event) => event.map((e) => e.c.id)),
+          emitsInOrder([
+            [3]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('consider filter settings by subcategory', () async {
+      final settings = TransactionFilterSettings.bySubcategory(12);
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsInOrder([
+            [60]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider filter settings by date', () async {
+      final settings = TransactionFilterSettings.byDay(DateTime(2021, 3, 31));
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsAnyOf([
+            [42, 10],
+            [42],
+          ]));
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[1].copyWith(date: DateTime(2021, 3, 31)));
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider filter settings by only recurrences', () async {
+      final settings = TransactionFilterSettings.onlyRecurrences();
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsInOrder([
+            [60]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider combinations of filters', () async {
+      final settings = TransactionFilterSettings(
+        expenses: true,
+        before: DateTime(2021, 3, 31),
+      );
+
+      var stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)),
+          emitsAnyOf([
+            [20, 42],
+            [42],
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('income and expense block each other', () async {
+      final settings = TransactionFilterSettings(
+        expenses: true,
+        incomes: true,
+      );
+
+      final stream =
+          database.transactionDao.watchSumOfTransactionsByCategories(settings);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.sumAmount)), emits(isEmpty));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+    });
+
+    test('throws exception without entering filter settings', () async {
+      expect(
+          () async =>
+              database.transactionDao.watchSumOfTransactionsByCategories(null),
+          throwsA(isInstanceOf<AssertionError>()));
+    });
   });
 
-  // TODO
   group("watchTransactionsWithFilter", () {
-    test('consider filter settings by expenses', () async {});
-    test('consider filter settings by incomes', () async {});
-    test('consider filter settings before date', () async {});
-    test('consider filter settings by month', () async {});
-    test('consider filter settings by category', () async {});
-    test('consider filter settings by subcategory', () async {});
-    test('consider filter settings by date', () async {});
-    test('consider filter settings by only recurrences', () async {});
-    test('descending order by date', () async {});
-    test('descending order by id', () async {});
-    test('throws exception without entering filter settings', () async {});
+    test('consider filter settings by expenses', () async {
+      final settings = TransactionFilterSettings.byExpense(isExpense: true);
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.id)),
+          emitsInOrder([
+            [2],
+            [3, 3, 3, 3, 3, 2]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[0]);
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+    });
+
+    test('consider filter settings by incomes', () async {
+      final settings = TransactionFilterSettings.byIncome(isIncome: true);
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation =
+          expectLater(stream.map((e) => e.map((e) => e.id)), emits([1]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[0]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+    });
+
+    test('consider filter settings before date', () async {
+      final settings =
+          TransactionFilterSettings.beforeDate(DateTime(2021, 3, 23));
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsInOrder([
+            [42],
+            [42],
+            [42],
+            [42],
+            [10, 10, 10, 42],
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+    });
+
+    test('consider filter settings by month', () async {
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+
+      final id =
+          await database.monthDao.getMonthIdByDate(onceTransactions[1].date);
+
+      final settings = TransactionFilterSettings.byMonth(id);
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsInOrder([
+            [42],
+            [10, 10, 42],
+          ]));
+
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider filter settings by category', () async {
+      final settings = TransactionFilterSettings.byCategory(3);
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsInOrder([
+            [10, 10, 10, 10, 10, 10]
+          ]));
+
+      final expectation2 = expectLater(
+          stream.map((event) => event.map((e) => e.c.id)),
+          emitsInOrder([
+            [2, 2, 2, 2, 2, 2]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('consider filter settings by subcategory', () async {
+      final settings = TransactionFilterSettings.bySubcategory(12);
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsInOrder([
+            [10, 10, 10, 10, 10, 10]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider filter settings by date', () async {
+      final settings = TransactionFilterSettings.byDay(DateTime(2021, 3, 31));
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsAnyOf([
+            [42, 10],
+            [42],
+          ]));
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[1].copyWith(date: DateTime(2021, 3, 31)));
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider filter settings by only recurrences', () async {
+      final settings = TransactionFilterSettings.onlyRecurrences();
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsInOrder([
+            [10, 10, 10, 10, 10, 10]
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('consider combinations of filters', () async {
+      final settings = TransactionFilterSettings(
+        expenses: true,
+        before: DateTime(2021, 3, 31),
+      );
+
+      var stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)),
+          emitsInOrder([
+            [42],
+            [42],
+            [42],
+            [42],
+            [10, 10, 42],
+          ]));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 30), until: DateTime(2021, 4, 4)));
+
+      await expectation;
+    });
+
+    test('income and expense block each other', () async {
+      final settings = TransactionFilterSettings(
+        expenses: true,
+        incomes: true,
+      );
+
+      final stream =
+          database.transactionDao.watchTransactionsWithFilter(settings);
+
+      final expectation = expectLater(
+          stream.map((e) => e.map((e) => e.amount)), emits(isEmpty));
+
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(daily);
+
+      await expectation;
+    });
+
+    test('descending order by date', () async {
+      final settings = TransactionFilterSettings();
+
+      var stream = database.transactionDao
+          .watchTransactionsWithFilter(settings)
+          .map((e) => e.map((e) => DateTime.parse(e.date)).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      stream.listen((event) {
+        for (var i = 1; i < event.length; i++) {
+          final prev = event[i - 1];
+          final current = event[i];
+          expect(current.isBeforeOrEqual(prev), isTrue);
+        }
+      });
+
+      final expectation = expectLater(stream, emits(isNotEmpty));
+
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 15), until: DateTime(2021, 3, 20)));
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+
+      await expectation;
+    });
+
+    test('descending order by id', () async {
+      final settings = TransactionFilterSettings();
+
+      var stream = database.transactionDao
+          .watchTransactionsWithFilter(settings)
+          .map((e) => e.map((e) => e.id).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      stream.listen((event) {
+        for (var i = 1; i < event.length; i++) {
+          final prev = event[i - 1];
+          final current = event[i];
+          expect(current <= prev, isTrue);
+        }
+      });
+
+      final expectation = expectLater(stream, emits(isNotEmpty));
+
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2021, 3, 15), until: DateTime(2021, 3, 20)));
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(onceTransactions[1]);
+
+      await expectation;
+    });
+
+    test('throws exception without entering filter settings', () async {
+      expect(
+          () async => database.transactionDao.watchTransactionsWithFilter(null),
+          throwsA(isInstanceOf<AssertionError>()));
+    });
   });
 }

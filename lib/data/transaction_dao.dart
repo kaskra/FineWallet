@@ -145,8 +145,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Stream<List<TransactionsWithFilterResult>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     final txParser = TransactionFilterParser(settings);
-    final settingsContent =
-        txParser.parse(tableName: "t", useInCustomExp: true);
+    final settingsContent = txParser.parse(tableName: "t");
     final parsedSettings = CustomExpression<bool>(settingsContent);
 
     return _transactionsWithFilter(predicate: parsedSettings).watch();
@@ -192,10 +191,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   ///
   Stream<List<SumTransactionsByCategoryResult>>
       watchSumOfTransactionsByCategories(TransactionFilterSettings settings) {
-    // TODO rework transactionFilterParser/Settings
     final parser = TransactionFilterParser(settings);
-    final parsedSettings = CustomExpression<bool>(
-        parser.parse(tableName: "t", useInCustomExp: true));
+    final parsedSettings = CustomExpression<bool>(parser.parse(tableName: "t"));
     return _sumTransactionsByCategory(predicate: parsedSettings).watch();
   }
 

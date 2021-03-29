@@ -9,7 +9,7 @@ abstract class FilterParser<E extends FilterSettings, K> {
   /// Filter settings to be parsed.
   E settings;
 
-  FilterParser(this.settings);
+  FilterParser(this.settings) : assert(settings != null);
 
   /// Parses the filter to a certain type [K].
   K parse();
@@ -26,7 +26,7 @@ class TransactionFilterParser
     const converter = DateTimeConverter();
     final Queue<String> queue = Queue<String>();
     if (settings.category != null) {
-      queue.add("subcategories.categoryId = ${settings.category}");
+      queue.add("s.categoryId = ${settings.category}");
     }
 
     if (settings.subcategory != null) {
@@ -51,7 +51,7 @@ class TransactionFilterParser
 
     if (settings.expenses != null) {
       queue.add(
-          "${tableName != "" ? "$tableName." : ""}isExpense = ${settings.expenses ? 1 : 0}");
+          "${settings.expenses ? "" : "NOT"} ${tableName != "" ? "$tableName." : ""}isExpense");
     }
 
     if (settings.incomes != null) {
@@ -76,14 +76,12 @@ class TransactionFilterParser
   /// Parse the whole [TransactionFilterSettings] object
   /// into one WHERE-clause.
   @override
-  String parse({String tableName = "", bool useInCustomExp = false}) {
+  String parse({String tableName = ""}) {
     final Queue<String> args = _getQueueOfArguments(tableName: tableName);
-    if (args.isEmpty) return "";
+    if (args == null) return "true";
+    if (args.isEmpty) return "true";
 
     final buffer = StringBuffer();
-    if (!useInCustomExp) {
-      buffer.write(" WHERE ");
-    }
     int index = 0;
     for (final query in args) {
       if (index > 0) {
