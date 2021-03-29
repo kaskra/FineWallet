@@ -50,20 +50,25 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Stream<List<Month>> watchAllMonths() => _allMonths().watch();
 
-  Future insertMonth(Insertable<Month> month) => into(months).insert(month);
+  Future<int> insertMonth(Insertable<Month> month) =>
+      into(months).insert(month);
 
-  Future updateMonth(Insertable<Month> month) => update(months).replace(month);
+  Future<bool> updateMonth(Insertable<Month> month) =>
+      update(months).replace(month);
 
-  Future deleteMonth(Insertable<Month> month) => delete(months).delete(month);
+  Future<int> deleteMonth(Insertable<Month> month) =>
+      delete(months).delete(month);
 
   Future<int> getMonthIdByDate(DateTime date) =>
       _monthIdByDate(date.toSql()).getSingleOrNull();
 
-  Future<Month> getCurrentMonth() =>
-      _monthByDate(today().toSql()).getSingleOrNull();
+  Future<Month> getCurrentMonth(
+          [DateTime Function() _getCurrentTime = today]) =>
+      _monthByDate(_getCurrentTime().toSql()).getSingleOrNull();
 
-  Stream<Month> watchCurrentMonth() =>
-      _monthByDate(today().toSql()).watchSingleOrNull();
+  Stream<Month> watchCurrentMonth(
+          [DateTime Function() _getCurrentTime = today]) =>
+      _monthByDate(_getCurrentTime().toSql()).watchSingleOrNull();
 
   Future<Month> getMonthById(int id) => _monthById(id).getSingleOrNull();
 
