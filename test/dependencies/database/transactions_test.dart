@@ -1204,7 +1204,7 @@ void testTransactions() {
 
       final expectation = expectLater(stream, emits(isNonPositive));
       final expectation2 =
-          expectLater(stream, emitsInOrder([0, -42, -42, -42, -72]));
+          expectLater(stream, emitsInOrder([0, -42, -42, -42, -42, -72]));
 
       await database.transactionDao.insertTransaction(onceTransactions[1]);
       await database.transactionDao.insertTransaction(BaseTransaction(
@@ -1271,8 +1271,8 @@ void testTransactions() {
       const double second = -72 / 6;
 
       final expectation = expectLater(stream, emits(isNonPositive));
-      final expectation2 =
-          expectLater(stream, emitsInOrder([0, first, first, first, second]));
+      final expectation2 = expectLater(
+          stream, emitsInOrder([0, first, first, first, first, second]));
 
       await database.transactionDao.insertTransaction(onceTransactions[1]);
       await database.transactionDao.insertTransaction(BaseTransaction(
@@ -1891,6 +1891,7 @@ void testTransactions() {
             [42],
             [42],
             [42],
+            [42],
             [10, 10, 10, 42],
           ]));
 
@@ -2033,6 +2034,7 @@ void testTransactions() {
       final expectation = expectLater(
           stream.map((e) => e.map((e) => e.amount)),
           emitsInOrder([
+            [42],
             [42],
             [42],
             [42],
