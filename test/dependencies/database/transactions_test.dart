@@ -355,7 +355,7 @@ void testTransactions() {
         expect(r.map((e) => e.until), everyElement(isNotNull));
 
         final DateTime d = DateTime.parse(r.last.date);
-        final DateTime until = DateTime.parse(r.first.until);
+        final DateTime until = r.first.until;
         expect(
             DateTime.utc(d.year, d.month, d.day).isBeforeOrEqual(
                 DateTime.utc(until.year, until.month, until.day)),
@@ -387,7 +387,7 @@ void testTransactions() {
         expect(r.map((e) => e.until), everyElement(isNotNull));
 
         final DateTime d = DateTime.parse(r.last.date);
-        final DateTime until = DateTime.parse(r.first.until);
+        final DateTime until = r.first.until;
         expect(
             DateTime.utc(d.year, d.month, d.day).isBeforeOrEqual(
                 DateTime.utc(until.year, until.month, until.day)),
@@ -419,11 +419,85 @@ void testTransactions() {
         expect(r.map((e) => e.until), everyElement(isNotNull));
 
         final DateTime d = DateTime.parse(r.last.date);
-        final DateTime until = DateTime.parse(r.first.until);
+        final DateTime until = r.first.until;
         expect(
             DateTime.utc(d.year, d.month, d.day).isBeforeOrEqual(
                 DateTime.utc(until.year, until.month, until.day)),
             true);
+      });
+
+      test('daily unlimited recurring transactions can be inserted', () async {
+        final tx = BaseTransaction(
+          id: null,
+          amount: 10,
+          originalAmount: 10,
+          exchangeRate: null,
+          isExpense: true,
+          date: DateTime(today().year, today().month,
+              today().getLastDateOfMonth().day - 3),
+          label: "Mittagessen",
+          subcategoryId: 12,
+          monthId: null,
+          currencyId: 2,
+          recurrenceType: 2,
+        );
+
+        final id = await database.transactionDao.insertTransaction(tx);
+
+        final r = await database.transactionDao.getAllTransactions();
+
+        final res = r.first;
+
+        expect(r.length, 4);
+        expect(res.date, tx.date.toSql());
+
+        expect(r.map((e) => e.id), everyElement(id));
+        expect(r.map((e) => e.amount), everyElement(tx.amount));
+        expect(r.map((e) => e.originalAmount), everyElement(tx.amount));
+        expect(r.map((e) => e.isExpense), everyElement(tx.isExpense));
+        expect(r.map((e) => e.label), everyElement(tx.label));
+        expect(r.map((e) => e.recurrenceType), everyElement(tx.recurrenceType));
+        expect(r.map((e) => e.currencyId), everyElement(tx.currencyId));
+        expect(r.map((e) => e.subcategoryId), everyElement(tx.subcategoryId));
+        expect(r.map((e) => e.exchangeRate), everyElement(isNotNull));
+        expect(r.map((e) => e.monthId), everyElement(isNotNull));
+
+        expect(r.last.date, today().getLastDateOfMonth().toSql());
+      });
+
+      test('weekly unlimited recurring transactions can be inserted', () async {
+        final tx = BaseTransaction(
+          id: null,
+          amount: 10,
+          originalAmount: 10,
+          exchangeRate: null,
+          isExpense: true,
+          date: DateTime(today().year, today().month,
+              today().getLastDateOfMonth().day - 3),
+          label: "Mittagessen",
+          subcategoryId: 12,
+          monthId: null,
+          currencyId: 2,
+          recurrenceType: 3,
+        );
+
+        final id = await database.transactionDao.insertTransaction(tx);
+
+        final r = await database.transactionDao.getAllTransactions();
+
+        expect(r.length, 1);
+        expect(r.first.date, tx.date.toSql());
+
+        expect(r.map((e) => e.id), everyElement(id));
+        expect(r.map((e) => e.amount), everyElement(tx.amount));
+        expect(r.map((e) => e.originalAmount), everyElement(tx.amount));
+        expect(r.map((e) => e.isExpense), everyElement(tx.isExpense));
+        expect(r.map((e) => e.label), everyElement(tx.label));
+        expect(r.map((e) => e.recurrenceType), everyElement(tx.recurrenceType));
+        expect(r.map((e) => e.currencyId), everyElement(tx.currencyId));
+        expect(r.map((e) => e.subcategoryId), everyElement(tx.subcategoryId));
+        expect(r.map((e) => e.exchangeRate), everyElement(isNotNull));
+        expect(r.map((e) => e.monthId), everyElement(isNotNull));
       });
     });
 

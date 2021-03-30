@@ -31,7 +31,8 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         monthId: row.read<int>('monthId'),
         currencyId: row.read<int>('currencyId'),
         recurrenceType: row.read<int>('recurrenceType'),
-        until: row.read<String>('until'),
+        until:
+            BaseTransactions.$converter1.mapToDart(row.read<String>('until')),
         recurrenceName: row.read<String>('recurrenceName'),
       );
     });
@@ -100,7 +101,8 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         monthId: row.read<int>('monthId'),
         currencyId: row.read<int>('currencyId'),
         recurrenceType: row.read<int>('recurrenceType'),
-        until: row.read<String>('until'),
+        until:
+            BaseTransactions.$converter1.mapToDart(row.read<String>('until')),
         recurrenceName: row.read<String>('recurrenceName'),
         cc: categories.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
         s: subcategories.mapFromRowOrNull(row, tablePrefix: 'nested_1'),
@@ -253,7 +255,7 @@ class TransactionsResult {
   final int monthId;
   final int currencyId;
   final int recurrenceType;
-  final String until;
+  final DateTime until;
   final String recurrenceName;
   TransactionsResult({
     @required this.id,
@@ -267,7 +269,7 @@ class TransactionsResult {
     @required this.monthId,
     @required this.currencyId,
     @required this.recurrenceType,
-    @required this.until,
+    this.until,
     @required this.recurrenceName,
   });
 }
@@ -284,7 +286,7 @@ class TransactionsWithFilterResult {
   final int monthId;
   final int currencyId;
   final int recurrenceType;
-  final String until;
+  final DateTime until;
   final String recurrenceName;
   final Category cc;
   final Subcategory s;
@@ -301,7 +303,7 @@ class TransactionsWithFilterResult {
     @required this.monthId,
     @required this.currencyId,
     @required this.recurrenceType,
-    @required this.until,
+    this.until,
     @required this.recurrenceName,
     this.cc,
     this.s,

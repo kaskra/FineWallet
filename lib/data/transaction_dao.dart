@@ -107,7 +107,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           monthId: monthId,
           currencyId: tx.currencyId,
           recurrenceType: tx.recurrenceType,
-          until: Value(tx.until),
+          until: tx.until == null ? const Value.absent() : Value(tx.until),
         ),
       );
     });

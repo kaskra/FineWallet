@@ -58,7 +58,7 @@ CREATE TABLE baseTransactions
     monthId        INT  NOT NULL REFERENCES months (id),
     currencyId     INT  NOT NULL REFERENCES currencies (id),
     recurrenceType INT  NOT NULL REFERENCES recurrenceTypes (id),
-    until          TEXT MAPPED BY `const DateTimeConverter()` -- TODO maybe NOT NULL?
+    until          TEXT MAPPED BY `const DateTimeConverter()`
 ) AS BaseTransaction;
 
 

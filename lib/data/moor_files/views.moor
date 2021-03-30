@@ -5,7 +5,7 @@ WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
     SELECT t.id,
            DATE(t.date),
            t.recurrenceType,
-           DATE(t.until),
+           IFNULL(DATE(t.until), DATE('now','start of month' ,'+1 month' ,'-1 day')),
            rt.name
     FROM baseTransactions t,
          recurrenceTypes rt
@@ -30,7 +30,7 @@ WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
            tmp.until,
            name
     FROM tmp
-    WHERE DATE(nextTxDate) <= DATE(until)
+    WHERE DATE(nextTxDate) <= DATE(tmp.until)
 )
 SELECT t.id,
        t.amount,
@@ -46,7 +46,7 @@ SELECT t.id,
           AND DATE(m.lastDate) >= DATE(tmp.txDate)) AS monthId,
        t.currencyId,
        tmp.recType                                  AS recurrenceType,
-       tmp.until,
+       t.until,
        tmp.name                                     AS recurrenceName
 FROM tmp,
      baseTransactions t
