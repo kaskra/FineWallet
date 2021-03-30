@@ -7,6 +7,7 @@
  */
 
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/core/datatypes/update_transaction_modifier.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_parser.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
@@ -76,9 +77,18 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   /// - [db_file.Transaction] that should be updated.
   ///
-  Future<int> updateTransaction(BaseTransaction tx) async {
-    // TODO flag to decide how to update
-    final id = await _upsertTransaction(tx, update: true);
+  Future<int> updateTransaction(BaseTransaction tx,
+      {UpdateTransactionModifier modifier =
+          UpdateTransactionModifier.all}) async {
+    // TODO handle flag
+    var id = -1;
+
+    if (modifier == UpdateTransactionModifier.onlySelected) {
+    } else if (modifier == UpdateTransactionModifier.allFuture) {
+    } else {
+      id = await _upsertTransaction(tx, update: true);
+    }
+
     await db.monthDao.restrictMaxBudgetByMonthlyIncome();
     return id;
   }
