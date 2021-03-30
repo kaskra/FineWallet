@@ -7,3 +7,5 @@ targets:
           compact_query_methods: true
           apply_converters_on_variables: true
           new_sql_code_generation: true
+        sqlite:
+          version: 3.35

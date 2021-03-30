@@ -61,3 +61,9 @@ LEFT JOIN income i ON i.monthid = month.id
 WHERE :date >= month.firstDate AND :date <= month.lastDate
 ORDER BY month.firstDate DESC;
 
+
+-- createOrGet: INSERT INTO months (firstDate, lastDate)
+--     SELECT DATE(:date, 'start of month'), DATE(:date, 'start of month', '+1 month', '-1 day')
+--     WHERE NOT EXISTS(SELECT firstDate, lastDate FROM months
+--     WHERE  firstDate <= DATE(:date) AND lastDate >= DATE(:date)) RETURNING id;
+
