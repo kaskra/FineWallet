@@ -832,7 +832,7 @@ class Months extends Table with TableInfo<Months, Month> {
   GeneratedTextColumn get firstDate => _firstDate ??= _constructFirstDate();
   GeneratedTextColumn _constructFirstDate() {
     return GeneratedTextColumn('firstDate', $tableName, false,
-        $customConstraints: 'NOT NULL');
+        $customConstraints: 'NOT NULL UNIQUE');
   }
 
   final VerificationMeta _lastDateMeta = const VerificationMeta('lastDate');
@@ -840,7 +840,7 @@ class Months extends Table with TableInfo<Months, Month> {
   GeneratedTextColumn get lastDate => _lastDate ??= _constructLastDate();
   GeneratedTextColumn _constructLastDate() {
     return GeneratedTextColumn('lastDate', $tableName, false,
-        $customConstraints: 'NOT NULL');
+        $customConstraints: 'NOT NULL UNIQUE');
   }
 
   @override

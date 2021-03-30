@@ -141,7 +141,9 @@ void testTransactions() {
       expect(r.length, 1);
       expect(res.exchangeRate, isNotNull);
       expect(res.monthId, isNotNull);
-      expect(res.until, isNotNull);
+      expect(res.until, isNull);
+
+      expect(res.until, isNull);
       expect(res.id, id);
       expect(res.date, model.date.toSql());
       expect(res.amount, model.amount);
@@ -2201,4 +2203,22 @@ void testTransactions() {
           throwsA(isInstanceOf<AssertionError>()));
     });
   });
+
+//   test('returning clause test', () async {
+//     final date = DateTime(2021, 3, 15).toSql();
+// //
+// //     final res = await database.customSelect('''
+// //         INSERT INTO months (firstDate, lastDate)
+// // SELECT DATE($date, 'start of month'), DATE($date, 'start of month', '+1 month', '-1 day')
+// // WHERE NOT EXISTS(SELECT firstDate, lastDate FROM months
+// //     WHERE  firstDate <= DATE($date) AND lastDate >= DATE($date)) RETURNING id;''').getSingleOrNull();
+//
+//     final res = await database.monthDao.cr
+//
+//     print(res?.data);
+//
+//     final res2 = await database.monthDao.getAllMonths();
+//
+//     res2.forEach((element) => print(element.firstDate));
+//   });
 }
