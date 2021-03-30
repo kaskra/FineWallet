@@ -13,24 +13,6 @@ import 'package:moor/moor.dart';
 
 part 'month_dao.g.dart';
 
-class MonthWithDetails {
-  final Month month;
-  final Tuple3<double, double, double> details;
-
-  MonthWithDetails(this.month, this.details);
-
-  @override
-  String toString() {
-    return 'MonthWithDetails(month: $month, details: $details)';
-  }
-
-  double get savings => details.third;
-
-  double get income => details.first;
-
-  double get expense => details.second;
-}
-
 @UseDao(
   tables: [
     Months,
@@ -109,35 +91,9 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// entity and a [Tuple3] to hold the month's details, like monthly income,
   /// monthly expenses and the monthly savings.
   ///
-  Stream<List<MonthWithDetails>> watchAllMonthsWithDetails() {
-    // const converter = DateTimeConverter();
-    // final sqlDate = converter.mapToSql(today());
-    //
-    // return customSelect(
-    //     "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
-    //     "AS month_income, "
-    //     "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
-    //     "AS month_expense,  m.* "
-    //     "FROM months m "
-    //     "WHERE '$sqlDate' >= m.first_date "
-    //     "GROUP BY m.id "
-    //     "ORDER BY m.first_date DESC",
-    //     readsFrom: {
-    //       months,
-    //       baseTransactions
-    //     }).watch().map((rows) => rows
-    //     .map(
-    //       (row) {
-    //         final double income = row.readDouble("month_income");
-    //         final double expense = row.readDouble("month_expense");
-    //
-    //         return MonthWithDetails(Month.fromData(row.data, db),
-    //             Tuple3(income, expense, income - expense));
-    //       },
-    //     )
-    //     .where((element) => element.expense != 0 || element.income != 0)
-    //     .toList());
-  }
+  Stream<List<MonthWithDetails>> watchAllMonthsWithDetails(
+          [DateTime Function() _getCurrentTime = today]) =>
+      _allMonthDetails(_getCurrentTime().toSql()).watch();
 
   /// Returns a [Stream] that watches the current month and the
   /// transactions in that month.
@@ -148,25 +104,7 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
   /// entity and a [Tuple3] to hold the month's details, like monthly income,
   /// monthly expenses and the monthly savings.
   ///
-  Stream<MonthWithDetails> watchCurrentMonthWithDetails() {
-    // const converter = DateTimeConverter();
-    // final query = customSelect(
-    //         "SELECT IFNULL((SELECT SUM(amount) FROM incomes WHERE month_id = m.id), 0) "
-    //         "AS month_income, "
-    //         "IFNULL((SELECT SUM(amount) FROM expenses WHERE month_id = m.id), 0) "
-    //         "AS month_expense,  m.* "
-    //         "FROM months m "
-    //         "WHERE '${converter.mapToSql(today())}' BETWEEN m.first_date AND m.last_date",
-    //         readsFrom: {months, db.transactions}).watchSingle().map(
-    //       (row) => MonthWithDetails(
-    //           Month.fromData(row.data, db),
-    //           Tuple3<double, double, double>(
-    //               row.readDouble("month_income"),
-    //               row.readDouble("month_expense"),
-    //               row.readDouble("month_income") -
-    //                   row.readDouble("month_expense"))),
-    //     );
-    //
-    // return query;
-  }
+  Stream<MonthWithDetails> watchCurrentMonthWithDetails(
+          [DateTime Function() _getCurrentTime = today]) =>
+      _currentMonthDetails(_getCurrentTime().toSql()).watchSingle();
 }

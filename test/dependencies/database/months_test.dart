@@ -9,7 +9,7 @@ import 'transactions_test.dart';
 
 final m1 = MonthsCompanion.insert(
     firstDate: DateTime(2020, 5),
-    lastDate: DateTime(2020, 5, 30),
+    lastDate: DateTime(2020, 5, 31),
     maxBudget: const Value(42));
 
 void main() {
@@ -293,6 +293,243 @@ void testMonths() {
           currentMonthAfterCheck.firstDate, currentMonthBeforeCheck.firstDate);
       expect(
           currentMonthAfterCheck.maxBudget, currentMonthBeforeCheck.maxBudget);
+    });
+  });
+
+  group('watchAllMonthsWithDetails', () {
+    test('returns correct income per month', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2020, 5, 28), until: DateTime(2020, 6, 2)));
+
+      final mockClock = Clock.fixed(DateTime(2020, 6, 5));
+
+      var stream = database.monthDao
+          .watchAllMonthsWithDetails(mockClock.now)
+          .map((event) => event.map((e) => e.income).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(stream, emits(hasLength(2)));
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([
+          [0.0, 0.0],
+          [0.0, 100.0],
+        ]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns correct expense per month', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2020, 5, 28), until: DateTime(2020, 6, 2)));
+
+      final mockClock = Clock.fixed(DateTime(2020, 6, 5));
+
+      var stream = database.monthDao
+          .watchAllMonthsWithDetails(mockClock.now)
+          .map((event) => event.map((e) => e.expense).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(stream, emits(hasLength(2)));
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([
+          [20.0, 40.0],
+          [20.0, 40.0],
+        ]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns correct savings per month', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2020, 5, 28), until: DateTime(2020, 6, 2)));
+
+      final mockClock = Clock.fixed(DateTime(2020, 6, 5));
+
+      var stream = database.monthDao
+          .watchAllMonthsWithDetails(mockClock.now)
+          .map((event) => event.map((e) => e.savings).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(stream, emits(hasLength(2)));
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([
+          [-20.0, -40.0],
+          [-20.0, 60.0],
+        ]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns correct months', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(daily.copyWith(
+          date: DateTime(2020, 5, 28), until: DateTime(2020, 6, 2)));
+
+      final mockClock = Clock.fixed(DateTime(2020, 6, 5));
+
+      var stream = database.monthDao
+          .watchAllMonthsWithDetails(mockClock.now)
+          .map((event) => event.map((e) => e.month.firstDate).toList());
+
+      stream = stream.skipWhile((element) => element.isEmpty);
+
+      final expectation = expectLater(stream, emits(hasLength(2)));
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([
+          [DateTime(2020, 6), DateTime(2020, 5)],
+          [DateTime(2020, 6), DateTime(2020, 5)],
+        ]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns empty list if no month given', () async {
+      final currentMonth = await database.monthDao.getCurrentMonth();
+      await database.monthDao.deleteMonth(currentMonth);
+
+      final stream = database.monthDao
+          .watchAllMonthsWithDetails()
+          .map((event) => event.map((e) => e.month.firstDate).toList());
+
+      final expectation = expectLater(stream, emits(isEmpty));
+      await expectation;
+    });
+  });
+
+  group('watchCurrentMonthsWithDetails', () {
+    test('returns correct income', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(onceTransactions[0]
+          .copyWith(date: DateTime(2020, 5, 28), amount: 42));
+
+      final mockClock = Clock.fixed(DateTime(2020, 5, 20));
+
+      final stream = database.monthDao
+          .watchCurrentMonthWithDetails(mockClock.now)
+          .map((event) => event.income);
+
+      final expectation = expectLater(stream, isNotNull);
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([42.0, 142.0]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns correct expense', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(onceTransactions[1]
+          .copyWith(date: DateTime(2020, 5, 28), amount: 12));
+
+      final mockClock = Clock.fixed(DateTime(2020, 5, 20));
+
+      final stream = database.monthDao
+          .watchCurrentMonthWithDetails(mockClock.now)
+          .map((event) => event.expense);
+
+      final expectation = expectLater(stream, isNotNull);
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([12.0, 54.0]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[1].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns correct savings', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 28)));
+
+      final mockClock = Clock.fixed(DateTime(2020, 5, 20));
+
+      final stream = database.monthDao
+          .watchCurrentMonthWithDetails(mockClock.now)
+          .map((event) => event.savings);
+
+      final expectation = expectLater(stream, isNotNull);
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([100.0, 58.0]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[1].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns correct months', () async {
+      await database.monthDao.insertMonth(m1);
+      await database.transactionDao.insertTransaction(
+          onceTransactions[0].copyWith(date: DateTime(2020, 5, 28)));
+
+      final mockClock = Clock.fixed(DateTime(2020, 5, 20));
+
+      final stream = database.monthDao
+          .watchCurrentMonthWithDetails(mockClock.now)
+          .map((event) => event.month.firstDate);
+
+      final expectation = expectLater(stream, isNotNull);
+      final expectation2 = expectLater(
+        stream,
+        emitsInOrder([DateTime(2020, 5), DateTime(2020, 5)]),
+      );
+
+      await database.transactionDao.insertTransaction(
+          onceTransactions[1].copyWith(date: DateTime(2020, 5, 21)));
+
+      await expectation;
+      await expectation2;
+    });
+
+    test('returns null if no month given', () async {
+      final currentMonth = await database.monthDao.getCurrentMonth();
+      await database.monthDao.deleteMonth(currentMonth);
+
+      final stream = database.monthDao.watchCurrentMonth();
+      final expectation = expectLater(stream, emits(isNull));
+      await expectation;
     });
   });
 }

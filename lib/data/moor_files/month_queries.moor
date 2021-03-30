@@ -41,4 +41,23 @@ INSERT INTO months (maxBudget, firstDate, lastDate)
     SELECT 0, DATE('now', 'start of month'), DATE('now', 'start of month', '+1 month', '-1 day')
     WHERE NOT EXISTS( SELECT * FROM months WHERE lastDate >= DATE('now') AND firstDate <= DATE('now'));
 
+_allMonthDetails AS MonthWithDetails: WITH
+    income(monthid, amount) AS (SELECT monthId, IFNULL(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense GROUP BY monthId),
+    expense(monthid, amount) AS (SELECT monthId, IFNULL(SUM(amount),0) FROM fullTransactions WHERE isExpense GROUP BY monthId)
+SELECT IFNULL(i.amount,0) AS income, IFNULL(e.amount,0) AS expense, (IFNULL(i.amount,0) - IFNULL(e.amount,0)) AS savings, month.**
+FROM months month
+LEFT JOIN income i ON i.monthid = month.id
+LEFT JOIN expense e ON e.monthid = month.id
+WHERE :date >= month.firstDate
+ORDER BY month.firstDate DESC;
+
+_currentMonthDetails AS MonthWithDetails: WITH
+    income(monthid, amount) AS (SELECT monthId, IFNULL(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense GROUP BY monthId),
+    expense(monthid, amount) AS (SELECT monthId, IFNULL(SUM(amount),0) FROM fullTransactions WHERE isExpense GROUP BY monthId)
+SELECT IFNULL(i.amount,0) AS income, IFNULL(e.amount,0) AS expense, (IFNULL(i.amount,0) - IFNULL(e.amount,0)) AS savings, month.**
+FROM months month
+LEFT JOIN income i ON i.monthid = month.id
+    LEFT JOIN expense e ON e.monthid = month.id
+WHERE :date >= month.firstDate AND :date <= month.lastDate
+ORDER BY month.firstDate DESC;
 
