@@ -98,8 +98,7 @@ class AppDatabase extends _$AppDatabase {
           }
 
           // Check if in new month and update accordingly
-          // TODO do i need this?
-          // await monthDao.checkLatestMonths();
+          await monthDao.checkForCurrentMonth();
         },
       );
 

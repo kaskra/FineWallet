@@ -49,4 +49,12 @@ mixin _$MonthDaoMixin on DatabaseAccessor<AppDatabase> {
       updateKind: UpdateKind.update,
     );
   }
+
+  Future<int> _insertCurrentMonthIfNotExists() {
+    return customInsert(
+      'INSERT INTO months (maxBudget, firstDate, lastDate)\r\n    SELECT 0, DATE(\'now\', \'start of month\'), DATE(\'now\', \'start of month\', \'+1 month\', \'-1 day\')\r\n    WHERE NOT EXISTS( SELECT * FROM months WHERE lastDate >= DATE(\'now\') AND firstDate <= DATE(\'now\'))',
+      variables: [],
+      updates: {months},
+    );
+  }
 }

@@ -9,7 +9,6 @@
 import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/utils/month_utils.dart';
 import 'package:moor/moor.dart';
 
 part 'month_dao.g.dart';
@@ -74,33 +73,10 @@ class MonthDao extends DatabaseAccessor<AppDatabase> with _$MonthDaoMixin {
 
   Stream<Month> watchMonthById(int id) => _monthById(id).watchSingleOrNull();
 
-  Future<int> restrictMaxBudgetByMonthlyIncome() async =>
-      _syncMaxBudgetFromIncome();
+  Future<int> restrictMaxBudgetByMonthlyIncome() => _syncMaxBudgetFromIncome();
 
-  /// Check months after last recorded month to see whether any are missing.
-  Future checkLatestMonths() async {
-    final lastRecordedMonth = await (select(months)
-          ..orderBy([
-            (m) => OrderingTerm(expression: m.lastDate, mode: OrderingMode.desc)
-          ])
-          ..limit(1))
-        .getSingleOrNull();
-
-    final missingMonths = getMissingMonths(lastRecordedMonth);
-    final List<Insertable<Month>> newMonths = [];
-
-    for (final m in missingMonths) {
-      final first = m.getFirstDateOfMonth();
-      final last = m.getLastDateOfMonth();
-      newMonths.add(MonthsCompanion.insert(firstDate: first, lastDate: last));
-    }
-
-    if (newMonths.isNotEmpty) {
-      await batch((b) {
-        b.insertAll(months, newMonths);
-      });
-    }
-  }
+  /// Insert current month if not in database already.
+  Future<int> checkForCurrentMonth() => _insertCurrentMonthIfNotExists();
 
   Future checkMonth(DateTime date) async {
     if ((await getMonthIdByDate(date)) == null) {

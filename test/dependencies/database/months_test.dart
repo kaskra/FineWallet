@@ -260,4 +260,39 @@ void testMonths() {
       expect(m.maxBudget, 0);
     });
   });
+
+  group('checkForCurrentMonth', () {
+    test('inserts current month correctly', () async {
+      final currentMonth = await database.monthDao.getCurrentMonth();
+      await database.monthDao.deleteMonth(currentMonth);
+
+      final currentMonthAfterDelete = await database.monthDao.getCurrentMonth();
+      expect(currentMonthAfterDelete, isNull);
+
+      await database.monthDao.checkForCurrentMonth();
+
+      final currentMonthAfterCheck = await database.monthDao.getCurrentMonth();
+
+      expect(currentMonthAfterCheck, isNotNull);
+      expect(today().isBeforeOrEqual(currentMonthAfterCheck.lastDate), isTrue);
+      expect(currentMonthAfterCheck.firstDate.isBeforeOrEqual(today()), isTrue);
+      expect(currentMonthAfterCheck.maxBudget, 0);
+    });
+
+    test('does not insert month if it already exists', () async {
+      final currentMonthBeforeCheck = await database.monthDao.getCurrentMonth();
+
+      await database.monthDao.checkForCurrentMonth();
+
+      final currentMonthAfterCheck = await database.monthDao.getCurrentMonth();
+      final res = await database.monthDao.getAllMonths();
+      expect(res, hasLength(1));
+
+      expect(currentMonthAfterCheck.lastDate, currentMonthBeforeCheck.lastDate);
+      expect(
+          currentMonthAfterCheck.firstDate, currentMonthBeforeCheck.firstDate);
+      expect(
+          currentMonthAfterCheck.maxBudget, currentMonthBeforeCheck.maxBudget);
+    });
+  });
 }

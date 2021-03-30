@@ -35,3 +35,10 @@ UPDATE months
 SET maxBudget = (SELECT budget FROM maxBudgets WHERE months.id = monthId)
 WHERE EXISTS(SELECT budget FROM maxBudgets WHERE months.id = monthId)
   AND maxBudget > (SELECT budget FROM maxBudgets WHERE months.id = monthId);
+
+_insertCurrentMonthIfNotExists:
+INSERT INTO months (maxBudget, firstDate, lastDate)
+    SELECT 0, DATE('now', 'start of month'), DATE('now', 'start of month', '+1 month', '-1 day')
+    WHERE NOT EXISTS( SELECT * FROM months WHERE lastDate >= DATE('now') AND firstDate <= DATE('now'));
+
+
