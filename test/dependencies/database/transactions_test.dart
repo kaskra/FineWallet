@@ -1434,8 +1434,8 @@ void testTransactions() {
       final month = await database.monthDao.getCurrentMonth();
       await database.monthDao.updateMonth(month.copyWith(maxBudget: 80));
 
-      final stream =
-          database.transactionDao.watchDailyBudget(DateTime(2021, 3, 26));
+      final stream = database.transactionDao
+          .watchDailyBudget(month.lastDate.add(const Duration(days: -5)));
 
       const res = 80 / 6;
 

@@ -184,8 +184,13 @@ void testMonths() {
       final m = await database.monthDao.getCurrentMonth();
 
       expect(m.id, 1);
-      expect(m.firstDate.isBeforeOrEqual(td), true);
-      expect(m.lastDate.isAfter(td) || m.lastDate.isAtSameMomentAs(td), true);
+      expect(m.firstDate.year, td.year);
+      expect(m.firstDate.month, td.month);
+      expect(m.firstDate.day, 1);
+
+      expect(m.lastDate.year, td.year);
+      expect(m.lastDate.month, td.month);
+      expect(m.lastDate.day, td.getLastDateOfMonth().day);
     });
 
     test('get current month returns null if no month for today is found',
@@ -200,6 +205,8 @@ void testMonths() {
     test('watch correct current month updates once table sees changes',
         () async {
       final td = today();
+      final m = await database.monthDao.getCurrentMonth();
+
       final stream = database.monthDao.watchCurrentMonth();
 
       final expectation =
@@ -210,6 +217,8 @@ void testMonths() {
               event.firstDate.isBeforeOrEqual(td) &&
               td.isBeforeOrEqual(event.lastDate)),
           emits(true));
+
+      await database.monthDao.updateMonth(m.copyWith(maxBudget: 100));
 
       await expectation;
       await expectation2;
@@ -274,8 +283,14 @@ void testMonths() {
       final currentMonthAfterCheck = await database.monthDao.getCurrentMonth();
 
       expect(currentMonthAfterCheck, isNotNull);
-      expect(today().isBeforeOrEqual(currentMonthAfterCheck.lastDate), isTrue);
-      expect(currentMonthAfterCheck.firstDate.isBeforeOrEqual(today()), isTrue);
+      expect(currentMonthAfterCheck.firstDate.year, today().year);
+      expect(currentMonthAfterCheck.firstDate.month, today().month);
+      expect(currentMonthAfterCheck.firstDate.day, 1);
+
+      expect(currentMonthAfterCheck.lastDate.year, today().year);
+      expect(currentMonthAfterCheck.lastDate.month, today().month);
+      expect(currentMonthAfterCheck.lastDate.day,
+          today().getLastDateOfMonth().day);
       expect(currentMonthAfterCheck.maxBudget, 0);
     });
 

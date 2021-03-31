@@ -3,13 +3,13 @@ import 'package:easy_localization/easy_localization.dart';
 
 extension ExtendedDateTime on DateTime {
   DateTime getFirstDateOfMonth() {
-    return DateTime.utc(year, month);
+    return DateTime(year, month);
   }
 
   DateTime getLastDateOfMonth() {
     return (month < 12)
-        ? DateTime.utc(year, month + 1, 0)
-        : DateTime.utc(year + 1, 1, 0);
+        ? DateTime(year, month + 1, 0, 12)
+        : DateTime(year + 1, 1, 0, 12);
   }
 
   DateTime getFirstOfNextMonth() {
@@ -64,8 +64,8 @@ extension ExtendedDateTime on DateTime {
 }
 
 DateTime today() {
-  final now = DateTime.now().toUtc();
-  return DateTime.utc(now.year, now.month, now.day);
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
 }
 
 String convertToTwoDigits(int n) {
