@@ -1,10 +1,8 @@
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/src/add_page/page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///E:/Flutter/FineWallet/lib/src/add_page/parts/recurrence_dialog.dart';
-import 'file:///E:/Flutter/FineWallet/lib/src/add_page/parts/row_wrapper.dart';
 
 class RecurrenceTypeInput extends StatelessWidget {
   final DateTime date;
