@@ -3,8 +3,6 @@ import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/logger.dart';
-import 'package:FineWallet/src/add_page/create_dialog.dart';
-import 'package:FineWallet/src/add_page/deletion_denial_dialog.dart';
 import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';

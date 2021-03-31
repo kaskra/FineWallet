@@ -200,6 +200,7 @@ abstract class  LocaleKeys {
   static const add_page_title = 'add_page.title';
   static const add_page_fab_tooltip = 'add_page.fab_tooltip';
   static const add_page_fab_label = 'add_page.fab_label';
+  static const add_page_no_label = 'add_page.no_label';
   static const add_page_amount_equals_zero = 'add_page.amount_equals_zero';
   static const add_page_amount_smaller_zero = 'add_page.amount_smaller_zero';
   static const add_page_subcategory_null = 'add_page.subcategory_null';
@@ -214,6 +215,7 @@ abstract class  LocaleKeys {
   static const add_page_label = 'add_page.label';
   static const add_page_date = 'add_page.date';
   static const add_page_recurrence = 'add_page.recurrence';
+  static const add_page_until = 'add_page.until';
   static const add_page_select_category = 'add_page.select_category';
   static const add_page_no_suggestions = 'add_page.no_suggestions';
   static const add_page_subcategory_delete_confirm_title = 'add_page.subcategory_delete_confirm_title';
@@ -227,6 +229,8 @@ abstract class  LocaleKeys {
   static const add_page_add_subcategory_dialog_title = 'add_page.add_subcategory_dialog_title';
   static const add_page_add_category_text = 'add_page.add_category_text';
   static const add_page_add_category_dialog_title = 'add_page.add_category_dialog_title';
+  static const add_page_choose_category = 'add_page.choose_category';
+  static const add_page_choose_label = 'add_page.choose_label';
   static const add_page = 'add_page';
   static const settings_page_title = 'settings_page.title';
   static const settings_page_currencies = 'settings_page.currencies';

@@ -1,4 +1,7 @@
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:FineWallet/src/add_page/page.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,14 +12,12 @@ class EditableNumericInputText extends StatefulWidget {
   final int currencyId;
 
   final Function(double) onChanged;
-  final Function(bool) onError;
 
   const EditableNumericInputText({
     Key key,
     this.defaultValue = 0.0,
     @required this.currencyId,
     @required this.onChanged,
-    this.onError,
   })  : assert(currencyId != null),
         super(key: key);
 
@@ -27,8 +28,6 @@ class EditableNumericInputText extends StatefulWidget {
 
 class _EditableNumericInputTextState extends State<EditableNumericInputText> {
   TextEditingController _controller;
-
-  bool _foundError = false;
 
   bool _loadedSuffixSymbol = false;
   String _suffixSymbol = "";
@@ -63,10 +62,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
       _loadSuffixSymbol();
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: _foundError ? Colors.red.withOpacity(0.8) : Colors.transparent,
-      ),
+    return RowWrapper(
       child: TextFormField(
         controller: _controller,
         textAlign: TextAlign.right,
@@ -75,30 +71,36 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         enableSuggestions: false,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         decoration: InputDecoration(
-          suffixStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-            fontSize: 16,
-          ),
           suffixText: _suffixSymbol,
+          labelText: LocaleKeys.add_page_amount.tr(),
+          icon: const Icon(Icons.attach_money),
+          // errorStyle:
         ),
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         onChanged: (String value) {
-          value = value.replaceAll(",", ".");
-          final res = double.tryParse(value);
-          setState(() {
-            _foundError = res == null;
-          });
-          if (widget.onError != null) {
-            widget.onError(_foundError);
-          }
           _validateAndSend(value);
         },
+        validator: (value) {
+          if (value == null ||
+              double.tryParse(value.replaceAll(",", ".")) == null) {
+            return LocaleKeys.add_page_not_a_number.tr();
+          }
+          if (double.tryParse(value.replaceAll(",", ".")) == 0) {
+            return LocaleKeys.add_page_amount_equals_zero.tr();
+          }
+          if (double.tryParse(value.replaceAll(",", ".")) < 0) {
+            return LocaleKeys.add_page_amount_smaller_zero.tr();
+          }
+          return null;
+        },
+        // TODO needed?
         onFieldSubmitted: (value) {
           _validateAndSend(value);
         },
         onSaved: (value) {
           _validateAndSend(value);
         },
-        autofocus: true,
+        // autofocus: false, // TODO
         autocorrect: false,
       ),
     );
@@ -107,18 +109,8 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
   void _validateAndSend(String text) {
     if (widget.onChanged != null) {
       final res = double.tryParse(text.replaceAll(",", "."));
-      if (res == null) {
-        setState(() {
-          _foundError = true;
-        });
-      } else {
-        setState(() {
-          _foundError = false;
-        });
+      if (res != null) {
         widget.onChanged(res);
-        if (widget.onError != null) {
-          widget.onError(_foundError);
-        }
       }
     }
   }
