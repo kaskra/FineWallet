@@ -78,13 +78,12 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// - [db_file.Transaction] that should be updated.
   ///
   Future<int> updateTransaction(BaseTransaction tx,
-      {UpdateTransactionModifier modifier =
-          UpdateTransactionModifier.all}) async {
+      {UpdateModifier modifier = UpdateModifier.all}) async {
     // TODO handle flag
     var id = -1;
 
-    if (modifier == UpdateTransactionModifier.onlySelected) {
-    } else if (modifier == UpdateTransactionModifier.allFuture) {
+    if (modifier == UpdateModifier.onlySelected) {
+    } else if (modifier == UpdateModifier.allFuture) {
     } else {
       id = await _upsertTransaction(tx, update: true);
     }

@@ -1,1 +1,1 @@
-enum UpdateTransactionModifier { all, allFuture, onlySelected }
+enum UpdateModifier { all, allFuture, onlySelected }
