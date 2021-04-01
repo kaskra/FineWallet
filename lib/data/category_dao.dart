@@ -53,7 +53,7 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future deleteCategoryWithSubcategories(int id) {
     return transaction(() async {
       // await (delete(subcategories)..where((s) => s.categoryId.equals(id))).go();
-      _deleteCustomCategory(id);
+      await _deleteCustomCategory(id);
     });
   }
 
