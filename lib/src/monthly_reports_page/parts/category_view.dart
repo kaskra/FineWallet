@@ -1,5 +1,4 @@
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/month_dao.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -43,8 +42,8 @@ class CategoryListView extends StatelessWidget {
           return Column(
             children: <Widget>[
               for (int i = 0; i < snapshot.data.length; i++)
-                _buildCategoryListItem(snapshot.data[i].c.id,
-                    snapshot.data[i].sumAmount, snapshot.data[i].c.name)
+                _buildCategoryListItem(
+                    snapshot.data[i].c, snapshot.data[i].sumAmount)
             ],
           );
         } else {
@@ -55,7 +54,7 @@ class CategoryListView extends StatelessWidget {
   }
 
   // TODO refactor dialog
-  void _showTransactionsOfCategory(int id, String categoryName) {
+  void _showTransactionsOfCategory(Category cat) {
     showDialog(
       context: context,
       builder: (context) => Center(
@@ -67,8 +66,8 @@ class CategoryListView extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.8,
           child: Column(
             children: <Widget>[
-              _buildDialogHeader(id, categoryName),
-              Expanded(child: _buildDialogTransactionList(id)),
+              _buildDialogHeader(cat),
+              Expanded(child: _buildDialogTransactionList(cat.id)),
               Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
@@ -93,7 +92,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  Widget _buildDialogHeader(int id, String categoryName) {
+  Widget _buildDialogHeader(Category cat) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
@@ -114,13 +113,13 @@ class CategoryListView extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               color: Theme.of(context).colorScheme.secondary,
               child: Icon(
-                CategoryIcon(id - 1).data,
+                IconData(cat.iconCodePoint, fontFamily: 'MaterialIcons'),
                 size: 45,
               ),
             ),
           ),
           Text(
-            tryTranslatePreset(categoryName),
+            tryTranslatePreset(cat.name),
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
               decoration: TextDecoration.none,
@@ -205,13 +204,13 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryListItem(int id, double amount, String categoryName) {
+  Widget _buildCategoryListItem(Category cat, double amount) {
     return DecoratedCard(
       elevation: 0,
       padding: 2,
       child: ListTile(
         onTap: () {
-          _showTransactionsOfCategory(id, categoryName);
+          _showTransactionsOfCategory(cat);
         },
         leading: SizedBox(
           height: 50,
@@ -223,7 +222,7 @@ class CategoryListView extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               color: Theme.of(context).colorScheme.secondary,
               child: Icon(
-                CategoryIcon(id - 1).data,
+                IconData(cat.iconCodePoint, fontFamily: 'MaterialIcons'),
                 color: Theme.of(context).colorScheme.onSurface,
                 size: 25,
               ),
@@ -235,7 +234,7 @@ class CategoryListView extends StatelessWidget {
           colored: true,
           textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
         ),
-        title: Text(categoryName),
+        title: Text(tryTranslatePreset(cat.name)),
       ),
     );
   }

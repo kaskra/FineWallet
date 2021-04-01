@@ -93,7 +93,10 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Row(
             children: <Widget>[
-              _buildIcon(context, IconData(snapshotItem.cc.iconCodePoint)),
+              _buildIcon(
+                  context,
+                  IconData(snapshotItem.cc.iconCodePoint,
+                      fontFamily: 'MaterialIcons')),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0),

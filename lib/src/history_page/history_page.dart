@@ -1,5 +1,4 @@
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';

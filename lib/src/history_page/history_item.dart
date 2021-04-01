@@ -110,7 +110,8 @@ class HistoryItem extends StatelessWidget {
             trailing: _buildAmountText(context),
             leading: isSelected
                 ? const HistoryItemCheckmark()
-                : HistoryItemIcon(categoryId: transaction.s.categoryId),
+                : HistoryItemIcon(
+                    categoryCodePoint: transaction.cc.iconCodePoint),
           ),
         ),
       ),
@@ -143,10 +144,10 @@ class HistoryItem extends StatelessWidget {
 }
 
 class HistoryItemIcon extends StatelessWidget {
-  final int categoryId;
+  final int categoryCodePoint;
 
-  const HistoryItemIcon({Key key, @required this.categoryId})
-      : assert(categoryId != null),
+  const HistoryItemIcon({Key key, @required this.categoryCodePoint})
+      : assert(categoryCodePoint != null),
         super(key: key);
 
   @override
@@ -154,7 +155,7 @@ class HistoryItemIcon extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       child: Icon(
-        CategoryIcon(categoryId - 1).data,
+        IconData(categoryCodePoint, fontFamily: 'MaterialIcons'),
         color: Theme.of(context).iconTheme.color,
       ),
     );

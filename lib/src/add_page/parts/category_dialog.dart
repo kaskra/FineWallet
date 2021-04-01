@@ -1,5 +1,4 @@
 import 'package:FineWallet/constants.dart';
-import 'package:FineWallet/core/datatypes/category_icon.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/logger.dart';
@@ -225,7 +224,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             }
           },
           text: tryTranslatePreset(c),
-          iconData: CategoryIcon(c.id - 1).data,
+          iconData: IconData(c.iconCodePoint, fontFamily: 'MaterialIcons'),
         ),
         if (!c.isPreset)
           Positioned(
