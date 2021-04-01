@@ -53,8 +53,7 @@ class AppDatabase extends _$AppDatabase {
           }
           final dbFolder = await getDatabasesPath();
           final file = File(p.join(dbFolder, 'database.sqlite'));
-          return VmDatabase(file, logStatements: true);
-          // TODO add setup function to add user-defined functions
+          return VmDatabase(file, logStatements: false);
         }));
 
   @override
@@ -109,6 +108,9 @@ class AppDatabase extends _$AppDatabase {
   /// list of all [Recurrence]s
   Future<List<RecurrenceType>> getRecurrences() =>
       select(recurrenceTypes).get();
+
+  Future<RecurrenceType> getRecurrenceById(int id) =>
+      recurrenceById(id).getSingleOrNull();
 
   Future addUserProfile(Insertable<UserProfile> profile) =>
       into(userProfiles).insert(profile, mode: InsertMode.insertOrReplace);

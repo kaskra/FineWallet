@@ -171,6 +171,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
             ));
     if (newCategory != null) {
       final category = CategoriesCompanion.insert(
+          iconCodePoint: Icons.description.codePoint,
           name: newCategory,
           isExpense: moor.Value(widget.isExpense),
           isPreset: const moor.Value(false));

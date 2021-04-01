@@ -56,6 +56,12 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Future<List<TransactionsResult>> getAllTransactions() =>
       _transactions().get();
 
+  Future<List<BaseTransaction>> getAllBaseTransactions() =>
+      _baseTransactions().get();
+
+  Future<BaseTransaction> getBaseTransactionsById(int id) =>
+      _baseTransactionById(id).getSingleOrNull();
+
   /// Inserts a [db_file.Transaction] into the transactions table.
   ///
   /// While inserting, it makes sure that the month id exists, if not
@@ -103,22 +109,21 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       final originalAmount = tx.amount;
       final amount = tx.amount * exchangeRate;
 
-      return into(baseTransactions).insertOnConflictUpdate(
-        BaseTransactionsCompanion.insert(
-          id: update ? Value(tx.id) : const Value.absent(),
-          amount: amount,
-          originalAmount: originalAmount,
-          exchangeRate: exchangeRate,
-          isExpense: tx.isExpense,
-          date: tx.date,
-          label: tx.label,
-          subcategoryId: tx.subcategoryId,
-          monthId: monthId,
-          currencyId: tx.currencyId,
-          recurrenceType: tx.recurrenceType,
-          until: tx.until == null ? const Value.absent() : Value(tx.until),
-        ),
+      final insert = BaseTransactionsCompanion.insert(
+        id: update ? Value(tx.id) : const Value.absent(),
+        amount: amount,
+        originalAmount: originalAmount,
+        exchangeRate: exchangeRate,
+        isExpense: tx.isExpense,
+        date: tx.date,
+        label: tx.label,
+        subcategoryId: tx.subcategoryId,
+        monthId: monthId,
+        currencyId: tx.currencyId,
+        recurrenceType: tx.recurrenceType,
+        until: tx.until == null ? const Value.absent() : Value(tx.until),
       );
+      return into(baseTransactions).insertOnConflictUpdate(insert);
     });
   }
 
@@ -152,7 +157,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// -----
   ///  - [TransactionFilterSettings] to filter the query results.
   ///
-  Stream<List<TransactionsWithFilterResult>> watchTransactionsWithFilter(
+  Stream<List<TransactionWithDetails>> watchTransactionsWithFilter(
       TransactionFilterSettings settings) {
     final txParser = TransactionFilterParser(settings);
     final settingsContent = txParser.parse(tableName: "t");
@@ -207,11 +212,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Watches the latest non-recurrence transaction.
-  Stream<NLatestTransactionsResult> watchLatestTransaction() =>
+  Stream<TransactionWithDetails> watchLatestTransaction() =>
       _nLatestTransactions(1).watchSingleOrNull();
 
   /// Watches the latest N non-recurrence transactions.
-  Stream<List<NLatestTransactionsResult>> watchNLatestTransactions(int N) =>
+  Stream<List<TransactionWithDetails>> watchNLatestTransactions(int N) =>
       _nLatestTransactions(N).watch();
 
   /// Returns a [Stream] of the monthly budget.

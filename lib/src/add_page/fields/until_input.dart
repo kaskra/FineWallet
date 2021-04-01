@@ -11,15 +11,18 @@ class UntilInput extends StatefulWidget {
   final TextEditingController _untilDateController;
 
   final Function(DateTime) onChanged;
+  final Function(bool) onSwitch;
 
   const UntilInput({
     Key key,
     @required TextEditingController untilController,
     @required this.onChanged,
+    @required this.onSwitch,
     @required this.untilDate,
     @required this.date,
     @required this.isLimitedRecurrence,
   })  : assert(onChanged != null),
+        assert(onSwitch != null),
         assert(untilDate != null),
         assert(date != null),
         _untilDateController = untilController,
@@ -75,6 +78,7 @@ class _UntilInputState extends State<UntilInput> {
           setState(() {
             _isLimitedRecurrence = v;
           });
+          widget.onSwitch(_isLimitedRecurrence);
         });
   }
 
@@ -95,6 +99,7 @@ class _UntilInputState extends State<UntilInput> {
         setState(() {
           _isLimitedRecurrence = v;
         });
+        widget.onSwitch(_isLimitedRecurrence);
       },
     );
   }
@@ -121,6 +126,7 @@ class _UntilInputState extends State<UntilInput> {
             final formatter = DateFormat.yMd(context.locale.toLanguageTag());
             widget._untilDateController.text = formatter.format(pickedDate);
             widget.onChanged(pickedDate);
+            widget.onSwitch(_isLimitedRecurrence);
           }
         },
         validator: (value) {

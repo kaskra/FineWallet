@@ -1164,7 +1164,7 @@ void testTransactions() {
 
       final stream = database.transactionDao
           .watchLatestTransaction()
-          .map((event) => event?.t?.id);
+          .map((event) => event?.id);
       final expectation = expectLater(stream, emits(1));
       final expectation2 = expectLater(stream, emitsInOrder([1, 2]));
 
@@ -1176,7 +1176,7 @@ void testTransactions() {
     test('null if no transaction is present', () async {
       final stream = database.transactionDao
           .watchLatestTransaction()
-          .map((event) => event?.t?.id);
+          .map((event) => event?.id);
 
       final expectation = expectLater(stream, emits(null));
       await expectation;
@@ -1185,7 +1185,7 @@ void testTransactions() {
     test('list of N latest transactions should be returned', () async {
       final stream = database.transactionDao
           .watchNLatestTransactions(3)
-          .map((event) => event.map((e) => e.t.id).toList());
+          .map((event) => event.map((e) => e.id).toList());
       final expectation = expectLater(
           stream,
           emitsAnyOf([
@@ -1206,7 +1206,7 @@ void testTransactions() {
     test('empty list if no transactions are present', () async {
       final stream = database.transactionDao
           .watchNLatestTransactions(3)
-          .map((event) => event.map((e) => e.t.id).toList());
+          .map((event) => event.map((e) => e.id).toList());
       final expectation = expectLater(stream, emits([]));
 
       await expectation;
@@ -1215,7 +1215,7 @@ void testTransactions() {
     test('latest transactions should be in descending order', () async {
       final stream = database.transactionDao
           .watchNLatestTransactions(3)
-          .map((event) => event.map((e) => e.t.id).toList());
+          .map((event) => event.map((e) => e.id).toList());
 
       final expectation = expectLater(stream, emits(isList));
 
@@ -1255,7 +1255,7 @@ void testTransactions() {
     test('consider only unique transactions', () async {
       final stream = database.transactionDao
           .watchNLatestTransactions(3)
-          .map((event) => event.map((e) => e.t.id).toList());
+          .map((event) => event.map((e) => e.id).toList());
 
       final expectation = expectLater(
           stream,

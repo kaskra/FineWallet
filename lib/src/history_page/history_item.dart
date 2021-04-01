@@ -10,7 +10,7 @@ class HistoryItem extends StatelessWidget {
     this.userCurrencyId = 1,
   }) : super(key: key);
 
-  final TransactionsWithFilterResult transaction;
+  final TransactionWithDetails transaction;
   final Function(bool) onSelect;
   final bool isSelected;
   final bool isSelectionActive;

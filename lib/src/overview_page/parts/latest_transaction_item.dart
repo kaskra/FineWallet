@@ -4,6 +4,7 @@ import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/logger.dart';
+import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:FineWallet/src/widgets/standalone/action_bottom_sheet.dart';
@@ -41,7 +42,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: StreamBuilder<List<NLatestTransactionsResult>>(
+      child: StreamBuilder<List<TransactionWithDetails>>(
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchNLatestTransactions(numLatestTransactions),
@@ -80,7 +81,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   }
 
   Widget _buildLatestTransactionItem(
-      BuildContext context, NLatestTransactionsResult snapshotItem) {
+      BuildContext context, TransactionWithDetails snapshotItem) {
     return DecoratedCard(
       padding: 0,
       child: InkWell(
@@ -107,11 +108,11 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      if (snapshotItem.t.label.isNotEmpty)
+                      if (snapshotItem.label.isNotEmpty)
                         const SizedBox(height: 4),
-                      if (snapshotItem.t.label.isNotEmpty)
+                      if (snapshotItem.label.isNotEmpty)
                         Text(
-                          snapshotItem.t.label,
+                          snapshotItem.label,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               fontStyle: FontStyle.italic, fontSize: 13),
@@ -125,10 +126,10 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 child: SizedBox(width: 4),
               ),
               CombinedAmountString(
-                amount: snapshotItem.t.amount,
-                originalAmount: snapshotItem.t.originalAmount,
-                isExpense: snapshotItem.t.isExpense,
-                currencyId: snapshotItem.t.currencyId,
+                amount: snapshotItem.amount,
+                originalAmount: snapshotItem.originalAmount,
+                isExpense: snapshotItem.isExpense,
+                currencyId: snapshotItem.currencyId,
                 currencySymbol: snapshotItem.c.symbol,
                 userCurrencyId: _userCurrencyId,
                 titleFontSize: 17,
@@ -157,17 +158,17 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   /// Before deleting the transaction, a confirm dialog will show,
   /// requiring the user to authorize the deletion.
   ///
-  Future _deleteItems(NLatestTransactionsResult tx) async {
+  Future _deleteItems(TransactionWithDetails tx) async {
     if (await showConfirmDialog(context, LocaleKeys.delete_dialog_title.tr(),
         LocaleKeys.delete_dialog_text.tr())) {
       Provider.of<AppDatabase>(context, listen: false)
           .transactionDao
-          .deleteTransactionById(tx.t.id);
+          .deleteTransactionById(tx.id);
     }
   }
 
   Future _showActions(
-      BuildContext context, NLatestTransactionsResult snapshot) async {
+      BuildContext context, TransactionWithDetails snapshot) async {
     await showModalBottomSheet<ActionBottomSheet>(
       context: context,
       builder: (context) => ActionBottomSheet(
@@ -218,14 +219,15 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               onTap: () {
-                // TODO
-                // Navigator.pushReplacement(
-                // context,
-                // MaterialPageRoute(
-                //   builder: (context) => AddPage(
-                //       isExpense: snapshot.t.isExpense, transaction: snapshot),
-                // ),
-                // );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddPage(
+                      isExpense: snapshot.isExpense,
+                      transaction: snapshot,
+                    ),
+                  ),
+                );
               },
             ),
           )

@@ -22,18 +22,20 @@ class AddPage extends StatefulWidget {
   }) : super(key: key);
 
   final bool isExpense;
-  final TransactionWithCategoryAndCurrency transaction;
+  final TransactionWithDetails transaction;
 
   @override
   _AddPageState createState() => _AddPageState();
 }
 
 class _AddPageState extends State<AddPage> {
+  final _formKey = GlobalKey<FormState>();
+
   /// The transactions that the user wants to edit.
-  TransactionWithCategoryAndCurrency _transaction;
+  TransactionWithDetails _transaction;
 
   /// The input currency id
-  final int _inputCurrencyId = UserSettings.getInputCurrency();
+  int _inputCurrencyId = UserSettings.getInputCurrency();
   int _userCurrencyId = 1;
 
   /// The flag that signals if the page is loaded in edit or normal mode.
@@ -67,59 +69,79 @@ class _AddPageState extends State<AddPage> {
   ///
   /// This function is only executed once.
   ///
-  // Future _getTransactionValues() async {
-  //   if (widget.transaction != null) {
-  //     _transaction = widget.transaction;
-  //     _editing = true;
-  //
-  //     _inputCurrencyId = _transaction.tx.currencyId;
-  //
-  //     // Get the original value of the transaction (before exchanging to user currency)
-  //     _amount =
-  //         double.parse((_transaction.tx.originalAmount).toStringAsFixed(2));
-  //
-  //     // Make sure that currency-exchanged value is rounded to 2 decimals
-  //     _date = _transaction.tx.date;
-  //     _subcategory = _transaction.sub;
-  //     _labelController.text = _transaction.tx.label;
-  //     _isRecurring = _transaction.tx.isRecurring;
-  //     _untilDate = _transaction.tx.until;
-  //
-  //     if (_isRecurring) {
-  //       // If recurring, set the date to the first of the recurrence.
-  //       // With that every recurring instance is changed
-  //       List<Transaction> txs =
-  //           await Provider.of<AppDatabase>(context, listen: false)
-  //               .transactionDao
-  //               .getAllTransactions();
-  //       txs = txs.where((tx) => tx.id == _transaction.tx.originalId).toList();
-  //       txs = txs.where((t) => t.date.isBeforeOrEqual(today())).toList();
-  //       _date = txs.toList().last.date;
-  //
-  //       final List<RecurrenceType> recurrenceName =
-  //           await Provider.of<AppDatabase>(context, listen: false)
-  //               .getRecurrences();
-  //       _recurrence = recurrenceName
-  //           .where((r) => r.type == _transaction.tx.recurrenceType)
-  //           .first;
-  //     }
-  //   }
-  //
-  //   setState(() {
-  //     _initialized = true;
-  //   });
-  // }
+  Future _loadTransaction() async {
+    if (widget.transaction != null) {
+      _transaction = widget.transaction;
+      _editing = true;
 
-  final _formKey = GlobalKey<FormState>();
+      _inputCurrencyId = _transaction.currencyId;
+
+      // Get the original value of the transaction (before exchanging to user currency)
+      // Make sure that currency-exchanged value is rounded to 2 decimals
+      _amount = double.parse((_transaction.originalAmount).toStringAsFixed(2));
+
+      _date = DateTime.parse(_transaction.date);
+      _subcategory = _transaction.s;
+      _labelController.text = _transaction.label;
+
+      if (_transaction.recurrenceType > 1) {
+        // If recurring, set the date to the first of the recurrence.
+        // With that every recurring instance is changed
+        final BaseTransaction tx =
+            await Provider.of<AppDatabase>(context, listen: false)
+                .transactionDao
+                .getBaseTransactionsById(_transaction.id);
+        _date = tx.date;
+      }
+
+      _recurrence = await Provider.of<AppDatabase>(context, listen: false)
+          .getRecurrenceById(_transaction.recurrenceType);
+
+      if (_transaction.until != null) {
+        _untilDate = _transaction.until;
+      }
+      _isLimitedRecurrence = _transaction.until != null;
+    } else {
+      final recurrences = await Provider.of<AppDatabase>(context, listen: false)
+          .getRecurrences();
+      _recurrence = recurrences[0];
+    }
+  }
+
+  Future _loadUserCurrency() async {
+    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
+            .currencyDao
+            .getUserCurrency())
+        ?.id;
+  }
+
+  void _addCategoryListener() {
+    Provider.of<AppDatabase>(context)
+        .categoryDao
+        .watchAllSubcategories()
+        .listen((snapshot) {
+      final subcats = snapshot.map((subcat) => subcat.id).toList();
+      var text = "";
+
+      if (_subcategory != null && subcats.isNotEmpty) {
+        if (subcats.contains(_subcategory.id)) {
+          text = tryTranslatePreset(_subcategory);
+        } else {
+          setState(() {
+            _subcategory = null;
+          });
+        }
+      }
+      _categoryController.text = text;
+    });
+  }
 
   Future<bool> _initialize() async {
     if (!_initialized) {
-      // _getTransactionValues();
       _addCategoryListener();
-      await _loadOnceRecurrence();
       await _loadUserCurrency();
+      await _loadTransaction();
       _initialized = true;
-      logMsg("Only once");
     }
     return Future.value(true);
   }
@@ -203,39 +225,6 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Future _loadOnceRecurrence() async {
-    _recurrence =
-        (await Provider.of<AppDatabase>(context).getRecurrences()).first;
-  }
-
-  Future _loadUserCurrency() async {
-    _userCurrencyId = (await Provider.of<AppDatabase>(context, listen: false)
-            .currencyDao
-            .getUserCurrency())
-        ?.id;
-  }
-
-  void _addCategoryListener() {
-    Provider.of<AppDatabase>(context)
-        .categoryDao
-        .watchAllSubcategories()
-        .listen((snapshot) {
-      final subcats = snapshot.map((subcat) => subcat.id).toList();
-      var text = "";
-
-      if (_subcategory != null && subcats.isNotEmpty) {
-        if (subcats.contains(_subcategory.id)) {
-          text = tryTranslatePreset(_subcategory);
-        } else {
-          setState(() {
-            _subcategory = null;
-          });
-        }
-      }
-      _categoryController.text = text;
-    });
-  }
-
   /// Creates or updates the transaction, if it is valid and there are no
   /// other problems.
   ///
@@ -285,22 +274,23 @@ class _AddPageState extends State<AddPage> {
   /// as the original transaction.
   ///
   Future _updateTransaction() async {
-    // TODO
-    // final tx = BaseTransactionsCompanion.insert(
-    //   id: _transaction.tx.originalId,
-    //   date: _date,
-    //   isExpense: widget.isExpense,
-    //   amount: _amount,
-    //   originalAmount: _amount,
-    //   exchangeRate: null,
-    //   monthId: null,
-    //   subcategoryId: _subcategory.id,
-    //   currencyId: _inputCurrencyId,
-    //   label: _labelController.text.trim(),
-    // );
-    // await Provider.of<AppDatabase>(context, listen: false)
-    //     .transactionDao
-    //     .updateTransaction(tx);
+    final tx = BaseTransaction(
+      id: _transaction.id,
+      date: _date,
+      isExpense: widget.isExpense,
+      amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      currencyId: _inputCurrencyId,
+      label: _labelController.text.trim(),
+      recurrenceType: _recurrence.id,
+      until: _isLimitedRecurrence ? _untilDate : null,
+    );
+    await Provider.of<AppDatabase>(context, listen: false)
+        .transactionDao
+        .updateTransaction(tx);
   }
 
   /// Builds the body structure .
@@ -372,6 +362,7 @@ class _AddPageState extends State<AddPage> {
   }
 
   Widget _categoryRow() {
+    _categoryController.text = tryTranslatePreset(_subcategory);
     return CategoryInput(
         isExpense: widget.isExpense,
         subcategory: _subcategory,
@@ -429,7 +420,14 @@ class _AddPageState extends State<AddPage> {
     return UntilInput(
       untilController: _untilDateController,
       onChanged: (pickedDate) {
-        _untilDate = pickedDate;
+        setState(() {
+          _untilDate = pickedDate;
+        });
+      },
+      onSwitch: (isLimitedRecurrence) {
+        setState(() {
+          _isLimitedRecurrence = isLimitedRecurrence;
+        });
       },
       untilDate: _untilDate,
       date: _date,

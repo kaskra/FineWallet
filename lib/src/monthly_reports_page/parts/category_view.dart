@@ -144,12 +144,12 @@ class CategoryListView extends StatelessWidget {
         stream: Provider.of<AppDatabase>(context)
             .transactionDao
             .watchTransactionsWithFilter(settings),
-        builder: (context,
-            AsyncSnapshot<List<TransactionsWithFilterResult>> snapshot) {
+        builder:
+            (context, AsyncSnapshot<List<TransactionWithDetails>> snapshot) {
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
-              for (final TransactionsWithFilterResult tx in snapshot.data ?? [])
+              for (final TransactionWithDetails tx in snapshot.data ?? [])
                 _buildTransactionRow(tx),
             ],
           );
@@ -158,7 +158,7 @@ class CategoryListView extends StatelessWidget {
     );
   }
 
-  InformationRow _buildTransactionRow(TransactionsWithFilterResult tx) {
+  InformationRow _buildTransactionRow(TransactionWithDetails tx) {
     // Initialize date formatter for timestamp
     final formatter = DateFormat.yMMMEd(context.locale.toLanguageTag());
 

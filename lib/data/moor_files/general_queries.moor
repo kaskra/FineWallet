@@ -2,3 +2,4 @@ import 'tables.moor';
 
 getUserProfile: SELECT * FROM userProfiles WHERE id = 1;
 getTimestamp: SELECT CAST(strftime('%s', 'now', 'localtime') AS INT) * 1000 AS timestamp;
+recurrenceById: SELECT * FROM recurrenceTypes WHERE id=:id;

@@ -7,6 +7,12 @@ _transactions:
 SELECT *
 FROM fullTransactions;
 
+_baseTransactions:
+SELECT * FROM baseTransactions;
+
+_baseTransactionById:
+SELECT * FROM baseTransactions WHERE id=:id;
+
 _deleteTxById:
 DELETE
 FROM baseTransactions
@@ -23,7 +29,7 @@ SELECT (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense A
 FROM months m
 WHERE m.firstDate <= :date AND m.lastDate >= :date;
 
-_transactionsWithFilter ($predicate = True):
+_transactionsWithFilter ($predicate = True) AS TransactionWithDetails:
 SELECT t.*, cc.**, s.**, c.**
 FROM fullTransactions t,
      categories cc,
@@ -59,15 +65,16 @@ WHERE t.subcategoryId = s.id
   AND $predicate
 GROUP BY c.id;
 
-_nLatestTransactions:
-SELECT t.**, cc.**, s.**, c.**
-FROM baseTransactions t,
+_nLatestTransactions AS TransactionWithDetails:
+SELECT t.*, cc.**, s.**, c.**
+FROM fullTransactions t,
      categories cc,
      subcategories s,
      currencies c
 WHERE t.subcategoryId = s.id
   AND t.currencyId = c.id
   AND s.categoryId = cc.id
+GROUP BY t.id HAVING MIN(t.id) -- hack to get the same output model as 'with filter'. Take first of recurrences
 ORDER BY t.id DESC LIMIT :N;
 
 _monthlyBudget:

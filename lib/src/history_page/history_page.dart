@@ -8,7 +8,7 @@ import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/logger.dart';
+import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,8 +43,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   TransactionFilterSettings _filterSettings;
-  final Map<int, TransactionsWithFilterResult> _selectedItems =
-      <int, TransactionsWithFilterResult>{};
+  final Map<int, TransactionWithDetails> _selectedItems =
+      <int, TransactionWithDetails>{};
   bool _isSelectionActive = false;
 
   /// The history filter state that holds every filter setting.
@@ -232,7 +232,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildSelectionAppBar() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: SelectionAppBar<TransactionsWithFilterResult>(
+      child: SelectionAppBar<TransactionWithDetails>(
         title: "FineWallet",
         selectedItems: _selectedItems,
         onClose: () => _closeSelection(),
@@ -244,12 +244,12 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildHistoryList() {
-    return StreamBuilder<List<TransactionsWithFilterResult>>(
+    return StreamBuilder<List<TransactionWithDetails>>(
       stream: Provider.of<AppDatabase>(context)
           .transactionDao
           .watchTransactionsWithFilter(_filterSettings),
       builder: (BuildContext context,
-          AsyncSnapshot<List<TransactionsWithFilterResult>> snapshot) {
+          AsyncSnapshot<List<TransactionWithDetails>> snapshot) {
         if (snapshot.hasData) {
           final foundTransactions = snapshot.data
               .where((element) => element.label
@@ -288,7 +288,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// [ListView] containing [HistoryItem], [HistoryMonthDivider]
   /// and [HistoryDateTitle].
   ///
-  Widget _buildItems(List<TransactionsWithFilterResult> data) {
+  Widget _buildItems(List<TransactionWithDetails> data) {
     final items = <Widget>[];
 
     DateTime lastDate = DateTime.parse(data.first.date);
@@ -327,7 +327,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// ------
   /// [HistoryItem] with transaction information.
   ///
-  Widget _buildItem(TransactionsWithFilterResult d) {
+  Widget _buildItem(TransactionWithDetails d) {
     return HistoryItem(
       key: Key(d.hashCode.toString()),
       transaction: d,
@@ -354,7 +354,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// - [bool] received from a item.
   /// - [TransactionWithCategoryAndCurrency] which is displayed on the item.
   ///
-  void _toggleSelectionMode(bool selected, TransactionsWithFilterResult data) {
+  void _toggleSelectionMode(bool selected, TransactionWithDetails data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.id)) {
         _selectedItems.putIfAbsent(data.id, () => data);
@@ -401,20 +401,18 @@ class _HistoryPageState extends State<HistoryPage> {
 
   /// Edit an item on the add page. Close selection mode afterwards.
   ///
-  void _editItem(TransactionsWithFilterResult tx) {
-    logMsg(tx.toString());
-    // TODO
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) =>
-    //             AddPage(isExpense: tx.isExpense, transaction: tx)));
+  void _editItem(TransactionWithDetails tx) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                AddPage(isExpense: tx.isExpense, transaction: tx)));
     _closeSelection();
   }
 
   /// Shares an item using TX SHARE. Closes selection mode afterwards.
   ///
-  void _shareItem(TransactionsWithFilterResult tx) {
+  void _shareItem(TransactionWithDetails tx) {
     showConfirmDialog(
       context,
       LocaleKeys.history_page_share_title.tr(),

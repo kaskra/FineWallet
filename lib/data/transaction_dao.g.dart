@@ -33,9 +33,20 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         recurrenceType: row.read<int>('recurrenceType'),
         until:
             BaseTransactions.$converter1.mapToDart(row.read<String>('until')),
-        recurrenceName: row.read<String>('recurrenceName'),
       );
     });
+  }
+
+  Selectable<BaseTransaction> _baseTransactions() {
+    return customSelect('SELECT * FROM baseTransactions',
+        variables: [],
+        readsFrom: {baseTransactions}).map(baseTransactions.mapFromRow);
+  }
+
+  Selectable<BaseTransaction> _baseTransactionById(int id) {
+    return customSelect('SELECT * FROM baseTransactions WHERE id=:id',
+        variables: [Variable<int>(id)],
+        readsFrom: {baseTransactions}).map(baseTransactions.mapFromRow);
   }
 
   Future<int> _deleteTxById(int id) {
@@ -73,7 +84,7 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         '(SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -\r\n    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate)'));
   }
 
-  Selectable<TransactionsWithFilterResult> _transactionsWithFilter(
+  Selectable<TransactionWithDetails> _transactionsWithFilter(
       {Expression<bool> predicate = const CustomExpression('(TRUE)')}) {
     final generatedpredicate = $write(predicate, hasMultipleTables: true);
     return customSelect(
@@ -89,7 +100,7 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
           recurrenceTypes,
           months
         }).map((QueryRow row) {
-      return TransactionsWithFilterResult(
+      return TransactionWithDetails(
         id: row.read<int>('id'),
         amount: row.read<double>('amount'),
         originalAmount: row.read<double>('originalAmount'),
@@ -103,7 +114,6 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         recurrenceType: row.read<int>('recurrenceType'),
         until:
             BaseTransactions.$converter1.mapToDart(row.read<String>('until')),
-        recurrenceName: row.read<String>('recurrenceName'),
         cc: categories.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
         s: subcategories.mapFromRowOrNull(row, tablePrefix: 'nested_1'),
         c: currencies.mapFromRowOrNull(row, tablePrefix: 'nested_2'),
@@ -165,23 +175,37 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
     });
   }
 
-  Selectable<NLatestTransactionsResult> _nLatestTransactions(int N) {
+  Selectable<TransactionWithDetails> _nLatestTransactions(int N) {
     return customSelect(
-        'SELECT "t"."id" AS "nested_0.id", "t"."amount" AS "nested_0.amount", "t"."originalAmount" AS "nested_0.originalAmount", "t"."exchangeRate" AS "nested_0.exchangeRate", "t"."isExpense" AS "nested_0.isExpense", "t"."date" AS "nested_0.date", "t"."label" AS "nested_0.label", "t"."subcategoryId" AS "nested_0.subcategoryId", "t"."monthId" AS "nested_0.monthId", "t"."currencyId" AS "nested_0.currencyId", "t"."recurrenceType" AS "nested_0.recurrenceType", "t"."until" AS "nested_0.until", "cc"."id" AS "nested_1.id", "cc"."name" AS "nested_1.name", "cc"."isExpense" AS "nested_1.isExpense", "cc"."isPreset" AS "nested_1.isPreset", "cc"."iconCodePoint" AS "nested_1.iconCodePoint", "s"."id" AS "nested_2.id", "s"."name" AS "nested_2.name", "s"."categoryId" AS "nested_2.categoryId", "s"."isPreset" AS "nested_2.isPreset", "c"."id" AS "nested_3.id", "c"."abbrev" AS "nested_3.abbrev", "c"."symbol" AS "nested_3.symbol", "c"."exchangeRate" AS "nested_3.exchangeRate"\r\nFROM baseTransactions t,\r\n     categories cc,\r\n     subcategories s,\r\n     currencies c\r\nWHERE t.subcategoryId = s.id\r\n  AND t.currencyId = c.id\r\n  AND s.categoryId = cc.id\r\nORDER BY t.id DESC LIMIT :N',
+        'SELECT t.*, "cc"."id" AS "nested_0.id", "cc"."name" AS "nested_0.name", "cc"."isExpense" AS "nested_0.isExpense", "cc"."isPreset" AS "nested_0.isPreset", "cc"."iconCodePoint" AS "nested_0.iconCodePoint", "s"."id" AS "nested_1.id", "s"."name" AS "nested_1.name", "s"."categoryId" AS "nested_1.categoryId", "s"."isPreset" AS "nested_1.isPreset", "c"."id" AS "nested_2.id", "c"."abbrev" AS "nested_2.abbrev", "c"."symbol" AS "nested_2.symbol", "c"."exchangeRate" AS "nested_2.exchangeRate"\r\nFROM fullTransactions t,\r\n     categories cc,\r\n     subcategories s,\r\n     currencies c\r\nWHERE t.subcategoryId = s.id\r\n  AND t.currencyId = c.id\r\n  AND s.categoryId = cc.id\r\nGROUP BY t.id HAVING MIN(t.id) -- hack to get the same output model as \'with filter\'. Take first of recurrences\r\nORDER BY t.id DESC LIMIT :N',
         variables: [
           Variable<int>(N)
         ],
         readsFrom: {
-          baseTransactions,
           categories,
           subcategories,
-          currencies
+          currencies,
+          baseTransactions,
+          recurrenceTypes,
+          months
         }).map((QueryRow row) {
-      return NLatestTransactionsResult(
-        t: baseTransactions.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
-        cc: categories.mapFromRowOrNull(row, tablePrefix: 'nested_1'),
-        s: subcategories.mapFromRowOrNull(row, tablePrefix: 'nested_2'),
-        c: currencies.mapFromRowOrNull(row, tablePrefix: 'nested_3'),
+      return TransactionWithDetails(
+        id: row.read<int>('id'),
+        amount: row.read<double>('amount'),
+        originalAmount: row.read<double>('originalAmount'),
+        exchangeRate: row.read<double>('exchangeRate'),
+        isExpense: row.read<bool>('isExpense'),
+        date: row.read<String>('date'),
+        label: row.read<String>('label'),
+        subcategoryId: row.read<int>('subcategoryId'),
+        monthId: row.read<int>('monthId'),
+        currencyId: row.read<int>('currencyId'),
+        recurrenceType: row.read<int>('recurrenceType'),
+        until:
+            BaseTransactions.$converter1.mapToDart(row.read<String>('until')),
+        cc: categories.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
+        s: subcategories.mapFromRowOrNull(row, tablePrefix: 'nested_1'),
+        c: currencies.mapFromRowOrNull(row, tablePrefix: 'nested_2'),
       );
     });
   }
@@ -256,7 +280,6 @@ class TransactionsResult {
   final int currencyId;
   final int recurrenceType;
   final DateTime until;
-  final String recurrenceName;
   TransactionsResult({
     @required this.id,
     @required this.amount,
@@ -270,11 +293,10 @@ class TransactionsResult {
     @required this.currencyId,
     @required this.recurrenceType,
     this.until,
-    @required this.recurrenceName,
   });
 }
 
-class TransactionsWithFilterResult {
+class TransactionWithDetails {
   final int id;
   final double amount;
   final double originalAmount;
@@ -287,11 +309,10 @@ class TransactionsWithFilterResult {
   final int currencyId;
   final int recurrenceType;
   final DateTime until;
-  final String recurrenceName;
   final Category cc;
   final Subcategory s;
   final Currency c;
-  TransactionsWithFilterResult({
+  TransactionWithDetails({
     @required this.id,
     @required this.amount,
     @required this.originalAmount,
@@ -304,7 +325,6 @@ class TransactionsWithFilterResult {
     @required this.currencyId,
     @required this.recurrenceType,
     this.until,
-    @required this.recurrenceName,
     this.cc,
     this.s,
     this.c,
@@ -325,19 +345,6 @@ class SumTransactionsByCategoryResult {
   final Category c;
   SumTransactionsByCategoryResult({
     @required this.sumAmount,
-    this.c,
-  });
-}
-
-class NLatestTransactionsResult {
-  final BaseTransaction t;
-  final Category cc;
-  final Subcategory s;
-  final Currency c;
-  NLatestTransactionsResult({
-    this.t,
-    this.cc,
-    this.s,
     this.c,
   });
 }

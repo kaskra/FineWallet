@@ -37,7 +37,7 @@ SELECT t.id,
        t.originalAmount,
        t.exchangeRate,
        t.isExpense,
-       tmp.txDate                                   AS date,
+       tmp.txDate                                    AS date,
        t.label,
        t.subcategoryId,
        (SELECT id
@@ -46,8 +46,7 @@ SELECT t.id,
           AND DATE(m.lastDate) >= DATE(tmp.txDate)) AS monthId,
        t.currencyId,
        tmp.recType                                  AS recurrenceType,
-       t.until,
-       tmp.name                                     AS recurrenceName
+       t.until
 FROM tmp,
      baseTransactions t
 WHERE tmp.id = t.id;
