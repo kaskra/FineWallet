@@ -234,7 +234,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchMonthlyBudget(DateTime date) =>
-      _monthlyBudget(date.toSql()).watchSingle();
+      _monthlyBudget(date.toSql()).watchSingleOrNull();
 
   /// Returns a [Stream] of the daily budget.
   ///
@@ -251,7 +251,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// [Stream] of type [double] that holds the daily budget.
   ///
   Stream<double> watchDailyBudget(DateTime date) =>
-      _dailyBudget(date.toSql(), date.remainingDaysInMonth).watchSingle();
+      _dailyBudget(date.toSql(), date.remainingDaysInMonth).watchSingleOrNull();
 
   /// Returns all expenses of the last seven days grouped by date and summed up.
   ///

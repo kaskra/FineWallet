@@ -1221,25 +1221,21 @@ void testTransactions() {
 
       final expectation2 = expectLater(
           stream,
-          emitsInOrder([
-            orderedEquals([]),
-            orderedEquals([1]),
-            orderedEquals([1]),
-            orderedEquals([1]),
-            orderedEquals([2, 1]),
-            orderedEquals([3, 2, 1]),
+          emitsAnyOf([
             orderedEquals([4, 3, 2]),
+            orderedEquals([3, 2, 1]),
+            orderedEquals([2, 1]),
+            orderedEquals([1]),
+            orderedEquals([]),
           ]));
       final expectation3 = expectLater(
           stream,
-          emitsInOrder([
-            orderedEquals([]),
-            orderedEquals([1]),
-            orderedEquals([1]),
-            orderedEquals([1]),
-            isNot(orderedEquals([1, 2])),
-            isNot(orderedEquals([3, 1, 2])),
+          emitsAnyOf([
             isNot(orderedEquals([2, 4, 3])),
+            isNot(orderedEquals([3, 1, 2])),
+            isNot(orderedEquals([1, 2])),
+            orderedEquals([1]),
+            orderedEquals([]),
           ]));
 
       await database.transactionDao.insertTransaction(onceTransactions[0]);
@@ -1259,10 +1255,8 @@ void testTransactions() {
 
       final expectation = expectLater(
           stream,
-          emitsInAnyOrder([
+          emitsAnyOf([
             [2, 1],
-            [1],
-            [1],
             [1],
             [],
           ]));
@@ -1275,12 +1269,16 @@ void testTransactions() {
 
   group('monthlyBudget', () {
     test('should be negative without setting a max budget', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
+
       final stream =
           database.transactionDao.watchMonthlyBudget(DateTime(2021, 3, 21));
 
       final expectation = expectLater(stream, emits(isNonPositive));
-      final expectation2 =
-          expectLater(stream, emitsInOrder([0, -42, -42, -42, -42, -72]));
+      final expectation2 = expectLater(stream, emitsInOrder([0, -42, -72]));
 
       await database.transactionDao.insertTransaction(onceTransactions[1]);
       await database.transactionDao.insertTransaction(BaseTransaction(
@@ -1303,6 +1301,11 @@ void testTransactions() {
     });
 
     test('should only consider expenses of month', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
+
       final stream =
           database.transactionDao.watchMonthlyBudget(DateTime(2021, 3, 21));
 
@@ -1317,6 +1320,10 @@ void testTransactions() {
     });
 
     test('should be zero with no max budget and expenses', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
       final stream =
           database.transactionDao.watchMonthlyBudget(DateTime(2021, 3, 21));
 
@@ -1340,6 +1347,10 @@ void testTransactions() {
 
   group('dailyBudget', () {
     test('should be negative without setting a max budget', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
       final stream =
           database.transactionDao.watchDailyBudget(DateTime(2021, 3, 26));
 
@@ -1347,8 +1358,8 @@ void testTransactions() {
       const double second = -72 / 6;
 
       final expectation = expectLater(stream, emits(isNonPositive));
-      final expectation2 = expectLater(
-          stream, emitsInOrder([0, first, first, first, first, second]));
+      final expectation2 =
+          expectLater(stream, emitsInOrder([0, first, second]));
 
       await database.transactionDao.insertTransaction(onceTransactions[1]);
       await database.transactionDao.insertTransaction(BaseTransaction(
@@ -1371,6 +1382,10 @@ void testTransactions() {
     });
 
     test('should only consider expenses of month', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
       final stream =
           database.transactionDao.watchDailyBudget(DateTime(2021, 3, 26));
 
@@ -1402,6 +1417,10 @@ void testTransactions() {
     });
 
     test('should change depending on remaining days in month', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
       final stream =
           database.transactionDao.watchDailyBudget(DateTime(2021, 3, 26));
       const double first = -42 / 6;
@@ -1424,6 +1443,10 @@ void testTransactions() {
     });
 
     test('should be zero with no max budget and no expenses', () async {
+      await database.monthDao.insertMonth(MonthsCompanion.insert(
+        firstDate: DateTime(2021, 3),
+        lastDate: DateTime(2021, 3, 31),
+      ));
       final stream =
           database.transactionDao.watchDailyBudget(DateTime(2021, 3, 26));
       final expectation = expectLater(stream, emits(isNonNegative));
@@ -1474,7 +1497,9 @@ void testTransactions() {
       final expectation =
           expectLater(stream, emitsInOrder([withoutTx, first, second]));
 
-      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(onceTransactions[1]
+          .copyWith(
+              date: DateTime(month.lastDate.year, month.lastDate.month, 25)));
       await database.transactionDao.insertTransaction(daily.copyWith(
           amount: recurringExpense,
           date: DateTime(month.lastDate.year, month.lastDate.month, 25),
@@ -1509,7 +1534,9 @@ void testTransactions() {
       final expectation =
           expectLater(stream, emitsInOrder([withoutTx, first, second]));
 
-      await database.transactionDao.insertTransaction(onceTransactions[1]);
+      await database.transactionDao.insertTransaction(onceTransactions[1]
+          .copyWith(
+              date: DateTime(month.lastDate.year, month.lastDate.month, 25)));
       await database.transactionDao.insertTransaction(daily.copyWith(
           amount: recurringExpense,
           recurrenceType: 3,
