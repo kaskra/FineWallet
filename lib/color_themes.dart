@@ -53,6 +53,7 @@ const ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
 );
 
+// Depending on font some currency symbols my not be shown
 const googleFonts = GoogleFonts.robotoSlabTextTheme;
 
 TextTheme textTheme = googleFonts(const TextTheme(

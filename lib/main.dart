@@ -159,6 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final currency = await Provider.of<AppDatabase>(context, listen: false)
         .currencyDao
         .getUserCurrency();
+    print("Currency: $currency");
 
     // Load exchange rates and update currency table in database.
     if (currency != null) {
