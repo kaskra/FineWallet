@@ -418,8 +418,8 @@ class _AddPageState extends State<AddPage> {
 
   Widget _recurrenceRow() {
     if (_recurrence != null) {
-      _recurrenceController.text =
-          fillOutRecurrenceName(_recurrence.name.tr(), _date, _recurrence.id);
+      _recurrenceController.text = fillOutRecurrenceName(
+          _recurrence.name.tr(), _date, _recurrence.id, context);
     }
     return RecurrenceTypeInput(
       recurrenceController: _recurrenceController,

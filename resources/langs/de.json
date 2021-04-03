@@ -124,7 +124,7 @@
       "daily": "Täglich",
       "weekly": "Wöchentlich am ${}",
       "monthly": "Monatlich am ${} ${}",
-      "monthly_date": "Monatlich am",
+      "monthly_date": "Monatlich am ${}.",
       "yearly": "Jährlich am ${}"
     }
   },
@@ -299,5 +299,13 @@
     "import_desc" : "Importieren einer Wiederherstellungsdatei",
     "export" : "Exportieren",
     "export_desc" : "Exportieren einer Wiederherstellungsdatei"
+  },
+  "ordinal_numbers" : {
+    "first" : "ersten",
+    "second" : "zweiten",
+    "third" : "dritten",
+    "fourth" : "vierten",
+    "fifth" : "fünften",
+    "last" : "letzten"
   }
 }

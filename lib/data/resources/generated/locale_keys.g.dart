@@ -264,5 +264,12 @@ abstract class  LocaleKeys {
   static const settings_page_export = 'settings_page.export';
   static const settings_page_export_desc = 'settings_page.export_desc';
   static const settings_page = 'settings_page';
+  static const ordinal_numbers_first = 'ordinal_numbers.first';
+  static const ordinal_numbers_second = 'ordinal_numbers.second';
+  static const ordinal_numbers_third = 'ordinal_numbers.third';
+  static const ordinal_numbers_fourth = 'ordinal_numbers.fourth';
+  static const ordinal_numbers_fifth = 'ordinal_numbers.fifth';
+  static const ordinal_numbers_last = 'ordinal_numbers.last';
+  static const ordinal_numbers = 'ordinal_numbers';
 
 }

@@ -62,8 +62,9 @@ extension ExtendedDateTime on DateTime {
     return "$yearS-$monthS-$dayS";
   }
 
-  // TODO get Nth week
-
+  int getNumberOfWeekInMonth() {
+    return ((day - 1) / 7).floor() + 1;
+  }
 }
 
 DateTime today() {

@@ -123,8 +123,8 @@
       "daily": "Daily",
       "weekly": "Weekly on ${}",
       "monthly": "Monthly on the ${} ${}",
-      "monthly_date": "Monthly on the ${}",
-      "yearly": "Yearly on the ${}"
+      "monthly_date": "Monthly on day ${}",
+      "yearly": "Yearly on ${}"
     }
   },
   "nav": {
@@ -296,5 +296,13 @@
     "import_desc": "Import recovery file",
     "export": "Export",
     "export_desc": "Export recovery file"
+  },
+  "ordinal_numbers" : {
+    "first" : "first",
+    "second" : "second",
+    "third" : "third",
+    "fourth" : "fourth",
+    "fifth" : "fifth",
+    "last" : "last"
   }
 }

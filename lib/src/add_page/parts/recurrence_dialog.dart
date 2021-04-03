@@ -59,7 +59,8 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   Widget _recurrenceItem(RecurrenceType rec) {
     return RadioListTile<int>(
       selected: _recurrenceType == rec.id,
-      title: Text(fillOutRecurrenceName(rec.name.tr(), widget.date, rec.id)),
+      title: Text(
+          fillOutRecurrenceName(rec.name.tr(), widget.date, rec.id, context)),
       value: rec.id,
       dense: true,
       groupValue: _recurrenceType,
