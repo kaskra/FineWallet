@@ -56,6 +56,7 @@ class _AddPageState extends State<AddPage> {
 
   bool _isLimitedRecurrence = true;
   RecurrenceType _recurrence;
+  List<RecurrenceType> _recurrenceTypes = [];
 
   /// The transaction dates.
   DateTime _date = today();
@@ -101,9 +102,9 @@ class _AddPageState extends State<AddPage> {
       }
       _isLimitedRecurrence = _transaction.until != null;
     } else {
-      final recurrences = await Provider.of<AppDatabase>(context, listen: false)
+      _recurrenceTypes = await Provider.of<AppDatabase>(context, listen: false)
           .getRecurrences();
-      _recurrence = recurrences[0];
+      _recurrence = _recurrenceTypes[0];
     }
   }
 
@@ -407,6 +408,11 @@ class _AddPageState extends State<AddPage> {
           _date = pickedDate;
           if (_isUntilDateAtLeastOneDayAfterDate(pickedDate)) {
             _untilDate = pickedDate.add(const Duration(days: 1));
+          }
+          // Set recurrence to nth-occurrence of weekday when date in month
+          // is currently selected and day is too high
+          if (_date.day > 28 && _recurrence.id == 5) {
+            _recurrence = _recurrenceTypes[3];
           }
         });
       },

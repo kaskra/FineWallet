@@ -105,19 +105,20 @@ List<String> _switchBetweenRecurrenceDetails(
   }
 }
 
-// TODO localized
 List<String> _weekly(DateTime date) {
   return [date.getDayName()];
 }
 
 List<String> _monthlyNthWeekday(DateTime date) {
-  final DateTime lastDateInMonth = date.getLastDateOfMonth();
-  final int lastWeek = lastDateInMonth.getNumberOfWeekInMonth();
-
   final int numberOfWeek = date.getNumberOfWeekInMonth();
 
+  final DateTime lastDateInMonth = date.getLastDateOfMonth();
+  final List<int> lastWeekDates = [
+    for (var i = 0; i < 7; i++) lastDateInMonth.day - i
+  ];
+
   String localizedNumberOfWeek = "";
-  if (lastWeek == numberOfWeek) {
+  if (lastWeekDates.contains(date.day)) {
     // Trigger default case of switch statement
     localizedNumberOfWeek = localizeNumberOfWeek(-1);
   } else {

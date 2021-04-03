@@ -45,7 +45,9 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             return ListView(
               shrinkWrap: true,
               children: <Widget>[
-                for (var rec in snapshot.data) _recurrenceItem(rec)
+                for (var rec in snapshot.data)
+                  // Do not show 'monthly exact date' option, when above day 28
+                  if (widget.date.day <= 28 || rec.id != 5) _recurrenceItem(rec)
               ],
             );
           } else {
