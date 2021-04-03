@@ -240,7 +240,9 @@
     "label": "Label",
     "date": "Date",
     "recurrence": "Recurrence",
-    "until" : "Until",
+    "until" : "Ends",
+    "never" : "Never",
+    "on_the" : "On the",
     "select_category": "Select a category",
     "no_suggestions": "No suggestions found.",
     "subcategory_delete_confirm_title": "Delete this subcategory?",
@@ -255,7 +257,11 @@
     "add_category_text": "New Category",
     "add_category_dialog_title": "Add new category",
     "choose_category" : "Add category",
-    "choose_label" : "Add label"
+    "choose_label" : "Add label",
+    "edit_transactions_title" : "Which transactions to change?",
+    "all_transactions" :  "All transactions",
+    "all_future_transactions" : "Only future transactions",
+    "only_selected_transaction" : "Only selected transaction"
   },
   "settings_page": {
     "title": "Settings",

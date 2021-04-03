@@ -70,7 +70,7 @@ class _UntilInputState extends State<UntilInput> {
   RadioListTile<bool> _neverRadioButton() {
     return RadioListTile<bool>(
         contentPadding: const EdgeInsets.only(),
-        title: const Text("Nie"),
+        title: Text(LocaleKeys.add_page_never.tr()),
         selected: !_isLimitedRecurrence,
         value: false,
         groupValue: _isLimitedRecurrence,
@@ -91,7 +91,7 @@ class _UntilInputState extends State<UntilInput> {
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Expanded(child: Text("Am")),
+          Expanded(child: Text(LocaleKeys.add_page_on_the.tr())),
           _untilDateInput(context),
         ],
       ),
@@ -106,7 +106,7 @@ class _UntilInputState extends State<UntilInput> {
 
   Expanded _untilDateInput(BuildContext context) {
     return Expanded(
-      flex: 5,
+      flex: 3,
       child: TextFormField(
         controller: widget._untilDateController,
         textAlign: TextAlign.right,

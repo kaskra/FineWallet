@@ -86,7 +86,6 @@ class _AddPageState extends State<AddPage> {
 
       if (_transaction.recurrenceType > 1) {
         // If recurring, set the date to the first of the recurrence.
-        // With that every recurring instance is changed
         final BaseTransaction tx =
             await Provider.of<AppDatabase>(context, listen: false)
                 .transactionDao
@@ -115,7 +114,7 @@ class _AddPageState extends State<AddPage> {
         ?.id;
   }
 
-  void _addCategoryListener() {
+  void _addListeners() {
     Provider.of<AppDatabase>(context)
         .categoryDao
         .watchAllSubcategories()
@@ -138,7 +137,7 @@ class _AddPageState extends State<AddPage> {
 
   Future<bool> _initialize() async {
     if (!_initialized) {
-      _addCategoryListener();
+      _addListeners();
       await _loadUserCurrency();
       await _loadTransaction();
       _initialized = true;
@@ -225,6 +224,19 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
+  // bool _changedNonDateRelatedData() {
+  //   final unchangedAmount =
+  //       double.parse((_transaction?.originalAmount ?? 0.0).toStringAsFixed(2));
+  //
+  //   final unchangedLabel = _transaction.label;
+  //   final unchangedSubcat = _transaction.subcategoryId;
+  //
+  //   return (_subcategory.id != unchangedSubcat ||
+  //           _labelController.text != unchangedLabel ||
+  //           _amount != unchangedAmount) &&
+  //       _transaction.recurrenceType > 1;
+  // }
+
   /// Creates or updates the transaction, if it is valid and there are no
   /// other problems.
   ///
@@ -234,10 +246,18 @@ class _AddPageState extends State<AddPage> {
   Future _save() async {
     if (_formKey.currentState.validate()) {
       if (_editing) {
+        // var res = UpdateModifierFlag.all;
+        // if (_changedNonDateRelatedData()) {
+        //   res = await showDialog(
+        //       context: context, builder: (context) => UpdateModifierDialog());
+        // }
+        // final UpdateModifier um =
+        //     UpdateModifier(res, DateTime.parse(_transaction.date));
         await _updateTransaction();
       } else {
         await _addNewTransaction();
       }
+
       Navigator.of(context).pop();
     }
   }

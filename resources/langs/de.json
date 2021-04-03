@@ -244,6 +244,8 @@
     "date" : "Datum",
     "recurrence" : "Wiederholung",
     "until" : "Endet",
+    "never" : "Nie",
+    "on_the" : "Am",
     "select_category" : "Wähle eine Kategorie",
     "no_suggestions" :  "Keine Vorschläge gefunden.",
     "subcategory_delete_confirm_title": "Unterkategorie löschen?",
@@ -258,7 +260,11 @@
     "add_category_text": "Neue Kategorie",
     "add_category_dialog_title": "Neue Kategorie hinzufügen",
     "choose_category" : "Kategorie hinzufügen",
-    "choose_label" : "Hinweis hinzufügen"
+    "choose_label" : "Hinweis hinzufügen",
+    "edit_transactions_title" : "Welche Einträge verändern?",
+    "all_transactions" :  "Alle Transaktionen",
+    "all_future_transactions" : "Nur zukünftige Transaktionen",
+    "only_selected_transaction" : "Nur ausgewählte Transaktion"
   },
   "settings_page" : {
     "title" : "Einstellungen",

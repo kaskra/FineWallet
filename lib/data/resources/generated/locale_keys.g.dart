@@ -216,6 +216,8 @@ abstract class  LocaleKeys {
   static const add_page_date = 'add_page.date';
   static const add_page_recurrence = 'add_page.recurrence';
   static const add_page_until = 'add_page.until';
+  static const add_page_never = 'add_page.never';
+  static const add_page_on_the = 'add_page.on_the';
   static const add_page_select_category = 'add_page.select_category';
   static const add_page_no_suggestions = 'add_page.no_suggestions';
   static const add_page_subcategory_delete_confirm_title = 'add_page.subcategory_delete_confirm_title';
@@ -231,6 +233,10 @@ abstract class  LocaleKeys {
   static const add_page_add_category_dialog_title = 'add_page.add_category_dialog_title';
   static const add_page_choose_category = 'add_page.choose_category';
   static const add_page_choose_label = 'add_page.choose_label';
+  static const add_page_edit_transactions_title = 'add_page.edit_transactions_title';
+  static const add_page_all_transactions = 'add_page.all_transactions';
+  static const add_page_all_future_transactions = 'add_page.all_future_transactions';
+  static const add_page_only_selected_transaction = 'add_page.only_selected_transaction';
   static const add_page = 'add_page';
   static const settings_page_title = 'settings_page.title';
   static const settings_page_currencies = 'settings_page.currencies';
