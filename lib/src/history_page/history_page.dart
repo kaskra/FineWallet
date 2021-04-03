@@ -356,14 +356,18 @@ class _HistoryPageState extends State<HistoryPage> {
   void _toggleSelectionMode(bool selected, TransactionWithDetails data) {
     if (selected) {
       if (!_selectedItems.containsKey(data.id)) {
-        _selectedItems.putIfAbsent(data.id, () => data);
-        _isSelectionActive = true;
+        setState(() {
+          _selectedItems.putIfAbsent(data.id, () => data);
+          _isSelectionActive = true;
+        });
       }
     } else {
-      _selectedItems.remove(data.id);
-      if (_selectedItems.isEmpty) {
-        _isSelectionActive = false;
-      }
+      setState(() {
+        _selectedItems.remove(data.id);
+        if (_selectedItems.isEmpty) {
+          _isSelectionActive = false;
+        }
+      });
     }
   }
 
