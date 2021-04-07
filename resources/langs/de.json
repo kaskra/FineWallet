@@ -125,6 +125,7 @@
       "weekly": "Wöchentlich am ${}",
       "monthly": "Monatlich am ${} ${}",
       "monthly_date": "Monatlich am ${}.",
+      "monthly_last" : "Monatlich am letzten ${}",
       "yearly": "Jährlich am ${}"
     }
   },

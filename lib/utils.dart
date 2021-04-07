@@ -97,8 +97,10 @@ List<String> _switchBetweenRecurrenceDetails(
     case 4:
       return _monthlyNthWeekday(date);
     case 5:
-      return _monthlyDate(date, context);
+      return _monthlyLastWeek(date);
     case 6:
+      return _monthlyDate(date, context);
+    case 7:
       return _yearlyDate(date, context);
     default:
       return [];
@@ -111,21 +113,13 @@ List<String> _weekly(DateTime date) {
 
 List<String> _monthlyNthWeekday(DateTime date) {
   final int numberOfWeek = date.getNumberOfWeekInMonth();
-
-  final DateTime lastDateInMonth = date.getLastDateOfMonth();
-  final List<int> lastWeekDates = [
-    for (var i = 0; i < 7; i++) lastDateInMonth.day - i
-  ];
-
-  String localizedNumberOfWeek = "";
-  if (lastWeekDates.contains(date.day)) {
-    // Trigger default case of switch statement
-    localizedNumberOfWeek = localizeNumberOfWeek(-1);
-  } else {
-    localizedNumberOfWeek = localizeNumberOfWeek(numberOfWeek);
-  }
+  final String localizedNumberOfWeek = localizeNumberOfWeek(numberOfWeek);
 
   return [localizedNumberOfWeek, date.getDayName()];
+}
+
+List<String> _monthlyLastWeek(DateTime date) {
+  return [date.getDayName()];
 }
 
 List<String> _monthlyDate(DateTime date, BuildContext context) {
@@ -153,4 +147,12 @@ String localizeNumberOfWeek(int week) {
     default:
       return LocaleKeys.ordinal_numbers_last.tr();
   }
+}
+
+bool isInLastWeekOfMonth(DateTime date) {
+  final DateTime lastDateInMonth = date.getLastDateOfMonth();
+  final List<int> lastWeekDates = [
+    for (var i = 0; i < 7; i++) lastDateInMonth.day - i
+  ];
+  return lastWeekDates.contains(date.day);
 }

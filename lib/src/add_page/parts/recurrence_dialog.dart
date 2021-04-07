@@ -47,7 +47,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
               children: <Widget>[
                 for (var rec in snapshot.data)
                   // Do not show 'monthly exact date' option, when above day 28
-                  if (widget.date.day <= 28 || rec.id != 5) _recurrenceItem(rec)
+                  if (_canShowRecurrence(rec)) _recurrenceItem(rec)
               ],
             );
           } else {
@@ -56,6 +56,13 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
         },
       ),
     );
+  }
+
+  bool _canShowRecurrence(RecurrenceType rec) {
+    if (isInLastWeekOfMonth(widget.date) && rec.id == 4) return false;
+    if (!isInLastWeekOfMonth(widget.date) && rec.id == 5) return false;
+    if (widget.date.day >= 29 && rec.id == 6) return false;
+    return true;
   }
 
   Widget _recurrenceItem(RecurrenceType rec) {

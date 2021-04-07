@@ -374,6 +374,8 @@ List<RecurrenceTypesCompanion> recurrenceTypes = [
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_weekly),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_monthly),
   RecurrenceTypesCompanion.insert(
+      name: LocaleKeys.moor_recurrence_monthly_last),
+  RecurrenceTypesCompanion.insert(
       name: LocaleKeys.moor_recurrence_monthly_date),
   RecurrenceTypesCompanion.insert(name: LocaleKeys.moor_recurrence_yearly),
 ];

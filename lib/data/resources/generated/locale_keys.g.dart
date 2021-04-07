@@ -114,6 +114,7 @@ abstract class  LocaleKeys {
   static const moor_recurrence_weekly = 'moor.recurrence.weekly';
   static const moor_recurrence_monthly = 'moor.recurrence.monthly';
   static const moor_recurrence_monthly_date = 'moor.recurrence.monthly_date';
+  static const moor_recurrence_monthly_last = 'moor.recurrence.monthly_last';
   static const moor_recurrence_yearly = 'moor.recurrence.yearly';
   static const moor_recurrence = 'moor.recurrence';
   static const moor = 'moor';

@@ -3,7 +3,7 @@ import
 import
 'tables.moor';
 
-
+-- TODO once view can reference view (dates AS VIEW)?
 
 CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterInsert
     AFTER INSERT
@@ -11,21 +11,23 @@ CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterInsert
 BEGIN
 INSERT INTO months (maxBudget, firstDate, lastDate)
 WITH dates(txDate, recType, until) AS (
-    SELECT DATE (t.date), t.recurrenceType, IFNULL(DATE(t.until), DATE('now','start of month' ,'+1 month' ,'-1 day'))
+    SELECT DATE (t.date), t.recurrenceType, IFNULL(DATE (t.until), DATE ('now', 'start of month', '+1 month', '-1 day'))
 FROM baseTransactions t
 UNION
 SELECT (SELECT CASE dates.recType
                    WHEN 1 THEN dates.txDate
                    WHEN 2 THEN DATE (dates.txDate, '+1 days')
     WHEN 3 THEN DATE (dates.txDate, '+7 days')
-    WHEN 4 THEN DATE (dates.txDate, '+1 month', 'start of month',
-    (SELECT '+' ||
-    CAST (((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
-    ' days'),
-    (SELECT 'weekday ' || strftime('%w', dates.txDate))
-    )
-    WHEN 5 THEN DATE (dates.txDate, '+1 months')
-    WHEN 6 THEN DATE (dates.txDate, '+1 years')
+       -- n-th week case
+    WHEN 4 THEN DATE (dates.txDate, '+1 months', 'start of month',
+    (SELECT '+' || CAST (((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||' days'),
+    (SELECT 'weekday ' || strftime('%w', dates.txDate)))
+       -- last week case
+    WHEN 5 THEN DATE (dates.txDate, 'start of month', '+1 month',
+    '+' || CAST (strftime('%d', dates.txDate, 'start of month', '+2 month', '-1 day') - 7 AS VARCHAR) || ' days',
+    'weekday ' || CAST (strftime('%w', dates.txDate) AS REAL))
+    WHEN 6 THEN DATE (dates.txDate, '+1 months')
+    WHEN 7 THEN DATE (dates.txDate, '+1 years')
     ELSE dates.txDate
 END
 ) AS nextTxDate,
@@ -43,8 +45,6 @@ FROM firstLastDates
 WHERE firstD NOT IN (SELECT firstDate FROM months);
 END;
 
-
-
 CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterUpdate
     AFTER
 UPDATE
@@ -53,22 +53,23 @@ UPDATE
 BEGIN
 INSERT INTO months (maxBudget, firstDate, lastDate)
 WITH dates(txDate, recType, until) AS (
-    SELECT DATE (t.date), t.recurrenceType, IFNULL(DATE(t.until), DATE('now','start of month' ,'+1 month' ,'-1 day'))
+    SELECT DATE (t.date), t.recurrenceType, IFNULL(DATE (t.until), DATE ('now', 'start of month', '+1 month', '-1 day'))
 FROM baseTransactions t
 UNION
 SELECT (SELECT CASE dates.recType
                    WHEN 1 THEN dates.txDate
                    WHEN 2 THEN DATE (dates.txDate, '+1 days')
     WHEN 3 THEN DATE (dates.txDate, '+7 days')
-       -- TODO this up to 4th occurence, then id=5 last occurence
+       -- n-th week case
     WHEN 4 THEN DATE (dates.txDate, '+1 months', 'start of month',
-    (SELECT '+' ||
-    CAST (((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||
-    ' days'),
-    (SELECT 'weekday ' || strftime('%w', dates.txDate))
-    )
-    WHEN 5 THEN DATE (dates.txDate, '+1 months')
-    WHEN 6 THEN DATE (dates.txDate, '+1 years')
+    (SELECT '+' || CAST (((strftime('%d', dates.txDate) - 1) / 7) * 7 AS VARCHAR) ||' days'),
+    (SELECT 'weekday ' || strftime('%w', dates.txDate)))
+       -- last week case
+    WHEN 5 THEN DATE (dates.txDate, 'start of month', '+1 month',
+    '+' || CAST (strftime('%d', dates.txDate, 'start of month', '+2 month', '-1 day') - 7 AS VARCHAR) || ' days',
+    'weekday ' || CAST (strftime('%w', dates.txDate) AS REAL))
+    WHEN 6 THEN DATE (dates.txDate, '+1 months')
+    WHEN 7 THEN DATE (dates.txDate, '+1 years')
     ELSE dates.txDate
 END
 ) AS nextTxDate,

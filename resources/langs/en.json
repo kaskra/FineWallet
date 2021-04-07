@@ -124,6 +124,7 @@
       "weekly": "Weekly on ${}",
       "monthly": "Monthly on the ${} ${}",
       "monthly_date": "Monthly on day ${}",
+      "monthly_last" : "Monthly on the last ${}",
       "yearly": "Yearly on ${}"
     }
   },

@@ -411,8 +411,12 @@ class _AddPageState extends State<AddPage> {
           }
           // Set recurrence to nth-occurrence of weekday when date in month
           // is currently selected and day is too high
-          if (_date.day > 28 && _recurrence.id == 5) {
+          if (_date.day > 28 && _recurrence.id == 6) {
+            _recurrence = _recurrenceTypes[4];
+          } else if (!isInLastWeekOfMonth(_date) && _recurrence.id == 5) {
             _recurrence = _recurrenceTypes[3];
+          } else if (isInLastWeekOfMonth(_date) && _recurrence.id == 4) {
+            _recurrence = _recurrenceTypes[4];
           }
         });
       },

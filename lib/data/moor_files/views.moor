@@ -16,13 +16,16 @@ WITH RECURSIVE tmp(id, txDate, recType, until, name) AS (
                        WHEN 1 THEN tmp.txDate
                        WHEN 2 THEN DATE(tmp.txDate, '+1 days')
                        WHEN 3 THEN DATE(tmp.txDate, '+7 days')
-                       WHEN 4 THEN DATE(tmp.txDate, '+1 month', 'start of month',
-                                        (SELECT '+' || CAST(((strftime('%d', tmp.txDate) - 1) / 7) * 7 AS VARCHAR) ||
-                                                ' days'),
-                                        (SELECT 'weekday ' || strftime('%w', tmp.txDate))
-                           )
-                        WHEN 5 THEN DATE(tmp.txDate, '+1 months')
-                       WHEN 6 THEN DATE(tmp.txDate, '+1 years')
+                        -- n-th week case
+                        WHEN 4 THEN DATE (tmp.txDate, '+1 months', 'start of month',
+                            (SELECT '+' || CAST (((strftime('%d', tmp.txDate) - 1) / 7) * 7 AS VARCHAR) ||' days'),
+                            (SELECT 'weekday ' || strftime('%w', tmp.txDate)))
+                        -- last week case
+                        WHEN 5 THEN DATE (tmp.txDate, 'start of month', '+1 month',
+                            '+' || CAST (strftime('%d', tmp.txDate, 'start of month', '+2 month', '-1 day') - 7 AS VARCHAR) || ' days',
+                            'weekday ' || CAST (strftime('%w', tmp.txDate) AS REAL))
+                        WHEN 6 THEN DATE(tmp.txDate, '+1 months')
+                       WHEN 7 THEN DATE(tmp.txDate, '+1 years')
                        ELSE tmp.txDate
                        END
            ) AS nextTxDate,
