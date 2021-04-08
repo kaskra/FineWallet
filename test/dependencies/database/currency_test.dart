@@ -149,9 +149,16 @@ void testCurrency() {
       () async {
     final allCurrencies = await database.currencyDao.getAllCurrencies();
     final rates = {for (var e in allCurrencies) e.abbrev: 10.0};
-    await database.currencyDao.updateExchangeRates(rates, null);
-    final allCurrenciesAfter = await database.currencyDao.getAllCurrencies();
 
-    expect(allCurrenciesAfter, equals(allCurrencies));
+    try {
+      await database.currencyDao.updateExchangeRates(rates, null);
+    } catch (e) {
+      expect(true, isTrue);
+
+      final allCurrenciesAfter = await database.currencyDao.getAllCurrencies();
+      expect(allCurrenciesAfter, equals(allCurrencies));
+      return;
+    }
+    expect(false, isTrue);
   });
 }
