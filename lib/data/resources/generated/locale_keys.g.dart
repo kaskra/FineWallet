@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const january = 'january';
   static const february = 'february';
   static const march = 'march';
@@ -124,14 +124,17 @@ abstract class  LocaleKeys {
   static const nav_statistics = 'nav.statistics';
   static const nav = 'nav';
   static const welcome_pages_welcome_title = 'welcome_pages.welcome.title';
-  static const welcome_pages_welcome_next_steps = 'welcome_pages.welcome.next_steps';
+  static const welcome_pages_welcome_next_steps =
+      'welcome_pages.welcome.next_steps';
   static const welcome_pages_welcome_data_1 = 'welcome_pages.welcome.data_1';
-  static const welcome_pages_welcome_data_bold = 'welcome_pages.welcome.data_bold';
+  static const welcome_pages_welcome_data_bold =
+      'welcome_pages.welcome.data_bold';
   static const welcome_pages_welcome_data_2 = 'welcome_pages.welcome.data_2';
   static const welcome_pages_welcome = 'welcome_pages.welcome';
   static const welcome_pages_currency_title = 'welcome_pages.currency.title';
   static const welcome_pages_currency_text = 'welcome_pages.currency.text';
-  static const welcome_pages_currency_warning = 'welcome_pages.currency.warning';
+  static const welcome_pages_currency_warning =
+      'welcome_pages.currency.warning';
   static const welcome_pages_currency = 'welcome_pages.currency';
   static const welcome_pages_dark_mode_title = 'welcome_pages.dark_mode.title';
   static const welcome_pages_dark_mode_text = 'welcome_pages.dark_mode.text';
@@ -139,7 +142,8 @@ abstract class  LocaleKeys {
   static const welcome_pages_finish_title = 'welcome_pages.finish.title';
   static const welcome_pages_finish_text = 'welcome_pages.finish.text';
   static const welcome_pages_finish = 'welcome_pages.finish';
-  static const welcome_pages_language_semantic_label = 'welcome_pages.language.semantic_label';
+  static const welcome_pages_language_semantic_label =
+      'welcome_pages.language.semantic_label';
   static const welcome_pages_language_title = 'welcome_pages.language.title';
   static const welcome_pages_language_text = 'welcome_pages.language.text';
   static const welcome_pages_language = 'welcome_pages.language';
@@ -157,13 +161,17 @@ abstract class  LocaleKeys {
   static const expense = 'expense';
   static const income = 'income';
   static const found_no_transactions = 'found_no_transactions';
-  static const overview_page_remaining_budget = 'overview_page.remaining_budget';
-  static const overview_page_latest_transactions = 'overview_page.latest_transactions';
+  static const overview_page_remaining_budget =
+      'overview_page.remaining_budget';
+  static const overview_page_latest_transactions =
+      'overview_page.latest_transactions';
   static const overview_page_last_week = 'overview_page.last_week';
-  static const overview_page_last_week_load_error = 'overview_page.last_week_load_error';
+  static const overview_page_last_week_load_error =
+      'overview_page.last_week_load_error';
   static const overview_page = 'overview_page';
   static const budget_overview_used_budget = 'budget_overview.used_budget';
-  static const budget_overview_change_avail_budget = 'budget_overview.change_avail_budget';
+  static const budget_overview_change_avail_budget =
+      'budget_overview.change_avail_budget';
   static const budget_overview = 'budget_overview';
   static const delete_dialog_title = 'delete_dialog.title';
   static const delete_dialog_text = 'delete_dialog.text';
@@ -181,12 +189,17 @@ abstract class  LocaleKeys {
   static const history_page_share_title = 'history_page.share_title';
   static const history_page_share_text = 'history_page.share_text';
   static const history_page = 'history_page';
-  static const profile_page_month_avail_budget = 'profile_page.month_avail_budget';
-  static const profile_page_spending_prediction = 'profile_page.spending_prediction';
-  static const profile_page_expenses_per_category = 'profile_page.expenses_per_category';
-  static const profile_page_total_avail_budget = 'profile_page.total_avail_budget';
+  static const profile_page_month_avail_budget =
+      'profile_page.month_avail_budget';
+  static const profile_page_spending_prediction =
+      'profile_page.spending_prediction';
+  static const profile_page_expenses_per_category =
+      'profile_page.expenses_per_category';
+  static const profile_page_total_avail_budget =
+      'profile_page.total_avail_budget';
   static const profile_page_expected_savings = 'profile_page.expected_savings';
   static const profile_page_monthly = 'profile_page.monthly';
+  static const profile_page_monthly_budget = 'profile_page.monthly_budget';
   static const profile_page_lifetime = 'profile_page.lifetime';
   static const profile_page_no_expenses = 'profile_page.no_expenses';
   static const profile_page = 'profile_page';
@@ -196,7 +209,8 @@ abstract class  LocaleKeys {
   static const reports_page_overall = 'reports_page.overall';
   static const reports_page_total_income = 'reports_page.total_income';
   static const reports_page_total_expense = 'reports_page.total_expense';
-  static const reports_page_maximal_available_budget = 'reports_page.maximal_available_budget';
+  static const reports_page_maximal_available_budget =
+      'reports_page.maximal_available_budget';
   static const reports_page = 'reports_page';
   static const add_page_title = 'add_page.title';
   static const add_page_fab_tooltip = 'add_page.fab_tooltip';
@@ -210,7 +224,8 @@ abstract class  LocaleKeys {
   static const add_page_date_null = 'add_page.date_null';
   static const add_page_not_a_number = 'add_page.not_a_number';
   static const add_page_not_home_currency = 'add_page.not_home_currency';
-  static const add_page_not_home_currency_change = 'add_page.not_home_currency_change';
+  static const add_page_not_home_currency_change =
+      'add_page.not_home_currency_change';
   static const add_page_amount = 'add_page.amount';
   static const add_page_category = 'add_page.category';
   static const add_page_label = 'add_page.label';
@@ -221,23 +236,34 @@ abstract class  LocaleKeys {
   static const add_page_on_the = 'add_page.on_the';
   static const add_page_select_category = 'add_page.select_category';
   static const add_page_no_suggestions = 'add_page.no_suggestions';
-  static const add_page_subcategory_delete_confirm_title = 'add_page.subcategory_delete_confirm_title';
-  static const add_page_subcategory_delete_confirm_text = 'add_page.subcategory_delete_confirm_text';
-  static const add_page_category_delete_confirm_title = 'add_page.category_delete_confirm_title';
-  static const add_page_category_delete_confirm_text = 'add_page.category_delete_confirm_text';
-  static const add_page_subcategory_alert_title = 'add_page.subcategory_alert_title';
-  static const add_page_subcategory_alert_text = 'add_page.subcategory_alert_text';
+  static const add_page_subcategory_delete_confirm_title =
+      'add_page.subcategory_delete_confirm_title';
+  static const add_page_subcategory_delete_confirm_text =
+      'add_page.subcategory_delete_confirm_text';
+  static const add_page_category_delete_confirm_title =
+      'add_page.category_delete_confirm_title';
+  static const add_page_category_delete_confirm_text =
+      'add_page.category_delete_confirm_text';
+  static const add_page_subcategory_alert_title =
+      'add_page.subcategory_alert_title';
+  static const add_page_subcategory_alert_text =
+      'add_page.subcategory_alert_text';
   static const add_page_category_alert_title = 'add_page.category_alert_title';
   static const add_page_category_alert_text = 'add_page.category_alert_text';
-  static const add_page_add_subcategory_dialog_title = 'add_page.add_subcategory_dialog_title';
+  static const add_page_add_subcategory_dialog_title =
+      'add_page.add_subcategory_dialog_title';
   static const add_page_add_category_text = 'add_page.add_category_text';
-  static const add_page_add_category_dialog_title = 'add_page.add_category_dialog_title';
+  static const add_page_add_category_dialog_title =
+      'add_page.add_category_dialog_title';
   static const add_page_choose_category = 'add_page.choose_category';
   static const add_page_choose_label = 'add_page.choose_label';
-  static const add_page_edit_transactions_title = 'add_page.edit_transactions_title';
+  static const add_page_edit_transactions_title =
+      'add_page.edit_transactions_title';
   static const add_page_all_transactions = 'add_page.all_transactions';
-  static const add_page_all_future_transactions = 'add_page.all_future_transactions';
-  static const add_page_only_selected_transaction = 'add_page.only_selected_transaction';
+  static const add_page_all_future_transactions =
+      'add_page.all_future_transactions';
+  static const add_page_only_selected_transaction =
+      'add_page.only_selected_transaction';
   static const add_page = 'add_page';
   static const settings_page_title = 'settings_page.title';
   static const settings_page_currencies = 'settings_page.currencies';
@@ -250,15 +276,19 @@ abstract class  LocaleKeys {
   static const settings_page_dark_mode = 'settings_page.dark_mode';
   static const settings_page_dark_mode_desc = 'settings_page.dark_mode_desc';
   static const settings_page_enable_filter = 'settings_page.enable_filter';
-  static const settings_page_enable_filter_desc = 'settings_page.enable_filter_desc';
+  static const settings_page_enable_filter_desc =
+      'settings_page.enable_filter_desc';
   static const settings_page_language = 'settings_page.language';
   static const settings_page_social = 'settings_page.social';
   static const settings_page_tx_share = 'settings_page.tx_share';
   static const settings_page_tx_share_desc = 'settings_page.tx_share_desc';
   static const settings_page_defaults = 'settings_page.defaults';
-  static const settings_page_default_filter_settings = 'settings_page.default_filter_settings';
-  static const settings_page_default_filter_settings_desc = 'settings_page.default_filter_settings_desc';
-  static const settings_page_default_expense_chart = 'settings_page.default_expense_chart';
+  static const settings_page_default_filter_settings =
+      'settings_page.default_filter_settings';
+  static const settings_page_default_filter_settings_desc =
+      'settings_page.default_filter_settings_desc';
+  static const settings_page_default_expense_chart =
+      'settings_page.default_expense_chart';
   static const settings_page_others = 'settings_page.others';
   static const settings_page_import = 'settings_page.import';
   static const settings_page_import_desc = 'settings_page.import_desc';
@@ -272,5 +302,4 @@ abstract class  LocaleKeys {
   static const ordinal_numbers_fifth = 'ordinal_numbers.fifth';
   static const ordinal_numbers_last = 'ordinal_numbers.last';
   static const ordinal_numbers = 'ordinal_numbers';
-
 }

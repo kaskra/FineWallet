@@ -213,6 +213,7 @@
     "total_avail_budget": "Monatliches Gesamtbudget",
     "expected_savings": "Erwartete Ersparnisse",
     "monthly" : "Monatlich",
+    "monthly_budget" : "Monatliches Budget",
     "lifetime" : "Insgesamt",
     "no_expenses" : "Keine Ausgaben gefunden."
   },

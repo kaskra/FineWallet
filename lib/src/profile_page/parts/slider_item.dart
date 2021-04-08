@@ -2,7 +2,9 @@ import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
+import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,9 +53,9 @@ class _SliderItemState extends State<SliderItem> {
       child: Column(
         children: [
           InformationRow(
-              padding:
-              const EdgeInsets.only(bottom: 0.0, left: 8.0, right: 8.0),
-              text: Text("Monthly Budget:", style: const TextStyle(fontSize: 14)),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              text: Text(LocaleKeys.profile_page_monthly_budget.tr(),
+                  style: const TextStyle(fontSize: 14)),
               value: Container()),
           Align(
             alignment: Alignment.centerRight,
@@ -136,6 +138,7 @@ class _SliderItemState extends State<SliderItem> {
     return _buildSliderWithTextInput();
   }
 }
+
 //-------------------------------------------------------------------
 class _ValueSlider extends StatefulWidget {
   const _ValueSlider({this.onChangeEnd, this.onChange});
