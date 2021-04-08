@@ -211,6 +211,11 @@ class _AddPageState extends State<AddPage> {
           filled: true,
           fillColor: const Color(0x0a000000),
           border: const OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.onBackground)),
+          labelStyle:
+              TextStyle(color: Theme.of(context).colorScheme.onBackground),
           suffixStyle: TextStyle(
             color: Theme.of(context).colorScheme.onBackground,
             fontSize: 16,
