@@ -2260,19 +2260,19 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   CurrencyDao _currencyDao;
   CurrencyDao get currencyDao =>
       _currencyDao ??= CurrencyDao(this as AppDatabase);
-  Selectable<UserProfile> getUserProfile() {
+  Selectable<UserProfile> _userProfile() {
     return customSelect('SELECT * FROM userProfiles WHERE id = 1',
         variables: [], readsFrom: {userProfiles}).map(userProfiles.mapFromRow);
   }
 
-  Selectable<int> getTimestamp() {
+  Selectable<int> _timestamp() {
     return customSelect(
         'SELECT CAST(strftime(\'%s\', \'now\', \'localtime\') AS INT) * 1000 AS timestamp',
         variables: [],
         readsFrom: {}).map((QueryRow row) => row.read<int>('timestamp'));
   }
 
-  Selectable<RecurrenceType> recurrenceById(int id) {
+  Selectable<RecurrenceType> _recurrenceById(int id) {
     return customSelect('SELECT * FROM recurrenceTypes WHERE id=:id',
         variables: [Variable<int>(id)],
         readsFrom: {recurrenceTypes}).map(recurrenceTypes.mapFromRow);

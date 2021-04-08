@@ -110,8 +110,12 @@ class AppDatabase extends _$AppDatabase {
       select(recurrenceTypes).get();
 
   Future<RecurrenceType> getRecurrenceById(int id) =>
-      recurrenceById(id).getSingleOrNull();
+      _recurrenceById(id).getSingleOrNull();
 
   Future addUserProfile(Insertable<UserProfile> profile) =>
       into(userProfiles).insert(profile, mode: InsertMode.insertOrReplace);
+
+  Future<UserProfile> getUserProfile() => _userProfile().getSingleOrNull();
+
+  Future<int> getTimestamp() => _timestamp().getSingle();
 }

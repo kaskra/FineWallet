@@ -41,13 +41,13 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Stream<List<Category>> watchAllCategoriesByType({@required bool isExpense}) =>
       _categoriesByType(isExpense).watch();
 
-  Future insertCategory(Insertable<Category> category) =>
+  Future<int> insertCategory(Insertable<Category> category) =>
       into(categories).insert(category);
 
-  Future updateCategory(Insertable<Category> category) =>
+  Future<bool> updateCategory(Insertable<Category> category) =>
       update(categories).replace(category);
 
-  Future deleteCategory(Insertable<Category> category) =>
+  Future<int> deleteCategory(Insertable<Category> category) =>
       delete(categories).delete(category);
 
   Future deleteCategoryWithSubcategories(int id) {
@@ -59,22 +59,19 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Subcategory>> getAllSubcategories() => _allSubcategories().get();
 
+  Stream<List<Subcategory>> watchAllSubcategories() =>
+      _allSubcategories().watch();
+
   Future<List<Subcategory>> getAllSubcategoriesOf(int id) =>
       _allSubcategoriesOfCategory(id).get();
 
   Stream<List<Subcategory>> watchAllSubcategoriesOf(int id) =>
       _allSubcategoriesOfCategory(id).watch();
 
-  Stream<List<Subcategory>> watchAllSubcategories() =>
-      _allSubcategories().watch();
-
-  Future insertSubcategory(Insertable<Subcategory> subcategory) =>
+  Future<int> insertSubcategory(Insertable<Subcategory> subcategory) =>
       into(subcategories).insert(subcategory);
 
-  Future updateSubcategory(Insertable<Subcategory> subcategory) =>
-      update(subcategories).replace(subcategory);
-
-  Future deleteSubcategory(Insertable<Subcategory> subcategory) =>
+  Future<int> deleteSubcategory(Insertable<Subcategory> subcategory) =>
       delete(subcategories).delete(subcategory);
 
   Future<void> insertCategoryWithSubs(CategoryWithSubs catWithSubs) {

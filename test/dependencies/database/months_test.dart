@@ -20,7 +20,7 @@ void testMonths() {
   AppDatabase database;
 
   setUp(() {
-    database = AppDatabase(e: VmDatabase.memory(logStatements: false));
+    database = AppDatabase(e: VmDatabase.memory());
   });
   tearDown(() async {
     await database.close();
