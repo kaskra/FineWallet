@@ -4,6 +4,7 @@ import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/main.dart';
 import 'package:FineWallet/src/welcome_pages/pages.dart';
+import 'package:FineWallet/src/welcome_pages/starting_savings_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class WelcomeScaffold extends StatelessWidget {
   Map<String, Route> get _routes => {
         "welcome": _createRoute(WelcomePage()),
         "dark_mode": _createRoute(DarkModePage()),
+        "starting_savings": _createRoute(StartingSavingsPage()),
         "currency": _createRoute(CurrencyPage()),
         "language": _createRoute(LanguagePage()),
         "finish": _createRoute(FinishPage()),
@@ -41,7 +43,8 @@ class WelcomeScaffold extends StatelessWidget {
   Map<String, String> get _welcomeChain => {
         "welcome": "language",
         "language": "currency",
-        "currency": "dark_mode",
+        "currency": "starting_savings",
+        "starting_savings": "dark_mode",
         "dark_mode": "finish",
       };
 
@@ -55,6 +58,7 @@ class WelcomeScaffold extends StatelessWidget {
     final bool isLastPage = !_welcomeChain.containsKey(pageName);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
@@ -62,16 +66,21 @@ class WelcomeScaffold extends StatelessWidget {
           Center(
             child: Align(
               alignment: const Alignment(0, -1 / 3),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    headerImage,
-                    const SizedBox(height: 60),
-                    child,
-                  ],
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      headerImage,
+                      const SizedBox(height: 60),
+                      child,
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -88,9 +97,9 @@ class WelcomeScaffold extends StatelessWidget {
                     continueAvailable = await confirmContinue();
                   } else {
                     continueAvailable = true;
-                    onContinue();
                   }
                   if (continueAvailable) {
+                    onContinue();
                     Navigator.of(context).push(_continueRoute(pageName));
                   }
                 },

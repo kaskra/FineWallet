@@ -94,7 +94,8 @@ void testCurrency() {
   });
 
   test('user currency by id returns currency from user profile', () async {
-    await database.addUserProfile(UserProfilesCompanion.insert(currencyId: 2));
+    await database
+        .upsertUserProfile(UserProfilesCompanion.insert(currencyId: 2));
 
     final userProfile = await database.getUserProfile();
     expect(userProfile, isNotNull);

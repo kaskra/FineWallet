@@ -76,7 +76,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
 
                     if (selectedCurrency != null) {
                       await Provider.of<AppDatabase>(context, listen: false)
-                          .addUserProfile(UserProfilesCompanion(
+                          .upsertUserProfile(UserProfilesCompanion(
                         id: const Value<int>(1),
                         currencyId: Value<int>(selectedCurrency.id),
                       ));
