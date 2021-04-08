@@ -111,4 +111,47 @@ void testCurrency() {
     final userCurr = await database.currencyDao.getUserCurrency();
     expect(userCurr, isNull);
   });
+
+  test('update exchange rates updates all rows that match the currencies list',
+      () async {
+    final allCurrencies = await database.currencyDao.getAllCurrencies();
+    final currenciesToUpdate = allCurrencies.sublist(0, 3);
+    final ids = currenciesToUpdate.map((e) => e.id).toList();
+
+    expect(
+        currenciesToUpdate
+            .map((e) => e.exchangeRate)
+            .any((double element) => element != 1.0),
+        isFalse);
+
+    final rates = {for (var e in allCurrencies) e.abbrev: 10.0};
+
+    await database.currencyDao.updateExchangeRates(rates, currenciesToUpdate);
+
+    final currenciesAfter = await database.currencyDao.getAllCurrencies();
+    final updatedCurrenciesIds = currenciesAfter
+        .where((element) => element.exchangeRate == 10.0)
+        .map((e) => e.id)
+        .toList();
+
+    expect(ids, equals(updatedCurrenciesIds));
+  });
+
+  test('update exchange rates updates throws exception for null rates',
+      () async {
+    final allCurrencies = await database.currencyDao.getAllCurrencies();
+
+    expect(database.currencyDao.updateExchangeRates(null, allCurrencies),
+        throwsA(isInstanceOf<NoSuchMethodError>()));
+  });
+
+  test('update exchange rates updates does not update for null currencies',
+      () async {
+    final allCurrencies = await database.currencyDao.getAllCurrencies();
+    final rates = {for (var e in allCurrencies) e.abbrev: 10.0};
+    await database.currencyDao.updateExchangeRates(rates, null);
+    final allCurrenciesAfter = await database.currencyDao.getAllCurrencies();
+
+    expect(allCurrenciesAfter, equals(allCurrencies));
+  });
 }
