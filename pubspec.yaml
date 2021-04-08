@@ -38,7 +38,7 @@ dependencies:
   google_fonts: ^2.0.0
   sqlite3_flutter_libs:
   sqflite: ^2.0.0+3
-  xml: ^5.0.2
+  xml: ^5.1.0
 
 dependency_overrides:
   clean_settings:
