@@ -11,8 +11,12 @@ class AvailableBudgetView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double maxBudget = 0;
-    maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
-    maxBudget += Provider.of<BudgetNotifier>(context)?.savingsBudget ?? 0;
+    maxBudget +=
+        Provider.of<BudgetNotifier>(context)?.getBudget(BudgetFlag.monthly) ??
+            0;
+    maxBudget +=
+        Provider.of<BudgetNotifier>(context)?.getBudget(BudgetFlag.savings) ??
+            0;
     return AmountString(maxBudget, textStyle: textStyle);
   }
 }

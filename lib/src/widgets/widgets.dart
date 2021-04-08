@@ -9,4 +9,5 @@ export 'simple_pages/simple_pages.dart';
 export 'sliding_menu.dart';
 export 'standalone/standalone_widgets.dart';
 export 'structure/structures.dart';
+export 'value_slider.dart';
 export 'views/views.dart';

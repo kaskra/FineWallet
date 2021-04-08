@@ -1,9 +1,12 @@
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
+import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/src/profile_page/page.dart';
-import 'package:FineWallet/src/profile_page/parts/slider_item_savings.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key key}) : super(key: key);
@@ -47,8 +50,20 @@ class ProfilePage extends StatelessWidget {
     return DecoratedCard(
       child: Column(
         children: <Widget>[
-          SliderItem(),
-          SliderItemSavings(),
+          SliderItem(
+            flag: BudgetFlag.monthly,
+            streamBuilder: (context) => Provider.of<AppDatabase>(context)
+                .transactionDao
+                .watchMonthlyIncome(today()),
+            title: LocaleKeys.profile_page_monthly_budget.tr(),
+          ),
+          SliderItem(
+            flag: BudgetFlag.savings,
+            streamBuilder: (context) => Provider.of<AppDatabase>(context)
+                .transactionDao
+                .watchTotalSavings(),
+            title: LocaleKeys.savings_name.tr(),
+          ),
           AvailableBudgetItem(),
           ExpectedSavingsItem(),
         ],
