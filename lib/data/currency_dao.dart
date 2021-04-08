@@ -22,16 +22,17 @@ class CurrencyDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<Currency>> watchAllCurrencies() => _allCurrencies().watch();
 
-  Future insertCurrency(Insertable<Currency> currency) =>
+  Future<int> insertCurrency(Insertable<Currency> currency) =>
       into(currencies).insert(currency);
 
-  Future updateCurrency(Insertable<Currency> currency) =>
+  Future<bool> updateCurrency(Insertable<Currency> currency) =>
       update(currencies).replace(currency);
 
-  Future deleteCurrency(Insertable<Currency> currency) =>
+  Future<int> deleteCurrency(Insertable<Currency> currency) =>
       delete(currencies).delete(currency);
 
-  Future<Currency> getCurrencyById(int id) => _currencyById(id).getSingle();
+  Future<Currency> getCurrencyById(int id) =>
+      _currencyById(id).getSingleOrNull();
 
   Future<Currency> getUserCurrency() => _userCurrency().getSingleOrNull();
 
