@@ -1,11 +1,3 @@
-/*
- * Project: FineWallet
- * Last Modified: Tuesday, 10th September 2019 11:20:08 am
- * Modified By: Lukas (luke.krauch@gmail.com>)
- * -----
- * Copyright 2019 - 2019 Sylu, Sylu
- */
-
 import 'package:FineWallet/core/datatypes/chart_data.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
