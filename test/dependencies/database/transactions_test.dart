@@ -79,6 +79,8 @@ final monthly = BaseTransaction(
   until: DateTime(2021, 3, 21).add(const Duration(days: 70)),
 );
 
+// TODO recurrenceId 5 & 6
+
 final yearly = BaseTransaction(
   id: null,
   amount: 69,
@@ -90,7 +92,7 @@ final yearly = BaseTransaction(
   subcategoryId: 18,
   monthId: null,
   currencyId: 2,
-  recurrenceType: 6,
+  recurrenceType: 7,
   until: DateTime(2021, 3, 21).add(const Duration(days: 400)),
 );
 
