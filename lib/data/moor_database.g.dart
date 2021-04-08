@@ -2030,15 +2030,22 @@ class BaseTransactions extends Table
 class UserProfile extends DataClass implements Insertable<UserProfile> {
   final int id;
   final int currencyId;
-  UserProfile({@required this.id, @required this.currencyId});
+  final double startingSavings;
+  UserProfile(
+      {@required this.id,
+      @required this.currencyId,
+      @required this.startingSavings});
   factory UserProfile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
+    final doubleType = db.typeSystem.forDartType<double>();
     return UserProfile(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       currencyId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}currencyId']),
+      startingSavings: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}startingSavings']),
     );
   }
   @override
@@ -2050,6 +2057,9 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     if (!nullToAbsent || currencyId != null) {
       map['currencyId'] = Variable<int>(currencyId);
     }
+    if (!nullToAbsent || startingSavings != null) {
+      map['startingSavings'] = Variable<double>(startingSavings);
+    }
     return map;
   }
 
@@ -2059,6 +2069,9 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
       currencyId: currencyId == null && nullToAbsent
           ? const Value.absent()
           : Value(currencyId),
+      startingSavings: startingSavings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startingSavings),
     );
   }
 
@@ -2068,6 +2081,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     return UserProfile(
       id: serializer.fromJson<int>(json['id']),
       currencyId: serializer.fromJson<int>(json['currencyId']),
+      startingSavings: serializer.fromJson<double>(json['startingSavings']),
     );
   }
   @override
@@ -2076,57 +2090,70 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'currencyId': serializer.toJson<int>(currencyId),
+      'startingSavings': serializer.toJson<double>(startingSavings),
     };
   }
 
-  UserProfile copyWith({int id, int currencyId}) => UserProfile(
+  UserProfile copyWith({int id, int currencyId, double startingSavings}) =>
+      UserProfile(
         id: id ?? this.id,
         currencyId: currencyId ?? this.currencyId,
+        startingSavings: startingSavings ?? this.startingSavings,
       );
   @override
   String toString() {
     return (StringBuffer('UserProfile(')
           ..write('id: $id, ')
-          ..write('currencyId: $currencyId')
+          ..write('currencyId: $currencyId, ')
+          ..write('startingSavings: $startingSavings')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, currencyId.hashCode));
+  int get hashCode => $mrjf(
+      $mrjc(id.hashCode, $mrjc(currencyId.hashCode, startingSavings.hashCode)));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is UserProfile &&
           other.id == this.id &&
-          other.currencyId == this.currencyId);
+          other.currencyId == this.currencyId &&
+          other.startingSavings == this.startingSavings);
 }
 
 class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
   final Value<int> id;
   final Value<int> currencyId;
+  final Value<double> startingSavings;
   const UserProfilesCompanion({
     this.id = const Value.absent(),
     this.currencyId = const Value.absent(),
+    this.startingSavings = const Value.absent(),
   });
   UserProfilesCompanion.insert({
     this.id = const Value.absent(),
     @required int currencyId,
+    this.startingSavings = const Value.absent(),
   }) : currencyId = Value(currencyId);
   static Insertable<UserProfile> custom({
     Expression<int> id,
     Expression<int> currencyId,
+    Expression<double> startingSavings,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (currencyId != null) 'currencyId': currencyId,
+      if (startingSavings != null) 'startingSavings': startingSavings,
     });
   }
 
-  UserProfilesCompanion copyWith({Value<int> id, Value<int> currencyId}) {
+  UserProfilesCompanion copyWith(
+      {Value<int> id, Value<int> currencyId, Value<double> startingSavings}) {
     return UserProfilesCompanion(
       id: id ?? this.id,
       currencyId: currencyId ?? this.currencyId,
+      startingSavings: startingSavings ?? this.startingSavings,
     );
   }
 
@@ -2139,6 +2166,9 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
     if (currencyId.present) {
       map['currencyId'] = Variable<int>(currencyId.value);
     }
+    if (startingSavings.present) {
+      map['startingSavings'] = Variable<double>(startingSavings.value);
+    }
     return map;
   }
 
@@ -2146,7 +2176,8 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
   String toString() {
     return (StringBuffer('UserProfilesCompanion(')
           ..write('id: $id, ')
-          ..write('currencyId: $currencyId')
+          ..write('currencyId: $currencyId, ')
+          ..write('startingSavings: $startingSavings')
           ..write(')'))
         .toString();
   }
@@ -2174,8 +2205,19 @@ class UserProfiles extends Table with TableInfo<UserProfiles, UserProfile> {
         $customConstraints: 'NOT NULL REFERENCES currencies (id)');
   }
 
+  final VerificationMeta _startingSavingsMeta =
+      const VerificationMeta('startingSavings');
+  GeneratedRealColumn _startingSavings;
+  GeneratedRealColumn get startingSavings =>
+      _startingSavings ??= _constructStartingSavings();
+  GeneratedRealColumn _constructStartingSavings() {
+    return GeneratedRealColumn('startingSavings', $tableName, false,
+        $customConstraints: 'NOT NULL DEFAULT 0.0',
+        defaultValue: const CustomExpression<double>('0.0'));
+  }
+
   @override
-  List<GeneratedColumn> get $columns => [id, currencyId];
+  List<GeneratedColumn> get $columns => [id, currencyId, startingSavings];
   @override
   UserProfiles get asDslTable => this;
   @override
@@ -2197,6 +2239,12 @@ class UserProfiles extends Table with TableInfo<UserProfiles, UserProfile> {
               data['currencyId'], _currencyIdMeta));
     } else if (isInserting) {
       context.missing(_currencyIdMeta);
+    }
+    if (data.containsKey('startingSavings')) {
+      context.handle(
+          _startingSavingsMeta,
+          startingSavings.isAcceptableOrUnknown(
+              data['startingSavings'], _startingSavingsMeta));
     }
     return context;
   }

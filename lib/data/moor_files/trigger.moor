@@ -45,6 +45,10 @@ FROM firstLastDates
 WHERE firstD NOT IN (SELECT firstDate FROM months);
 END;
 
+
+-----------------------------------------------------------------------------
+
+
 CREATE TRIGGER IF NOT EXISTS createNeededMonthsAfterUpdate
     AFTER
 UPDATE

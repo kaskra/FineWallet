@@ -42,7 +42,8 @@ CREATE TABLE currencies
 CREATE TABLE userProfiles
 (
     id         INT NOT NULL PRIMARY KEY AUTOINCREMENT,
-    currencyId INT NOT NULL REFERENCES currencies (id)
+    currencyId INT NOT NULL REFERENCES currencies (id),
+    startingSavings DOUBLE NOT NULL DEFAULT 0.0
 ) AS UserProfile;
 
 CREATE TABLE baseTransactions
@@ -60,8 +61,5 @@ CREATE TABLE baseTransactions
     recurrenceType INT  NOT NULL REFERENCES recurrenceTypes (id),
     until          TEXT MAPPED BY `const DateTimeConverter()`
 ) AS BaseTransaction;
-
-
--- https://sqlite.org/lang_datefunc.html
 
 
