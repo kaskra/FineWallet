@@ -72,16 +72,18 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
 
   Selectable<double> _totalSavings(String date) {
     return customSelect(
-        'SELECT (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -\r\n    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate)\r\nFROM months m\r\nWHERE m.firstDate <= :date AND m.lastDate >= :date',
+        'SELECT (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -\r\n    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate) +\r\n    (SELECT p.startingSavings FROM currencies c, userProfiles p WHERE c.id = p.currencyId)\r\nFROM months m\r\nWHERE m.firstDate <= :date AND m.lastDate >= :date',
         variables: [
           Variable<String>(date)
         ],
         readsFrom: {
           months,
+          userProfiles,
+          currencies,
           baseTransactions,
           recurrenceTypes
         }).map((QueryRow row) => row.read<double>(
-        '(SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -\r\n    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate)'));
+        '(SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -\r\n    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate) +\r\n    (SELECT p.startingSavings FROM currencies c, userProfiles p WHERE c.id = p.currencyId)'));
   }
 
   Selectable<TransactionWithDetails> _transactionsWithFilter(

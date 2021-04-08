@@ -25,7 +25,8 @@ WHERE id IN :ids;
 
 _totalSavings:
 SELECT (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -
-    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate)
+    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate) +
+    (SELECT p.startingSavings FROM currencies c, userProfiles p WHERE c.id = p.currencyId)
 FROM months m
 WHERE m.firstDate <= :date AND m.lastDate >= :date;
 
