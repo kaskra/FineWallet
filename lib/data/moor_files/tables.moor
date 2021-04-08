@@ -27,6 +27,7 @@ CREATE TABLE months
 (
     id        INT  NOT NULL PRIMARY KEY AUTOINCREMENT,
     maxBudget REAL NOT NULL DEFAULT 0 CHECK (maxBudget >= 0),
+    savingsBudget REAL NOT NULL DEFAULT 0 CHECK (savingsBudget >= 0),
     firstDate TEXT NOT NULL UNIQUE MAPPED BY `const DateTimeConverter()`,
     lastDate  TEXT NOT NULL UNIQUE MAPPED BY `const DateTimeConverter()`
 ) AS Month;

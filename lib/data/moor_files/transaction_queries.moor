@@ -78,14 +78,14 @@ GROUP BY t.id HAVING MIN(t.id) -- hack to get the same output model as 'with fil
 ORDER BY t.id DESC LIMIT :N;
 
 _monthlyBudget:
-SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -
+SELECT (SELECT m.maxBudget + m.savingsBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -
        (SELECT ifnull(SUM(t.amount),0)
         FROM fullTransactions t
         WHERE t.isExpense
           AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date));
 
 _dailyBudget(:remainingDays AS INT): WITH
-    monthByDate(id, amount) AS (SELECT m.id, m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),
+    monthByDate(id, amount) AS (SELECT m.id, m.maxBudget + m.savingsBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),
     allExpenses(date, amount) AS (SELECT t.date, t.amount FROM fullTransactions t WHERE t.isExpense
         AND t.monthId = (SELECT m.id FROM monthByDate m) AND (t.recurrenceType = 2 OR t.recurrenceType = 1)),
     monthlyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date != :date),

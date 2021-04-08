@@ -212,7 +212,7 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
 
   Selectable<double> _monthlyBudget(String date) {
     return customSelect(
-        'SELECT (SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n       (SELECT ifnull(SUM(t.amount),0)\r\n        FROM fullTransactions t\r\n        WHERE t.isExpense\r\n          AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))',
+        'SELECT (SELECT m.maxBudget + m.savingsBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n       (SELECT ifnull(SUM(t.amount),0)\r\n        FROM fullTransactions t\r\n        WHERE t.isExpense\r\n          AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))',
         variables: [
           Variable<String>(date)
         ],
@@ -221,12 +221,12 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
           baseTransactions,
           recurrenceTypes
         }).map((QueryRow row) => row.read<double>(
-        '(SELECT m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n       (SELECT ifnull(SUM(t.amount),0)\r\n        FROM fullTransactions t\r\n        WHERE t.isExpense\r\n          AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))'));
+        '(SELECT m.maxBudget + m.savingsBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date) -\r\n       (SELECT ifnull(SUM(t.amount),0)\r\n        FROM fullTransactions t\r\n        WHERE t.isExpense\r\n          AND t.monthId = (SELECT m.id FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date))'));
   }
 
   Selectable<double> _dailyBudget(String date, int remainingDays) {
     return customSelect(
-        'WITH\r\n    monthByDate(id, amount) AS (SELECT m.id, m.maxBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),\r\n    allExpenses(date, amount) AS (SELECT t.date, t.amount FROM fullTransactions t WHERE t.isExpense\r\n        AND t.monthId = (SELECT m.id FROM monthByDate m) AND (t.recurrenceType = 2 OR t.recurrenceType = 1)),\r\n    monthlyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date != :date),\r\n    dayExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date = :date)\r\nSELECT (b.amount - m.amount) / :remainingDays - d.amount\r\nFROM monthByDate b,\r\n     monthlyExpenses m,\r\n     dayExpenses d',
+        'WITH\r\n    monthByDate(id, amount) AS (SELECT m.id, m.maxBudget + m.savingsBudget FROM months m WHERE m.firstDate <= :date AND m.lastDate >= :date),\r\n    allExpenses(date, amount) AS (SELECT t.date, t.amount FROM fullTransactions t WHERE t.isExpense\r\n        AND t.monthId = (SELECT m.id FROM monthByDate m) AND (t.recurrenceType = 2 OR t.recurrenceType = 1)),\r\n    monthlyExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date != :date),\r\n    dayExpenses(amount) AS (SELECT ifnull(SUM(t.amount),0) FROM allExpenses t WHERE t.date = :date)\r\nSELECT (b.amount - m.amount) / :remainingDays - d.amount\r\nFROM monthByDate b,\r\n     monthlyExpenses m,\r\n     dayExpenses d',
         variables: [
           Variable<String>(date),
           Variable<int>(remainingDays)

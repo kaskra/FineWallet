@@ -1,4 +1,3 @@
-import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/src/widgets/formatted_strings.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +10,9 @@ class AvailableBudgetView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<double>(
-      stream:
-          Provider.of<AppDatabase>(context).transactionDao.watchTotalSavings(),
-      builder: (context, snapshot) {
-        double maxBudget = snapshot.data ?? 0;
-        maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
-        return AmountString(maxBudget, textStyle: textStyle);
-      },
-    );
+    double maxBudget = 0;
+    maxBudget += Provider.of<BudgetNotifier>(context)?.budget ?? 0;
+    maxBudget += Provider.of<BudgetNotifier>(context)?.savingsBudget ?? 0;
+    return AmountString(maxBudget, textStyle: textStyle);
   }
 }
