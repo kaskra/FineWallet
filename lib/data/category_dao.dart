@@ -52,7 +52,6 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   Future deleteCategoryWithSubcategories(int id) {
     return transaction(() async {
-      // await (delete(subcategories)..where((s) => s.categoryId.equals(id))).go();
       await _deleteCustomCategory(id);
     });
   }
@@ -73,15 +72,4 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> deleteSubcategory(Insertable<Subcategory> subcategory) =>
       delete(subcategories).delete(subcategory);
-
-  Future<void> insertCategoryWithSubs(CategoryWithSubs catWithSubs) {
-    return transaction(() async {
-      await into(categories)
-          .insert(catWithSubs.category, mode: InsertMode.insertOrReplace);
-      await batch((b) {
-        b.insertAll(subcategories, catWithSubs.subcategories,
-            mode: InsertMode.insertOrReplace);
-      });
-    });
-  }
 }
