@@ -8,10 +8,12 @@ class HistoryItem extends StatelessWidget {
     @required this.isSelected,
     @required this.isSelectionActive,
     this.userCurrencyId = 1,
+    this.onExpand,
   }) : super(key: key);
 
   final TransactionWithDetails transaction;
   final Function(bool) onSelect;
+  final Function() onExpand;
   final bool isSelected;
   final bool isSelectionActive;
   final int userCurrencyId;
@@ -53,6 +55,11 @@ class HistoryItem extends StatelessWidget {
             isSelect = false;
           } else if (isSelectionActive) {
             isSelect = true;
+          } else {
+            // Open detailed history item
+            if (onExpand != null) {
+              onExpand();
+            }
           }
           if (onSelect != null) {
             onSelect(isSelect);

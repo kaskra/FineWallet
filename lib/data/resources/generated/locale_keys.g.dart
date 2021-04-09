@@ -160,6 +160,7 @@ abstract class  LocaleKeys {
   static const expense = 'expense';
   static const income = 'income';
   static const found_no_transactions = 'found_no_transactions';
+  static const recurring_transaction_formatted = 'recurring_transaction_formatted';
   static const overview_page_remaining_budget = 'overview_page.remaining_budget';
   static const overview_page_latest_transactions = 'overview_page.latest_transactions';
   static const overview_page_last_week = 'overview_page.last_week';
@@ -183,6 +184,7 @@ abstract class  LocaleKeys {
   static const history_page_show_recurrent = 'history_page.show_recurrent';
   static const history_page_share_title = 'history_page.share_title';
   static const history_page_share_text = 'history_page.share_text';
+  static const history_page_no_label = 'history_page.no_label';
   static const history_page = 'history_page';
   static const profile_page_month_avail_budget = 'profile_page.month_avail_budget';
   static const profile_page_spending_prediction = 'profile_page.spending_prediction';

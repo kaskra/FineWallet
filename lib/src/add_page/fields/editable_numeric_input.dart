@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class EditableNumericInputText extends StatefulWidget {
   final double defaultValue;
   final int currencyId;
-
+  final bool autofocus;
   final Function(double) onChanged;
 
   const EditableNumericInputText({
@@ -18,6 +18,7 @@ class EditableNumericInputText extends StatefulWidget {
     this.defaultValue = 0.0,
     @required this.currencyId,
     @required this.onChanged,
+    this.autofocus = true,
   })  : assert(currencyId != null),
         super(key: key);
 
@@ -36,12 +37,14 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
   void initState() {
     if (widget.defaultValue != null) {
       _controller = TextEditingController.fromValue(
-          TextEditingValue(text: widget.defaultValue.toString()));
+          TextEditingValue(text: widget.defaultValue.toStringAsFixed(2)));
     } else {
       _controller = TextEditingController();
     }
-    _controller.selection =
-        TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+    if (widget.autofocus) {
+      _controller.selection =
+          TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+    }
 
     super.initState();
   }
@@ -100,7 +103,7 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
         onSaved: (value) {
           _validateAndSend(value);
         },
-        autofocus: true,
+        autofocus: widget.autofocus,
         autocorrect: false,
       ),
     );

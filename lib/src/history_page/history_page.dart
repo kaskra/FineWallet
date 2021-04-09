@@ -1,5 +1,6 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/history_filter_state.dart';
+import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -7,6 +8,7 @@ import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';
@@ -14,6 +16,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+part 'details_modal_sheet.dart';
 part 'history_date_title.dart';
 part 'history_filter.dart';
 part 'history_item.dart';
@@ -336,6 +339,12 @@ class _HistoryPageState extends State<HistoryPage> {
       onSelect: (selected) {
         _toggleSelectionMode(selected, d);
         _checkSelectionMode();
+      },
+      onExpand: () async {
+        await showGeneralDialog(
+            context: context,
+            pageBuilder: (context, _, __) =>
+                HistoryItemDetailsModalSheet(transaction: d));
       },
     );
   }

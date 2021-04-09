@@ -11,11 +11,15 @@ class LabelTypeAheadInput extends StatelessWidget {
     Key key,
     @required this.isExpense,
     @required TextEditingController labelController,
+    this.inputDecoration,
+    this.focusNode,
   })  : _labelController = labelController,
         super(key: key);
 
   final bool isExpense;
   final TextEditingController _labelController;
+  final InputDecoration inputDecoration;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +34,20 @@ class LabelTypeAheadInput extends StatelessWidget {
             title: Text(LocaleKeys.add_page_no_suggestions.tr()),
           ),
           textFieldConfiguration: TextFieldConfiguration(
+            focusNode: focusNode ?? FocusNode(),
             controller: _labelController,
             textAlign: TextAlign.right,
             textInputAction: TextInputAction.done,
             maxLength: 30,
-            decoration: InputDecoration(
-              counterText: "",
-              labelText: LocaleKeys.add_page_label.tr(),
-              hintText: LocaleKeys.add_page_choose_label.tr(),
-              icon: const Icon(Icons.label_important),
-            ),
+            // Fix for duplicating text when receiving focus from somewhere else
+            keyboardType: TextInputType.visiblePassword,
+            decoration: inputDecoration ??
+                InputDecoration(
+                  counterText: "",
+                  labelText: LocaleKeys.add_page_label.tr(),
+                  hintText: LocaleKeys.add_page_choose_label.tr(),
+                  icon: const Icon(Icons.label_important),
+                ),
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {

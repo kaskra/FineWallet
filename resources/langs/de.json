@@ -181,6 +181,7 @@
   "expense" : "Ausgabe",
   "income" : "Einkommen",
   "found_no_transactions": "Konnte keine Einträge finden.",
+  "recurring_transaction_formatted" : "Wird {} wiederholt",
   "overview_page": {
     "remaining_budget": "Restliches Budget",
     "latest_transactions": "Letzte Transaktionen",
@@ -208,7 +209,8 @@
     "show_future" : "Zukünftige Einträge",
     "show_recurrent" : "Nur Wiederholungen anzeigen",
     "share_title" : "TX SHARE",
-    "share_text" : "TX SHARE ist momentan nicht verfügbar."
+    "share_text" : "TX SHARE ist momentan nicht verfügbar.",
+    "no_label" : "Keine Bezeichnung"
   },
   "profile_page": {
     "month_avail_budget": "Monatlich verfügbares Budget",
@@ -266,7 +268,7 @@
     "add_category_text": "Neue Kategorie",
     "add_category_dialog_title": "Neue Kategorie hinzufügen",
     "choose_category" : "Kategorie hinzufügen",
-    "choose_label" : "Hinweis hinzufügen",
+    "choose_label" : "Bezeichnung hinzufügen",
     "edit_transactions_title" : "Welche Einträge verändern?",
     "all_transactions" :  "Alle Transaktionen",
     "all_future_transactions" : "Nur zukünftige Transaktionen",
