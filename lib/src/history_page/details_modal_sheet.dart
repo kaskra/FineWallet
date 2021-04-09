@@ -90,6 +90,7 @@ class _HistoryItemDetailsModalSheetState
                 _labelRow(),
                 const SizedBox(height: 8),
                 _categoryRow(),
+                _endUnlimitedRecurrence(),
               ],
             ),
           ),
@@ -117,28 +118,29 @@ class _HistoryItemDetailsModalSheetState
             ),
           )),
           Expanded(
-              flex: 5,
-              child: GestureDetector(
-                onTap: () {
-                  if (!_labelFocus.hasFocus) {
-                    _labelFocus.requestFocus();
-                  }
-                },
-                child: Text(
-                  isLabelEmpty
-                      ? LocaleKeys.history_page_no_label.tr()
-                      : _labelController.text,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: isLabelEmpty
-                          ? Theme.of(context)
-                              .textTheme
-                              .bodyText2
-                              .color
-                              .withOpacity(0.6)
-                          : null),
-                ),
-              )),
+            flex: 5,
+            child: GestureDetector(
+              onTap: () {
+                if (!_labelFocus.hasFocus) {
+                  _labelFocus.requestFocus();
+                }
+              },
+              child: Text(
+                isLabelEmpty
+                    ? LocaleKeys.history_page_no_label.tr()
+                    : _labelController.text,
+                style: TextStyle(
+                    fontSize: 20,
+                    color: isLabelEmpty
+                        ? Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .color
+                            .withOpacity(0.6)
+                        : null),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -156,7 +158,7 @@ class _HistoryItemDetailsModalSheetState
         _amount != unchangedAmount;
   }
 
-  Future _save() async {
+  Future _save({bool endRecurrence = false}) async {
     if (_formKey.currentState.validate()) {
       // var res = UpdateModifierFlag.all;
       // if (_changedNonDateRelatedData()) {
@@ -165,12 +167,12 @@ class _HistoryItemDetailsModalSheetState
       // }
       // final UpdateModifier um =
       //     UpdateModifier(res, DateTime.parse(_transaction.date));
-      await _updateTransaction();
+      await _updateTransaction(endRecurrence: endRecurrence);
       Navigator.of(context).pop();
     }
   }
 
-  Future _updateTransaction() async {
+  Future _updateTransaction({bool endRecurrence = false}) async {
     final tx = BaseTransaction(
       id: widget.transaction.id,
       date: _baseTransaction.date,
@@ -183,7 +185,9 @@ class _HistoryItemDetailsModalSheetState
       currencyId: widget.transaction.currencyId,
       label: _labelController.text.trim(),
       recurrenceType: widget.transaction.recurrenceType,
-      until: widget.transaction.until,
+      until: endRecurrence
+          ? DateTime.parse(widget.transaction.date)
+          : widget.transaction.until,
     );
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
@@ -280,7 +284,6 @@ class _HistoryItemDetailsModalSheetState
             ),
             onPressed: _hasChanged
                 ? () async {
-                    // TODO show button only if changed label, amount or category ??
                     await _save();
                   }
                 : null,
@@ -352,5 +355,47 @@ class _HistoryItemDetailsModalSheetState
           });
           print(_subcategory);
         });
+  }
+
+  Widget _endUnlimitedRecurrence() {
+    if (widget.transaction.recurrenceType > 1 &&
+        widget.transaction.until == null) {
+      final formatter = DateFormat.MMMMd(context.locale.toLanguageTag());
+      final date = formatter.format(DateTime.parse(widget.transaction.date));
+
+      return Expanded(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            width: double.infinity,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                primary: Theme.of(context).colorScheme.onSecondary,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                side: BorderSide(color: Theme.of(context).accentColor),
+              ),
+              onPressed: () async {
+                await _save(endRecurrence: true);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Expanded(child: Icon(Icons.stop_rounded)),
+                  Expanded(
+                    flex: 5,
+                    child: Text(
+                      "${LocaleKeys.add_page_stop_recurrence.tr(args: [date])}"
+                      "${_hasChanged ? LocaleKeys.add_page_stop_recurrence_save_addition.tr() : ""}",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 }

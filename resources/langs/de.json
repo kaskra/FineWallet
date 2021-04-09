@@ -274,7 +274,9 @@
     "all_future_transactions" : "Nur zukünftige Transaktionen",
     "only_selected_transaction" : "Nur ausgewählte Transaktion",
     "not_saved_title" : "Ungespeicherte Änderungen",
-    "not_saved_text" : "Sie haben Ihre Änderung nicht gespeichert. Sicher, dass Sie ihre Änderungen verwerfen wollen?"
+    "not_saved_text" : "Sie haben Ihre Änderung nicht gespeichert. Sicher, dass Sie ihre Änderungen verwerfen wollen?",
+    "stop_recurrence" : "Stoppe Wiederholung am {}",
+    "stop_recurrence_save_addition" : " und speichere Änderungen"
   },
   "settings_page" : {
     "title" : "Einstellungen",

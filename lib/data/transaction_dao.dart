@@ -93,14 +93,15 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       // TODO update old tx with until,
       // insert new tx with old until
     } else {
-      id = await _upsertTransaction(tx, update: true);
+      id = await _upsertTransaction(tx, updateFlag: true);
     }
 
     await db.monthDao.restrictMaxBudgetByMonthlyIncome();
     return id;
   }
 
-  Future<int> _upsertTransaction(BaseTransaction tx, {bool update = false}) {
+  Future<int> _upsertTransaction(BaseTransaction tx,
+      {bool updateFlag = false}) {
     return transaction<int>(() async {
       // TODO do all of this in sql?
       final int monthId = await db.monthDao.createOrGetMonth(tx.date);
@@ -112,7 +113,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       final amount = tx.amount * exchangeRate;
 
       final insert = BaseTransactionsCompanion.insert(
-        id: update ? Value(tx.id) : const Value.absent(),
+        id: updateFlag ? Value(tx.id) : const Value.absent(),
         amount: amount,
         originalAmount: originalAmount,
         exchangeRate: exchangeRate,
@@ -125,6 +126,11 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         recurrenceType: tx.recurrenceType,
         until: tx.until == null ? const Value.absent() : Value(tx.until),
       );
+      // Case needed when updating to null value.
+      if (updateFlag && tx.until == null) {
+        return into(baseTransactions)
+            .insert(insert, mode: InsertMode.insertOrReplace);
+      }
       return into(baseTransactions).insertOnConflictUpdate(insert);
     });
   }

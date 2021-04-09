@@ -8,7 +8,6 @@ import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/logger.dart';
 import 'package:FineWallet/src/add_page/page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';
