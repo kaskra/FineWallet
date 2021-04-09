@@ -98,43 +98,46 @@ class _HistoryItemDetailsModalSheetState
   Widget _title() {
     final isLabelEmpty = _labelController.text.isEmpty;
 
-    return Row(
-      children: [
-        Flexible(
-            child: Center(
-          child: Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: widget.transaction.isExpense ? Colors.red : Colors.green,
-            ),
-          ),
-        )),
-        Expanded(
-            flex: 5,
-            child: GestureDetector(
-              onTap: () {
-                if (!_labelFocus.hasFocus) {
-                  _labelFocus.requestFocus();
-                }
-              },
-              child: Text(
-                isLabelEmpty
-                    ? LocaleKeys.history_page_no_label.tr()
-                    : _labelController.text,
-                style: TextStyle(
-                    fontSize: 20,
-                    color: isLabelEmpty
-                        ? Theme.of(context)
-                            .textTheme
-                            .bodyText2
-                            .color
-                            .withOpacity(0.6)
-                        : null),
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Row(
+        children: [
+          Flexible(
+              child: Center(
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: widget.transaction.isExpense ? Colors.red : Colors.green,
               ),
-            )),
-      ],
+            ),
+          )),
+          Expanded(
+              flex: 5,
+              child: GestureDetector(
+                onTap: () {
+                  if (!_labelFocus.hasFocus) {
+                    _labelFocus.requestFocus();
+                  }
+                },
+                child: Text(
+                  isLabelEmpty
+                      ? LocaleKeys.history_page_no_label.tr()
+                      : _labelController.text,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: isLabelEmpty
+                          ? Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              .color
+                              .withOpacity(0.6)
+                          : null),
+                ),
+              )),
+        ],
+      ),
     );
   }
 
@@ -190,56 +193,62 @@ class _HistoryItemDetailsModalSheetState
     final isRecurrence = widget.transaction.recurrenceType > 1;
     final showUntilDate = isRecurrence && isLimitedRecurrence;
 
-    return FutureBuilder<Tuple2<BaseTransaction, RecurrenceType>>(
-        future: _loadBaseTransaction(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            _baseTransaction = snapshot.data.first;
-          }
-          final date = snapshot.data?.first?.date ??
-              DateTime.tryParse(widget.transaction.date);
-          final recurrence = snapshot.hasData ? snapshot.data.second : null;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: FutureBuilder<Tuple2<BaseTransaction, RecurrenceType>>(
+          future: _loadBaseTransaction(),
+          builder: (context, snapshot) {
+            DateTime date = DateTime.tryParse(widget.transaction.date);
+            RecurrenceType recurrence;
+            var recurrenceString = "";
 
-          var recurrenceString = "";
-          if (recurrence != null && recurrence.id > 1) {
-            recurrenceString = fillOutRecurrenceName(
-                recurrence.name.tr(), date, recurrence.id, context);
-            recurrenceString = recurrenceString.replaceRange(
-                0, 1, recurrenceString[0].toLowerCase());
-          }
+            if (snapshot.hasData) {
+              _baseTransaction = snapshot.data.first;
+              date = _baseTransaction.date;
+              recurrence = snapshot.data.second;
+            }
 
-          return Row(
-            children: [
-              Flexible(child: Container()),
-              Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text.rich(
-                      TextSpan(
-                        text: formatter.format(date),
-                        children: [
-                          if (showUntilDate) const TextSpan(text: "\t\t-\t\t"),
-                          if (showUntilDate)
-                            TextSpan(
-                                text:
-                                    formatter.format(widget.transaction.until)),
-                          if (recurrence != null && recurrence.id > 1)
-                            const TextSpan(text: "\t\t⦁"), //\u2981 = dot
-                        ],
+            if (recurrence != null && recurrence.id > 1) {
+              recurrenceString = fillOutRecurrenceName(
+                  recurrence.name.tr(), date, recurrence.id, context);
+              recurrenceString = recurrenceString.replaceRange(
+                  0, 1, recurrenceString[0].toLowerCase());
+            }
+
+            return Row(
+              children: [
+                Flexible(child: Container()),
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          text: formatter.format(date),
+                          children: [
+                            if (showUntilDate)
+                              const TextSpan(text: "\t\t-\t\t"),
+                            if (showUntilDate)
+                              TextSpan(
+                                  text: formatter
+                                      .format(widget.transaction.until)),
+                            if (recurrence != null && recurrence.id > 1)
+                              const TextSpan(text: "\t\t⦁"), //\u2981 = dot
+                          ],
+                        ),
                       ),
-                    ),
-                    if (recurrence != null && recurrence.id > 1)
-                      Text(LocaleKeys.recurring_transaction_formatted.tr(
-                        args: [recurrenceString],
-                      )),
-                  ],
+                      if (recurrence != null && recurrence.id > 1)
+                        Text(LocaleKeys.recurring_transaction_formatted.tr(
+                          args: [recurrenceString],
+                        )),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        });
+              ],
+            );
+          }),
+    );
   }
 
   Widget _actions() {
