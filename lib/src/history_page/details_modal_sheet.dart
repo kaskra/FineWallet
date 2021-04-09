@@ -22,7 +22,7 @@ class _HistoryItemDetailsModalSheetState
   final TextEditingController _categoryController = TextEditingController();
 
   final FocusNode _labelFocus = FocusNode();
-  final GlobalKey _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -67,6 +67,9 @@ class _HistoryItemDetailsModalSheetState
             key: _formKey,
             onWillPop: () {
               logMsg("Want to pop scope");
+              if (_changedData()) {
+                return Future.value(false);
+              }
               return Future.value(true);
             },
             child: Column(
@@ -137,6 +140,52 @@ class _HistoryItemDetailsModalSheetState
     );
   }
 
+  bool _changedData() {
+    final unchangedAmount = double.parse(
+        (widget.transaction.originalAmount ?? 0.0).toStringAsFixed(2));
+
+    final unchangedLabel = widget.transaction.label;
+    final unchangedSubcat = widget.transaction.subcategoryId;
+
+    return _subcategory.id != unchangedSubcat ||
+        _labelController.text != unchangedLabel ||
+        _amount != unchangedAmount;
+  }
+
+  Future _save() async {
+    if (_formKey.currentState.validate()) {
+      // var res = UpdateModifierFlag.all;
+      // if (_changedNonDateRelatedData()) {
+      //   res = await showDialog(
+      //       context: context, builder: (context) => UpdateModifierDialog());
+      // }
+      // final UpdateModifier um =
+      //     UpdateModifier(res, DateTime.parse(_transaction.date));
+      await _updateTransaction();
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future _updateTransaction() async {
+    final tx = BaseTransaction(
+      id: widget.transaction.id,
+      date: DateTime.tryParse(widget.transaction.date),
+      isExpense: widget.transaction.isExpense,
+      amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      currencyId: widget.transaction.currencyId,
+      label: _labelController.text.trim(),
+      recurrenceType: widget.transaction.recurrenceType,
+      until: widget.transaction.until,
+    );
+    await Provider.of<AppDatabase>(context, listen: false)
+        .transactionDao
+        .updateTransaction(tx);
+  }
+
   Widget _dateText() {
     final formatter = DateFormat.MMMMEEEEd(context.locale.toLanguageTag());
     final isLimitedRecurrence = widget.transaction.until != null;
@@ -193,6 +242,8 @@ class _HistoryItemDetailsModalSheetState
   }
 
   Widget _actions() {
+    bool hasChanged = _changedData();
+
     return Padding(
       padding: const EdgeInsets.only(left: 14.0, right: 14.0),
       child: Row(
@@ -209,11 +260,20 @@ class _HistoryItemDetailsModalSheetState
           ),
           TextButton(
             style: TextButton.styleFrom(
-                primary: Theme.of(context).colorScheme.onSecondary,
-                backgroundColor: Theme.of(context).accentColor),
-            onPressed: () {
-              // TODO show button only if changed label, amount or category ??
-            },
+              primary: Theme.of(context).colorScheme.onSecondary,
+              backgroundColor: hasChanged
+                  ? Theme.of(context).accentColor
+                  : Theme.of(context).scaffoldBackgroundColor,
+              side: hasChanged
+                  ? null
+                  : BorderSide(color: Theme.of(context).disabledColor),
+            ),
+            onPressed: hasChanged
+                ? () async {
+                    // TODO show button only if changed label, amount or category ??
+                    await _save();
+                  }
+                : null,
             child: Text(LocaleKeys.add_page_fab_label.tr().toUpperCase()),
           )
         ],
