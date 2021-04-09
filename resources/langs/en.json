@@ -273,7 +273,8 @@
     "not_saved_title" : "Unsaved Changes",
     "not_saved_text" : "You have not saved your changes yet. Do you want to discard your changes?",
     "stop_recurrence" : "Stop recurrence on {}",
-    "stop_recurrence_save_addition" : " and save changes"
+    "start_recurrence" : "Turn into endless recurrence",
+    "save_addition" : " and save changes"
   },
   "settings_page": {
     "title": "Settings",

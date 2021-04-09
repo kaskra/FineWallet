@@ -276,7 +276,8 @@
     "not_saved_title" : "Ungespeicherte Änderungen",
     "not_saved_text" : "Sie haben Ihre Änderung nicht gespeichert. Sicher, dass Sie ihre Änderungen verwerfen wollen?",
     "stop_recurrence" : "Stoppe Wiederholung am {}",
-    "stop_recurrence_save_addition" : " und speichere Änderungen"
+    "start_recurrence" : "In endlose Wiederholung umwandeln",
+    "save_addition" : " und speichere Änderungen"
   },
   "settings_page" : {
     "title" : "Einstellungen",

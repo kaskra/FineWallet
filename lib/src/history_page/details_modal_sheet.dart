@@ -90,7 +90,8 @@ class _HistoryItemDetailsModalSheetState
                 _labelRow(),
                 const SizedBox(height: 8),
                 _categoryRow(),
-                _endUnlimitedRecurrence(),
+                if (_isUnlimitedRecurrence) _endUnlimitedRecurrence(),
+                if (_isLimitedRecurrence) _startUnlimitedRecurrence(),
               ],
             ),
           ),
@@ -158,7 +159,10 @@ class _HistoryItemDetailsModalSheetState
         _amount != unchangedAmount;
   }
 
-  Future _save({bool endRecurrence = false}) async {
+  Future _save({
+    bool endRecurrence = false,
+    bool startUnlimitedRecurrence = false,
+  }) async {
     if (_formKey.currentState.validate()) {
       // var res = UpdateModifierFlag.all;
       // if (_changedNonDateRelatedData()) {
@@ -167,12 +171,27 @@ class _HistoryItemDetailsModalSheetState
       // }
       // final UpdateModifier um =
       //     UpdateModifier(res, DateTime.parse(_transaction.date));
-      await _updateTransaction(endRecurrence: endRecurrence);
+      await _updateTransaction(
+        endRecurrence: endRecurrence,
+        startUnlimitedRecurrence: startUnlimitedRecurrence,
+      );
       Navigator.of(context).pop();
     }
   }
 
-  Future _updateTransaction({bool endRecurrence = false}) async {
+  Future _updateTransaction({
+    bool endRecurrence = false,
+    bool startUnlimitedRecurrence = false,
+  }) async {
+    assert(!(endRecurrence && startUnlimitedRecurrence));
+    DateTime until = widget.transaction.until;
+
+    if (endRecurrence) {
+      until = DateTime.parse(widget.transaction.date);
+    } else if (startUnlimitedRecurrence) {
+      until = null;
+    }
+
     final tx = BaseTransaction(
       id: widget.transaction.id,
       date: _baseTransaction.date,
@@ -185,9 +204,7 @@ class _HistoryItemDetailsModalSheetState
       currencyId: widget.transaction.currencyId,
       label: _labelController.text.trim(),
       recurrenceType: widget.transaction.recurrenceType,
-      until: endRecurrence
-          ? DateTime.parse(widget.transaction.date)
-          : widget.transaction.until,
+      until: until,
     );
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
@@ -272,6 +289,7 @@ class _HistoryItemDetailsModalSheetState
             },
             child: const Icon(Icons.close),
           ),
+          // TODO check colors in light mode
           TextButton(
             style: TextButton.styleFrom(
               primary: Theme.of(context).colorScheme.onSecondary,
@@ -358,44 +376,87 @@ class _HistoryItemDetailsModalSheetState
   }
 
   Widget _endUnlimitedRecurrence() {
-    if (widget.transaction.recurrenceType > 1 &&
-        widget.transaction.until == null) {
-      final formatter = DateFormat.MMMMd(context.locale.toLanguageTag());
-      final date = formatter.format(DateTime.parse(widget.transaction.date));
+    final formatter = DateFormat.MMMMd(context.locale.toLanguageTag());
+    final date = formatter.format(DateTime.parse(widget.transaction.date));
 
-      return Expanded(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            width: double.infinity,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                primary: Theme.of(context).colorScheme.onSecondary,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                side: BorderSide(color: Theme.of(context).accentColor),
-              ),
-              onPressed: () async {
-                await _save(endRecurrence: true);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Expanded(child: Icon(Icons.stop_rounded)),
-                  Expanded(
-                    flex: 5,
-                    child: Text(
-                      "${LocaleKeys.add_page_stop_recurrence.tr(args: [date])}"
-                      "${_hasChanged ? LocaleKeys.add_page_stop_recurrence_save_addition.tr() : ""}",
-                    ),
+    return Expanded(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+          width: double.infinity,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).colorScheme.onSecondary,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              side: BorderSide(color: Theme.of(context).accentColor),
+            ),
+            onPressed: () async {
+              await _save(endRecurrence: true);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Expanded(child: Icon(Icons.stop_rounded)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "${LocaleKeys.add_page_stop_recurrence.tr(args: [date])}"
+                    "${_hasChanged ? LocaleKeys.add_page_save_addition.tr() : ""}",
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      );
-    }
-    return Container();
+      ),
+    );
+  }
+
+  Widget _startUnlimitedRecurrence() {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+          width: double.infinity,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).colorScheme.onSecondary,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              side: BorderSide(color: Theme.of(context).accentColor),
+            ),
+            onPressed: () async {
+              await _save(startUnlimitedRecurrence: true);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Expanded(child: Icon(Icons.replay)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "${LocaleKeys.add_page_start_recurrence.tr()}"
+                    "${_hasChanged ? LocaleKeys.add_page_save_addition.tr() : ""}",
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool get _isUnlimitedRecurrence {
+    return widget.transaction.recurrenceType > 1 &&
+        widget.transaction.until == null;
+  }
+
+  bool get _isLimitedRecurrence {
+    return widget.transaction.recurrenceType > 1 &&
+        widget.transaction.until != null;
   }
 }
+
+enum RecurrenceFlag { limited, unlimited }
