@@ -6,4 +6,5 @@ class IMAGES {
   static const done = "assets/done.png";
   static const travel = "assets/travel2.png";
   static const language = "assets/language.png";
+  static const wallet = "assets/wallet.png";
 }

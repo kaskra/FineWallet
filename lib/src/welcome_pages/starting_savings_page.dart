@@ -28,7 +28,6 @@ class _StartingSavingsPageState extends State<StartingSavingsPage> {
         .currencyDao
         .getCurrencyById(userProfile.currencyId);
 
-    print(userProfile);
     setState(() {
       _userProfile = userProfile;
       _controller.text = _userProfile.startingSavings.toStringAsFixed(2);
@@ -46,13 +45,14 @@ class _StartingSavingsPageState extends State<StartingSavingsPage> {
     return WelcomeScaffold(
       pageName: "starting_savings",
       onContinue: () async {
+        FocusScope.of(context).unfocus();
         await _validateAndSend(_controller.text);
       },
       onBack: () {},
       confirmContinue: () => _validate(_controller.text),
       enableContinue: true,
       headerImage: Image.asset(
-        IMAGES.darkMode,
+        IMAGES.wallet,
         height: 150,
         semanticLabel: "Starting Savings",
       ),
@@ -64,7 +64,7 @@ class _StartingSavingsPageState extends State<StartingSavingsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Enter your savings",
+                  LocaleKeys.welcome_pages_starting_savings_title.tr(),
                   style: Theme.of(context)
                       .primaryTextTheme
                       .headline6
@@ -74,7 +74,7 @@ class _StartingSavingsPageState extends State<StartingSavingsPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              "Here you can enter your starting savings.",
+              LocaleKeys.welcome_pages_starting_savings_text.tr(),
               style: Theme.of(context)
                   .primaryTextTheme
                   .subtitle2

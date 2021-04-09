@@ -162,6 +162,10 @@
       "semantic_label": "Sprache",
       "title": "Wähle deine Sprache",
       "text": "Die Sprache kannst du später jederzeit in den Einstellungen ändern!"
+    },
+    "starting_savings" : {
+      "title" : "Deine Ersparnisse",
+      "text" : "Hier kannst du deine aktuellen Ersparnisse eingeben."
     }
   },
   "continueText": "Weiter",

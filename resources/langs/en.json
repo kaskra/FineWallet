@@ -159,6 +159,10 @@
       "semantic_label": "Language",
       "title": "Choose your language",
       "text": "You can change the language later on in the settings."
+    },
+    "starting_savings" : {
+      "title" : "Your savings",
+      "text" : "Here you can enter your current savings."
     }
   },
   "continueText": "Continue",
