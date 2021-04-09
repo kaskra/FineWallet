@@ -269,7 +269,9 @@
     "edit_transactions_title" : "Which transactions to change?",
     "all_transactions" :  "All transactions",
     "all_future_transactions" : "Only future transactions",
-    "only_selected_transaction" : "Only selected transaction"
+    "only_selected_transaction" : "Only selected transaction",
+    "not_saved_title" : "Unsaved Changes",
+    "not_saved_text" : "You have not saved your changes yet. Do you want to discard your changes?"
   },
   "settings_page": {
     "title": "Settings",

@@ -244,6 +244,8 @@ abstract class  LocaleKeys {
   static const add_page_all_transactions = 'add_page.all_transactions';
   static const add_page_all_future_transactions = 'add_page.all_future_transactions';
   static const add_page_only_selected_transaction = 'add_page.only_selected_transaction';
+  static const add_page_not_saved_title = 'add_page.not_saved_title';
+  static const add_page_not_saved_text = 'add_page.not_saved_text';
   static const add_page = 'add_page';
   static const settings_page_title = 'settings_page.title';
   static const settings_page_currencies = 'settings_page.currencies';

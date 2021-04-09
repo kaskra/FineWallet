@@ -63,10 +63,13 @@ class _HistoryItemDetailsModalSheetState
         child: _applyInputTheme(
           Form(
             key: _formKey,
-            onWillPop: () {
-              logMsg("Want to pop scope");
-              if (_changedData()) {
-                return Future.value(false);
+            onWillPop: () async {
+              if (_hasChanged) {
+                final isConfirmed = await showConfirmDialog(
+                    context,
+                    LocaleKeys.add_page_not_saved_title.tr(),
+                    LocaleKeys.add_page_not_saved_text.tr());
+                return Future.value(isConfirmed);
               }
               return Future.value(true);
             },
@@ -141,7 +144,7 @@ class _HistoryItemDetailsModalSheetState
     );
   }
 
-  bool _changedData() {
+  bool get _hasChanged {
     final unchangedAmount = double.parse(
         (widget.transaction.originalAmount ?? 0.0).toStringAsFixed(2));
 
@@ -252,8 +255,6 @@ class _HistoryItemDetailsModalSheetState
   }
 
   Widget _actions() {
-    bool hasChanged = _changedData();
-
     return Padding(
       padding: const EdgeInsets.only(left: 14.0, right: 14.0),
       child: Row(
@@ -263,7 +264,6 @@ class _HistoryItemDetailsModalSheetState
             borderRadius: BorderRadius.circular(20.0),
             radius: 30,
             onTap: () {
-              // TODO show dialog if unsaved changes
               Navigator.of(context).maybePop();
             },
             child: const Icon(Icons.close),
@@ -271,14 +271,14 @@ class _HistoryItemDetailsModalSheetState
           TextButton(
             style: TextButton.styleFrom(
               primary: Theme.of(context).colorScheme.onSecondary,
-              backgroundColor: hasChanged
+              backgroundColor: _hasChanged
                   ? Theme.of(context).accentColor
                   : Theme.of(context).scaffoldBackgroundColor,
-              side: hasChanged
+              side: _hasChanged
                   ? null
                   : BorderSide(color: Theme.of(context).disabledColor),
             ),
-            onPressed: hasChanged
+            onPressed: _hasChanged
                 ? () async {
                     // TODO show button only if changed label, amount or category ??
                     await _save();
