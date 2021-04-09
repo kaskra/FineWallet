@@ -17,6 +17,7 @@ class _HistoryItemDetailsModalSheetState
     extends State<HistoryItemDetailsModalSheet> {
   double _amount = 0.0;
   Subcategory _subcategory;
+  BaseTransaction _baseTransaction;
 
   final TextEditingController _labelController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
@@ -42,17 +43,14 @@ class _HistoryItemDetailsModalSheetState
   }
 
   Future<Tuple2<BaseTransaction, RecurrenceType>> _loadBaseTransaction() async {
-    if (widget.transaction.recurrenceType > 1) {
-      // If recurring, set the date to the first of the recurrence.
-      final BaseTransaction tx =
-          await Provider.of<AppDatabase>(context, listen: false)
-              .transactionDao
-              .getBaseTransactionsById(widget.transaction.id);
-      final recurrence = await Provider.of<AppDatabase>(context, listen: false)
-          .getRecurrenceById(widget.transaction.recurrenceType);
-      return Tuple2(tx, recurrence);
-    }
-    return null;
+    // If recurring, set the date to the first of the recurrence.
+    final BaseTransaction tx =
+        await Provider.of<AppDatabase>(context, listen: false)
+            .transactionDao
+            .getBaseTransactionsById(widget.transaction.id);
+    final recurrence = await Provider.of<AppDatabase>(context, listen: false)
+        .getRecurrenceById(widget.transaction.recurrenceType);
+    return Tuple2(tx, recurrence);
   }
 
   @override
@@ -169,7 +167,7 @@ class _HistoryItemDetailsModalSheetState
   Future _updateTransaction() async {
     final tx = BaseTransaction(
       id: widget.transaction.id,
-      date: DateTime.tryParse(widget.transaction.date),
+      date: _baseTransaction.date,
       isExpense: widget.transaction.isExpense,
       amount: _amount,
       originalAmount: _amount,
@@ -195,12 +193,15 @@ class _HistoryItemDetailsModalSheetState
     return FutureBuilder<Tuple2<BaseTransaction, RecurrenceType>>(
         future: _loadBaseTransaction(),
         builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            _baseTransaction = snapshot.data.first;
+          }
           final date = snapshot.data?.first?.date ??
               DateTime.tryParse(widget.transaction.date);
           final recurrence = snapshot.hasData ? snapshot.data.second : null;
 
           var recurrenceString = "";
-          if (recurrence != null) {
+          if (recurrence != null && recurrence.id > 1) {
             recurrenceString = fillOutRecurrenceName(
                 recurrence.name.tr(), date, recurrence.id, context);
             recurrenceString = recurrenceString.replaceRange(
@@ -224,12 +225,12 @@ class _HistoryItemDetailsModalSheetState
                             TextSpan(
                                 text:
                                     formatter.format(widget.transaction.until)),
-                          if (recurrence != null)
+                          if (recurrence != null && recurrence.id > 1)
                             const TextSpan(text: "\t\t⦁"), //\u2981 = dot
                         ],
                       ),
                     ),
-                    if (recurrence != null)
+                    if (recurrence != null && recurrence.id > 1)
                       Text(LocaleKeys.recurring_transaction_formatted.tr(
                         args: [recurrenceString],
                       )),
