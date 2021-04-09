@@ -370,6 +370,7 @@ class _AddPageState extends State<AddPage> {
 
   Widget _amountRow() {
     return EditableNumericInputText(
+      autofocus: !_editing,
       defaultValue: _amount,
       currencyId: _inputCurrencyId,
       onChanged: (value) {
