@@ -65,6 +65,12 @@ extension ExtendedDateTime on DateTime {
   int getNumberOfWeekInMonth() {
     return ((day - 1) / 7).floor() + 1;
   }
+
+  int hourInMonth() {
+    final firstOfMonth = getFirstDateOfMonth();
+    final diff = difference(firstOfMonth).inHours;
+    return diff;
+  }
 }
 
 DateTime today() {

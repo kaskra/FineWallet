@@ -1,8 +1,8 @@
-import 'package:FineWallet/data/providers/budget_notifier.dart';
+import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
+import 'package:FineWallet/src/profile_page/parts/prediction_chart.dart';
 import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
-import 'package:FineWallet/src/profile_page/parts/spending_prediction_chart.dart';
 import 'package:FineWallet/src/widgets/decorated_card.dart';
 import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -79,9 +79,10 @@ class SpendingPredictionItem extends StatelessWidget {
     return DecoratedCard(
       child: Container(
         height: 200,
-        padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
-        child: SpendingPredictionChart(
-            monthlyBudget: Provider.of<BudgetNotifier>(context).totalBudget),
+        padding: const EdgeInsets.only(right: 12.0, top: 12.0),
+        child: PredictionChart(
+          monthlyBudget: Provider.of<BudgetNotifier>(context).totalBudget,
+        ),
       ),
     );
   }

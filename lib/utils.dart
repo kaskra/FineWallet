@@ -14,6 +14,7 @@ import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supercharged/supercharged.dart';
 
 Future<DateTime> pickDate(
     BuildContext context, DateTime initialDate, DateTime firstDate) async {
@@ -41,19 +42,9 @@ Future<DateTime> pickDate(
 
 List<DateTime> getListOfMonthDays(DateTime month) {
   final DateTime date = month ?? today();
-
   final DateTime lastDay = date.getLastDateOfMonth();
   final DateTime firstOfMonth = date.getFirstDateOfMonth();
-
-  final data = <DateTime>[];
-  for (var i = firstOfMonth;
-      i.isBeforeOrEqual(lastDay);
-      i = i.add(const Duration(days: 1))) {
-    data.add(i);
-    // TODO decide whether "stairs" or linear
-    data.add(i.add(const Duration(hours: 12)));
-  }
-  return data;
+  return firstOfMonth.rangeTo(lastDay - 1.days, by: 1.days).toList();
 }
 
 List<DateTime> getLastWeekAsDates() {
