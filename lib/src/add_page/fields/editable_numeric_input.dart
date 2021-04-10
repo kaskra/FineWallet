@@ -96,7 +96,6 @@ class _EditableNumericInputTextState extends State<EditableNumericInputText> {
           }
           return null;
         },
-        // TODO needed?
         onFieldSubmitted: (value) {
           _validateAndSend(value);
         },
