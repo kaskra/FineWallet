@@ -9,9 +9,30 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoryChartsItem extends StatelessWidget {
+class CategoryChartsItem extends StatefulWidget {
+  @override
+  _CategoryChartsItemState createState() => _CategoryChartsItemState();
+}
+
+class _CategoryChartsItemState extends State<CategoryChartsItem> {
   final PageController controller =
       PageController(initialPage: UserSettings.getDefaultProfileChart());
+
+  String _title = "";
+
+  @override
+  void initState() {
+    setState(() {
+      _title = getDefaultTitle();
+      print(_title);
+    });
+    super.initState();
+    controller.addListener(() {
+      setState(() {
+        _title = getCurrentTitle();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +43,21 @@ class CategoryChartsItem extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            _buildPages(context),
+            Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _title,
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onBackground),
+                  ),
+                ),
+                Expanded(child: _pages(context)),
+              ],
+            ),
             PageViewIndicator(
               numberOfChildren: 2,
               controller: controller,
@@ -33,43 +68,30 @@ class CategoryChartsItem extends StatelessWidget {
     );
   }
 
-  Widget _buildPages(BuildContext context) {
+  Widget _pages(BuildContext context) {
     return PageView(
       controller: controller,
-      children: <Widget>[
-        _buildChartWrapper(
-          context,
-          LocaleKeys.profile_page_monthly.tr(),
-          const CategoryChart(),
-        ),
-        _buildChartWrapper(
-          context,
-          LocaleKeys.profile_page_lifetime.tr(),
-          const CategoryChart(
-            type: CategoryChart.lifeChart,
-          ),
-        ),
+      children: const <Widget>[
+        CategoryChart(),
+        CategoryChart(type: CategoryChart.lifeChart),
       ],
     );
   }
 
-  Widget _buildChartWrapper(BuildContext context, String title, Widget chart) {
-    return Stack(
-      alignment: const Alignment(-0.75, -1),
-      children: <Widget>[
-        Text(
-          title,
-          style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: chart,
-        ),
-      ],
-    );
+  String getDefaultTitle() {
+    if (UserSettings.getDefaultProfileChart() == 1) {
+      return LocaleKeys.profile_page_lifetime.tr();
+    } else {
+      return LocaleKeys.profile_page_monthly.tr();
+    }
+  }
+
+  String getCurrentTitle() {
+    if (controller.page > 0.5) {
+      return LocaleKeys.profile_page_lifetime.tr();
+    } else {
+      return LocaleKeys.profile_page_monthly.tr();
+    }
   }
 }
 
