@@ -22,7 +22,6 @@ class _CategoryChartsItemState extends State<CategoryChartsItem> {
   void initState() {
     setState(() {
       _title = getDefaultTitle();
-      print(_title);
     });
     super.initState();
     controller.addListener(() {
