@@ -287,12 +287,13 @@ class _HistoryItemDetailsModalSheetState
             onTap: () {
               Navigator.of(context).maybePop();
             },
-            child: const Icon(Icons.close),
+            child: Icon(
+              Icons.close,
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
           ),
-          // TODO check colors in light mode
           TextButton(
             style: TextButton.styleFrom(
-              primary: Theme.of(context).colorScheme.onSecondary,
               backgroundColor: _hasChanged
                   ? Theme.of(context).accentColor
                   : Theme.of(context).scaffoldBackgroundColor,
@@ -305,7 +306,14 @@ class _HistoryItemDetailsModalSheetState
                     await _save();
                   }
                 : null,
-            child: Text(LocaleKeys.add_page_fab_label.tr().toUpperCase()),
+            child: Text(
+              LocaleKeys.add_page_fab_label.tr().toUpperCase(),
+              style: TextStyle(
+                color: _hasChanged
+                    ? Theme.of(context).colorScheme.onSurface
+                    : Theme.of(context).disabledColor,
+              ),
+            ),
           )
         ],
       ),
