@@ -40,13 +40,13 @@ class CategoryChartsItem extends StatelessWidget {
         _buildChartWrapper(
           context,
           LocaleKeys.profile_page_monthly.tr(),
-          const ProfileChart(),
+          const CategoryChart(),
         ),
         _buildChartWrapper(
           context,
           LocaleKeys.profile_page_lifetime.tr(),
-          const ProfileChart(
-            type: ProfileChart.lifeChart,
+          const CategoryChart(
+            type: CategoryChart.lifeChart,
           ),
         ),
       ],

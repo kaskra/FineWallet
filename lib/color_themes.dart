@@ -53,6 +53,17 @@ const ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
 );
 
+// ColorScheme.dark(
+// primary: Color(0xffecba13),
+// secondary: Color(0xffecba13),
+// background: Color(0xff231f12),
+// surface: Color(0xff2e2919),
+//
+// onPrimary: Color(0xff000000),
+// onBackground: Color(0xffffffff),
+// onSurface: Color(0xffffffff),
+// )
+
 // Depending on font some currency symbols my not be shown
 const googleFonts = GoogleFonts.robotoSlabTextTheme;
 

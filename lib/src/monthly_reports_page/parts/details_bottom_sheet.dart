@@ -89,7 +89,7 @@ class DetailsBottomSheet extends StatelessWidget {
         ),
         SizedBox(
           height: 170,
-          child: ProfileChart(
+          child: CategoryChart(
             filterSettings: TransactionFilterSettings(
               dateInMonth: month.month.firstDate,
               expenses: true,
