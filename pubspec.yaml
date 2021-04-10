@@ -40,7 +40,7 @@ dependencies:
   xml: ^5.1.0
   fl_chart: ^0.35.0
   supercharged: ^2.0.0
-  random_color: ^1.0.5
+  random_color: ^1.0.6-nullsafety
 
 dependency_overrides:
   clean_settings:
