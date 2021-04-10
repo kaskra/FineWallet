@@ -71,6 +71,9 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
         colorHue: colorHue,
       );
 
+      final textColor =
+          color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+
       return PieChartSectionData(
           showTitle: widget.amounts[index] / totalAmount > 0.07,
           value: widget.amounts[index],
@@ -79,8 +82,7 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
           radius: isTouched ? 50 : 40,
           titleStyle: TextStyle(
             fontWeight: FontWeight.w500,
-            color:
-                Theme.of(context).colorScheme.onSecondary.withOpacity(opacity),
+            color: textColor.withOpacity(opacity),
           ),
           badgePositionPercentageOffset: 1.4,
           badgeWidget: isTouched
@@ -92,6 +94,7 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
                   padding: const EdgeInsets.all(2),
                   child: Text(
                     widget.names[index],
+                    style: TextStyle(color: textColor),
                   ),
                 )
               : null);
