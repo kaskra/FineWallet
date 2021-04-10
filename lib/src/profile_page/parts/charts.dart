@@ -1,10 +1,8 @@
 import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/user_settings.dart';
-import 'package:FineWallet/src/profile_page/parts/prediction_chart.dart';
-import 'package:FineWallet/src/profile_page/parts/profile_chart.dart';
-import 'package:FineWallet/src/widgets/decorated_card.dart';
-import 'package:FineWallet/src/widgets/standalone/page_view_indicator.dart';
+import 'package:FineWallet/src/profile_page/parts/parts.dart';
+import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
