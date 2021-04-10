@@ -15,7 +15,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-part 'details_modal_sheet.dart';
+part 'details_dialog.dart';
 part 'history_date_title.dart';
 part 'history_filter.dart';
 part 'history_item.dart';
@@ -343,7 +343,7 @@ class _HistoryPageState extends State<HistoryPage> {
         await showGeneralDialog(
             context: context,
             pageBuilder: (context, _, __) =>
-                HistoryItemDetailsModalSheet(transaction: d));
+                HistoryItemDetailsDialog(transaction: d));
       },
     );
   }

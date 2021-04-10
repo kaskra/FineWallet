@@ -1,20 +1,20 @@
 part of 'history_page.dart';
 
-class HistoryItemDetailsModalSheet extends StatefulWidget {
+class HistoryItemDetailsDialog extends StatefulWidget {
   final TransactionWithDetails transaction;
 
-  const HistoryItemDetailsModalSheet({
+  const HistoryItemDetailsDialog({
     Key key,
     @required this.transaction,
   }) : super(key: key);
 
   @override
-  _HistoryItemDetailsModalSheetState createState() =>
-      _HistoryItemDetailsModalSheetState();
+  _HistoryItemDetailsDialogState createState() =>
+      _HistoryItemDetailsDialogState();
 }
 
-class _HistoryItemDetailsModalSheetState
-    extends State<HistoryItemDetailsModalSheet> {
+class _HistoryItemDetailsDialogState
+    extends State<HistoryItemDetailsDialog> {
   double _amount = 0.0;
   Subcategory _subcategory;
   BaseTransaction _baseTransaction;
@@ -145,70 +145,6 @@ class _HistoryItemDetailsModalSheetState
         ],
       ),
     );
-  }
-
-  bool get _hasChanged {
-    final unchangedAmount = double.parse(
-        (widget.transaction.originalAmount ?? 0.0).toStringAsFixed(2));
-
-    final unchangedLabel = widget.transaction.label;
-    final unchangedSubcat = widget.transaction.subcategoryId;
-
-    return _subcategory.id != unchangedSubcat ||
-        _labelController.text != unchangedLabel ||
-        _amount != unchangedAmount;
-  }
-
-  Future _save({
-    bool endRecurrence = false,
-    bool startUnlimitedRecurrence = false,
-  }) async {
-    if (_formKey.currentState.validate()) {
-      // var res = UpdateModifierFlag.all;
-      // if (_changedNonDateRelatedData()) {
-      //   res = await showDialog(
-      //       context: context, builder: (context) => UpdateModifierDialog());
-      // }
-      // final UpdateModifier um =
-      //     UpdateModifier(res, DateTime.parse(_transaction.date));
-      await _updateTransaction(
-        endRecurrence: endRecurrence,
-        startUnlimitedRecurrence: startUnlimitedRecurrence,
-      );
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future _updateTransaction({
-    bool endRecurrence = false,
-    bool startUnlimitedRecurrence = false,
-  }) async {
-    assert(!(endRecurrence && startUnlimitedRecurrence));
-    DateTime until = widget.transaction.until;
-
-    if (endRecurrence) {
-      until = DateTime.parse(widget.transaction.date);
-    } else if (startUnlimitedRecurrence) {
-      until = null;
-    }
-
-    final tx = BaseTransaction(
-      id: widget.transaction.id,
-      date: _baseTransaction.date,
-      isExpense: widget.transaction.isExpense,
-      amount: _amount,
-      originalAmount: _amount,
-      exchangeRate: null,
-      monthId: null,
-      subcategoryId: _subcategory.id,
-      currencyId: widget.transaction.currencyId,
-      label: _labelController.text.trim(),
-      recurrenceType: widget.transaction.recurrenceType,
-      until: until,
-    );
-    await Provider.of<AppDatabase>(context, listen: false)
-        .transactionDao
-        .updateTransaction(tx);
   }
 
   Widget _dateText() {
@@ -387,41 +323,30 @@ class _HistoryItemDetailsModalSheetState
     final formatter = DateFormat.MMMMd(context.locale.toLanguageTag());
     final date = formatter.format(DateTime.parse(widget.transaction.date));
 
-    return Expanded(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14.0),
-          width: double.infinity,
-          child: TextButton(
-            style: TextButton.styleFrom(
-              primary: Theme.of(context).colorScheme.onSecondary,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              side: BorderSide(color: Theme.of(context).accentColor),
-            ),
-            onPressed: () async {
-              await _save(endRecurrence: true);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Expanded(child: Icon(Icons.stop_rounded)),
-                Expanded(
-                  flex: 5,
-                  child: Text(
-                    "${LocaleKeys.add_page_stop_recurrence.tr(args: [date])}"
-                    "${_hasChanged ? LocaleKeys.add_page_save_addition.tr() : ""}",
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return _button(
+      onPressed: () async {
+        await _save(endRecurrence: true);
+      },
+      title: LocaleKeys.add_page_stop_recurrence.tr(args: [date]),
+      iconData: Icons.stop_rounded,
     );
   }
 
   Widget _startUnlimitedRecurrence() {
+    return _button(
+      onPressed: () async {
+        await _save(startUnlimitedRecurrence: true);
+      },
+      title: LocaleKeys.add_page_start_recurrence.tr(),
+      iconData: Icons.replay,
+    );
+  }
+
+  Widget _button({
+    @required void Function() onPressed,
+    @required String title,
+    @required IconData iconData,
+  }) {
     return Expanded(
       child: Align(
         alignment: Alignment.bottomCenter,
@@ -434,18 +359,15 @@ class _HistoryItemDetailsModalSheetState
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               side: BorderSide(color: Theme.of(context).accentColor),
             ),
-            onPressed: () async {
-              await _save(startUnlimitedRecurrence: true);
-            },
+            onPressed: onPressed,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Expanded(child: Icon(Icons.replay)),
+                Expanded(child: Icon(iconData)),
                 Expanded(
                   flex: 5,
                   child: Text(
-                    "${LocaleKeys.add_page_start_recurrence.tr()}"
-                    "${_hasChanged ? LocaleKeys.add_page_save_addition.tr() : ""}",
+                    "$title${_hasChanged ? LocaleKeys.add_page_save_addition.tr() : ""}",
                   ),
                 ),
               ],
@@ -465,6 +387,69 @@ class _HistoryItemDetailsModalSheetState
     return widget.transaction.recurrenceType > 1 &&
         widget.transaction.until != null;
   }
-}
 
-enum RecurrenceFlag { limited, unlimited }
+  bool get _hasChanged {
+    final unchangedAmount = double.parse(
+        (widget.transaction.originalAmount ?? 0.0).toStringAsFixed(2));
+
+    final unchangedLabel = widget.transaction.label;
+    final unchangedSubcat = widget.transaction.subcategoryId;
+
+    return _subcategory.id != unchangedSubcat ||
+        _labelController.text != unchangedLabel ||
+        _amount != unchangedAmount;
+  }
+
+  Future _save({
+    bool endRecurrence = false,
+    bool startUnlimitedRecurrence = false,
+  }) async {
+    if (_formKey.currentState.validate()) {
+      // TODO update modifier
+      // var res = UpdateModifierFlag.all;
+      // if (_changedNonDateRelatedData()) {
+      //   res = await showDialog(
+      //       context: context, builder: (context) => UpdateModifierDialog());
+      // }
+      // final UpdateModifier um =
+      //     UpdateModifier(res, DateTime.parse(_transaction.date));
+      await _updateTransaction(
+        endRecurrence: endRecurrence,
+        startUnlimitedRecurrence: startUnlimitedRecurrence,
+      );
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future _updateTransaction({
+    bool endRecurrence = false,
+    bool startUnlimitedRecurrence = false,
+  }) async {
+    assert(!(endRecurrence && startUnlimitedRecurrence));
+    DateTime until = widget.transaction.until;
+
+    if (endRecurrence) {
+      until = DateTime.parse(widget.transaction.date);
+    } else if (startUnlimitedRecurrence) {
+      until = null;
+    }
+
+    final tx = BaseTransaction(
+      id: widget.transaction.id,
+      date: _baseTransaction.date,
+      isExpense: widget.transaction.isExpense,
+      amount: _amount,
+      originalAmount: _amount,
+      exchangeRate: null,
+      monthId: null,
+      subcategoryId: _subcategory.id,
+      currencyId: widget.transaction.currencyId,
+      label: _labelController.text.trim(),
+      recurrenceType: widget.transaction.recurrenceType,
+      until: until,
+    );
+    await Provider.of<AppDatabase>(context, listen: false)
+        .transactionDao
+        .updateTransaction(tx);
+  }
+}
