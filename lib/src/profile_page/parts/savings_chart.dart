@@ -28,7 +28,12 @@ class SavingsChart extends StatelessWidget {
 
   LineChartData mainData(BuildContext context, List<SavingsPerMonth> data) {
     final colors = [Theme.of(context).accentColor];
-    final formatter = DateFormat.yM(context.locale.toLanguageTag());
+    final formatter = DateFormat("MMM yy", context.locale.toLanguageTag());
+    final singleMonth = data.length == 1;
+
+    if (singleMonth) {
+      data.add(data.first);
+    }
 
     final dates = data.map((e) => e.m.firstDate).toList();
 
@@ -41,6 +46,7 @@ class SavingsChart extends StatelessWidget {
     var maxY =
         chartData.map((e) => e.y).fold(0.0, (double p, e) => (p > e) ? p : e);
     maxY += maxY / 10;
+    if (maxY == 0) maxY = 100;
 
     final niceRange = NiceTicks(maxTicks: 6, minPoint: 0, maxPoint: maxY);
 
@@ -95,7 +101,8 @@ class SavingsChart extends StatelessWidget {
           getTitles: (value) {
             return formatter.format(dates[value.toInt()]);
           },
-          checkToShowTitle: (_, maxValue, __, ___, value) {
+          checkToShowTitle: (minValue, maxValue, __, ___, value) {
+            if (value == minValue && singleMonth) return false;
             if (value == maxValue) return true;
             return true;
           },

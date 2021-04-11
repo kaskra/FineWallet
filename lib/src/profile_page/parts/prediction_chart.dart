@@ -46,6 +46,8 @@ class PredictionChart extends StatelessWidget {
     maxY = max(maxY, monthlyBudget);
     maxY += maxY / 10;
 
+    if (maxY == 0) maxY = 100;
+
     final stop = stopIndex == -1 ? 1.0 : stopIndex / maxX;
 
     final niceRange = NiceTicks(maxTicks: 6, minPoint: 0, maxPoint: maxY);
