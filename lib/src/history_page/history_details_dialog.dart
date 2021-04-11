@@ -13,8 +13,7 @@ class HistoryItemDetailsDialog extends StatefulWidget {
       _HistoryItemDetailsDialogState();
 }
 
-class _HistoryItemDetailsDialogState
-    extends State<HistoryItemDetailsDialog> {
+class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
   double _amount = 0.0;
   Subcategory _subcategory;
   BaseTransaction _baseTransaction;
@@ -55,49 +54,59 @@ class _HistoryItemDetailsDialogState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top + 4.0, bottom: 8.0),
-        child: _applyInputTheme(
-          Form(
-            key: _formKey,
-            onWillPop: () async {
-              if (_hasChanged) {
-                final isConfirmed = await showConfirmDialog(
-                    context,
-                    LocaleKeys.add_page_not_saved_title.tr(),
-                    LocaleKeys.add_page_not_saved_text.tr());
-                return Future.value(isConfirmed);
-              }
-              return Future.value(true);
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _actions(),
-                const SizedBox(height: 8),
-                _title(),
-                const SizedBox(height: 4),
-                _dateText(),
-                const SizedBox(height: 4),
-                const Divider(),
-                const SizedBox(height: 4),
-                _amountRow(),
-                const SizedBox(height: 8),
-                _labelRow(),
-                const SizedBox(height: 8),
-                _categoryRow(),
-                if (_isUnlimitedRecurrence) _endUnlimitedRecurrence(),
-                if (_isLimitedRecurrence) _startUnlimitedRecurrence(),
-              ],
+    return Dismissible(
+      key: const Key('history_item_details_key'),
+      direction: DismissDirection.down,
+      background: Container(color: Colors.black.withOpacity(0.3)),
+      onDismissed: (_) => Navigator.of(context).pop(),
+      confirmDismiss: (_) => _willPop(context),
+      resizeDuration: null,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 4.0, bottom: 8.0),
+          child: _applyInputTheme(
+            Form(
+              key: _formKey,
+              onWillPop: () => _willPop(context),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _actions(),
+                  const SizedBox(height: 8),
+                  _title(),
+                  const SizedBox(height: 4),
+                  _dateText(),
+                  const SizedBox(height: 4),
+                  const Divider(),
+                  const SizedBox(height: 4),
+                  _amountRow(),
+                  const SizedBox(height: 8),
+                  _labelRow(),
+                  const SizedBox(height: 8),
+                  _categoryRow(),
+                  if (_isUnlimitedRecurrence) _endUnlimitedRecurrence(),
+                  if (_isLimitedRecurrence) _startUnlimitedRecurrence(),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> _willPop(BuildContext context) async {
+    if (_hasChanged) {
+      final isConfirmed = await showConfirmDialog(
+          context,
+          LocaleKeys.add_page_not_saved_title.tr(),
+          LocaleKeys.add_page_not_saved_text.tr());
+      return Future.value(isConfirmed);
+    }
+    return Future.value(true);
   }
 
   Widget _title() {

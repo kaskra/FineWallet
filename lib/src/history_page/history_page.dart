@@ -15,8 +15,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-part 'details_dialog.dart';
 part 'history_date_title.dart';
+part 'history_details_dialog.dart';
 part 'history_filter.dart';
 part 'history_item.dart';
 part 'history_month_divider.dart';
@@ -341,9 +341,22 @@ class _HistoryPageState extends State<HistoryPage> {
       },
       onExpand: () async {
         await showGeneralDialog(
-            context: context,
-            pageBuilder: (context, _, __) =>
-                HistoryItemDetailsDialog(transaction: d));
+          context: context,
+          barrierLabel: "Label",
+          barrierDismissible: false,
+          barrierColor: Colors.black.withOpacity(0.3),
+          transitionDuration: const Duration(milliseconds: 200),
+          pageBuilder: (context, _, __) =>
+              HistoryItemDetailsDialog(transaction: d),
+          transitionBuilder: (context, anim1, anim2, child) {
+            return SlideTransition(
+              position:
+                  Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
+                      .animate(anim1),
+              child: child,
+            );
+          },
+        );
       },
     );
   }
