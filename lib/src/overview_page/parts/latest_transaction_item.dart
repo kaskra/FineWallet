@@ -234,7 +234,7 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
               },
             ),
           ),
-          if (UserSettings.getTXShare())
+          if (UserSettings.getTXShare() && featureShare)
             DecoratedCard(
               elevation: 0,
               padding: 2,

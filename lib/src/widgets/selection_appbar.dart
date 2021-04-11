@@ -52,7 +52,7 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
             Theme.of(context).primaryColor.withOpacity(appBarOpacity),
         elevation: appBarElevation,
         actions: <Widget>[
-          _buildShareAction(selectedItems),
+          if (featureShare) _buildShareAction(selectedItems),
           _buildEditAction(selectedItems),
           _buildDeleteAction()
         ],

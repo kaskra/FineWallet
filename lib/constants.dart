@@ -3,3 +3,6 @@ const double appBarOpacity = 1; // in [0, 1]
 const bool isAppBarCentered = true;
 const double cardRadius = 8;
 const int numLatestTransactions = 4;
+
+const featureShare = false;
+const featureExport = false;

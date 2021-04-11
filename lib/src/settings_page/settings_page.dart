@@ -1,3 +1,4 @@
+import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/extensions/locale_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -44,9 +45,9 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             _header(),
             AppearanceSection(),
-            SocialSection(),
+            if (featureShare) SocialSection(),
             DefaultsSection(),
-            OthersSection(),
+            if (featureExport) OthersSection(),
           ],
         ),
       ),
