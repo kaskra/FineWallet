@@ -48,7 +48,12 @@ class SavingsChart extends StatelessWidget {
     maxY += maxY / 10;
     if (maxY == 0) maxY = 100;
 
-    final niceRange = NiceTicks(maxTicks: 6, minPoint: 0, maxPoint: maxY);
+    var minY =
+        chartData.map((e) => e.y).fold(0.0, (double p, e) => (p < e) ? p : e);
+    minY += minY / 10;
+    if (minY == 0) minY = -100;
+
+    final niceRange = NiceTicks(maxTicks: 6, minPoint: minY, maxPoint: maxY);
 
     return LineChartData(
       gridData: FlGridData(
@@ -78,6 +83,17 @@ class SavingsChart extends StatelessWidget {
             gradientColorStops: [0, 1],
             gradientFrom: const Offset(0.0, 1.0),
             gradientTo: const Offset(1.0, 0.0),
+            applyCutOffY: true,
+            cutOffY: 0,
+          ),
+          aboveBarData: BarAreaData(
+            show: true,
+            colors: colors.map((color) => color.withOpacity(0.1)).toList(),
+            gradientColorStops: [0, 1],
+            gradientFrom: const Offset(0.0, 1.0),
+            gradientTo: const Offset(1.0, 0.0),
+            applyCutOffY: true,
+            cutOffY: 0,
           ),
         ),
       ],
