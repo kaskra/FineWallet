@@ -204,6 +204,7 @@ abstract class  LocaleKeys {
   static const reports_page_total_income = 'reports_page.total_income';
   static const reports_page_total_expense = 'reports_page.total_expense';
   static const reports_page_maximal_available_budget = 'reports_page.maximal_available_budget';
+  static const reports_page_selected_savings = 'reports_page.selected_savings';
   static const reports_page = 'reports_page';
   static const add_page_title = 'add_page.title';
   static const add_page_fab_tooltip = 'add_page.fab_tooltip';

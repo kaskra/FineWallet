@@ -30,25 +30,53 @@ class UsedBudgetBar extends StatelessWidget {
             children: [
               AnimatedBudgetBar(
                 height: 75,
-                availableBudget: model.month.maxBudget,
-                maxBudget: model.income,
+                availableBudget:
+                    model.month.maxBudget + model.month.savingsBudget,
+                maxBudget: model.income + model.month.savingsBudget,
                 usedBudget: model.expense,
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+                padding: const EdgeInsets.only(
+                    left: 2.0, right: 2.0, top: 8, bottom: 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       LocaleKeys.reports_page_maximal_available_budget.tr(),
                       style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w600),
+                        fontSize: 15,
+                        // fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       "${model.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                       style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w600),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 2.0, right: 2.0, top: 0, bottom: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      LocaleKeys.reports_page_selected_savings.tr(),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        // fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      "${model.month.savingsBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),

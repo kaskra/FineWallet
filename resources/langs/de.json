@@ -231,7 +231,8 @@
     "overall" : "Zusammenfassung",
     "total_income" : "Gesamtes Einkommen",
     "total_expense" : "Gesamte Ausgaben",
-    "maximal_available_budget" : "Maximal verfügbares Budget"
+    "maximal_available_budget" : "Verfügbares Budget",
+    "selected_savings" : "Von den Ersparnissen"
   },
   "add_page" : {
     "title": "{} hinzufügen",

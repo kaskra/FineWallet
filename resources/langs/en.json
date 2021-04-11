@@ -228,7 +228,8 @@
     "overall": "Overall",
     "total_income": "Total Income",
     "total_expense": "Total Expense",
-    "maximal_available_budget" : "Maximum available budget"
+    "maximal_available_budget" : "Available Budget",
+    "selected_savings" : "From Savings"
   },
   "add_page": {
     "title": "Add {}",
