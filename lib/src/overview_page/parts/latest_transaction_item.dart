@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
@@ -22,6 +24,7 @@ class LatestTransactionItem extends StatefulWidget {
 
 class _LatestTransactionItemState extends State<LatestTransactionItem> {
   final PageController controller = PageController();
+  Timer _timer;
 
   int _userCurrencyId = 1;
 
@@ -35,7 +38,26 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
   @override
   void initState() {
     loadUserCurrency();
+    _initializeTimer();
     super.initState();
+  }
+
+  void _initializeTimer() {
+    setState(() {
+      _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+        if (controller.hasClients) {
+          var currentPage = controller.page.round();
+          if (currentPage < numLatestTransactions - 1) {
+            currentPage++;
+          } else {
+            currentPage = 0;
+          }
+          controller.animateToPage(currentPage,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.linear);
+        }
+      });
+    });
   }
 
   @override
@@ -87,7 +109,13 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () async {
+          if (_timer != null && _timer.isActive) {
+            _timer.cancel();
+          }
           await _showActions(context, snapshotItem);
+          if (_timer != null && !_timer.isActive) {
+            _initializeTimer();
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
