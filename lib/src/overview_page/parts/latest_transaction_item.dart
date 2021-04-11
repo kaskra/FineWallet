@@ -25,7 +25,6 @@ class LatestTransactionItem extends StatefulWidget {
 class _LatestTransactionItemState extends State<LatestTransactionItem> {
   final PageController controller = PageController();
   Timer _timer;
-
   int _userCurrencyId = 1;
 
   Future loadUserCurrency() async {
@@ -42,17 +41,29 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   void _initializeTimer() {
     setState(() {
-      _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      _timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
         if (controller.hasClients) {
-          var currentPage = controller.page.round();
-          if (currentPage < numLatestTransactions - 1) {
-            currentPage++;
+          final num = (await Provider.of<AppDatabase>(context, listen: false)
+                  .transactionDao
+                  .getNLatestTransactions(numLatestTransactions))
+              .length;
+
+          var nextPage = controller.page.round();
+          if (nextPage < num - 1) {
+            nextPage++;
           } else {
-            currentPage = 0;
+            nextPage = 0;
           }
-          controller.animateToPage(currentPage,
+
+          await controller.animateToPage(nextPage,
               duration: const Duration(milliseconds: 200),
               curve: Curves.linear);
         }

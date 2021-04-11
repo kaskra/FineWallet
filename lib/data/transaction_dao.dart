@@ -241,6 +241,10 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   Stream<List<TransactionWithDetails>> watchNLatestTransactions(int N) =>
       _nLatestTransactions(N).watch();
 
+  /// Get the latest N non-recurrence transactions.
+  Future<List<TransactionWithDetails>> getNLatestTransactions(int N) =>
+      _nLatestTransactions(N).get();
+
   /// Returns a [Stream] of the monthly budget.
   ///
   /// Budget calculation

@@ -75,6 +75,7 @@ WHERE t.subcategoryId = s.id
   AND $predicate
 GROUP BY c.id;
 
+-- Should work with baseTransactions, but date is String and not DateTime
 _nLatestTransactions AS TransactionWithDetails:
 SELECT t.*, cc.**, s.**, c.**
 FROM fullTransactions t,
