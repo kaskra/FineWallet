@@ -188,7 +188,6 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
             fontWeight: FontWeight.w500,
             color: textColor.withOpacity(opacity),
           ),
-          badgePositionPercentageOffset: 1.4,
           badgeWidget: isTouched
               ? Container(
                   decoration: BoxDecoration(
