@@ -35,24 +35,26 @@ class _CategoryChartsItemState extends State<CategoryChartsItem> {
   Widget build(BuildContext context) {
     return DecoratedCard(
       child: Container(
-        height: 200,
+        height: 250,
         padding: const EdgeInsets.all(5),
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    _title,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                  ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                _title,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
-                Expanded(child: _pages(context)),
+              ),
+            ),
+            PageView(
+              controller: controller,
+              children: const <Widget>[
+                CategoryChart(),
+                CategoryChart(type: CategoryChart.lifeChart),
               ],
             ),
             PageViewIndicator(
@@ -62,16 +64,6 @@ class _CategoryChartsItemState extends State<CategoryChartsItem> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _pages(BuildContext context) {
-    return PageView(
-      controller: controller,
-      children: const <Widget>[
-        CategoryChart(),
-        CategoryChart(type: CategoryChart.lifeChart),
-      ],
     );
   }
 
