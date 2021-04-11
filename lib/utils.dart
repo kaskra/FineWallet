@@ -6,11 +6,14 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
+import 'dart:math';
+
 import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
+import 'package:dart_numerics/dart_numerics.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -146,4 +149,65 @@ bool isInLastWeekOfMonth(DateTime date) {
     for (var i = 0; i < 7; i++) lastDateInMonth.day - i
   ];
   return lastWeekDates.contains(date.day);
+}
+
+class NiceTicks {
+  double _maxTicks;
+  double _minPoint;
+  double _maxPoint;
+  double _tickSpacing;
+  double _range;
+  double _niceMin;
+  double _niceMax;
+
+  double get niceMin => _niceMin;
+  double get niceMax => _niceMax;
+  double get tickSpacing => _tickSpacing;
+
+  NiceTicks({@required double maxTicks, double minPoint, double maxPoint}) {
+    _maxTicks = maxTicks ?? 10;
+    _minPoint = minPoint ?? 0;
+    _maxPoint = maxPoint ?? 100;
+    calculate();
+  }
+
+  void calculate() {
+    _range = _niceNum(_maxPoint - _minPoint, false);
+    _tickSpacing = _niceNum(_range / (_maxTicks - 1), true);
+    _niceMin = (_minPoint / _tickSpacing).floorToDouble() * _tickSpacing;
+    _niceMax = (_maxPoint / _tickSpacing).ceilToDouble() * _tickSpacing;
+  }
+
+  double _niceNum(double range, bool round) {
+    double exponent;
+    double fraction;
+    double niceFraction;
+
+    exponent = log10(range).floorToDouble();
+    fraction = range / pow(10, exponent);
+
+    if (round) {
+      if (fraction < 1.5) {
+        niceFraction = 1;
+      } else if (fraction < 3) {
+        niceFraction = 2;
+      } else if (fraction < 7) {
+        niceFraction = 5;
+      } else {
+        niceFraction = 10;
+      }
+    } else {
+      if (fraction <= 1) {
+        niceFraction = 1;
+      } else if (fraction <= 2) {
+        niceFraction = 2;
+      } else if (fraction <= 5) {
+        niceFraction = 5;
+      } else {
+        niceFraction = 10;
+      }
+    }
+
+    return niceFraction * pow(10, exponent);
+  }
 }

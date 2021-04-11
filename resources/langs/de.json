@@ -199,7 +199,8 @@
   "savings": {
     "name": "Ersparnisse",
     "saved_amount": "Gesparter Betrag",
-    "difference": "Aktueller Unterschied"
+    "difference": "Aktueller Unterschied",
+    "history" : "Ersparnisverlauf"
   },
   "history_page": {
     "expenses_on": "Ausgaben am {}",

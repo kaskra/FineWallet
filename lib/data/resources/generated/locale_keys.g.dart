@@ -175,6 +175,7 @@ abstract class  LocaleKeys {
   static const savings_name = 'savings.name';
   static const savings_saved_amount = 'savings.saved_amount';
   static const savings_difference = 'savings.difference';
+  static const savings_history = 'savings.history';
   static const savings = 'savings';
   static const history_page_expenses_on = 'history_page.expenses_on';
   static const history_page_filter_settings = 'history_page.filter_settings';

@@ -164,6 +164,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     return _totalSavings(currentDate.toSql()).getSingleOrNull();
   }
 
+  /// Returns a [Stream] with the savings up to the current month.
+  /// The stream is updated every time the database is changed.
+  Stream<List<SavingsPerMonth>> watchSavingsPerMonth() {
+    final currentDate = today().getFirstDateOfMonth();
+    return _savingsPerMonth(currentDate.toSql()).watch();
+  }
+
   /// Returns a [Stream] that watches the transactions table.
   ///
   /// The stream is updated when ever the table changes.

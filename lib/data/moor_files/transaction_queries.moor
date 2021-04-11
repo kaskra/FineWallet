@@ -30,6 +30,15 @@ SELECT (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense A
 FROM months m
 WHERE m.firstDate <= :date AND m.lastDate >= :date;
 
+_savingsPerMonth AS SavingsPerMonth:
+SELECT m.**, ((SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date <= m.lastDate) -
+        (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date <= m.lastDate) +
+        (SELECT p.startingSavings FROM currencies c, userProfiles p WHERE c.id = p.currencyId)) AS savings
+FROM months m
+WHERE m.firstDate <= :date
+GROUP BY m.id
+ORDER BY m.firstDate;
+
 _transactionsWithFilter ($predicate = True) AS TransactionWithDetails:
 SELECT t.*, cc.**, s.**, c.**
 FROM fullTransactions t,

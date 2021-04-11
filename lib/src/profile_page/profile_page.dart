@@ -36,9 +36,9 @@ class ProfilePage extends StatelessWidget {
             SmallStructureSpace(),
             CategoryChartsItem(),
             //
-            StructureTitle(text: LocaleKeys.savings_name.tr()),
+            StructureTitle(text: LocaleKeys.savings_history.tr()),
             SmallStructureSpace(),
-            const SimpleSavingsItem(),
+            const SavingsChartItem(),
             StructureSpace(),
           ],
         ),

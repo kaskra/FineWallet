@@ -106,3 +106,25 @@ class SpendingPredictionItem extends StatelessWidget {
     );
   }
 }
+
+class SavingsChartItem extends StatelessWidget {
+  final double fontSize;
+  final FontWeight fontWeight;
+
+  const SavingsChartItem(
+      {Key key, this.fontSize = 16, this.fontWeight = FontWeight.bold})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const DecoratedCard(
+      child: SizedBox(
+        height: 200,
+        child: Padding(
+          padding: EdgeInsets.only(left: 8.0, right: 16, top: 12, bottom: 8),
+          child: SavingsChart(),
+        ),
+      ),
+    );
+  }
+}

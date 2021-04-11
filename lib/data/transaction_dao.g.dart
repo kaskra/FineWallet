@@ -86,6 +86,26 @@ mixin _$TransactionDaoMixin on DatabaseAccessor<AppDatabase> {
         '(SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date < m.firstDate) -\r\n    (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date < m.firstDate) +\r\n    (SELECT p.startingSavings FROM currencies c, userProfiles p WHERE c.id = p.currencyId)'));
   }
 
+  Selectable<SavingsPerMonth> _savingsPerMonth(String date) {
+    return customSelect(
+        'SELECT "m"."id" AS "nested_0.id", "m"."maxBudget" AS "nested_0.maxBudget", "m"."savingsBudget" AS "nested_0.savingsBudget", "m"."firstDate" AS "nested_0.firstDate", "m"."lastDate" AS "nested_0.lastDate", ((SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE NOT isExpense AND date <= m.lastDate) -\r\n        (SELECT ifnull(SUM(amount),0) FROM fullTransactions WHERE isExpense AND date <= m.lastDate) +\r\n        (SELECT p.startingSavings FROM currencies c, userProfiles p WHERE c.id = p.currencyId)) AS savings\r\nFROM months m\r\nWHERE m.firstDate <= :date\r\nGROUP BY m.id\r\nORDER BY m.firstDate',
+        variables: [
+          Variable<String>(date)
+        ],
+        readsFrom: {
+          months,
+          userProfiles,
+          currencies,
+          baseTransactions,
+          recurrenceTypes
+        }).map((QueryRow row) {
+      return SavingsPerMonth(
+        savings: row.read<double>('savings'),
+        m: months.mapFromRowOrNull(row, tablePrefix: 'nested_0'),
+      );
+    });
+  }
+
   Selectable<TransactionWithDetails> _transactionsWithFilter(
       {Expression<bool> predicate = const CustomExpression('(TRUE)')}) {
     final generatedpredicate = $write(predicate, hasMultipleTables: true);
@@ -295,6 +315,15 @@ class TransactionsResult {
     @required this.currencyId,
     @required this.recurrenceType,
     this.until,
+  });
+}
+
+class SavingsPerMonth {
+  final double savings;
+  final Month m;
+  SavingsPerMonth({
+    @required this.savings,
+    this.m,
   });
 }
 
