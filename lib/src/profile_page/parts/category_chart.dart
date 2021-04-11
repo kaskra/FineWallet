@@ -137,7 +137,7 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
       child: PieChart(
         PieChartData(
           sections: _pieChartSections(context),
-          centerSpaceRadius: 25,
+          centerSpaceRadius: 30,
           sectionsSpace: 1,
           pieTouchData: PieTouchData(
             enabled: true,
@@ -183,7 +183,7 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
           value: widget.amounts[index],
           title: "${(widget.amounts[index] / totalAmount * 100).round()}%",
           color: color.withOpacity(opacity),
-          radius: isTouched ? 50 : 40,
+          radius: isTouched ? 55 : 45,
           titleStyle: TextStyle(
             fontWeight: FontWeight.w500,
             color: textColor.withOpacity(opacity),

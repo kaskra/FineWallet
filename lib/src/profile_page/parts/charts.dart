@@ -35,7 +35,7 @@ class _CategoryChartsItemState extends State<CategoryChartsItem> {
   Widget build(BuildContext context) {
     return DecoratedCard(
       child: Container(
-        height: 250,
+        height: 220,
         padding: const EdgeInsets.all(5),
         child: Stack(
           alignment: Alignment.bottomCenter,
