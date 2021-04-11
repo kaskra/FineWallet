@@ -45,7 +45,10 @@ class PredictionChart extends StatelessWidget {
         chartData.map((e) => e.y).fold(0.0, (double p, e) => (p > e) ? p : e);
     maxY = max(maxY, monthlyBudget);
     maxY += maxY / 10;
-    final stop = stopIndex / maxX;
+
+    final stop = stopIndex == -1 ? 1.0 : stopIndex / maxX;
+
+    final niceRange = NiceTicks(maxTicks: 6, minPoint: 0, maxPoint: maxY);
 
     return LineChartData(
       gridData: FlGridData(
@@ -57,8 +60,8 @@ class PredictionChart extends StatelessWidget {
       ),
       minX: minX,
       maxX: maxX,
-      minY: 0,
-      maxY: maxY,
+      minY: niceRange.niceMin,
+      maxY: niceRange.niceMax,
       lineTouchData: LineTouchData(enabled: false),
       lineBarsData: [
         LineChartBarData(
@@ -108,7 +111,7 @@ class PredictionChart extends StatelessWidget {
       titlesData: FlTitlesData(
         leftTitles: SideTitles(
           showTitles: true,
-          interval: maxY / 5,
+          interval: niceRange.tickSpacing,
           getTitles: (value) {
             final v = value.toInt();
             return v.toString();
