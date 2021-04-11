@@ -196,7 +196,7 @@
   "savings": {
     "name": "Savings",
     "saved_amount": "Saved amount",
-    "difference": "Current Difference",
+    "difference": "This month",
     "history" : "Savings History"
   },
   "history_page": {
