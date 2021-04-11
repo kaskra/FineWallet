@@ -21,14 +21,15 @@ class PredictionChart extends StatelessWidget {
           .watchExpensesPerDayInMonth(today()),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return LineChart(mainData(snapshot.data));
+          return LineChart(mainData(context, snapshot.data));
         }
         return const Center(child: CircularProgressIndicator());
       },
     );
   }
 
-  LineChartData mainData(List<ExpensesPerDayInMonthResult> data) {
+  LineChartData mainData(
+      BuildContext context, List<ExpensesPerDayInMonthResult> data) {
     const minX = 1.0;
 
     final gradients = [Colors.red, Colors.green];
@@ -112,6 +113,10 @@ class PredictionChart extends StatelessWidget {
             final v = value.toInt();
             return v.toString();
           },
+          getTextStyles: (value) => TextStyle(
+            color: Theme.of(context).colorScheme.onBackground,
+            fontSize: 11,
+          ),
         ),
         bottomTitles: SideTitles(
           showTitles: true,
@@ -124,6 +129,10 @@ class PredictionChart extends StatelessWidget {
             if (value == maxValue) return true;
             return true;
           },
+          getTextStyles: (value) => TextStyle(
+            color: Theme.of(context).colorScheme.onBackground,
+            fontSize: 11,
+          ),
         ),
       ),
       borderData: FlBorderData(

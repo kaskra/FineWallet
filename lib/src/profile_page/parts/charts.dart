@@ -47,9 +47,9 @@ class _CategoryChartsItemState extends State<CategoryChartsItem> {
                   child: Text(
                     _title,
                     style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.onBackground),
+                      fontSize: 15,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
                   ),
                 ),
                 Expanded(child: _pages(context)),
