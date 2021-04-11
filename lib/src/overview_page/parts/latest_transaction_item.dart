@@ -156,15 +156,25 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
                 flex: 0,
                 child: SizedBox(width: 4),
               ),
-              CombinedAmountString(
-                amount: snapshotItem.amount,
-                originalAmount: snapshotItem.originalAmount,
-                isExpense: snapshotItem.isExpense,
-                currencyId: snapshotItem.currencyId,
-                currencySymbol: snapshotItem.c.symbol,
-                userCurrencyId: _userCurrencyId,
-                titleFontSize: 17,
-                subtitleFontSize: 11,
+              Row(
+                children: [
+                  if (snapshotItem.recurrenceType > 1)
+                    Icon(
+                      Icons.replay,
+                      color: Theme.of(context).colorScheme.secondary,
+                      size: 18,
+                    ),
+                  CombinedAmountString(
+                    amount: snapshotItem.amount,
+                    originalAmount: snapshotItem.originalAmount,
+                    isExpense: snapshotItem.isExpense,
+                    currencyId: snapshotItem.currencyId,
+                    currencySymbol: snapshotItem.c.symbol,
+                    userCurrencyId: _userCurrencyId,
+                    titleFontSize: 17,
+                    subtitleFontSize: 11,
+                  ),
+                ],
               ),
             ],
           ),
