@@ -30,8 +30,17 @@ class _DefaultsSectionState extends State<DefaultsSection> {
   }
 
   Widget _buildDefaultProfileChart() {
-    return SettingRadioItem<int>(
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Theme.of(context).accentColor,
+          ),
+        ),
+      ),
+      child: SettingRadioItem<int>(
         title: LocaleKeys.settings_page_default_expense_chart.tr(),
+        cancelText: LocaleKeys.cancel.tr(),
         selectedValue: _selectedId,
         displayValue: [
           LocaleKeys.profile_page_monthly.tr(),
@@ -46,7 +55,9 @@ class _DefaultsSectionState extends State<DefaultsSection> {
           setState(() {
             _selectedId = val;
           });
-        });
+        },
+      ),
+    );
   }
 
   Widget _buildDefaultFilterSettings() {
