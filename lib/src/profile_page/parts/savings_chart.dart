@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/utils.dart';
@@ -35,10 +36,13 @@ class SavingsChart extends StatelessWidget {
       data.add(data.first);
     }
 
-    final dates = data.map((e) => e.m.firstDate).toList();
+    final List<DateTime> dates = getMissingMonths(data);
+    final List<double> filledData = fillMissingMonths(data, dates);
 
     final chartData = List.generate(
-        data.length, (i) => FlSpot(i.toDouble(), data[i].savings));
+      filledData.length,
+      (i) => FlSpot(i.toDouble(), filledData[i]),
+    );
 
     final minX = chartData.first.x;
     final maxX = chartData.last.x;
@@ -133,5 +137,33 @@ class SavingsChart extends StatelessWidget {
         border: const Border(bottom: BorderSide()),
       ),
     );
+  }
+
+  List<DateTime> getMissingMonths(List<SavingsPerMonth> data) {
+    final allDates = <DateTime>[];
+    final lastDate = data.last.m.firstDate;
+    var currDate = data.first.m.firstDate;
+
+    while (currDate.isBeforeOrEqual(lastDate)) {
+      allDates.add(currDate);
+      currDate = currDate.getFirstOfNextMonth();
+    }
+    return allDates;
+  }
+
+  List<double> fillMissingMonths(
+      List<SavingsPerMonth> data, List<DateTime> allDates) {
+    final txDates = data.map((e) => e.m.firstDate).toList();
+
+    final data2 = <double>[];
+    for (final d in allDates) {
+      final index = txDates.indexOf(d);
+      if (index != -1) {
+        data2.add(data[index].savings);
+      } else {
+        data2.add(data2.last);
+      }
+    }
+    return data2;
   }
 }
