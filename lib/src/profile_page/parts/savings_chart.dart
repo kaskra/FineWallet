@@ -116,6 +116,7 @@ class SavingsChart extends StatelessWidget {
         ),
         bottomTitles: SideTitles(
           showTitles: true,
+          margin: 8,
           rotateAngle: 60,
           interval: (maxX + 1) / min(dates.length, 10),
           getTitles: (value) {
