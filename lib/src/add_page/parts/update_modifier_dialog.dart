@@ -29,12 +29,12 @@ class _UpdateModifierDialogState extends State<UpdateModifierDialog> {
           groupValue: _selectedModifier,
           onChanged: _select,
         ),
-        RadioListTile(
-          value: UpdateModifierFlag.onlySelected,
-          title: Text(LocaleKeys.add_page_only_selected_transaction.tr()),
-          groupValue: _selectedModifier,
-          onChanged: _select,
-        ),
+        // RadioListTile(
+        //   value: UpdateModifierFlag.onlySelected,
+        //   title: Text(LocaleKeys.add_page_only_selected_transaction.tr()),
+        //   groupValue: _selectedModifier,
+        //   onChanged: _select,
+        // ),
         Align(
           alignment: Alignment.centerRight,
           child: Padding(

@@ -87,11 +87,33 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       {UpdateModifier modifier}) async {
     var id = -1;
 
-    // print(modifier);
-    if (modifier?.flag == UpdateModifierFlag.onlySelected) {
-    } else if (modifier?.flag == UpdateModifierFlag.onlyFuture) {
-      // TODO update old tx with until,
-      // insert new tx with old until
+    if (modifier?.flag == UpdateModifierFlag.onlyFuture) {
+      final date = modifier.selectedDate;
+      final until = tx.until;
+      final oldUntil = date.add(const Duration(days: -1));
+
+      // Update tx up to date with new until.
+      await (update(baseTransactions)..where((tbl) => tbl.id.equals(tx.id)))
+          .write(
+        BaseTransaction(
+          id: tx.id,
+          until: oldUntil,
+          isExpense: null,
+          currencyId: null,
+          exchangeRate: null,
+          date: null,
+          amount: null,
+          label: null,
+          subcategoryId: null,
+          originalAmount: null,
+          recurrenceType: null,
+          monthId: null,
+        ),
+      );
+
+      // Create new tx from date to old until
+      final newTx = tx.copyWith(until: until, date: date);
+      id = await insertTransaction(newTx);
     } else {
       id = await _upsertTransaction(tx, updateFlag: true);
     }
@@ -131,6 +153,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         return into(baseTransactions)
             .insert(insert, mode: InsertMode.insertOrReplace);
       }
+      print(insert);
       return into(baseTransactions).insertOnConflictUpdate(insert);
     });
   }

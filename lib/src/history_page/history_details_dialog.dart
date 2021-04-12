@@ -414,15 +414,13 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
     bool startUnlimitedRecurrence = false,
   }) async {
     if (_formKey.currentState.validate()) {
-      // TODO update modifier
-      // var res = UpdateModifierFlag.all;
-      // if (_changedNonDateRelatedData()) {
-      //   res = await showDialog(
-      //       context: context, builder: (context) => UpdateModifierDialog());
-      // }
-      // final UpdateModifier um =
-      //     UpdateModifier(res, DateTime.parse(_transaction.date));
+      final UpdateModifier modifier = await _getModifier();
+      if (modifier == null) {
+        return;
+      }
+
       await _updateTransaction(
+        modifier: modifier,
         endRecurrence: endRecurrence,
         startUnlimitedRecurrence: startUnlimitedRecurrence,
       );
@@ -430,7 +428,29 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
     }
   }
 
+  Future<UpdateModifier> _getModifier() async {
+    var flag = UpdateModifierFlag.all;
+    if (_hasChanged && widget.transaction.recurrenceType > 1) {
+      final UpdateModifierFlag selectedFlag = await showDialog(
+        context: context,
+        builder: (context) => UpdateModifierDialog(),
+      );
+
+      if (selectedFlag != null) {
+        flag = selectedFlag;
+      } else {
+        return null;
+      }
+    }
+    final UpdateModifier modifier = UpdateModifier(
+      flag,
+      DateTime.parse(widget.transaction.date),
+    );
+    return modifier;
+  }
+
   Future _updateTransaction({
+    UpdateModifier modifier,
     bool endRecurrence = false,
     bool startUnlimitedRecurrence = false,
   }) async {
@@ -459,6 +479,6 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
     );
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
-        .updateTransaction(tx);
+        .updateTransaction(tx, modifier: modifier);
   }
 }

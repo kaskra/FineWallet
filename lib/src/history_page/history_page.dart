@@ -1,6 +1,7 @@
 import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/core/datatypes/history_filter_state.dart';
 import 'package:FineWallet/core/datatypes/tuple.dart';
+import 'package:FineWallet/core/datatypes/update_transaction_modifier.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
@@ -9,6 +10,7 @@ import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/data/user_settings.dart';
 import 'package:FineWallet/src/add_page/page.dart';
+import 'package:FineWallet/src/add_page/parts/update_modifier_dialog.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
 import 'package:FineWallet/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
