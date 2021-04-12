@@ -24,11 +24,19 @@ class MonthlyExpenseChart extends StatelessWidget {
         builder: (context, snapshot) {
           double total = 0;
           double value = 0;
+
           if (snapshot.hasData) {
             total = snapshot.data.month.maxBudget +
                 snapshot.data.month.savingsBudget;
             value = snapshot.data.expense;
           }
+
+          if (snapshot.data == null) {
+            Provider.of<AppDatabase>(context, listen: false)
+                .monthDao
+                .checkForCurrentMonth();
+          }
+
           return CustomPaint(
             painter: MonthlyExpensePainter(
                 backgroundColor: backgroundColor ?? Colors.transparent,

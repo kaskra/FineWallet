@@ -12,7 +12,7 @@ class BudgetNotifier extends ChangeNotifier {
 
   double _budget = 0;
   double _savingsBudget = 0;
-  double get totalBudget => _budget + _savingsBudget;
+  double get totalBudget => (_budget ?? 0.0) + (_savingsBudget ?? 0.0);
 
   void setBudget(double b, BudgetFlag flag) {
     if (flag == BudgetFlag.savings) {
@@ -25,9 +25,9 @@ class BudgetNotifier extends ChangeNotifier {
 
   double getBudget(BudgetFlag flag) {
     if (flag == BudgetFlag.savings) {
-      return _savingsBudget;
+      return _savingsBudget ?? 0.0;
     } else {
-      return _budget;
+      return _budget ?? 0.0;
     }
   }
 }

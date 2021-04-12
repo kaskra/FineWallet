@@ -13,7 +13,7 @@ extension ExtendedDateTime on DateTime {
   }
 
   DateTime getFirstOfNextMonth() {
-    return getLastDateOfMonth().add(const Duration(days: 1));
+    return getLastDateOfMonth().add(const Duration(days: 1, hours: -12));
   }
 
   int get remainingDaysInMonth =>

@@ -38,6 +38,12 @@ class _SliderItemState extends State<SliderItem> {
         .monthDao
         .getCurrentMonth();
 
+    if (m == null) {
+      await Provider.of<AppDatabase>(context, listen: false)
+          .monthDao
+          .checkForCurrentMonth();
+    }
+
     if (widget.flag == BudgetFlag.savings) {
       Provider.of<BudgetNotifier>(context, listen: false)
           .setBudget(m?.savingsBudget, widget.flag);
