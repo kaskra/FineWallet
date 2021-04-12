@@ -32,12 +32,12 @@ class SavingsChart extends StatelessWidget {
     final formatter = DateFormat("MMM yy", context.locale.toLanguageTag());
     final singleMonth = data.length == 1;
 
-    if (singleMonth) {
-      data.add(data.first);
-    }
-
     final List<DateTime> dates = getMissingMonths(data);
     final List<double> filledData = fillMissingMonths(data, dates);
+
+    if (singleMonth) {
+      filledData.add(filledData.first);
+    }
 
     final chartData = List.generate(
       filledData.length,
@@ -55,7 +55,6 @@ class SavingsChart extends StatelessWidget {
     var minY =
         chartData.map((e) => e.y).fold(0.0, (double p, e) => (p < e) ? p : e);
     minY += minY / 10;
-    if (minY == 0) minY = -100;
 
     final niceRange = NiceTicks(maxTicks: 6, minPoint: minY, maxPoint: maxY);
 
@@ -121,11 +120,6 @@ class SavingsChart extends StatelessWidget {
           interval: (maxX + 1) / min(dates.length, 10),
           getTitles: (value) {
             return formatter.format(dates[value.toInt()]);
-          },
-          checkToShowTitle: (minValue, maxValue, __, ___, value) {
-            if (value == minValue && singleMonth) return false;
-            if (value == maxValue) return true;
-            return true;
           },
           getTextStyles: (value) => TextStyle(
             color: Theme.of(context).colorScheme.onBackground,
