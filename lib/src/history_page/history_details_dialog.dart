@@ -334,7 +334,11 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
 
     return _button(
       onPressed: () async {
-        await _save(endRecurrence: true);
+        final bool confirmed = await _willPop(context);
+
+        if (confirmed) {
+          await _save(endRecurrence: true);
+        }
       },
       title: LocaleKeys.add_page_stop_recurrence.tr(args: [date]),
       iconData: Icons.stop_rounded,
@@ -344,7 +348,11 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
   Widget _startUnlimitedRecurrence() {
     return _button(
       onPressed: () async {
-        await _save(startUnlimitedRecurrence: true);
+        final bool confirmed = await _willPop(context);
+
+        if (confirmed) {
+          await _save(startUnlimitedRecurrence: true);
+        }
       },
       title: LocaleKeys.add_page_start_recurrence.tr(),
       iconData: Icons.replay,
@@ -375,9 +383,7 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
                 Expanded(child: Icon(iconData)),
                 Expanded(
                   flex: 5,
-                  child: Text(
-                    "$title${_hasChanged ? LocaleKeys.add_page_save_addition.tr() : ""}",
-                  ),
+                  child: Text(title),
                 ),
               ],
             ),
@@ -414,7 +420,8 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
     bool startUnlimitedRecurrence = false,
   }) async {
     if (_formKey.currentState.validate()) {
-      final UpdateModifier modifier = await _getModifier();
+      final UpdateModifier modifier =
+          await _getModifier(endRecurrence || startUnlimitedRecurrence);
       if (modifier == null) {
         return;
       }
@@ -428,9 +435,11 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
     }
   }
 
-  Future<UpdateModifier> _getModifier() async {
+  Future<UpdateModifier> _getModifier(bool quickRecurrenceChange) async {
     var flag = UpdateModifierFlag.all;
-    if (_hasChanged && widget.transaction.recurrenceType > 1) {
+    if (_hasChanged &&
+        widget.transaction.recurrenceType > 1 &&
+        !quickRecurrenceChange) {
       final UpdateModifierFlag selectedFlag = await showDialog(
         context: context,
         builder: (context) => UpdateModifierDialog(),
@@ -457,26 +466,44 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
     assert(!(endRecurrence && startUnlimitedRecurrence));
     DateTime until = widget.transaction.until;
 
-    if (endRecurrence) {
-      until = DateTime.parse(widget.transaction.date);
-    } else if (startUnlimitedRecurrence) {
-      until = null;
-    }
+    BaseTransaction tx;
+    if (endRecurrence || startUnlimitedRecurrence) {
+      if (endRecurrence) {
+        until = DateTime.parse(widget.transaction.date);
+      } else if (startUnlimitedRecurrence) {
+        until = null;
+      }
 
-    final tx = BaseTransaction(
-      id: widget.transaction.id,
-      date: _baseTransaction.date,
-      isExpense: widget.transaction.isExpense,
-      amount: _amount,
-      originalAmount: _amount,
-      exchangeRate: null,
-      monthId: null,
-      subcategoryId: _subcategory.id,
-      currencyId: widget.transaction.currencyId,
-      label: _labelController.text.trim(),
-      recurrenceType: widget.transaction.recurrenceType,
-      until: until,
-    );
+      tx = BaseTransaction(
+        id: widget.transaction.id,
+        date: _baseTransaction.date,
+        isExpense: widget.transaction.isExpense,
+        amount: widget.transaction.amount,
+        originalAmount: widget.transaction.amount,
+        exchangeRate: widget.transaction.exchangeRate,
+        monthId: widget.transaction.monthId,
+        subcategoryId: widget.transaction.subcategoryId,
+        currencyId: widget.transaction.currencyId,
+        label: widget.transaction.label,
+        recurrenceType: widget.transaction.recurrenceType,
+        until: until,
+      );
+    } else {
+      tx = BaseTransaction(
+        id: widget.transaction.id,
+        date: _baseTransaction.date,
+        isExpense: widget.transaction.isExpense,
+        amount: _amount,
+        originalAmount: _amount,
+        exchangeRate: null,
+        monthId: null,
+        subcategoryId: _subcategory.id,
+        currencyId: widget.transaction.currencyId,
+        label: _labelController.text.trim(),
+        recurrenceType: widget.transaction.recurrenceType,
+        until: until,
+      );
+    }
     await Provider.of<AppDatabase>(context, listen: false)
         .transactionDao
         .updateTransaction(tx, modifier: modifier);
