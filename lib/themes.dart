@@ -59,5 +59,6 @@ TextTheme darkTextTheme = googleFonts(const TextTheme(
 
 final lightTheme =
     ThemeData.from(colorScheme: colorScheme, textTheme: textTheme);
+
 final darkTheme =
     ThemeData.from(colorScheme: darkColorScheme, textTheme: darkTextTheme);

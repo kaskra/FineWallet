@@ -24,7 +24,7 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   ThemeNotifier() {
-    _theme = UserSettings.getDarkMode() ? lightTheme : darkTheme;
+    _theme = UserSettings.getDarkMode() ? darkTheme : lightTheme;
     _isDarkMode = UserSettings.getDarkMode();
   }
 }
