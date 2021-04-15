@@ -227,7 +227,6 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
         itemHeight: 73,
         actions: <Widget>[
           DecoratedCard(
-            elevation: 0,
             padding: 2,
             color: Colors.red.shade400,
             child: ListTile(
@@ -247,7 +246,6 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
           ),
           if (UserSettings.getTXShare() && featureShare)
             DecoratedCard(
-              elevation: 0,
               padding: 2,
               child: ListTile(
                 enabled: UserSettings.getTXShare(),
@@ -263,7 +261,6 @@ class _LatestTransactionItemState extends State<LatestTransactionItem> {
             ),
           DecoratedCard(
             padding: 2,
-            elevation: 0,
             child: ListTile(
               title: Text(LocaleKeys.edit.tr()),
               leading: Icon(

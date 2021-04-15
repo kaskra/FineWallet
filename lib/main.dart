@@ -293,9 +293,9 @@ class LoadingPage extends StatelessWidget {
   // TODO animation
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.orange,
-      body: Center(child: Icon(Icons.title)),
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: const Center(child: Icon(Icons.title)),
     );
   }
 }

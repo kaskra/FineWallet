@@ -14,17 +14,17 @@ class ThemeNotifier extends ChangeNotifier {
   Future switchTheme({@required bool dark}) async {
     _isDarkMode = dark;
     if (dark) {
-      _theme = colorTheme;
+      _theme = darkTheme;
       UserSettings.setDarkMode(val: true);
     } else {
-      _theme = colorTheme;
+      _theme = lightTheme;
       UserSettings.setDarkMode(val: false);
     }
     notifyListeners();
   }
 
   ThemeNotifier() {
-    _theme = UserSettings.getDarkMode() ? colorTheme : colorTheme;
+    _theme = UserSettings.getDarkMode() ? lightTheme : darkTheme;
     _isDarkMode = UserSettings.getDarkMode();
   }
 }

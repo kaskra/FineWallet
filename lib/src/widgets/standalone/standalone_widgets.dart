@@ -1,6 +1,5 @@
 export 'action_bottom_sheet.dart';
 export 'confirm_dialog.dart';
-export 'corner_triangle.dart';
 export 'indicator.dart';
 export 'list_header_image.dart';
 export 'page_view_indicator.dart';

@@ -77,11 +77,11 @@ class HistoryItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(cardRadius / 2))),
       child: CustomPaint(
         foregroundPainter: IndicatorPainter(
-          color: transaction.isExpense ? Colors.red : Colors.green,
-          thickness: 6,
-          side:
-              transaction.isExpense ? IndicatorSide.right : IndicatorSide.left,
-        ),
+            color: transaction.isExpense ? Colors.red : Colors.green,
+            thickness: 6,
+            side: transaction.isExpense
+                ? IndicatorSide.right
+                : IndicatorSide.left),
         child: Container(
           margin: const EdgeInsets.all(2),
           child: ListTile(

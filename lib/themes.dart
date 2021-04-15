@@ -11,15 +11,15 @@ const colorScheme = ColorScheme.light(
   onSurface: Color(0xff000000),
 );
 
-// const colorScheme = ColorScheme.dark(
-//   primary: Color(0xffda3cc5),
-//   secondary: Color(0xffda3cc5),
-//   background: Color(0xff211520),
-//   surface: Color(0xff2d1e2c),
-//   onPrimary: Color(0xffffffff),
-//   onBackground: Color(0xffffffff),
-//   onSurface: Color(0xffffffff),
-// );
+const darkColorScheme = ColorScheme.dark(
+  primary: Color(0xffda3cc5),
+  secondary: Color(0xffda3cc5),
+  background: Color(0xff211520),
+  surface: Color(0xff2d1e2c),
+  onPrimary: Color(0xffffffff),
+  onBackground: Color(0xffffffff),
+  onSurface: Color(0xffffffff),
+);
 
 // Depending on font some currency symbols my not be shown
 const googleFonts = GoogleFonts.notoSansTextTheme;
@@ -41,5 +41,23 @@ TextTheme textTheme = googleFonts(const TextTheme(
   button: TextStyle(color: Color(0xFF151515)),
 ));
 
-final colorTheme =
+TextTheme darkTextTheme = googleFonts(const TextTheme(
+  bodyText1: TextStyle(color: Color(0xFFFFFFFF)),
+  caption: TextStyle(color: Color(0xFFFFFFFF)),
+  headline4: TextStyle(color: Color(0xFFFFFFFF)),
+  headline3: TextStyle(color: Color(0xFFFFFFFF)),
+  headline2: TextStyle(color: Color(0xFFFFFFFF)),
+  headline1: TextStyle(color: Color(0xFFFFFFFF)),
+  headline5: TextStyle(color: Color(0xFFFFFFFF)),
+  overline: TextStyle(color: Color(0xFFFFFFFF)),
+  subtitle1: TextStyle(color: Color(0xFFFFFFFF)),
+  subtitle2: TextStyle(color: Color(0xFFFFFFFF)),
+  headline6: TextStyle(color: Color(0xFFFFFFFF)),
+  bodyText2: TextStyle(color: Color(0xFFFFFFFF)),
+  button: TextStyle(color: Color(0xFFFFFFFF)),
+));
+
+final lightTheme =
     ThemeData.from(colorScheme: colorScheme, textTheme: textTheme);
+final darkTheme =
+    ThemeData.from(colorScheme: darkColorScheme, textTheme: darkTextTheme);

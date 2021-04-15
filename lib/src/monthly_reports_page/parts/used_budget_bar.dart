@@ -36,8 +36,7 @@ class UsedBudgetBar extends StatelessWidget {
                 usedBudget: model.expense,
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 2.0, right: 2.0, top: 8, bottom: 0),
+                padding: const EdgeInsets.only(left: 2.0, right: 2.0, top: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -59,8 +58,8 @@ class UsedBudgetBar extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 2.0, right: 2.0, top: 0, bottom: 8),
+                padding:
+                    const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

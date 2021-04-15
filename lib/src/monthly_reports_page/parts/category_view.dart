@@ -206,7 +206,6 @@ class CategoryListView extends StatelessWidget {
 
   Widget _buildCategoryListItem(Category cat, double amount) {
     return DecoratedCard(
-      elevation: 0,
       padding: 2,
       child: ListTile(
         onTap: () {

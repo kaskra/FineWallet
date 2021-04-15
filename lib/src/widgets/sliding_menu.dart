@@ -152,7 +152,7 @@ class _SlidingButtonMenuState extends State<SlidingButtonMenu>
                 child: SlideTransition(
                   position: _animation,
                   child: Material(
-                    color: Colors.white,
+                    color: Theme.of(context).primaryColor.withOpacity(0.8),
                     shape: const CircleBorder(),
                     elevation: 5,
                     child: Center(
