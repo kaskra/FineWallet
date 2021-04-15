@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/budget_notifier.dart';
 import 'package:FineWallet/data/providers/localization_notifier.dart';
@@ -133,37 +135,32 @@ class _SliderItemState extends State<SliderItem> {
   /// That value is then shown on the slider.
   Widget _buildDependingTextField() {
     return Expanded(
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-                border: InputBorder.none,
-                filled: false,
-                contentPadding: EdgeInsets.zero,
-              ),
-        ),
-        child: StreamBuilder(
-          stream: widget.streamBuilder(context),
-          builder: (context, AsyncSnapshot<double> snapshot) {
-            final double max = snapshot.hasData ? snapshot.data : 0;
-
-            return TextField(
-              decoration: const InputDecoration(border: InputBorder.none),
-              onSubmitted: (valueAsString) async {
-                final value = double.tryParse(valueAsString) ?? 0.0;
-                _setMonthlyBudget(value, max);
-                await _updateMonthModel();
-              },
-              onTap: () {
-                _textEditingController.selection = TextSelection(
-                    baseOffset: 0,
-                    extentOffset: _textEditingController.text.length);
-              },
-              controller: _textEditingController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-            );
-          },
-        ),
+      child: StreamBuilder(
+        stream: widget.streamBuilder(context),
+        builder: (context, AsyncSnapshot<double> snapshot) {
+          final double max =
+              math.max(snapshot.hasData ? snapshot.data : 0, 0.0);
+          return TextField(
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              border: InputBorder.none,
+              filled: true,
+            ),
+            onSubmitted: (valueAsString) async {
+              final value = double.tryParse(valueAsString) ?? 0.0;
+              _setMonthlyBudget(value, max);
+              await _updateMonthModel();
+            },
+            onTap: () {
+              _textEditingController.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: _textEditingController.text.length);
+            },
+            controller: _textEditingController,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+          );
+        },
       ),
     );
   }
