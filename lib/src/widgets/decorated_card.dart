@@ -20,7 +20,7 @@ class DecoratedCard extends StatelessWidget {
     this.color,
     this.shape,
     this.padding = 10,
-    this.elevation = 4,
+    this.elevation = 0,
     this.customPadding,
   }) : super(key: key);
 
@@ -34,7 +34,7 @@ class DecoratedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: elevation,
+      elevation: elevation ?? Theme.of(context).cardTheme.elevation,
       color: color ?? Theme.of(context).cardTheme.color,
       shape: shape ?? Theme.of(context).cardTheme.shape,
       child: Padding(

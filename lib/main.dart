@@ -93,8 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomBar(
-      unselectedColor: Theme.of(context).colorScheme.onSecondary,
-      selectedColor: Theme.of(context).colorScheme.onPrimary,
+      unselectedColor: Theme.of(context).colorScheme.onBackground,
+      selectedColor: Theme.of(context).colorScheme.secondary,
       items: [
         FloatingActionButtonBottomAppItem(
             iconData: Icons.person, text: LocaleKeys.nav_me.tr()),
@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: appBarElevation,
         backgroundColor:
             Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        title: const Text("FineWallet"),
+        title: Text("FineWallet", style: Theme.of(context).textTheme.headline6),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.settings),

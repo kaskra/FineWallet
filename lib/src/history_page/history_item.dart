@@ -24,7 +24,6 @@ class HistoryItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: DecoratedCard(
         color: isSelected ? const Color(0xFF6F6F6F) : null,
-        elevation: Theme.of(context).cardTheme.elevation,
         padding: 0,
         child: Stack(
           children: [
@@ -75,7 +74,7 @@ class HistoryItem extends StatelessWidget {
     return ClipPath(
       clipper: ShapeBorderClipper(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(cardRadius))),
+              borderRadius: BorderRadius.circular(cardRadius / 2))),
       child: CustomPaint(
         foregroundPainter: IndicatorPainter(
           color: transaction.isExpense ? Colors.red : Colors.green,
@@ -88,7 +87,7 @@ class HistoryItem extends StatelessWidget {
           child: ListTile(
             dense: true,
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,

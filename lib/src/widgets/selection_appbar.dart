@@ -61,7 +61,7 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
         title: Text(
           selectedItems.length.toString(),
           maxLines: 1,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.headline6.copyWith(
               fontSize: 20, color: Theme.of(context).colorScheme.onSurface),
         ));
   }

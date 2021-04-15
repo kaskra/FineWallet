@@ -5,10 +5,15 @@ class MonthlyExpenseItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: MonthlyExpenseChart(
-        backgroundColor: Theme.of(context).cardTheme.color,
-        radius: 60,
-        thickness: 10,
+      child: PhysicalModel(
+        elevation: 4,
+        shadowColor: Colors.transparent,
+        color: Colors.transparent,
+        child: MonthlyExpenseChart(
+          backgroundColor: Theme.of(context).cardColor,
+          radius: 60,
+          thickness: 10,
+        ),
       ),
     );
   }

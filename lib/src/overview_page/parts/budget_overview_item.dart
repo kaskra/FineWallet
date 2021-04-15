@@ -15,6 +15,7 @@ class BudgetOverviewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedCard(
+      color: Theme.of(context).cardColor,
       child: Column(
         children: <Widget>[
           Row(

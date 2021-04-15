@@ -74,8 +74,8 @@ class WeekOverviewTimeline extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(LocaleKeys.history_page_expenses_on.tr(args: [todayString])),
+        title: Text(LocaleKeys.history_page_expenses_on.tr(args: [todayString]),
+            style: Theme.of(context).textTheme.headline6),
       ),
       body: HistoryPage(
         filterSettings: TransactionFilterSettings(day: date, expenses: true),

@@ -12,8 +12,8 @@ class StructureTitle extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.secondary),
+            fontWeight: FontWeight.w300,
+            color: Theme.of(context).colorScheme.onBackground),
       ),
     );
   }

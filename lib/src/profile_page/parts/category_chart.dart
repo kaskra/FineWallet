@@ -87,9 +87,8 @@ class _CategoryChartState extends State<CategoryChart> {
 
       // Get the summed up expenses, ids and names for each category.
       final ids = transactionSnapshot.data.map((l) => l.c.id).toList();
-      final names = transactionSnapshot.data
-          .map((l) => tryTranslatePreset(l.c.name))
-          .toList();
+      final names =
+          transactionSnapshot.data.map((l) => tryTranslatePreset(l.c)).toList();
       final expenses =
           transactionSnapshot.data.map((l) => l.sumAmount).toList();
 

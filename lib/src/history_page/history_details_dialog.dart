@@ -234,7 +234,7 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
             },
             child: Icon(
               Icons.close,
-              color: Theme.of(context).colorScheme.onSecondary,
+              color: Theme.of(context).colorScheme.onBackground,
             ),
           ),
           TextButton(
@@ -372,7 +372,7 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
           width: double.infinity,
           child: TextButton(
             style: TextButton.styleFrom(
-              primary: Theme.of(context).colorScheme.onSecondary,
+              primary: Theme.of(context).colorScheme.onBackground,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               side: BorderSide(color: Theme.of(context).accentColor),
             ),
@@ -381,10 +381,7 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(child: Icon(iconData)),
-                Expanded(
-                  flex: 5,
-                  child: Text(title),
-                ),
+                Expanded(flex: 5, child: Text(title)),
               ],
             ),
           ),

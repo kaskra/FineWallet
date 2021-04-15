@@ -43,17 +43,17 @@ class UsedBudgetBar extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.reports_page_maximal_available_budget.tr(),
-                      style: const TextStyle(
-                        fontSize: 15,
-                        // fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 15,
+                            // fontWeight: FontWeight.w600,
+                          ),
                     ),
                     Text(
                       "${model.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ],
                 ),
@@ -66,17 +66,17 @@ class UsedBudgetBar extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.reports_page_selected_savings.tr(),
-                      style: const TextStyle(
-                        fontSize: 15,
-                        // fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 15,
+                            // fontWeight: FontWeight.w600,
+                          ),
                     ),
                     Text(
                       "${model.month.savingsBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ],
                 ),
@@ -167,7 +167,7 @@ class _AnimatedBudgetBarState extends State<AnimatedBudgetBar>
       animation: _controller,
       builder: (context, child) => CustomPaint(
         size: Size.fromHeight(widget.height),
-        painter: BudgetBarPainter(
+        painter: BudgetBarPainter(context,
             isError: _usedBudgetAnimation.value > 1.0,
             usedPercentage: _usedBudgetAnimation.value,
             availablePercentage: _availableBudgetAnimation.value,
@@ -220,6 +220,8 @@ class BudgetBarPainter extends CustomPainter {
   final double maxBudget;
   final String currencySymbol;
 
+  final BuildContext context;
+
   // Statics
   static Radius radius = const Radius.circular(8.0);
   static Radius indicatorRadius = const Radius.circular(8.0);
@@ -229,7 +231,8 @@ class BudgetBarPainter extends CustomPainter {
   static double barRatioTop = 0.35;
   static double barRatioBottom = 0.65;
 
-  BudgetBarPainter({
+  BudgetBarPainter(
+    this.context, {
     this.backgroundColor = Colors.grey,
     this.usedColor = Colors.green,
     this.availableColor = Colors.grey,
@@ -298,10 +301,10 @@ class BudgetBarPainter extends CustomPainter {
     final TextPainter tp = TextPainter()
       ..text = TextSpan(
           text: text,
-          style: TextStyle(
-            color: centerTextColor,
-            fontWeight: FontWeight.bold,
-          ))
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                color: centerTextColor,
+                fontWeight: FontWeight.bold,
+              ))
       ..textDirection = TextDirection.ltr;
     tp.layout();
     tp.paint(canvas, size.center(Offset.zero) - tp.size.center(Offset.zero));
@@ -351,7 +354,10 @@ class BudgetBarPainter extends CustomPainter {
     final String text = "${amount.toStringAsFixed(2)}$currencySymbol";
 
     final TextPainter tp = TextPainter()
-      ..text = TextSpan(text: text, style: TextStyle(color: textColor))
+      ..text = TextSpan(
+          text: text,
+          style:
+              Theme.of(context).textTheme.bodyText2.copyWith(color: textColor))
       ..textDirection = TextDirection.ltr;
     tp.layout();
 
