@@ -162,7 +162,6 @@ class _HistoryFilterTextFieldState extends State<HistoryFilterTextField> {
         decoration: InputDecoration(
           prefixIcon: Icon(widget.iconData),
           hintText: LocaleKeys.search.tr(),
-          hintStyle: const TextStyle(color: Colors.grey),
           suffixIcon: IconButton(
             splashRadius: 0.1,
             onPressed: () {
@@ -182,8 +181,7 @@ class _HistoryFilterTextFieldState extends State<HistoryFilterTextField> {
           ),
           suffixStyle: const TextStyle(color: Colors.grey),
           border: const UnderlineInputBorder(),
-          filled: true,
-          fillColor: const Color(0x0a000000),
+          contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
         ),
         onChanged: widget.onChanged,
       ),

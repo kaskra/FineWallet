@@ -56,65 +56,35 @@ class _StartingSavingsPageState extends State<StartingSavingsPage> {
         height: 150,
         semanticLabel: "Starting Savings",
       ),
-      child: _applyInputTheme(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  LocaleKeys.welcome_pages_starting_savings_title.tr(),
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .headline6
-                      .copyWith(fontWeight: FontWeight.normal),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              LocaleKeys.welcome_pages_starting_savings_text.tr(),
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .subtitle2
-                  .copyWith(fontWeight: FontWeight.normal),
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            _numberField(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Theme _applyInputTheme(Widget child) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          contentPadding: const EdgeInsets.only(left: 12, right: 12),
-          filled: true,
-          fillColor: const Color(0x0a000000),
-          border: const OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.onBackground)),
-          labelStyle:
-              TextStyle(color: Theme.of(context).colorScheme.onBackground),
-          suffixStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-            fontSize: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                LocaleKeys.welcome_pages_starting_savings_title.tr(),
+                style: Theme.of(context)
+                    .primaryTextTheme
+                    .headline6
+                    .copyWith(fontWeight: FontWeight.normal),
+              ),
+            ],
           ),
-          errorStyle: const TextStyle(fontSize: 11),
-          hintStyle: TextStyle(
-            color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.6),
+          const SizedBox(height: 8),
+          Text(
+            LocaleKeys.welcome_pages_starting_savings_text.tr(),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .subtitle2
+                .copyWith(fontWeight: FontWeight.normal),
           ),
-        ),
+          const SizedBox(
+            height: 24,
+          ),
+          _numberField(),
+        ],
       ),
-      child: child,
     );
   }
 

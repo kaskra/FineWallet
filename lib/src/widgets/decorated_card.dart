@@ -20,7 +20,7 @@ class DecoratedCard extends StatelessWidget {
     this.color,
     this.shape,
     this.padding = 10,
-    this.elevation = 0,
+    this.elevation,
     this.customPadding,
   }) : super(key: key);
 

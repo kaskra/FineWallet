@@ -58,7 +58,30 @@ TextTheme darkTextTheme = googleFonts(const TextTheme(
 ));
 
 final lightTheme =
-    ThemeData.from(colorScheme: colorScheme, textTheme: textTheme);
+    ThemeData.from(colorScheme: colorScheme, textTheme: textTheme).copyWith(
+  cardTheme: const CardTheme(elevation: 8),
+  inputDecorationTheme: const InputDecorationTheme(
+    floatingLabelBehavior: FloatingLabelBehavior.always,
+    contentPadding: EdgeInsets.only(left: 12, right: 12),
+    filled: true,
+    fillColor: Color(0x0a000000),
+    border: OutlineInputBorder(),
+    suffixStyle: TextStyle(fontSize: 16),
+    errorStyle: TextStyle(fontSize: 11),
+  ),
+);
 
 final darkTheme =
-    ThemeData.from(colorScheme: darkColorScheme, textTheme: darkTextTheme);
+    ThemeData.from(colorScheme: darkColorScheme, textTheme: darkTextTheme)
+        .copyWith(
+  cardTheme: const CardTheme(elevation: 8),
+  inputDecorationTheme: const InputDecorationTheme(
+    floatingLabelBehavior: FloatingLabelBehavior.always,
+    contentPadding: EdgeInsets.only(left: 12, right: 12),
+    filled: true,
+    fillColor: Color(0x0a000000),
+    border: OutlineInputBorder(),
+    suffixStyle: TextStyle(fontSize: 16),
+    errorStyle: TextStyle(fontSize: 11),
+  ),
+);

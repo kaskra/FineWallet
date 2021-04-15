@@ -133,28 +133,37 @@ class _SliderItemState extends State<SliderItem> {
   /// That value is then shown on the slider.
   Widget _buildDependingTextField() {
     return Expanded(
-      child: StreamBuilder(
-        stream: widget.streamBuilder(context),
-        builder: (context, AsyncSnapshot<double> snapshot) {
-          final double max = snapshot.hasData ? snapshot.data : 0;
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
+                border: InputBorder.none,
+                filled: false,
+                contentPadding: EdgeInsets.zero,
+              ),
+        ),
+        child: StreamBuilder(
+          stream: widget.streamBuilder(context),
+          builder: (context, AsyncSnapshot<double> snapshot) {
+            final double max = snapshot.hasData ? snapshot.data : 0;
 
-          return TextField(
-            decoration: const InputDecoration(border: InputBorder.none),
-            onSubmitted: (valueAsString) async {
-              final value = double.tryParse(valueAsString) ?? 0.0;
-              _setMonthlyBudget(value, max);
-              await _updateMonthModel();
-            },
-            onTap: () {
-              _textEditingController.selection = TextSelection(
-                  baseOffset: 0,
-                  extentOffset: _textEditingController.text.length);
-            },
-            controller: _textEditingController,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
-          );
-        },
+            return TextField(
+              decoration: const InputDecoration(border: InputBorder.none),
+              onSubmitted: (valueAsString) async {
+                final value = double.tryParse(valueAsString) ?? 0.0;
+                _setMonthlyBudget(value, max);
+                await _updateMonthModel();
+              },
+              onTap: () {
+                _textEditingController.selection = TextSelection(
+                    baseOffset: 0,
+                    extentOffset: _textEditingController.text.length);
+              },
+              controller: _textEditingController,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+            );
+          },
+        ),
       ),
     );
   }

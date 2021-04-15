@@ -184,7 +184,7 @@ class _AddPageState extends State<AddPage> {
             if (snapshot.hasData) {
               return Form(
                 key: _formKey,
-                child: _applyInputTheme(_inputFormFields()),
+                child: _inputFormFields(),
               );
             } else {
               return const Center(child: CircularProgressIndicator());
@@ -205,47 +205,6 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Theme _applyInputTheme(Widget child) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          contentPadding: const EdgeInsets.only(left: 12, right: 12),
-          filled: true,
-          fillColor: const Color(0x0a000000),
-          border: const OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.onBackground)),
-          labelStyle:
-              TextStyle(color: Theme.of(context).colorScheme.onBackground),
-          suffixStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-            fontSize: 16,
-          ),
-          errorStyle: const TextStyle(fontSize: 11),
-          hintStyle: TextStyle(
-            color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.6),
-          ),
-        ),
-      ),
-      child: child,
-    );
-  }
-
-  // bool _changedNonDateRelatedData() {
-  //   final unchangedAmount =
-  //       double.parse((_transaction?.originalAmount ?? 0.0).toStringAsFixed(2));
-  //
-  //   final unchangedLabel = _transaction.label;
-  //   final unchangedSubcat = _transaction.subcategoryId;
-  //
-  //   return (_subcategory.id != unchangedSubcat ||
-  //           _labelController.text != unchangedLabel ||
-  //           _amount != unchangedAmount) &&
-  //       _transaction.recurrenceType > 1;
-  // }
-
   /// Creates or updates the transaction, if it is valid and there are no
   /// other problems.
   ///
@@ -255,13 +214,6 @@ class _AddPageState extends State<AddPage> {
   Future _save() async {
     if (_formKey.currentState.validate()) {
       if (_editing) {
-        // var res = UpdateModifierFlag.all;
-        // if (_changedNonDateRelatedData()) {
-        //   res = await showDialog(
-        //       context: context, builder: (context) => UpdateModifierDialog());
-        // }
-        // final UpdateModifier um =
-        //     UpdateModifier(res, DateTime.parse(_transaction.date));
         await _updateTransaction();
       } else {
         await _addNewTransaction();

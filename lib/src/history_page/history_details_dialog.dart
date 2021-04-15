@@ -66,31 +66,29 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
         body: Padding(
           padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top + 4.0, bottom: 8.0),
-          child: _applyInputTheme(
-            Form(
-              key: _formKey,
-              onWillPop: () => _willPop(context),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _actions(),
-                  const SizedBox(height: 8),
-                  _title(),
-                  const SizedBox(height: 4),
-                  _dateText(),
-                  const SizedBox(height: 4),
-                  const Divider(),
-                  const SizedBox(height: 4),
-                  _amountRow(),
-                  const SizedBox(height: 8),
-                  _labelRow(),
-                  const SizedBox(height: 8),
-                  _categoryRow(),
-                  if (_isUnlimitedRecurrence) _endUnlimitedRecurrence(),
-                  if (_isLimitedRecurrence) _startUnlimitedRecurrence(),
-                ],
-              ),
+          child: Form(
+            key: _formKey,
+            onWillPop: () => _willPop(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _actions(),
+                const SizedBox(height: 8),
+                _title(),
+                const SizedBox(height: 4),
+                _dateText(),
+                const SizedBox(height: 4),
+                const Divider(),
+                const SizedBox(height: 4),
+                _amountRow(),
+                const SizedBox(height: 8),
+                _labelRow(),
+                const SizedBox(height: 8),
+                _categoryRow(),
+                if (_isUnlimitedRecurrence) _endUnlimitedRecurrence(),
+                if (_isLimitedRecurrence) _startUnlimitedRecurrence(),
+              ],
             ),
           ),
         ),
@@ -283,34 +281,6 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
       focusNode: _labelFocus,
       isExpense: widget.transaction.isExpense,
       labelController: _labelController,
-    );
-  }
-
-  Theme _applyInputTheme(Widget child) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          contentPadding: const EdgeInsets.only(left: 12, right: 12),
-          filled: true,
-          fillColor: const Color(0x0a000000),
-          border: const OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.onBackground)),
-          labelStyle:
-              TextStyle(color: Theme.of(context).colorScheme.onBackground),
-          suffixStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-            fontSize: 16,
-          ),
-          errorStyle: const TextStyle(fontSize: 11),
-          hintStyle: TextStyle(
-            color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.6),
-          ),
-        ),
-      ),
-      child: child,
     );
   }
 
