@@ -121,8 +121,6 @@ class _FloatingActionButtonBottomBarState
     });
 
     return BottomAppBar(
-      color: Theme.of(context).bottomAppBarColor,
-      elevation: 20,
       shape: widget.isVisible ? const CircularNotchedRectangle() : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

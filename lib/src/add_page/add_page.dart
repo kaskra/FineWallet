@@ -171,7 +171,6 @@ class _AddPageState extends State<AddPage> {
             .headline6
             .copyWith(color: Theme.of(context).colorScheme.onSurface),
       ),
-      centerTitle: true,
       iconTheme: Theme.of(context).iconTheme,
     );
   }

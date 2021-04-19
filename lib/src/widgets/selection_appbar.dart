@@ -48,22 +48,19 @@ class _SelectionAppBarState<T> extends State<SelectionAppBar> {
   /// Returns: The built app bar.
   Widget _buildSelectionAppBar(Map<int, dynamic> selectedItems) {
     return AppBar(
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        elevation: appBarElevation,
-        actions: <Widget>[
-          if (featureShare) _buildShareAction(selectedItems),
-          _buildEditAction(selectedItems),
-          _buildDeleteAction()
-        ],
-        leading: _buildCloseAction(),
-        titleSpacing: 2,
-        title: Text(
-          selectedItems.length.toString(),
-          maxLines: 1,
-          style: Theme.of(context).textTheme.headline6.copyWith(
-              fontSize: 20, color: Theme.of(context).colorScheme.onSurface),
-        ));
+      centerTitle: false,
+      actions: <Widget>[
+        if (featureShare) _buildShareAction(selectedItems),
+        _buildEditAction(selectedItems),
+        _buildDeleteAction()
+      ],
+      leading: _buildCloseAction(),
+      titleSpacing: 2,
+      title: Text(
+        selectedItems.length.toString(),
+        maxLines: 1,
+      ),
+    );
   }
 
   Widget _buildCloseAction() {

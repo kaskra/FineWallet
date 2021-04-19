@@ -15,18 +15,16 @@ class SectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 4.0),
       width: MediaQuery.of(context).size.width,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          primary: Theme.of(context).accentColor,
-          elevation: 4,
-        ),
+      child: ElevatedButton(
         onPressed: onPressed,
-        icon: icon,
-        label: Text(
-          label,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(child: icon),
+            Expanded(flex: 5, child: Text(label)),
+          ],
         ),
       ),
     );

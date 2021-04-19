@@ -42,15 +42,11 @@ class UsedBudgetBar extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.reports_page_maximal_available_budget.tr(),
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 15,
-                            // fontWeight: FontWeight.w600,
-                          ),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                     Text(
                       "${model.income.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
                     ),
@@ -65,15 +61,11 @@ class UsedBudgetBar extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.reports_page_selected_savings.tr(),
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 15,
-                            // fontWeight: FontWeight.w600,
-                          ),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                     Text(
                       "${model.month.savingsBudget.toStringAsFixed(2)}${Provider.of<LocalizationNotifier>(context).userCurrency}",
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
                     ),

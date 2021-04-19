@@ -70,10 +70,7 @@ class CompactDetailsCard extends StatelessWidget {
               ),
               Text(
                 LocaleKeys.savings_saved_amount.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context).textTheme.caption,
               )
             ],
           ),

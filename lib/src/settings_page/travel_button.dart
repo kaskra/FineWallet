@@ -81,10 +81,7 @@ class _TravelButtonState extends State<TravelButton> {
               }
             }
           },
-          icon: Icon(
-            Icons.airplanemode_active,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          icon: const Icon(Icons.airplanemode_active),
           label: (_userCurrencyId == _selectedCurrency)
               ? LocaleKeys.settings_page_travel.tr()
               : LocaleKeys.settings_page_while_travel

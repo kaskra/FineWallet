@@ -122,32 +122,23 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
   }
 
   Widget _buildCategoryGrid() {
-    return DefaultTextStyle(
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.onBackground,
-        decoration: TextDecoration.none,
-        fontSize: 18,
-        fontWeight: FontWeight.w500,
-        fontFamily: "roboto",
-      ),
-      child: FutureBuilder<List<Category>>(
-        future: Provider.of<AppDatabase>(context)
-            .categoryDao
-            .getAllCategoriesByType(isExpense: widget.isExpense),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GridView.count(
-              crossAxisCount: 3,
-              children: <Widget>[
-                _buildCategoryAddItem(),
-                for (Category c in snapshot.data) _buildCategoryGridItem(c)
-              ],
-            );
-          } else {
-            return Container();
-          }
-        },
-      ),
+    return FutureBuilder<List<Category>>(
+      future: Provider.of<AppDatabase>(context)
+          .categoryDao
+          .getAllCategoriesByType(isExpense: widget.isExpense),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GridView.count(
+            crossAxisCount: 3,
+            children: <Widget>[
+              _buildCategoryAddItem(),
+              for (Category c in snapshot.data) _buildCategoryGridItem(c)
+            ],
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 
@@ -237,7 +228,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                   shape: BoxShape.circle, color: Colors.red),
               child: InkWell(
                 onTap: () async {
-                  await deleteSubcategory(c);
+                  await deleteCategory(c);
                 },
                 child: const Icon(
                   Icons.close,
@@ -278,8 +269,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
                       fit: BoxFit.fitWidth,
                       child: Text(
                         text,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     )
                   ],
@@ -292,7 +282,7 @@ class _CategoryChoiceDialogState extends State<CategoryChoiceDialog> {
     );
   }
 
-  Future deleteSubcategory(Category category) async {
+  Future deleteCategory(Category category) async {
     final bool deleteCategory = await showConfirmDialog(
       context,
       LocaleKeys.add_page_category_delete_confirm_title.tr(),

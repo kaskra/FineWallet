@@ -17,9 +17,7 @@ class OverallDetail extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        StructureTitle(
-          text: LocaleKeys.budget_overview_used_budget.tr(),
-        ),
+        StructureTitle(text: LocaleKeys.budget_overview_used_budget.tr()),
         SmallStructureSpace(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -28,9 +26,7 @@ class OverallDetail extends StatelessWidget {
             padding: const EdgeInsets.only(),
           ),
         ),
-        StructureTitle(
-          text: LocaleKeys.reports_page_overall.tr(),
-        ),
+        StructureTitle(text: LocaleKeys.reports_page_overall.tr()),
         StructureSpace(),
         Row(
           children: <Widget>[

@@ -1,4 +1,3 @@
-import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/providers/navigation_notifier.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
@@ -45,11 +44,8 @@ class BudgetOverviewItem extends StatelessWidget {
                   MonthlyExpenseItem(),
                   Text(
                     LocaleKeys.budget_overview_used_budget.tr(),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
+                    style: Theme.of(context).textTheme.caption.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
                   )
                 ],
               ),
@@ -64,18 +60,12 @@ class BudgetOverviewItem extends StatelessWidget {
   Widget _buildNavigationButton(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      child: MaterialButton(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(cardRadius)),
+      width: MediaQuery.of(context).size.width,
+      child: ElevatedButton(
         onPressed: () {
           Provider.of<NavigationNotifier>(context, listen: false).setPage(0);
         },
-        minWidth: MediaQuery.of(context).size.width * 0.9,
-        color: Theme.of(context).colorScheme.secondary,
-        child: Text(
-          LocaleKeys.budget_overview_change_avail_budget.tr(),
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
+        child: Text(LocaleKeys.budget_overview_change_avail_budget.tr()),
       ),
     );
   }

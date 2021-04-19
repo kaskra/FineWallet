@@ -188,7 +188,6 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                     alignment: Alignment.bottomRight,
                     child: IconButton(
                         icon: const Icon(Icons.remove),
-                        color: Theme.of(context).colorScheme.onSurface,
                         onPressed: () async {
                           await deleteSubcategory(subcategory);
                         }),
@@ -201,8 +200,8 @@ class _SubcategoryDialogState extends State<SubcategoryDialog> {
                       child: Text(
                         text,
                         maxLines: 1,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontSize: 16,
                         ),
                       ),

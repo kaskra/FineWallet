@@ -222,7 +222,7 @@ class CategoryListView extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
               child: Icon(
                 IconData(cat.iconCodePoint, fontFamily: 'MaterialIcons'),
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).iconTheme.color,
                 size: 25,
               ),
             ),

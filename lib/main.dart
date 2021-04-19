@@ -6,7 +6,6 @@
  * Copyright 2019 - 2019 Sylu, Sylu
  */
 
-import 'package:FineWallet/constants.dart';
 import 'package:FineWallet/data/exchange_rates.dart';
 import 'package:FineWallet/data/moor_database.dart';
 import 'package:FineWallet/data/providers/providers.dart';
@@ -23,6 +22,7 @@ import 'package:FineWallet/src/settings_page/page.dart';
 import 'package:FineWallet/src/settings_page/settings_page.dart';
 import 'package:FineWallet/src/welcome_pages/welcome_page.dart';
 import 'package:FineWallet/src/widgets/widgets.dart';
+import 'package:FineWallet/themes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
       locale: context.locale,
       debugShowCheckedModeBanner: false,
       title: 'FineWallet',
-      theme: Provider.of<ThemeNotifier>(context).theme,
+      theme: getTheme(Provider.of<ThemeNotifier>(context).theme),
       routes: {
         "/expense": (context) => const AddPage(isExpense: true),
         "/income": (context) => const AddPage(isExpense: false),
@@ -93,8 +93,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomBar() {
     return FloatingActionButtonBottomBar(
-      unselectedColor: Theme.of(context).colorScheme.onBackground,
-      selectedColor: Theme.of(context).colorScheme.secondary,
+      unselectedColor: Theme.of(context).colorScheme.onSurface,
+      selectedColor: Provider.of<ThemeNotifier>(context).isDarkMode
+          ? Theme.of(context).colorScheme.secondary
+          : Theme.of(context).colorScheme.onPrimary,
       items: [
         FloatingActionButtonBottomAppItem(
             iconData: Icons.person, text: LocaleKeys.nav_me.tr()),
@@ -123,11 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   PreferredSizeWidget _buildDefaultAppBar() => AppBar(
-        centerTitle: isAppBarCentered,
-        elevation: appBarElevation,
-        backgroundColor:
-            Theme.of(context).primaryColor.withOpacity(appBarOpacity),
-        title: Text("FineWallet", style: Theme.of(context).textTheme.headline6),
+        title: const Text("FineWallet"),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.settings),

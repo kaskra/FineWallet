@@ -4,27 +4,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ThemeNotifier extends ChangeNotifier {
-  ThemeData _theme;
+  ColorScheme _theme;
   bool _isDarkMode;
 
-  ThemeData get theme => _theme;
+  ColorScheme get theme => _theme;
 
   bool get isDarkMode => _isDarkMode;
 
   Future switchTheme({@required bool dark}) async {
     _isDarkMode = dark;
     if (dark) {
-      _theme = darkTheme;
+      _theme = darkColorScheme;
       UserSettings.setDarkMode(val: true);
     } else {
-      _theme = lightTheme;
+      _theme = lightColorScheme;
       UserSettings.setDarkMode(val: false);
     }
     notifyListeners();
   }
 
   ThemeNotifier() {
-    _theme = UserSettings.getDarkMode() ? darkTheme : lightTheme;
+    _theme = UserSettings.getDarkMode() ? darkColorScheme : lightColorScheme;
     _isDarkMode = UserSettings.getDarkMode();
   }
 }

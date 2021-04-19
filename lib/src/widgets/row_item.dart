@@ -35,12 +35,9 @@ class RowItem extends StatelessWidget {
             ),
             Text(
               footerText,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color:
-                    footerTextColor ?? Theme.of(context).colorScheme.secondary,
-              ),
+              style: Theme.of(context).textTheme.caption.copyWith(
+                  color: footerTextColor ??
+                      Theme.of(context).colorScheme.secondary),
             ),
           ],
         ),

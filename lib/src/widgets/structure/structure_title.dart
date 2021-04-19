@@ -9,12 +9,7 @@ class StructureTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, left: 8.0),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontWeight: FontWeight.w300,
-            color: Theme.of(context).colorScheme.onBackground),
-      ),
+      child: Text(text, style: Theme.of(context).textTheme.subtitle1),
     );
   }
 }

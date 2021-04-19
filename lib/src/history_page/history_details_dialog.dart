@@ -253,7 +253,7 @@ class _HistoryItemDetailsDialogState extends State<HistoryItemDetailsDialog> {
               LocaleKeys.add_page_fab_label.tr().toUpperCase(),
               style: TextStyle(
                 color: _hasChanged
-                    ? Theme.of(context).colorScheme.onSurface
+                    ? Theme.of(context).colorScheme.onPrimary
                     : Theme.of(context).disabledColor,
               ),
             ),

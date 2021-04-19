@@ -9,10 +9,8 @@ import 'package:provider/provider.dart';
 class MonthlyExpenseChart extends StatelessWidget {
   final double radius;
   final double thickness;
-  final Color backgroundColor;
 
-  const MonthlyExpenseChart(
-      {Key key, this.radius = 40, this.thickness = 5, this.backgroundColor})
+  const MonthlyExpenseChart({Key key, this.radius = 40, this.thickness = 5})
       : super(key: key);
 
   @override
@@ -39,7 +37,6 @@ class MonthlyExpenseChart extends StatelessWidget {
 
           return CustomPaint(
             painter: MonthlyExpensePainter(
-                backgroundColor: backgroundColor ?? Colors.transparent,
                 activeColor: Theme.of(context).colorScheme.secondary,
                 value: value,
                 total: total,
@@ -71,14 +68,12 @@ class MonthlyExpenseChart extends StatelessWidget {
 class MonthlyExpensePainter extends CustomPainter {
   final double value;
   final double total;
-  final Color backgroundColor;
   final Color inactiveColor;
   final Color activeColor;
   final double thickness;
 
   MonthlyExpensePainter({
     this.thickness = 10,
-    this.backgroundColor = Colors.transparent,
     this.inactiveColor = Colors.grey,
     this.activeColor = Colors.red,
     @required this.value,
@@ -95,19 +90,25 @@ class MonthlyExpensePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paintActive = Paint()..color = activeColor;
-    final paintInactive = Paint()..color = inactiveColor;
-    final paintBackground = Paint()..color = backgroundColor;
+    final paintActive = Paint()
+      ..color = activeColor
+      ..strokeWidth = thickness
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    final paintInactive = Paint()
+      ..color = inactiveColor
+      ..strokeWidth = thickness
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
 
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     _drawArc(canvas, rect, _maxValue, paintActive);
     _drawArc(canvas, rect, calcArcValue(), paintInactive);
-    canvas.drawCircle(
-        rect.center, (size.height / 2) - thickness, paintBackground);
   }
 
   void _drawArc(Canvas canvas, Rect rect, double value, Paint paint) {
-    canvas.drawArc(rect, deg2rad(-45), deg2rad(value), true, paint);
+    canvas.drawArc(rect, deg2rad(-45), deg2rad(value), false, paint);
   }
 
   double deg2rad(double deg) {
