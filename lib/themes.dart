@@ -110,14 +110,14 @@ ThemeData getTheme(ColorScheme colorScheme) {
       ),
       color: colorScheme.surface,
     ),
-    inputDecorationTheme: const InputDecorationTheme(
+    inputDecorationTheme: InputDecorationTheme(
       floatingLabelBehavior: FloatingLabelBehavior.always,
-      contentPadding: EdgeInsets.only(left: 12, right: 12),
+      contentPadding: const EdgeInsets.only(left: 12, right: 12),
       filled: true,
-      fillColor: Color(0x0a000000),
-      border: OutlineInputBorder(),
-      suffixStyle: TextStyle(fontSize: 16),
-      errorStyle: TextStyle(fontSize: 11),
+      fillColor: isDark ? const Color(0x0affffff) : const Color(0x0a000000),
+      border: const OutlineInputBorder(),
+      suffixStyle: const TextStyle(fontSize: 16),
+      errorStyle: const TextStyle(fontSize: 11),
     ),
     appBarTheme: AppBarTheme(
       elevation: 4,

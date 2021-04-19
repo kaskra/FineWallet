@@ -166,10 +166,6 @@ class _AddPageState extends State<AddPage> {
           else
             LocaleKeys.income.tr()
         ]),
-        style: Theme.of(context)
-            .textTheme
-            .headline6
-            .copyWith(color: Theme.of(context).colorScheme.onSurface),
       ),
       iconTheme: Theme.of(context).iconTheme,
     );

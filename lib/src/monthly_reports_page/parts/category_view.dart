@@ -120,13 +120,7 @@ class CategoryListView extends StatelessWidget {
           ),
           Text(
             tryTranslatePreset(cat.name),
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              decoration: TextDecoration.none,
-              fontSize: 18,
-              fontWeight: FontWeight.normal,
-              fontFamily: "roboto",
-            ),
+            style: Theme.of(context).textTheme.headline6,
           ),
         ],
       ),
@@ -166,41 +160,26 @@ class CategoryListView extends StatelessWidget {
       text: Expanded(
         child: Text.rich(
           TextSpan(
-            text: tryTranslatePreset(tx.s),
-            children: [
-              if (tx.label.isNotEmpty)
+              text: tryTranslatePreset(tx.s),
+              children: [
+                if (tx.label.isNotEmpty)
+                  TextSpan(
+                      text: "\n${tx.label}",
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic,
+                      )),
                 TextSpan(
-                    text: "\n${tx.label}",
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                    )),
-              TextSpan(
-                text: "\n${formatter.format(DateTime.parse(tx.date))}",
-                style: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.normal),
-              )
-            ],
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground,
-              decoration: TextDecoration.none,
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              fontFamily: "roboto",
-            ),
-          ),
+                  text: "\n${formatter.format(DateTime.parse(tx.date))}",
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.normal),
+                )
+              ],
+              style: Theme.of(context).textTheme.bodyText1),
         ),
       ),
-      value: AmountString(
-        tx.amount * -1,
-        colored: true,
-        textStyle: const TextStyle(
-          decoration: TextDecoration.none,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          fontFamily: "roboto",
-        ),
-      ),
+      value: AmountString(tx.amount * -1,
+          colored: true, textStyle: Theme.of(context).textTheme.bodyText1),
     );
   }
 
@@ -222,7 +201,6 @@ class CategoryListView extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
               child: Icon(
                 IconData(cat.iconCodePoint, fontFamily: 'MaterialIcons'),
-                color: Theme.of(context).iconTheme.color,
                 size: 25,
               ),
             ),

@@ -8,15 +8,12 @@
 
 import 'dart:math';
 
-import 'package:FineWallet/color_themes.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/moor_database.dart';
-import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:dart_numerics/dart_numerics.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
 
 Future<DateTime> pickDate(
@@ -27,18 +24,7 @@ Future<DateTime> pickDate(
       firstDate: firstDate ?? DateTime(2000),
       lastDate: DateTime(2050, 12, 31),
       builder: (context, child) {
-        return Theme(
-          data: Provider.of<ThemeNotifier>(context).isDarkMode
-              ? ThemeData.dark().copyWith(
-                  colorScheme: darkColorScheme,
-                )
-              : ThemeData.light().copyWith(
-                  colorScheme: colorScheme.copyWith(onSurface: Colors.black),
-                  buttonTheme:
-                      const ButtonThemeData(textTheme: ButtonTextTheme.primary),
-                ),
-          child: child,
-        );
+        return child;
       });
   return pickedDate;
 }

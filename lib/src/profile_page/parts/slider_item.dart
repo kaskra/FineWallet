@@ -141,10 +141,12 @@ class _SliderItemState extends State<SliderItem> {
           final double max =
               math.max(snapshot.hasData ? snapshot.data : 0, 0.0);
           return TextField(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
-              filled: true,
+              border: UnderlineInputBorder(
+                borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
             onSubmitted: (valueAsString) async {
               final value = double.tryParse(valueAsString) ?? 0.0;
