@@ -91,9 +91,12 @@ class _CategoryChartState extends State<CategoryChart> {
           transactionSnapshot.data.map((l) => tryTranslatePreset(l.c)).toList();
       final expenses =
           transactionSnapshot.data.map((l) => l.sumAmount).toList();
+      final icons =
+          transactionSnapshot.data.map((e) => e.c.iconCodePoint).toList();
 
       // Create the chart with expenses per category and category names.
-      return CircularCategoryChart(amounts: expenses, names: names, ids: ids);
+      return CircularCategoryChart(
+          amounts: expenses, names: names, ids: ids, iconCodePoints: icons);
     }
     return Center(child: Text(LocaleKeys.profile_page_no_expenses.tr()));
   }
@@ -111,15 +114,18 @@ class CircularCategoryChart extends StatefulWidget {
   final List<double> amounts;
   final List<String> names;
   final List<int> ids;
+  final List<int> iconCodePoints;
 
   const CircularCategoryChart(
       {Key key,
       @required this.amounts,
       @required this.names,
-      @required this.ids})
+      @required this.ids,
+      @required this.iconCodePoints})
       : assert(amounts != null),
         assert(names != null),
         assert(ids != null),
+        assert(iconCodePoints != null),
         super(key: key);
 
   @override
@@ -194,10 +200,20 @@ class _CircularCategoryChartState extends State<CircularCategoryChart> {
                     borderRadius: BorderRadius.circular(4.0),
                   ),
                   padding: const EdgeInsets.all(2),
-                  child: Text(
-                    "${(widget.amounts[index] / totalAmount * 100).round()}%"
-                    "\n${widget.names[index]}",
-                    style: TextStyle(color: textColor),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                          IconData(widget.iconCodePoints[index],
+                              fontFamily: 'MaterialIcons'),
+                          color: textColor),
+                      const SizedBox(width: 8),
+                      Text(
+                        "${(widget.amounts[index] / totalAmount * 100).round()}%"
+                        "\n${widget.names[index]}",
+                        style: TextStyle(color: textColor),
+                      ),
+                    ],
                   ),
                 )
               : null);
