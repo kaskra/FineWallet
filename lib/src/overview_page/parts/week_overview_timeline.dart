@@ -11,6 +11,7 @@ import 'package:FineWallet/core/datatypes/tuple.dart';
 import 'package:FineWallet/data/extensions/datetime_extension.dart';
 import 'package:FineWallet/data/filters/filter_settings.dart';
 import 'package:FineWallet/data/moor_database.dart';
+import 'package:FineWallet/data/providers/providers.dart';
 import 'package:FineWallet/data/resources/generated/locale_keys.g.dart';
 import 'package:FineWallet/data/transaction_dao.dart';
 import 'package:FineWallet/src/history_page/history_page.dart';
@@ -73,10 +74,13 @@ class WeekOverviewTimeline extends StatelessWidget {
     final todayString = formatter.format(date);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(LocaleKeys.history_page_expenses_on.tr(args: [todayString]),
-            style: Theme.of(context).textTheme.headline6),
-      ),
+      appBar: Provider.of<SelectionModeNotifier>(context).isOn
+          ? null
+          : AppBar(
+              title: Text(
+                LocaleKeys.history_page_expenses_on.tr(args: [todayString]),
+              ),
+            ),
       body: HistoryPage(
         filterSettings: TransactionFilterSettings(day: date, expenses: true),
       ),
