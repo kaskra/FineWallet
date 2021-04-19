@@ -4,22 +4,22 @@ import 'package:google_fonts/google_fonts.dart';
 
 const lightColorScheme = ColorScheme.light(
   background: Color(0xfffaf0e6),
-  surface: Color(0xffffffff),
+  // surface: Color(0xffffffff),
   primary: Color(0xffff9800),
   secondary: Color(0xffff9800),
-  onBackground: Color(0xff000000),
-  onSurface: Color(0xff000000),
-  onPrimary: Color(0xffffffff),
+  // onBackground: Color(0xff000000),
+  // onSurface: Color(0xff000000),
+  // onPrimary: Color(0xffffffff),
   onSecondary: Color(0xffffffff),
 );
 
 const darkColorScheme = ColorScheme.dark(
-  background: Color(0xff121212),
-  surface: Color(0xff121212),
+  // background: Color(0xff121212),
+  // surface: Color(0xff121212),
   primary: Color(0xffff9800),
   secondary: Color(0xffff9800),
-  onBackground: Color(0xffffffff),
-  onSurface: Color(0xffffffff),
+  // onBackground: Color(0xffffffff),
+  // onSurface: Color(0xffffffff),
   onPrimary: Color(0xffffffff),
   onSecondary: Color(0xffffffff),
 );
