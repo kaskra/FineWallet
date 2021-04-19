@@ -97,14 +97,13 @@ class CompactDetailsCard extends StatelessWidget {
             Text(
               LocaleKeys.reports_page_more_details.tr(),
               style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
             ),
             Icon(
               Icons.expand_more,
               size: 18,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onSecondary,
             )
           ],
         ),
